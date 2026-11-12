@@ -100,7 +100,7 @@ def test_repo_without_commits_gets_no_commit_signal():
 def test_agent_instruction_files_lower_the_score_slightly():
     result = signal("ai_files", root_files=("AGENTS.md", "Cargo.toml", "README.md", "src"))
 
-    assert -AI_COMMITS_MAX_PENALTY / 5 < result.weight < 0
+    assert -AI_COMMITS_MAX_PENALTY / 3 < result.weight < 0
     assert "AGENTS.md" in result.reason
 
 

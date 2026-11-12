@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% from "macros.html" import section with context %}
+{% block title %}AI-Sektion · {{ SITENAME }}{% endblock %}
+{% block content %}
+{% if latest %}{{ section(latest.ai.view, latest.ai.nav) }}{% else %}<p class="empty">Noch keine Ausgabe.</p>{% endif %}
+{% endblock %}

@@ -1,0 +1,4 @@
+{% extends "base.html" %}
+{% from "macros.html" import section with context %}
+{% block title %}{{ article.title }} · {{ SITENAME }}{% endblock %}
+{% block content %}{{ section(article.view, article.nav) }}{% endblock %}

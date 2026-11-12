@@ -6,15 +6,22 @@ import os
 import sys
 import time
 from collections.abc import Mapping, Sequence
+from datetime import date
 from pathlib import Path
 
 from github_anti_ai.adapters.clock import SystemClock
 from github_anti_ai.adapters.github_http import make_github_client
 from github_anti_ai.adapters.github_repo_source import GitHubRepoSource
 from github_anti_ai.adapters.github_search import GitHubSearchCandidates
+from github_anti_ai.adapters.json_edition_store import JsonEditionStore
 from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
 from github_anti_ai.application.collect_snapshots import CollectionReport, CollectSnapshots
-from github_anti_ai.application.ports import SourceUnavailable
+from github_anti_ai.application.explain_assessment import ExplainAssessment, UnknownRepo
+from github_anti_ai.application.ports import AlreadyPublished, NothingToPublish, SourceUnavailable
+from github_anti_ai.application.publish_edition import PublishEdition
+from github_anti_ai.domain.assessor import Assessor
+from github_anti_ai.domain.edition import Edition
+from github_anti_ai.domain.model import RepoId
 
 
 class MissingToken(Exception):
@@ -30,17 +37,30 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
         ("collect", "Momentaufnahmen sammeln"),
         ("publish", "heutige Ausgabe erzeugen"),
         ("daily", "sammeln und Ausgabe erzeugen"),
+        ("site", "Website aus den Ausgaben bauen"),
+        ("explain", "Bewertung eines Repos erklären"),
     ]:
         command = commands.add_parser(name, help=help_text)
         command.add_argument("--data-dir", type=Path, default=Path("data"))
-        if name != "publish":
+        if name == "site":
+            command.add_argument("--output", type=Path, default=Path("output"))
+        if name == "explain":
+            command.add_argument("repo", help="owner/name")
+        if name in ("publish", "explain"):
+            command.add_argument(
+                "--day",
+                type=date.fromisoformat,
+                default=None,
+                help="Tag der Sammlung als JJJJ-MM-TT (Standard: heute)",
+            )
+        if name in ("collect", "daily"):
             command.add_argument(
                 "--limit",
                 type=int,
                 default=None,
                 help="höchstens so viele Kandidaten (für Probeläufe)",
             )
-        if name != "collect":
+        if name in ("publish", "daily"):
             command.add_argument(
                 "--ignore-cooldown",
                 action="store_true",
@@ -68,16 +88,31 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     logging.getLogger("httpx").setLevel(logging.WARNING)
     complete = True
+    if args.command == "site":
+        # imported here: only this command needs Pelican
+        from github_anti_ai.publication.site import build_site
+
+        build_site(args.data_dir / "editions", args.output)
+        print(f"Website gebaut: {args.output}/index.html")
+        return 0
     try:
+        if args.command == "explain":
+            print(explain(args.data_dir, args.day, args.repo))
+            return 0
+        day = getattr(args, "day", None)
         if args.command in ("collect", "daily"):
             report = collect(args.data_dir, load_token(os.environ, Path(".env")), args.limit)
             complete = not report.failed
+            day = report.day  # a run across midnight still belongs to the day it started
         if args.command in ("publish", "daily"):
-            # PublishEdition needs the Assessment context, which does not exist yet.
-            # "daily" must then publish for report.day, not for the day the clock shows.
-            print("Ausgabe erzeugen geht erst, wenn es die Bewertung gibt.", file=sys.stderr)
-            return 2
-    except (MissingToken, SourceUnavailable) as error:
+            publish(args.data_dir, day, args.ignore_cooldown)
+    except AlreadyPublished as error:
+        print(f"Fehler: Für den {error} gibt es schon eine Ausgabe.", file=sys.stderr)
+        return 1
+    except NothingToPublish as error:
+        print(f"Fehler: Für den {error} gibt es keine Momentaufnahmen.", file=sys.stderr)
+        return 1
+    except (MissingToken, SourceUnavailable, UnknownRepo, ValueError) as error:
         print(f"Fehler: {error}", file=sys.stderr)
         return 1
     return 0 if complete else 1
@@ -102,6 +137,31 @@ def collect(data_dir: Path, token: str, limit: int | None) -> CollectionReport:
     for error in report.source_errors + report.fetch_errors:
         print(f"  Fehler: {error}")
     return report
+
+
+def publish(data_dir: Path, day: date | None, ignore_cooldown: bool) -> Edition:
+    use_case = PublishEdition(
+        snapshot_store=JsonSnapshotStore(data_dir / "snapshots"),
+        edition_store=JsonEditionStore(data_dir / "editions"),
+        assess=Assessor().assess,
+        clock=SystemClock(),
+        ignore_cooldown=ignore_cooldown,
+    )
+    edition = use_case.run(day)
+    stats = edition.stats
+    print(
+        f"Ausgabe {edition.day}: {len(edition.main)} in der Hauptliste, "
+        f"{len(edition.ai)} in der AI-Sektion "
+        f"({stats.assessed} geprüft, {stats.excluded} ausgeschlossen)"
+    )
+    return edition
+
+
+def explain(data_dir: Path, day: date | None, repo: str) -> str:
+    use_case = ExplainAssessment(
+        snapshot_store=JsonSnapshotStore(data_dir / "snapshots"), assess=Assessor().assess
+    )
+    return use_case.run(day or SystemClock().now().date(), RepoId.parse(repo))
 
 
 def _names(repos: Sequence, shown: int = 5) -> str:

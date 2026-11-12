@@ -33,19 +33,21 @@ schon. Die Domäne bleibt unverändert.
 
 ```
 github-anti-ai collect [--limit N]                   # Momentaufnahmen sammeln
-github-anti-ai publish [--ignore-cooldown]           # heutige Ausgabe erzeugen
+github-anti-ai publish [--ignore-cooldown] [--day T]  # Ausgabe erzeugen (Standard: heute)
 github-anti-ai daily [--limit N] [--ignore-cooldown] # beides nacheinander
-github-anti-ai explain owner/name                    # Bewertung eines Repos erklären
+github-anti-ai explain owner/name [--day T]          # Bewertung eines Repos erklären
+github-anti-ai site [--output output]                # Website bauen (siehe veroeffentlichung.md)
 ```
 
-`publish` und `daily` brechen noch mit einem Hinweis ab, bis es die Bewertung gibt.
+`--day JJJJ-MM-TT` wählt die Sammlung eines anderen Tages. `daily` veröffentlicht
+immer für den Tag, an dem die Sammlung begonnen hat.
 
 Optionen für alle Befehle: `--data-dir` (Standard: `data`). Ein eigenes Verzeichnis
 für Experimente verhindert, dass Testausgaben im versionierten Archiv landen.
 
 ## Was „Curation“ von „Assessment“ erwartet
 
-Die Bewertung ist noch nicht entworfen. Für die Auswahl genügt diese Form:
+Die Auswahl braucht von der Bewertung (siehe `bewertung.md`) nur diese Form:
 
 ```python
 Assessment(snapshot, section, score, signals, exclusion)
@@ -53,8 +55,8 @@ Signal(kind, weight, reason)   # reason ist der Tooltip-Text
 Exclusion(reason, kind)
 ```
 
-Bis es die Bewertung gibt, nimmt `PublishEdition` die Funktion `assess` als Parameter
-entgegen.
+`PublishEdition` nimmt die Funktion `assess` als Parameter entgegen. Die Kommandozeile
+übergibt `Assessor().assess`.
 
 ## Auswahlregeln (`EditionCurator`)
 

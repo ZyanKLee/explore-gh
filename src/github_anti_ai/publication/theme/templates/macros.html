@@ -1,0 +1,52 @@
+{% macro section(view, nav) %}
+<header class="edition">
+  <h1>{{ view.title }}</h1>
+  <p class="stats">{{ view.stats }}</p>
+  <nav class="days" aria-label="Andere Tage und Sektionen">
+    {% if nav.older %}<a rel="prev" href="{{ SITEURL }}/{{ nav.older.url }}">← Tag davor</a>{% endif %}
+    {% if nav.other %}<a href="{{ SITEURL }}/{{ nav.other.url }}">{{ "AI-Sektion" if view.section == "main" else "Hauptliste" }} dieses Tages</a>{% endif %}
+    {% if nav.newer %}<a rel="next" href="{{ SITEURL }}/{{ nav.newer.url }}">Tag danach →</a>{% endif %}
+  </nav>
+</header>
+{% if not view.entries %}
+<p class="empty">Heute nichts gefunden.</p>
+{% else %}
+<ol class="entries">
+  {% for entry in view.entries %}
+  <li class="entry">
+    <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
+    <div class="body">
+      <h2><a href="{{ entry.url }}">{{ entry.repo }}</a></h2>
+      {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
+      <ul class="facts">
+        {% if entry.language %}<li class="language">{{ entry.language }}</li>{% endif %}
+        <li>{{ entry.stars }} Sterne</li>
+        <li class="gained">{{ entry.gained }} in 7 Tagen</li>
+        <li>{{ entry.forks }} Forks</li>
+        <li>{{ entry.active_authors }} {{ "aktiver Autor" if entry.active_authors == 1 else "aktive Autoren" }}</li>
+        <li>{{ entry.age }}</li>
+        {% if entry.license %}<li>{{ entry.license }}</li>{% endif %}
+        {% if entry.homepage %}<li><a href="{{ entry.homepage }}" rel="noopener noreferrer">{{ entry.homepage }}</a></li>{% endif %}
+      </ul>
+    </div>
+    <div class="side">
+      <svg class="spark" viewBox="-1 -2 122 28" role="img" aria-label="Neue Sterne je Tag in den letzten 35 Tagen">
+        <polyline points="{{ entry.sparkline }}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <div class="why">
+        <button type="button" aria-describedby="why-{{ view.section }}-{{ entry.rank }}" aria-label="Begründung der Bewertung">i</button>
+        <div class="tip" role="tooltip" id="why-{{ view.section }}-{{ entry.rank }}">
+          <p class="score">Punktzahl <strong>{{ entry.score }}</strong></p>
+          <ul>
+            {% for line in entry.signals %}
+            <li><span class="weight">{{ line.weight }}</span> <span>{{ line.reason }}</span></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+{% endif %}
+{% endmacro %}

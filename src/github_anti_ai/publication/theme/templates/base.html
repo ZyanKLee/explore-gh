@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ SITEURL }}/theme/css/style.css">
+  <link rel="alternate" type="application/atom+xml" title="Fundstücke" href="{{ SITEURL }}/feed.xml">
+  <link rel="alternate" type="application/atom+xml" title="AI-Sektion" href="{{ SITEURL }}/ai/feed.xml">
+</head>
+<body>
+  <header class="site">
+    <a class="name" href="{{ SITEURL }}/">{{ SITENAME }}</a>
+    <nav aria-label="Bereiche">
+      <a href="{{ SITEURL }}/">Hauptliste</a>
+      <a href="{{ SITEURL }}/ai/">AI-Sektion</a>
+      <a href="{{ SITEURL }}/archiv/">Archiv</a>
+      <a href="{{ SITEURL }}/feed.xml">Feed</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site">
+    Aufstrebende GitHub-Repos, überwiegend von Menschen geschrieben. Ohne Tracking, ohne Skripte.
+  </footer>
+</body>
+</html>

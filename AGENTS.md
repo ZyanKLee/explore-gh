@@ -91,7 +91,8 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
   API-Formate gelangen nie in die Domäne.
 - **Assessment** (Core): Signale, Ausschlüsse, Sektion, Punktzahl
 - **Curation** (Core): tägliche `Edition` mit Sperre, Vielfaltsregel und Top 20
-- **Publication**: Pelican. Kennt nur das JSON-Format der Ausgaben.
+- **Publication**: Seitenmodell (reine Funktionen) plus dünne Pelican-Anbindung. Kennt
+  nur das JSON-Format der Ausgaben.
 
 ### Glossar
 
@@ -132,13 +133,16 @@ GitHub-Repository bezeichnet.
 ### Struktur
 
 ```plaintext
-src/github_anti_ai/{domain,application,adapters}/
-pelican/{plugins,theme}/
+src/github_anti_ai/{domain,application,adapters,publication}/
+                       # publication/ enthält auch Pelican-Plugin und theme/
 docs/                  # Konzepte mit Stand und Geplantem: datensammlung.md (Acquisition),
-                       # bewertung.md (Assessment), ausgabe.md (Curation)
+                       # bewertung.md (Assessment), ausgabe.md (Curation),
+                       # veroeffentlichung.md (Publication)
 data/                  # editions/ (versioniert), snapshots/ (Arbeitsdaten, 14 Tage)
 tests/unit/            # Domäne und Use Cases
-tests/integration/     # Adapter gegen aufgezeichnete Antworten in fixtures/
+tests/integration/     # Adapter gegen aufgezeichnete Antworten in fixtures/, dazu die
+                       # Regeln gegen die Beispielsammlung (fixtures/labelled/)
+checks/                # Hilfsskripte: Anfragen zählen, Beispielsammlung erzeugen
 ```
 
 ## Test-Driven Development

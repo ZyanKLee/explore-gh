@@ -6,8 +6,8 @@ Die Bewertung macht aus einer Momentaufnahme ein `Assessment`: Sektion, Punktzah
 Signale und gegebenenfalls einen Ausschluss. Sie ist reine Logik ohne Ein- und Ausgabe
 und kommt ohne LLM aus.
 
-Alle Zahlen in diesem Dokument sind **Startwerte**. Sie stehen als benannte Konstanten
-in der Domäne und werden an der Beispielsammlung geeicht (siehe unten).
+Alle Zahlen stehen als benannte Konstanten in der Domäne. Sie sind am 12.11.2026 an
+102 von Hand beurteilten Repos geeicht worden (siehe „Beispielsammlung“ unten).
 
 ## Ablauf
 
@@ -59,10 +59,18 @@ Code-Blöcke, Links und HTML).
 
 1. Sind mehr als 20 % der Buchstaben nicht lateinisch (Chinesisch, Kyrillisch,
    Arabisch …), ist es eine andere Sprache.
-2. Sonst zählen wir, wie viele Wörter zu den häufigsten deutschen und englischen
-   Funktionswörtern gehören (`the`, `and`, `der`, `und` …). Liegt ihr Anteil unter
-   15 %, ist es eine andere Sprache.
-3. Bei weniger als 40 Wörtern Fließtext gibt es kein Urteil. Das Repo bleibt drin.
+2. Bei weniger als 40 Wörtern Fließtext gibt es sonst kein Urteil. Das Repo bleibt
+   drin.
+3. Wir zählen, wie viele Wörter zu den häufigsten deutschen und englischen
+   Funktionswörtern gehören (`the`, `and`, `der`, `und` …), und ebenso für neun andere
+   Sprachen in lateinischer Schrift (Spanisch, Portugiesisch, Französisch, Italienisch,
+   Niederländisch, Türkisch, Indonesisch, Vietnamesisch, Polnisch). Passt eine dieser
+   Listen besser als die deutsch-englische, ist es eine andere Sprache.
+4. Liegt der deutsch-englische Anteil unter 5 %, ist es ebenfalls eine andere Sprache.
+
+Der Vergleich mit anderen Sprachen ersetzt seit der Eichung eine feste Schwelle von
+15 %. Die hatte englische READMEs aussortiert, die fast nur aus Listen und Tabellen
+bestehen (6 von 152 Sprach-Ausschlüssen in den echten Daten).
 
 ## Sektion (`AiFocusClassifier`)
 
@@ -85,10 +93,15 @@ von vier Stellen** stehen.
 | Beschreibung | die Beschreibung einen AI-Begriff enthält |
 | README | das README mindestens 5 AI-Begriffe enthält |
 
-**Bekannte Schwäche (880 echte Repos, 12.11.2026):** Die Regel erfasst auch Werkzeuge,
-die AI nur als Nebenfunktion erwähnen, etwa einen GPU-Taskmanager mit „LLM model
-insights“. Das ist der kleinere Fehler: AI-Werkzeuge in der Hauptliste wären
-schlimmer. Ob und wie die Regel enger wird, entscheidet die Beispielsammlung.
+**Ausnahme:** Hat ein Repo weder Beschreibung noch Topics, bleiben ihm nur zwei
+Stellen. Dann genügt ein README mit mindestens 10 AI-Begriffen.
+
+**Bekannte Schwäche:** Die Regel erfasst auch Werkzeuge, die AI nur als Nebenfunktion
+erwähnen, etwa einen GPU-Taskmanager mit „LLM model insights“ oder ein Schreibtisch-
+Panel mit einem Widget für AI-Kontingente. Das ist der kleinere Fehler: AI-Werkzeuge in
+der Hauptliste wären schlimmer. Mit Begriffslisten lässt sich Haupt- und Nebenfunktion
+nicht trennen. Dichte und Position der Begriffe im README haben es in der
+Beispielsammlung auch nicht geschafft.
 
 Eine einzelne Erwähnung reicht also nicht. Ein Editor mit „AI auto captions“ in der
 Beschreibung bleibt in der Hauptliste, bekommt aber ein Signal mit Gewicht 0, damit
@@ -140,15 +153,19 @@ Hinweise auf echte Arbeit und echtes Interesse.
 | `continuity` | Commits von Menschen in 4 bis 7 verschiedenen Wochen / in 8 oder mehr | +5 / +10 |
 | `engagement` | Issues von mindestens 3 verschiedenen Personen | +5 |
 | `new_project` | Das Repo ist höchstens 30 Tage alt. | +3 |
-| `no_echo` | Weniger als ein Fork, Issue-Autor oder Pull Request je 100 Sterne | −25 |
-| `fork_farm` | Mindestens 60 % so viele Forks wie Sterne | −25 |
+| `no_echo` | Weniger als ein Fork, Issue-Autor oder Pull Request je 100 Sterne | −40 |
+| `fork_farm` | Mindestens 60 % so viele Forks wie Sterne | −40 |
 
 - **`continuity` und `team` zusammen** decken ab, was du wolltest: Mehrere
   Contributors zählen, die ausdauernde Arbeit einer einzelnen Person aber auch.
 - **`no_echo` und `fork_farm`** sind die Gegenprobe zu gekauften Sternen. In den
   echten Daten hatten 30 % der Kandidaten Sterne, aber weder Forks noch Issues.
   Darunter waren fast alle Köder-Repos. Das Echo wird an der Sternzahl gemessen, weil
-  es Köder mit 1100 Sternen und genau einem Fork gibt.
+  es Köder mit 1100 Sternen und genau einem Fork gibt. Der Abzug war zuerst −25. Damit
+  kamen Köder mit 1000 Sternen bis auf Rang 51 der Hauptliste. Mit −40 liegt der beste
+  auf Rang 201 von 421.
+- **Köder täuschen Kontinuität vor:** Sie datieren Commits zurück und bekommen so
+  `continuity`. Das fällt gegen den Abzug nicht ins Gewicht.
 - **Bekannte Schwäche:** Wir kennen nur die letzten 100 Commits. Bei sehr aktiven
   Repos reichen sie nur wenige Tage zurück. Sind es genau 100, gibt es deshalb kein
   `continuity`-Signal. Abhilfe bringen die geplanten Daten (Zahl der Commits je Woche).
@@ -159,14 +176,16 @@ Führt zur Abwertung, nie zum Ausschluss.
 
 | Art | Regel | Punkte |
 |---|---|---|
-| `ai_commits` | Anteil der letzten Commits mit AI-Beteiligung, ab 10 % | −30 × Anteil |
+| `ai_commits` | Anteil der letzten Commits mit AI-Beteiligung, ab 10 % | −15 × Anteil |
 | `ai_files` | Anweisungsdateien für AI-Agenten im Hauptverzeichnis | −3 |
 
 - **Ein Commit hat AI-Beteiligung**, wenn ein AI-Werkzeug als Co-Autor eingetragen ist
   oder ihn selbst verfasst hat. Erkannt werden: Claude, Anthropic, Copilot, Cursor,
   Codex, OpenAI, ChatGPT, Devin AI, Gemini, Google Jules, Aider, OpenHands, Windsurf,
-  Capy AI, opencode. Namen, die auch Menschen tragen, zählen nur in der eindeutigen
-  Form: „Devin AI“ ja, „Devin Smith“ nein.
+  Capy AI, opencode, Amp. Erkannt wird am Namen, am GitHub-Konto oder an der
+  E-Mail-Domain (`anthropic.com`, `openai.com`, `cursor.com` …). Namen, die auch
+  Menschen tragen, zählen nur in der eindeutigen Form: „Devin AI“ ja, „Devin Smith“
+  nein, „Claude Opus 5.5“ ja, „Claude Monet“ nein.
 - **Gewöhnliche Bots** (Dependabot, GitHub Actions, Renovate) zählen weder als AI noch
   als Mensch. Sie fließen in den Anteil nicht ein.
 - **Anweisungsdateien:** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.claude`, `.cursor`,
@@ -179,27 +198,64 @@ In den echten Daten: 72 % der Repos ohne AI-Commits, 18 % mit mindestens 75 %.
 ## Befehl `explain`
 
 ```
-github-anti-ai explain owner/name [--data-dir data]
+github-anti-ai explain owner/name [--day JJJJ-MM-TT] [--data-dir data]
 ```
 
-Zeigt für ein Repo aus der heutigen Sammlung Sektion, Punktzahl, Ausschluss und alle
+Zeigt für ein Repo aus der Sammlung eines Tages (Standard: heute) Sektion, Punktzahl, Ausschluss und alle
 Signale mit Gewicht und Begründung. Auch für Repos, die es nicht in die Ausgabe
 geschafft haben. Gibt es zu dem Repo keine Momentaufnahme, meldet der Befehl das.
 
-## Regeln eichen: die Beispielsammlung
+## Beispielsammlung
 
-Braucht deine Mitarbeit und kommt deshalb als eigener Schritt:
+Am 12.11.2026 hat der Projektinhaber 102 Repos aus dem Probelauf von Hand beurteilt:
+AI-Thema ja oder nein, dazu ein Urteil (Edelstein, ok, Slop, raus). Die Sammlung liegt
+ohne Namen und E-Mail-Adressen von Personen unter
+`tests/integration/fixtures/labelled/`. `tests/integration/test_labelled_examples.py`
+prüft die Regeln dagegen: Eine Änderung darf die Übereinstimmung nicht verschlechtern.
 
-1. Aus einem vollständigen Lauf ziehen wir etwa 100 Repos, quer durch alle
-   Punktzahlen.
-2. Du gibst jedem ein Urteil: **Edelstein**, **AI-Thema**, **Slop**, **egal**.
-3. Wir vergleichen deine Urteile mit denen der Regeln und passen Begriffe und Gewichte
-   an, wo sie danebenliegen.
-4. Die Beispiele werden zu Tests. Eine spätere Änderung darf die Trefferquote nicht
-   verschlechtern.
+Neu erzeugen nach weiteren Urteilen:
 
-Offen dabei: In den Momentaufnahmen stehen Namen und E-Mail-Adressen aus Commits.
-Bevor Beispiele ins Git-Repo kommen, müssen diese Angaben heraus.
+```
+uv run python checks/make_labelled_examples.py data-test/snapshots/2026-11-12.jsonl.gz data-test/urteile.csv
+```
+
+### Ergebnis der Eichung
+
+| Was | Vorher | Nachher |
+|---|---|---|
+| AI-Thema stimmt mit dem Urteil überein | 85 von 102 | 88 von 102 |
+| Englische READMEs fälschlich als fremdsprachig aussortiert (alle 880) | 6 | 0 |
+| Bester Rang eines Köders in der Hauptliste (421 Repos) | 51 | 201 |
+
+Geändert wurden die Sprachregel, die Ausnahme für Repos ohne Beschreibung, der Abzug
+für `no_echo` und `fork_farm` (25 → 40) und der Abzug für `ai_commits` (30 → 15).
+
+### Was die Regeln nicht treffen
+
+- **AI-Thema, 14 Abweichungen.** 8 AI-Repos landen in der Hauptliste, meist weil nur
+  eine Stelle AI nennt (z. B. `agentic` nur in der Beschreibung) oder gar keine. 6
+  Repos landen zu Unrecht in der AI-Sektion, weil sie AI als Nebenfunktion erwähnen.
+  Darunter ist ein Edelstein (`ersinkoc/phonebox`).
+- **Edelsteine mit viel AI-Mithilfe.** 3 der 10 Edelsteine haben AI-Beteiligung an
+  mehr als 70 % ihrer Commits. Mit dem ersten Abzug von bis zu 30 Punkten lagen sie auf
+  den Rängen 188 bis 304 der Hauptliste und wären nie in eine Ausgabe gekommen. Das war
+  faktisch ein Ausschluss. Am 12.11.2026 ist der Abzug deshalb auf 15 gesenkt worden.
+  Sie liegen jetzt auf den Rängen 119 bis 235 von 421. Der Preis: 13 statt 5 der
+  besten 100 Repos haben mehrheitlich AI-Commits, unter den besten 20 sind es 2.
+- **„raus“ ist meist Geschmack.** 23 der 30 so beurteilten Repos schließt keine Regel
+  aus: Emulatoren, Roblox, Begleit-Code zu Forschungsarbeiten, AI-Repos. Thematische
+  Filter sind bewusst nicht vorgesehen. Ein möglicher Ausschluss wäre Begleit-Code zu
+  Forschungsarbeiten.
+- **Köder waren zuerst teils als „ok“ beurteilt.** Repos nach dem Muster „… desktop
+  setup“ mit 1000 Sternen, ohne Forks und Issues, sind Köder für Schadsoftware. Neun
+  solche Repos sind nachträglich als „slop“ markiert worden.
+- **Echte Projekte ohne Echo.** Zwei als legitim geprüfte Repos (`799953468/frp-ban`,
+  `guzhezao/parcel-shift`) haben 170 Sterne, aber weder Forks noch Issues. Sie bekommen
+  denselben Abzug wie die Köder. Das ist am 12.11.2026 bewusst so entschieden: Solche
+  Projekte müssen erst reifen. Sobald jemand sie forkt oder ein Issue schreibt,
+  entfällt der Abzug.
+- **Die Stichprobe ist jung.** Alle 880 Repos sind höchstens 11 Tage alt. `continuity`
+  und der Bonus für neue Projekte sind daran nicht prüfbar.
 
 ## Noch nicht abgedeckt
 

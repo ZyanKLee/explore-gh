@@ -128,3 +128,15 @@ def test_ai_terms_only_count_as_whole_words():
 
     # "rainfall", "trail", "maintains" and "paid" contain "ai", but only "rag" is a term
     assert len(focus.signals) == 1
+
+
+def test_repo_without_description_and_topics_is_judged_by_its_readme_alone():
+    # seen live: such a repo has only two places left, a single one must be enough
+    bare = dict(description="", topics=())
+
+    assert section(readme=AI_README * 2, **bare) is Section.AI
+    assert section(readme=AI_README, **bare) is Section.MAIN
+
+
+def test_a_readme_alone_is_not_enough_when_the_description_says_something_else():
+    assert section(readme=AI_README * 2, topics=()) is Section.MAIN

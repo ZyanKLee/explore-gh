@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Archiv · {{ SITENAME }}{% endblock %}
+{% block content %}
+<header class="edition"><h1>Archiv</h1></header>
+{% if not edition_days %}
+<p class="empty">Noch keine Ausgabe.</p>
+{% else %}
+<ul class="archive">
+  {% for day in edition_days %}
+  <li>
+    <span class="date">{{ day.date }}</span>
+    <a href="{{ SITEURL }}/{{ day.main.url }}">Hauptliste ({{ day.main.entries|length }})</a>
+    <a href="{{ SITEURL }}/{{ day.ai.url }}">AI-Sektion ({{ day.ai.entries|length }})</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

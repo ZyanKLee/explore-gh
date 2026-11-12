@@ -129,6 +129,7 @@ class Signal:
 @dataclass(frozen=True)
 class Exclusion:
     reason: str
+    kind: str = ""
 
 
 @dataclass(frozen=True)

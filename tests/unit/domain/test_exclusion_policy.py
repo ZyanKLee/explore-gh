@@ -23,6 +23,26 @@ SPANISH = (
     "lenguajes más comunes y se puede configurar con un solo archivo. Puedes instalarlo con "
     "cargo o descargar un binario desde la página de versiones del proyecto."
 )
+PORTUGUESE = (
+    "Este é um pequeno editor de texto para o terminal, escrito em Rust. Ele inicia em "
+    "poucos milissegundos e não tem dependências. O editor oferece realce de sintaxe para as "
+    "linguagens mais comuns e pode ser configurado com um único arquivo. Você pode instalar "
+    "com o cargo ou baixar um binário na página de versões do projeto."
+)
+# seen live: English READMEs that are mostly lists and tables have few function words
+ENGLISH_LISTS = (
+    "# tiny-editor\n\n## Features\n\n"
+    "- Syntax highlighting for Rust, Go, Python, TOML, YAML, JSON, Markdown\n"
+    "- Multiple cursors, rectangular selection and incremental search\n"
+    "- Mouse support, true color, ligatures, Unicode width handling\n"
+    "- Zero dependencies, single static binary, instant startup\n\n"
+    "## Supported platforms\n\n"
+    "| Platform | Architecture | Status |\n|---|---|---|\n"
+    "| Linux | x86_64, aarch64, riscv64 | stable |\n"
+    "| macOS | Apple silicon, Intel | stable |\n"
+    "| Windows | x86_64 | experimental |\n\n"
+    "## Build\n\nRequires Rust stable. Clone the repo, build it and run the tests.\n"
+)
 CHINESE = (
     "这是一个用 Rust 编写的小型终端文本编辑器。它启动只需几毫秒，没有任何依赖。"
     "编辑器支持最常见语言的语法高亮，并且可以用一个文件进行配置。"
@@ -98,6 +118,15 @@ def test_readme_in_another_script_is_excluded():
 
 def test_readme_in_another_latin_language_is_excluded():
     assert kind(description="Un pequeño editor de texto", readme=SPANISH) == "language"
+
+
+def test_portuguese_readme_is_excluded_although_it_shares_short_words_with_english():
+    # "do", "a", "as" and "no" are frequent Portuguese words
+    assert kind(description="Um pequeno editor de texto", readme=PORTUGUESE) == "language"
+
+
+def test_english_readme_made_of_lists_and_tables_is_accepted():
+    assert kind(readme=ENGLISH_LISTS) is None
 
 
 def test_mostly_foreign_bilingual_readme_is_excluded():

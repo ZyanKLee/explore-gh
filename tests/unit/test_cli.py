@@ -35,6 +35,18 @@ def test_assessment_of_a_repo_can_be_explained():
     assert args.repo == "alice/tiny-editor"
 
 
+def test_site_is_built_into_the_output_directory_by_default():
+    args = parse_args(["site"])
+
+    assert args.command == "site"
+    assert args.output == Path("output")
+    assert args.data_dir == Path("data")
+
+
+def test_output_directory_of_the_site_can_be_chosen():
+    assert parse_args(["site", "--output", "/tmp/site"]).output == Path("/tmp/site")
+
+
 def test_data_directory_defaults_to_data():
     assert parse_args(["collect"]).data_dir == Path("data")
 
