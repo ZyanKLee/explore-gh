@@ -192,3 +192,107 @@ def test_stars_gained_before_the_growth_window_do_not_count_for_the_threshold():
 def test_first_matching_rule_gives_the_reason():
     assert kind(is_fork=True, primary_language=None, star_history=star_history(0)) == "fork"
     assert kind(primary_language=None, description="Solana trading bot") == "no_code"
+
+
+def test_description_in_another_script_is_excluded_even_with_an_english_readme():
+    # seen live: a Chinese one-line description above a long English README
+    assert kind(description="开发时端口被占，一行命令释放。零依赖", readme=ENGLISH * 3) == "language"
+
+
+def test_description_with_a_few_foreign_names_is_no_reason():
+    assert kind(description="A tiny client for 微信 (WeChat) on the terminal", readme=ENGLISH) is None
+
+
+@pytest.mark.parametrize(
+    "description",
+    [
+        "Adobe Acrobat Pro 2026: Secure Standalone PDF Document Processor for Desktop",
+        "Aida 64 Extreme 2026: Complete Standalone Desktop Setup with Full Feature Configuration",
+        "Adobe Substance 3D Creative Studio 2026 - Secure Asset Pipeline Desktop Installer",
+        "Archicad 2026 complete standalone desktop setup with pre-configured ready-to-run build",
+        "Easy-Worship 2026: Complete Standalone Desktop Setup with All Features Enabled",
+        "Photo suite 2026, full version, pre-activated",
+    ],
+)
+def test_lures_for_malware_are_excluded(description):
+    assert kind(description=description) == "lure"
+
+
+def test_lure_is_recognized_by_its_name_too():
+    assert kind("mallory/archicad-desktop-setup", description="Archicad 2026") == "lure"
+
+
+def test_lure_names_the_wording_that_gave_it_away():
+    result = exclusion(description="Cubase Studio 2026 desktop setup with full plugin suite")
+
+    assert "Köder" in result.reason
+    assert "desktop setup" in result.reason
+
+
+@pytest.mark.parametrize(
+    "description",
+    [
+        "A standalone binary without dependencies",
+        "Desktop app with a secure setup wizard",
+        "An installer for the Arch desktop",
+        "Complete rewrite of the configuration loader",
+    ],
+)
+def test_ordinary_wording_about_setup_and_desktop_is_no_lure(description):
+    assert kind(description=description) is None
+
+
+LURE_README = (
+    '<div align="center">\n\n# Xshell: Advanced SSH/SFTP Terminal Emulator for Windows 11\n\n'
+    "![](files/preview.png)\n\n### 💻 PowerShell Installer\n\n"
+    "[![](files/button.png)](https://mallory.github.io/xshell-terminal-emulator/)\n\n</div>\n\n"
+    "Xshell is a Windows terminal emulator engineered for reliable remote access.\n\n"
+    "## ✅ Requirements\n\n- Windows 10 or Windows 11\n"
+    "- PowerShell 5.1 or newer (already available on Windows)\n"
+    "- Active network connection\n- No admin rights needed\n"
+)
+
+
+def test_lure_is_recognized_by_the_template_of_its_readme():
+    # seen live: a second kind of lure has a harmless description, but always this README
+    result = exclusion(
+        "mallory/xshell-terminal-emulator",
+        description="Xshell: Advanced SSH/SFTP Terminal Emulator for Windows",
+        readme=LURE_README,
+    )
+
+    assert result.kind == "lure"
+    assert "README" in result.reason
+
+
+def test_powershell_instructions_without_the_button_are_no_lure():
+    honest = "# tool\n\n" + ENGLISH + "\n\n### PowerShell Installer\n\nRun `install.ps1`.\n"
+
+    assert kind(readme=honest) is None
+
+
+def test_a_button_to_a_project_page_without_powershell_is_no_lure():
+    readme = "# tool\n\n[![](files/button.png)](https://alice.github.io/tiny-editor/)\n\n" + ENGLISH
+
+    assert kind(readme=readme) is None
+
+
+def test_lure_button_written_in_html_is_recognized_too():
+    # seen live: Pereira001/dlss5-manager
+    readme = (
+        '<h3 align="center">⚡ PowerShell Setup Button</h3>\n\n<p align="center">\n'
+        '  <a href="https://Mallory.github.io/dlss5-manager/">\n'
+        '    <img src="button.svg" alt="DLSS5 PowerShell Installer" width="400">\n  </a>\n</p>\n\n'
+        + ENGLISH
+    )
+
+    assert kind("mallory/dlss5-manager", description="", readme=readme) == "lure"
+
+
+def test_a_logo_that_links_to_the_project_page_is_no_lure():
+    readme = (
+        '<a href="https://alice.github.io/tiny-editor/"><img src="logo.svg" alt="tiny-editor"></a>'
+        "\n\nInstall with PowerShell: `winget install tiny-editor`.\n\n" + ENGLISH
+    )
+
+    assert kind(readme=readme) is None

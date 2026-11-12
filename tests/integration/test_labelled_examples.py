@@ -17,6 +17,7 @@ from github_anti_ai.domain.model import RepoId, Section
 
 FIXTURES = Path(__file__).parent / "fixtures" / "labelled"
 MIN_AI_FOCUS_AGREEMENT = 88  # of 102
+MIN_SLOP_EXCLUDED = 13  # of 18
 
 
 @pytest.fixture(scope="module")
@@ -40,8 +41,29 @@ def test_ai_focus_agrees_with_the_owner_as_often_as_before(judged):
     assert agreed >= MIN_AI_FOCUS_AGREEMENT
 
 
-def test_gems_score_higher_than_slop(judged):
-    assert median(scores(judged, "edelstein")) > median(scores(judged, "slop")) + 10
+def test_most_slop_is_excluded(judged):
+    slop = [a for row, a in judged if row["urteil"] == "slop"]
+    excluded = [a for a in slop if a.exclusion is not None]
+
+    assert len(slop) == 18
+    assert len(excluded) >= MIN_SLOP_EXCLUDED
+
+
+def test_every_lure_for_malware_the_owner_marked_is_excluded_or_far_behind(judged):
+    typical_gem = median(scores(judged, "edelstein"))
+    for row, a in judged:
+        if row["urteil"] == "slop" and any(s.kind in ("no_echo", "fork_farm") for s in a.signals):
+            assert a.exclusion is not None or a.score < typical_gem - 30, a.repo
+
+
+def test_no_gem_is_excluded_as_a_lure(judged):
+    for row, a in judged:
+        if row["urteil"] in ("edelstein", "ok"):
+            assert a.exclusion is None or a.exclusion.kind != "lure", a.repo
+
+
+def test_slop_that_stays_scores_lower_than_gems(judged):
+    assert median(scores(judged, "edelstein")) > median(scores(judged, "slop"))
 
 
 def test_no_repo_judged_as_slop_reaches_the_score_of_the_best_gems(judged):

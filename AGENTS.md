@@ -57,9 +57,11 @@ Awesome-Listen bewusst **nicht** verwenden.
   gespeicherten Ausgaben abgeleitet.
 - **Vielfalt**: pro Sektion höchstens 4 Repos je Programmiersprache und 2 je Besitzer.
 - **Themen**: nicht festgelegt, Interessen ändern sich.
+- **Plattform**: Projekte für Windows −3 Punkte, für macOS oder iOS −3, für Linux +6.
+  Ein Projekt für alle drei landet bei null.
 - **Ausschlüsse**: Forks, archivierte Repos, Spiegel, Repos ohne eigentlichen Code
   (Linksammlungen, Tutorials, Material zur Vorbereitung auf Bewerbungsgespräche,
-  Dotfiles, Prompt-Sammlungen) und Kryptowährungen.
+  Dotfiles, Prompt-Sammlungen), Köder für Schadsoftware und Kryptowährungen.
 - **Sprache**: nur Repos mit deutscher oder englischer Beschreibung und README.
 - **Transparenz**: Jede Auf- oder Abwertung wird hinter einem kleinen (i) mit Tooltip
   (Mouse-Over) begründet.
@@ -109,6 +111,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | AI-Mithilfe | `AiAssistance` | Hinweise auf AI-geschriebenen Code, führt nur zur Abwertung |
 | Ausschluss | `Exclusion` | Grund, ein Repo ganz zu entfernen |
 | Substanz | `SubstanceCheck` | Hinweise auf echte Arbeit und echtes Interesse: Team, Kontinuität, Issues. Dazu die Gegenprobe zu gekauften Sternen. |
+| Plattform | `PlatformPreference` | Vorliebe des Inhabers: Linux wertet auf, Windows und Apple werten ab |
 | Bewertung | `Assessment` | Sektion, Punktzahl, Signale, ggf. Ausschluss. Die Punktzahl ist die Summe der Signalgewichte. Erzeugt vom `Assessor`. |
 | Sektion | `Section` | `MAIN` oder `AI` |
 | Ausgabe | `Edition` | Auswahl eines Tages, je Sektion bis zu 20 `Entry`s. Unveränderlich nach Veröffentlichung. |

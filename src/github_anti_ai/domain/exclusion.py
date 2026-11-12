@@ -23,6 +23,32 @@ COLLECTION_TERMS = TermList(
         "prompt library",
     ]
 )
+# Wording of repos that pose as installers of commercial software and deliver malware.
+# Seen live by the hundred, all with about 100 or 1100 stars and no forks or issues.
+LURE_TERMS = TermList(
+    [
+        "secure standalone",
+        "complete standalone",
+        "standalone desktop",
+        "standalone setup",
+        "desktop setup",
+        "desktop installer",
+        "pre configured",
+        "pre activated",
+        "full feature",
+        "all features enabled",
+        "full version",
+    ]
+)
+# The README of these lures: an image as button that leads to a GitHub Pages site, where a
+# PowerShell command waits to be copied. Never seen in an honest repo.
+_LURE_BUTTON = re.compile(
+    # Markdown: [![alt](…button…)](https://owner.github.io/…)
+    r"\[!\[[^\]]*\]\([^)]*button[^)]*\)\]\(https?://[^)/]*\.github\.io/"
+    # HTML: <a href="https://owner.github.io/…"><img src="…button…">
+    r"|<a\s[^>]*href=[\"']https?://[^\"'/]*\.github\.io/[^>]*>\s*<img\s[^>]*button",
+    re.IGNORECASE,
+)
 CRYPTO_TERMS = TermList(
     [
         "crypto",
@@ -100,6 +126,14 @@ class ExclusionPolicy:
         labels = " . ".join([snapshot.repo.name, snapshot.description, *snapshot.topics])
         if found := COLLECTION_TERMS.distinct(labels):
             return Exclusion(f"Sammlung oder Lernmaterial („{found[0]}“)", "collection")
+        if found := LURE_TERMS.distinct(labels):
+            return Exclusion(f"Köder für Schadsoftware („{found[0]}“)", "lure")
+        if _LURE_BUTTON.search(snapshot.readme) and "powershell" in snapshot.readme.lower():
+            return Exclusion(
+                "Köder für Schadsoftware (README führt über einen Knopf zu einem "
+                "PowerShell-Befehl)",
+                "lure",
+            )
         if not snapshot.readme.strip():
             return Exclusion("Kein README", "no_readme")
         if reason := foreign_language(snapshot.description, snapshot.readme):
@@ -126,14 +160,23 @@ def prose(markdown: str) -> str:
     return _URL.sub(" ", text)
 
 
+def _foreign_script_share(text: str) -> float:
+    letters = [char for char in text if char.isalpha()]
+    if not letters:
+        return 0.0
+    return sum(1 for char in letters if char > _LAST_LATIN_LETTER) / len(letters)
+
+
 def foreign_language(description: str, readme: str) -> str | None:
     """Says why the text is neither German nor English, or None if it may be."""
     text = (description + "\n" + prose(readme))[:PROSE_MAX_CHARS]
-    letters = [char for char in text if char.isalpha()]
-    if letters:
-        foreign = sum(1 for char in letters if char > _LAST_LATIN_LETTER) / len(letters)
-        if foreign > MAX_FOREIGN_SCRIPT_SHARE:
-            return f"Weder deutsch noch englisch: {foreign:.0%} der Buchstaben in anderer Schrift"
+    if (foreign := _foreign_script_share(description)) > MAX_FOREIGN_SCRIPT_SHARE:
+        return (
+            "Weder deutsch noch englisch: "
+            f"{foreign:.0%} der Buchstaben der Beschreibung in anderer Schrift"
+        )
+    if (foreign := _foreign_script_share(text)) > MAX_FOREIGN_SCRIPT_SHARE:
+        return f"Weder deutsch noch englisch: {foreign:.0%} der Buchstaben in anderer Schrift"
 
     words = [word.lower() for word in _WORD.findall(text)]
     if len(words) < MIN_PROSE_WORDS:

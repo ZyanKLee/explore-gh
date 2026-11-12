@@ -5,6 +5,7 @@ from github_anti_ai.domain.ai_focus import AiFocusClassifier
 from github_anti_ai.domain.exclusion import ExclusionPolicy
 from github_anti_ai.domain.model import Assessment, Snapshot
 from github_anti_ai.domain.momentum import MomentumCalculator
+from github_anti_ai.domain.platform import PlatformPreference
 from github_anti_ai.domain.substance import SubstanceCheck
 
 
@@ -15,6 +16,7 @@ class Assessor:
         self._momentum = MomentumCalculator()
         self._substance = SubstanceCheck()
         self._ai_assistance = AiAssistanceDetector()
+        self._platform = PlatformPreference()
 
     def assess(self, snapshot: Snapshot) -> Assessment:
         """Signals, section and score are always worked out, even for an excluded repo."""
@@ -23,6 +25,7 @@ class Assessor:
             self._momentum.signal(snapshot),
             *self._substance.signals(snapshot),
             *self._ai_assistance.detect(snapshot),
+            *self._platform.signals(snapshot),
             *focus.signals,
         )
         return Assessment(

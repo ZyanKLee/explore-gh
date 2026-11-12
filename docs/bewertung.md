@@ -18,6 +18,7 @@ Assessor.assess(snapshot) → Assessment
   3. Signale sammeln       MomentumCalculator  Aufstieg
                            SubstanceCheck      Arbeit und echtes Interesse
                            AiAssistanceDetector  AI-Mithilfe
+                           PlatformPreference  Plattform
   4. Punktzahl             Summe aller Signalgewichte
 ```
 
@@ -43,6 +44,7 @@ Geprüft wird in dieser Reihenfolge. Der erste Treffer bestimmt den Grund.
 | `fork`, `archived`, `mirror` | Das Repo ist ein Fork, archiviert oder ein Spiegel. |
 | `no_code` | GitHub erkennt keine Programmiersprache. |
 | `collection` | Name, Beschreibung oder Topics nennen eine Sammlung oder Lernmaterial: `awesome`, `curated list`, `interview`, `tutorial`, `roadmap`, `cheatsheet`, `cheat sheet`, `dotfiles`, `leetcode`, `system prompts`, `prompt collection`, `prompt library`. |
+| `lure` | Name, Beschreibung oder Topics klingen nach einem Köder für Schadsoftware: `secure standalone`, `complete standalone`, `standalone desktop`, `standalone setup`, `desktop setup`, `desktop installer`, `pre configured`, `pre activated`, `full feature`, `all features enabled`, `full version`. |
 | `no_readme` | Es gibt kein README. |
 | `language` | Beschreibung und README sind weder deutsch noch englisch (siehe unten). |
 | `crypto` | Name, Beschreibung oder Topics nennen Kryptowährungen: `crypto`, `cryptocurrency`, `bitcoin`, `ethereum`, `solana`, `web3`, `defi`, `nft`, `blockchain`, `memecoin`, `altcoin`, `stablecoin`, `airdrop`, `trading bot`, `smart contract`, `binance`, `hyperliquid`. Nicht `cryptography`, `token` oder `wallet`. |
@@ -52,13 +54,40 @@ Begriffe zählen nur als ganze Wörter. Bindestriche und Unterstriche gelten als
 Leerzeichen, Groß- und Kleinschreibung ist egal, ein angehängtes Mehrzahl-s zählt mit.
 Das gilt für alle Begriffslisten in diesem Dokument.
 
+### Köder für Schadsoftware
+
+Hunderte Repos geben sich als Installationspaket bekannter Bezahlsoftware aus („Adobe
+Acrobat Pro 2026: Secure Standalone …“, „Xshell: Advanced SSH/SFTP Terminal Emulator
+for Windows“). Sie haben etwa 100 oder 1100 Sterne und weder Forks noch Issues. Ihr
+README zeigt einen Knopf, der zu einer Seite mit einem PowerShell-Befehl führt.
+
+Ein Repo gilt als Köder, wenn eines von beidem zutrifft:
+
+1. **Wortlaut:** Name, Beschreibung oder Topics enthalten eine der Wendungen aus der
+   Tabelle oben. `standalone`, `setup` und `installer` allein zählen nicht, sie stehen
+   auch in ehrlichen Beschreibungen.
+2. **README-Vorlage:** Das README enthält ein Bild als Knopf, das auf eine
+   GitHub-Pages-Seite verlinkt (`[![](files/button.png)](https://….github.io/…)`
+   oder dasselbe in HTML), und nennt PowerShell.
+
+In den 880 echten Repos schließt das 156 aus (18 %), 60 davon schon über den Wortlaut.
+Keines der 156 hat einen Fork, ein Issue oder einen Pull Request je 100 Sterne. Von den
+18 als Slop beurteilten Repos der Beispielsammlung sind 13 ausgeschlossen, 9 davon als
+Köder.
+
+**Bekannte Lücke:** Köder nach einer neuen Vorlage rutschen durch den Ausschluss. Sie
+bekommen dann noch den Abzug `no_echo` und kommen damit nicht in eine Ausgabe. Ändern
+die Urheber ihre Vorlage, muss die Regel nachgezogen werden. So geschehen bei
+`Pereira001/dlss5-manager`, das den Knopf in HTML statt in Markdown schreibt.
+
 ### Sprache erkennen
 
 Geprüft wird der Fließtext aus Beschreibung und README (die ersten 4000 Zeichen, ohne
 Code-Blöcke, Links und HTML).
 
 1. Sind mehr als 20 % der Buchstaben nicht lateinisch (Chinesisch, Kyrillisch,
-   Arabisch …), ist es eine andere Sprache.
+   Arabisch …), ist es eine andere Sprache. Das gilt auch für die Beschreibung
+   allein, selbst wenn das README englisch ist.
 2. Bei weniger als 40 Wörtern Fließtext gibt es sonst kein Urteil. Das Repo bleibt
    drin.
 3. Wir zählen, wie viele Wörter zu den häufigsten deutschen und englischen
@@ -194,6 +223,32 @@ Führt zur Abwertung, nie zum Ausschluss.
   `AGENTS.md`. Eine `AI_POLICY.md` zählt nicht.
 
 In den echten Daten: 72 % der Repos ohne AI-Commits, 18 % mit mindestens 75 %.
+
+## Plattform (`PlatformPreference`)
+
+Eine Vorliebe des Projektinhabers, entschieden am 12.11.2026.
+
+| Art | Regel | Punkte |
+|---|---|---|
+| `windows` | Name, Beschreibung oder Topics nennen Windows | −3 |
+| `apple` | … nennen macOS oder iOS | −3 |
+| `linux` | … nennen Linux | +6 |
+
+- **Linux zählt doppelt**, damit ein Projekt für alle drei Plattformen bei null landet.
+- **macOS und iOS zusammen** geben nur einen Abzug.
+- **Das README zählt nicht.** Installationsanleitungen nennen jede Plattform, das sagt
+  nichts über das Projekt.
+- **Begriffe:** Windows: `windows`, `win32`, `win10`, `win11`, `winui`, `wpf`. Apple:
+  `macos`, `mac`, `osx`, `os x`, `ios`, `ipados`, `iphone`, `ipad`, `watchos`, `tvos`,
+  `visionos`, `apple silicon`. Linux: `linux`, `wayland`, `gnome`, `kde`, `systemd`,
+  `ubuntu`, `debian`, `fedora`, `archlinux`, `arch linux`, `nixos`, `hyprland`.
+  „MAC address“ zählt nicht als Mac.
+- **In den echten Daten** (521 nicht ausgeschlossene Repos): 204 nennen Windows, 64
+  Apple, 34 Linux, 13 alle drei. Die Stichprobe enthält viele Windows-Portierungen von
+  Spielen.
+- **Bekannte Schwächen:** Ein Projekt, das Windows nur als Gegenstück nennt („Linux
+  desktop with your Windows apps built in“), bekommt den Abzug trotzdem. Die
+  Programmiersprache (Swift, PowerShell) zählt nicht als Hinweis.
 
 ## Befehl `explain`
 
