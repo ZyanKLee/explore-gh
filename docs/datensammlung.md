@@ -7,6 +7,11 @@ Momentaufnahme (`Snapshot`) und speichert sie. Sie **bewertet nicht** und **schl
 nichts aus**: Auch Forks, Krypto-Projekte oder chinesische READMEs landen als
 Momentaufnahme im Speicher. Ob ein Repo taugt, entscheidet erst `Assessment`.
 
+**Eine Ausnahme spart Anfragen:** Für Repos, die nie gezeigt werden können (Fork,
+archiviert, Spiegel oder ohne erkannten Code), holt die Sammlung keinen Sternverlauf.
+Sie bekommen trotzdem eine Momentaufnahme, nur mit leerem Verlauf. Die Regel dazu steht
+in der Domäne (`Snapshot.can_never_be_shown`). Das spart etwa 11 % der Anfragen.
+
 ## Ablauf
 
 ```

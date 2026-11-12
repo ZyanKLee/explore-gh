@@ -1,6 +1,7 @@
 """Repo source: snapshots from GitHub. Facts come from one GraphQL query per batch,
 the star history from one REST request per repo. See docs/datensammlung.md."""
 
+import dataclasses
 import re
 from collections.abc import Sequence
 from datetime import UTC, date, datetime, timedelta
@@ -140,7 +141,7 @@ class GitHubRepoSource:
         branch = node.get("defaultBranchRef") or {}
         history = (branch.get("target") or {}).get("history") or {}
         tree = node.get("rootTree") or {}
-        return Snapshot(
+        snapshot = Snapshot(
             repo=repo,
             taken_at=now,
             description=node.get("description") or "",
@@ -163,8 +164,11 @@ class GitHubRepoSource:
             root_files=tuple(entry["name"] for entry in tree.get("entries", [])),
             readme=_readme(node)[:README_MAX_CHARS],
             recent_commits=tuple(_commit(c) for c in history.get("nodes", [])),
-            star_history=self._star_history(repo, now.date()),
+            star_history=StarHistory(daily=()),
         )
+        if snapshot.can_never_be_shown:
+            return snapshot  # saves a request, the history could not change its fate
+        return dataclasses.replace(snapshot, star_history=self._star_history(repo, now.date()))
 
     def _star_history(self, repo: RepoId, today: date) -> StarHistory:
         response = send(

@@ -63,7 +63,7 @@ class Commit:
 class StarHistory:
     """Stars gained per day, oldest first. The last entry is the day of the snapshot."""
 
-    daily: tuple[int, ...]
+    daily: tuple[int, ...]  # empty if the history was not collected
 
     def __post_init__(self):
         if any(stars < 0 for stars in self.daily):
@@ -99,6 +99,14 @@ class Snapshot:
     readme: str
     recent_commits: tuple[Commit, ...]
     star_history: StarHistory
+
+    @property
+    def can_never_be_shown(self) -> bool:
+        """Fork, archived, mirror or without recognized code: excluded whatever else is true.
+
+        The collection does not fetch the star history of such a repo.
+        """
+        return self.is_fork or self.is_archived or self.is_mirror or not self.primary_language
 
     @property
     def active_authors(self) -> int:

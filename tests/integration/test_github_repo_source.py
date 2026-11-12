@@ -262,6 +262,21 @@ def test_star_history_is_not_requested_for_a_repo_that_does_not_exist():
     ]
 
 
+@pytest.mark.parametrize(
+    "changes",
+    [{"isFork": True}, {"isArchived": True}, {"isMirror": True}, {"primaryLanguage": None}],
+)
+def test_star_history_is_not_requested_for_a_repo_that_can_never_be_shown(changes):
+    # saves one request per such repo, about 12 % of all candidates
+    fake = FakeGitHub([node(**changes)], histories={"alice/tiny-editor": STAR_HISTORY})
+
+    [snapshot] = fetch(fake)
+
+    assert fake.history_requests == []
+    assert snapshot.star_history.daily == ()
+    assert snapshot.stars == 812
+
+
 def test_unavailable_star_history_makes_the_source_unavailable():
     with pytest.raises(SourceUnavailable):
         fetch(FakeGitHub([FULL], history_status=500))
