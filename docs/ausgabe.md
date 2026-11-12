@@ -35,6 +35,7 @@ schon. Die Domäne bleibt unverändert.
 github-anti-ai collect [--limit N]                   # Momentaufnahmen sammeln
 github-anti-ai publish [--ignore-cooldown]           # heutige Ausgabe erzeugen
 github-anti-ai daily [--limit N] [--ignore-cooldown] # beides nacheinander
+github-anti-ai explain owner/name                    # Bewertung eines Repos erklären
 ```
 
 `publish` und `daily` brechen noch mit einem Hinweis ab, bis es die Bewertung gibt.
@@ -49,7 +50,7 @@ Die Bewertung ist noch nicht entworfen. Für die Auswahl genügt diese Form:
 ```python
 Assessment(snapshot, section, score, signals, exclusion)
 Signal(kind, weight, reason)   # reason ist der Tooltip-Text
-Exclusion(reason)
+Exclusion(reason, kind)
 ```
 
 Bis es die Bewertung gibt, nimmt `PublishEdition` die Funktion `assess` als Parameter

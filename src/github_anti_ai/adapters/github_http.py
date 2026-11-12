@@ -57,16 +57,27 @@ def send(
         except httpx.TransportError as error:
             problem, wait = f"{method} {url}: {error}", 2.0**attempt
         else:
-            if not response.is_error:
-                return response
             problem = f"{method} {url}: HTTP {response.status_code}"
-            if response.status_code >= 500:
+            if not response.is_error:
+                if _is_json(response):
+                    return response
+                # seen live: a 200 whose body ended in the middle
+                problem, wait = f"{method} {url}: unlesbare Antwort", 2.0**attempt
+            elif response.status_code >= 500:
                 wait = 2.0**attempt
             elif (wait := _rate_limit_wait(response, clock)) is None:
                 raise SourceUnavailable(problem)
         if attempt < MAX_ATTEMPTS:
             sleep(wait)
     raise SourceUnavailable(problem)
+
+
+def _is_json(response: httpx.Response) -> bool:
+    try:
+        response.json()
+    except ValueError:
+        return False
+    return True
 
 
 def _rate_limit_wait(response: httpx.Response, clock: Clock) -> float | None:

@@ -107,7 +107,8 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | AI-Thema | `AiFocus` | Repo existiert für den Einsatz von AI und kommt in die AI-Sektion |
 | AI-Mithilfe | `AiAssistance` | Hinweise auf AI-geschriebenen Code, führt nur zur Abwertung |
 | Ausschluss | `Exclusion` | Grund, ein Repo ganz zu entfernen |
-| Bewertung | `Assessment` | Sektion, Punktzahl, Signale, ggf. Ausschluss |
+| Substanz | `SubstanceCheck` | Hinweise auf echte Arbeit und echtes Interesse: Team, Kontinuität, Issues. Dazu die Gegenprobe zu gekauften Sternen. |
+| Bewertung | `Assessment` | Sektion, Punktzahl, Signale, ggf. Ausschluss. Die Punktzahl ist die Summe der Signalgewichte. Erzeugt vom `Assessor`. |
 | Sektion | `Section` | `MAIN` oder `AI` |
 | Ausgabe | `Edition` | Auswahl eines Tages, je Sektion bis zu 20 `Entry`s. Unveränderlich nach Veröffentlichung. |
 | Sperre | `Cooldown` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert |

@@ -130,7 +130,8 @@ Gemeinsam für alle GitHub-Adapter:
 
 - `403`/`429` mit `Retry-After`: so lange warten, dann erneut versuchen.
 - `x-ratelimit-remaining: 0`: bis `x-ratelimit-reset` warten.
-- `5xx`: mit wachsender Pause erneut versuchen, insgesamt höchstens 3 Versuche.
+- `5xx` oder eine abgeschnittene, unlesbare Antwort: mit wachsender Pause erneut
+  versuchen, insgesamt höchstens 3 Versuche.
   Danach `SourceUnavailable`.
 - GraphQL-Fehler vom Typ `NOT_FOUND` betreffen nur einzelne Repos. Jeder andere
   GraphQL-Fehler führt zu `SourceUnavailable`, auch wenn Daten mitkommen. Sonst würde

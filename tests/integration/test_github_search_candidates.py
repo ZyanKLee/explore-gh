@@ -161,6 +161,25 @@ def test_exhausted_rate_limit_waits_until_the_reset():
     assert 60 <= sleep.calls[0] <= 65
 
 
+def test_cut_off_answer_is_retried():
+    # seen live: GitHub sent a 200 whose JSON body ended in the middle
+    responses = iter(
+        [
+            httpx.Response(200, content=b'{"total_count": 2, "items": [{"full_na'),
+            httpx.Response(200, json=SEARCH_RESULT),
+        ]
+    )
+
+    found = search_candidates(lambda request: next(responses)).discover(TODAY)
+
+    assert len(found) == 2
+
+
+def test_answers_that_stay_unreadable_make_the_source_unavailable():
+    with pytest.raises(SourceUnavailable):
+        search_candidates(lambda request: httpx.Response(200, content=b"{")).discover(TODAY)
+
+
 def test_persistent_server_errors_make_the_source_unavailable():
     attempts = []
 

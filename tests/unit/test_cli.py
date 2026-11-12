@@ -28,6 +28,13 @@ def test_number_of_candidates_can_be_limited_for_trial_runs(command):
     assert parse_args([command, "--limit", "40"]).limit == 40
 
 
+def test_assessment_of_a_repo_can_be_explained():
+    args = parse_args(["explain", "alice/tiny-editor"])
+
+    assert args.command == "explain"
+    assert args.repo == "alice/tiny-editor"
+
+
 def test_data_directory_defaults_to_data():
     assert parse_args(["collect"]).data_dir == Path("data")
 
