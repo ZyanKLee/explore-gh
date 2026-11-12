@@ -1,0 +1,32 @@
+{
+  "nameWithOwner": "carol/empty-thing",
+  "description": null,
+  "homepageUrl": "",
+  "repositoryTopics": {
+    "nodes": []
+  },
+  "primaryLanguage": null,
+  "createdAt": "2026-11-11T08:00:00Z",
+  "pushedAt": null,
+  "stargazerCount": 0,
+  "forkCount": 0,
+  "issues": {
+    "totalCount": 0
+  },
+  "isFork": false,
+  "isArchived": false,
+  "isMirror": false,
+  "isTemplate": false,
+  "licenseInfo": null,
+  "rootTree": null,
+  "defaultBranchRef": null,
+  "watchers": {
+    "totalCount": 0
+  },
+  "pullRequests": {
+    "totalCount": 0
+  },
+  "recentIssues": {
+    "nodes": []
+  }
+}

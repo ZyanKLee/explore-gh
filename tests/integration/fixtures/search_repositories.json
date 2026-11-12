@@ -1,0 +1,28 @@
+{
+  "total_count": 2,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 901234567,
+      "full_name": "alice/tiny-editor",
+      "name": "tiny-editor",
+      "owner": {"login": "alice", "type": "User"},
+      "fork": false,
+      "archived": false,
+      "stargazers_count": 812,
+      "language": "Rust",
+      "created_at": "2026-11-12T01:13:00Z"
+    },
+    {
+      "id": 901234999,
+      "full_name": "bob/rustbox",
+      "name": "rustbox",
+      "owner": {"login": "bob", "type": "User"},
+      "fork": false,
+      "archived": false,
+      "stargazers_count": 95,
+      "language": "Rust",
+      "created_at": "2026-11-12T09:40:00Z"
+    }
+  ]
+}

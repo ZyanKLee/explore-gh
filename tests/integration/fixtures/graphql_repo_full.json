@@ -1,0 +1,143 @@
+{
+  "nameWithOwner": "alice/tiny-editor",
+  "description": "A tiny terminal text editor",
+  "homepageUrl": "https://tiny-editor.example.org",
+  "repositoryTopics": {
+    "nodes": [
+      {
+        "topic": {
+          "name": "editor"
+        }
+      },
+      {
+        "topic": {
+          "name": "terminal"
+        }
+      }
+    ]
+  },
+  "primaryLanguage": {
+    "name": "Rust"
+  },
+  "createdAt": "2026-10-20T12:00:00Z",
+  "pushedAt": "2026-11-10T19:02:11Z",
+  "stargazerCount": 812,
+  "forkCount": 31,
+  "issues": {
+    "totalCount": 12
+  },
+  "isFork": false,
+  "isArchived": false,
+  "isMirror": false,
+  "isTemplate": false,
+  "licenseInfo": {
+    "spdxId": "MIT"
+  },
+  "rootTree": {
+    "entries": [
+      {
+        "name": ".github"
+      },
+      {
+        "name": "CLAUDE.md"
+      },
+      {
+        "name": "Cargo.toml"
+      },
+      {
+        "name": "README.md"
+      },
+      {
+        "name": "src"
+      }
+    ]
+  },
+  "readmeMd": {
+    "text": "# tiny-editor\n\nA tiny terminal text editor.\n"
+  },
+  "defaultBranchRef": {
+    "target": {
+      "history": {
+        "nodes": [
+          {
+            "committedDate": "2026-11-10T19:02:11Z",
+            "messageHeadline": "Add syntax highlighting for TOML",
+            "message": "Add syntax highlighting for TOML\n\nCo-authored-by: Claude <noreply@anthropic.com>",
+            "author": {
+              "name": "Alice Example",
+              "user": {
+                "login": "alice"
+              }
+            }
+          },
+          {
+            "committedDate": "2026-11-08T09:30:00Z",
+            "messageHeadline": "Bump crossterm from 0.28.1 to 0.29.0",
+            "message": "Bump crossterm from 0.28.1 to 0.29.0",
+            "author": {
+              "name": "dependabot[bot]",
+              "user": null
+            }
+          },
+          {
+            "committedDate": "2026-11-03T16:45:00Z",
+            "messageHeadline": "Fix cursor jump on wrapped lines",
+            "message": "Fix cursor jump on wrapped lines\n\nCo-authored-by: Carol <carol@example.org>\nCo-Authored-By: Dave <dave@example.org>",
+            "author": {
+              "name": "Bob Builder",
+              "user": {
+                "login": "bob"
+              }
+            }
+          },
+          {
+            "committedDate": "2026-10-20T12:00:00Z",
+            "messageHeadline": "Initial commit",
+            "message": "Initial commit",
+            "author": {
+              "name": "Erin",
+              "user": null
+            }
+          }
+        ]
+      }
+    }
+  },
+  "watchers": {
+    "totalCount": 9
+  },
+  "pullRequests": {
+    "totalCount": 27
+  },
+  "recentIssues": {
+    "nodes": [
+      {
+        "author": {
+          "__typename": "User",
+          "login": "alice"
+        }
+      },
+      {
+        "author": {
+          "__typename": "User",
+          "login": "bob"
+        }
+      },
+      {
+        "author": {
+          "__typename": "User",
+          "login": "alice"
+        }
+      },
+      {
+        "author": null
+      },
+      {
+        "author": {
+          "__typename": "Bot",
+          "login": "github-actions"
+        }
+      }
+    ]
+  }
+}
