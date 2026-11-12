@@ -56,9 +56,12 @@ Awesome-Listen bewusst **nicht** verwenden.
 - **Wiederholungen**: Ein gezeigtes Repo ist 30 Tage gesperrt. Die Sperre wird aus den
   gespeicherten Ausgaben abgeleitet.
 - **Vielfalt**: pro Sektion höchstens 4 Repos je Programmiersprache und 2 je Besitzer.
-- **Themen**: nicht festgelegt, Interessen ändern sich.
-- **Plattform**: Projekte für Windows −3 Punkte, für macOS oder iOS −3, für Linux +6.
-  Ein Projekt für alle drei landet bei null.
+- **Themen**: nicht festgelegt, Interessen ändern sich. Ausnahmen sind die folgenden
+  Vorlieben.
+- **Plattform**: Projekte für Windows −10 Punkte, für macOS oder iOS −10, für Linux +20.
+  Nennt ein Projekt auch Linux, entfallen die Abzüge.
+- **Emulatoren für Spielkonsolen** (PS4, PS5, Switch 2, Nintendo, Xbox): −10 Punkte.
+- **Unerwünschte Themen**: Roblox −50 Punkte.
 - **Ausschlüsse**: Forks, archivierte Repos, Spiegel, Repos ohne eigentlichen Code
   (Linksammlungen, Tutorials, Material zur Vorbereitung auf Bewerbungsgespräche,
   Dotfiles, Prompt-Sammlungen), Köder für Schadsoftware und Kryptowährungen.

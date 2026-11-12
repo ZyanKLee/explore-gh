@@ -67,15 +67,24 @@ def test_a_linux_project_is_rated_up(overrides):
     assert "Linux" in signal.reason
 
 
-def test_linux_counts_twice_as_much_as_windows_or_apple():
-    assert LINUX_BONUS == 2 * WINDOWS_PENALTY == 2 * APPLE_PENALTY
-
-
-def test_a_project_for_all_three_platforms_comes_out_even():
+def test_windows_and_apple_are_forgiven_when_linux_is_served_too():
     found = weights(description="A container runtime for macOS, Windows and Linux")
 
-    assert set(found) == {"windows", "apple", "linux"}
-    assert sum(found.values()) == 0
+    assert found == {"linux": LINUX_BONUS}
+
+
+@pytest.mark.parametrize(
+    "description",
+    ["A Monado fork for Linux and Windows", "Screen sharing between macOS and Linux"],
+)
+def test_one_other_platform_next_to_linux_is_forgiven_as_well(description):
+    assert weights(description=description) == {"linux": LINUX_BONUS}
+
+
+def test_windows_and_apple_without_linux_are_both_rated_down():
+    found = weights(description="A notes app for Windows and macOS")
+
+    assert found == {"windows": -WINDOWS_PENALTY, "apple": -APPLE_PENALTY}
 
 
 def test_platforms_named_only_in_the_readme_do_not_count():

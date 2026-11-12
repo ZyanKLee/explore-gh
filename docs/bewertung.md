@@ -19,6 +19,8 @@ Assessor.assess(snapshot) → Assessment
                            SubstanceCheck      Arbeit und echtes Interesse
                            AiAssistanceDetector  AI-Mithilfe
                            PlatformPreference  Plattform
+                           ConsoleEmulatorCheck  Emulatoren für Spielkonsolen
+                           DislikedTopics      unerwünschte Themen
   4. Punktzahl             Summe aller Signalgewichte
 ```
 
@@ -226,15 +228,17 @@ In den echten Daten: 72 % der Repos ohne AI-Commits, 18 % mit mindestens 75 %.
 
 ## Plattform (`PlatformPreference`)
 
-Eine Vorliebe des Projektinhabers, entschieden am 12.11.2026.
+Eine Vorliebe des Projektinhabers, entschieden am 12. und 13.11.2026.
 
 | Art | Regel | Punkte |
 |---|---|---|
-| `windows` | Name, Beschreibung oder Topics nennen Windows | −3 |
-| `apple` | … nennen macOS oder iOS | −3 |
-| `linux` | … nennen Linux | +6 |
+| `windows` | Name, Beschreibung oder Topics nennen Windows, aber nicht Linux | −10 |
+| `apple` | … nennen macOS oder iOS, aber nicht Linux | −10 |
+| `linux` | … nennen Linux | +20 |
 
-- **Linux zählt doppelt**, damit ein Projekt für alle drei Plattformen bei null landet.
+- **Linux hebt die Abzüge auf.** Nennt ein Projekt auch Linux, entfallen die Abzüge
+  für Windows und Apple. Den Bonus gibt es trotzdem. Ein Projekt für alle drei
+  Plattformen bekommt also +20.
 - **macOS und iOS zusammen** geben nur einen Abzug.
 - **Das README zählt nicht.** Installationsanleitungen nennen jede Plattform, das sagt
   nichts über das Projekt.
@@ -243,12 +247,37 @@ Eine Vorliebe des Projektinhabers, entschieden am 12.11.2026.
   `visionos`, `apple silicon`. Linux: `linux`, `wayland`, `gnome`, `kde`, `systemd`,
   `ubuntu`, `debian`, `fedora`, `archlinux`, `arch linux`, `nixos`, `hyprland`.
   „MAC address“ zählt nicht als Mac.
-- **In den echten Daten** (521 nicht ausgeschlossene Repos): 204 nennen Windows, 64
-  Apple, 34 Linux, 13 alle drei. Die Stichprobe enthält viele Windows-Portierungen von
-  Spielen.
-- **Bekannte Schwächen:** Ein Projekt, das Windows nur als Gegenstück nennt („Linux
-  desktop with your Windows apps built in“), bekommt den Abzug trotzdem. Die
-  Programmiersprache (Swift, PowerShell) zählt nicht als Hinweis.
+- **Die Werte** waren zuerst −3 und +6. Bei Punktzahlen um 60 bis 90 in den oberen
+  Rängen fiel das kaum ins Gewicht.
+- **Bekannte Schwäche:** Die Programmiersprache (Swift, PowerShell) zählt nicht als
+  Hinweis auf die Plattform.
+
+## Emulatoren für Spielkonsolen (`ConsoleEmulatorCheck`)
+
+Ebenfalls eine Vorliebe des Projektinhabers, entschieden am 13.11.2026.
+
+| Art | Regel | Punkte |
+|---|---|---|
+| `console_emulator` | Name, Beschreibung oder Topics nennen einen Emulator **und** eine Spielkonsole | −10 |
+
+- **Emulator:** `emulator`, `emulation`.
+- **Konsole:** `ps4`, `ps5`, `playstation`, `switch2`, `switch 2`, `nintendo`, `xbox`.
+- Beides muss vorkommen. Ein Terminal-Emulator oder eine App für den Xbox-Controller
+  bekommt keinen Abzug.
+- **Nicht erfasst:** Portierungen von Konsolenspielen, die sich „recompiled“ oder
+  „native port“ nennen und das Wort Emulator vermeiden.
+
+## Unerwünschte Themen (`DislikedTopics`)
+
+Eine Vorliebe des Projektinhabers. Nennen Name, Beschreibung oder Topics eines dieser
+Themen, gibt es einen Abzug. Ein neues Thema ist eine Zeile in `DISLIKED_TOPICS`.
+
+| Art | Thema | Punkte | Seit |
+|---|---|---|---|
+| `disliked_topic` | `roblox` | −50 | 13.11.2026 |
+
+Mit −50 kommt ein solches Repo praktisch nie in eine Ausgabe, bleibt aber über
+`explain` nachvollziehbar.
 
 ## Befehl `explain`
 

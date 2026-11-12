@@ -1,11 +1,14 @@
-"""The owner's taste in platforms: Linux counts for a repo, Windows and Apple against it."""
+"""The owner's taste in platforms: Linux counts for a repo, Windows and Apple against it.
+
+A project that serves Linux too is not rated down for the other platforms.
+"""
 
 from github_anti_ai.domain.model import Signal, Snapshot
 from github_anti_ai.domain.text import TermList, normalize, quoted
 
-WINDOWS_PENALTY = 3.0
-APPLE_PENALTY = 3.0
-LINUX_BONUS = 6.0  # twice the others: a project for all three platforms comes out even
+WINDOWS_PENALTY = 10.0
+APPLE_PENALTY = 10.0
+LINUX_BONUS = 20.0
 
 WINDOWS_TERMS = TermList(["windows", "win32", "win10", "win11", "winui", "wpf"])
 APPLE_TERMS = TermList(
@@ -57,4 +60,6 @@ class PlatformPreference:
         ]:
             if names := terms.distinct(text):
                 found.append(Signal(kind, weight, f"{label} ({quoted(names)})"))
+        if any(signal.kind == "linux" for signal in found):
+            found = [signal for signal in found if signal.kind == "linux"]
         return tuple(found)
