@@ -59,6 +59,7 @@ def _to_json(snapshot: Snapshot) -> dict:
     return {
         "repo": str(snapshot.repo),
         "taken_at": _time(snapshot.taken_at),
+        "facts_at": _time(snapshot.facts_at),
         "description": snapshot.description,
         "homepage": snapshot.homepage,
         "topics": list(snapshot.topics),
@@ -96,6 +97,7 @@ def _from_json(data: dict) -> Snapshot:
     return Snapshot(
         repo=RepoId.parse(data["repo"]),
         taken_at=_parse_time(data["taken_at"]),
+        facts_at=_parse_time(data.get("facts_at")),  # missing in files of earlier versions
         description=data["description"],
         homepage=data["homepage"],
         topics=tuple(data["topics"]),

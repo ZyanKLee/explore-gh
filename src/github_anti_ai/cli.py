@@ -126,10 +126,15 @@ def collect(data_dir: Path, token: str, limit: int | None) -> CollectionReport:
             repo_source=GitHubRepoSource(client, sleep=time.sleep, clock=clock),
             snapshot_store=JsonSnapshotStore(data_dir / "snapshots"),
             clock=clock,
+            assess=Assessor().assess,
             limit=limit,
         )
         report = use_case.run()
     print(f"{report.day}: {report.discovered} Kandidaten, {report.collected} Momentaufnahmen")
+    print(
+        f"  {report.fetched} neu geholt, {report.refreshed} aufgefrischt, "
+        f"{report.carried_over} übernommen"
+    )
     if report.missing:
         print(f"  {len(report.missing)} nicht gefunden: {_names(report.missing)}")
     if report.failed:

@@ -348,3 +348,65 @@ def test_timestamps_are_in_utc():
 
     assert snapshot.created_at.utcoffset() == timedelta(0)
     assert snapshot.recent_commits[0].committed_at == datetime(2026, 11, 10, 19, 2, 11, tzinfo=UTC)
+
+
+# --- GitHub refuses a query as too expensive -------------------------------------------
+
+RESOURCE_LIMITS = {
+    "data": None,
+    "errors": [{"type": "RESOURCE_LIMITS_EXCEEDED", "message": "Resource limits for this query exceeded."}],
+}
+
+
+class GitHubWithLimits(FakeGitHub):
+    """Refuses every query that asks for more than a few repos, or for a heavy one."""
+
+    def __init__(self, nodes, max_repos=20, heavy=()):
+        super().__init__(nodes)
+        self.max_repos = max_repos
+        self.heavy = {name.lower() for name in heavy}
+        self.batch_sizes = []
+
+    def __call__(self, request):
+        if request.method == "POST":
+            variables = json.loads(request.content)["variables"]
+            names = []
+            while f"owner{len(names)}" in variables:
+                i = len(names)
+                names.append(f"{variables[f'owner{i}']}/{variables[f'name{i}']}".lower())
+            self.batch_sizes.append(len(names))
+            if len(names) > self.max_repos or (self.heavy & set(names) and len(names) > 1):
+                return httpx.Response(200, json=RESOURCE_LIMITS)
+            if self.heavy & set(names):
+                return httpx.Response(200, json=RESOURCE_LIMITS)
+        return super().__call__(request)
+
+
+def test_a_group_github_refuses_as_too_expensive_is_split_and_asked_again():
+    names = [f"user{i}/project{i}" for i in range(8)]
+    github = GitHubWithLimits([node(name_with_owner=n) for n in names], max_repos=4)
+
+    snapshots = fetch(github, repos=names)
+
+    assert [str(s.repo) for s in snapshots] == names
+    assert github.batch_sizes == [8, 4, 4]
+
+
+def test_a_single_repo_that_is_too_expensive_is_left_out_and_the_others_are_kept(caplog):
+    names = [f"user{i}/project{i}" for i in range(4)]
+    github = GitHubWithLimits([node(name_with_owner=n) for n in names], heavy=[names[2]])
+
+    snapshots = fetch(github, repos=names)
+
+    assert [str(s.repo) for s in snapshots] == [names[0], names[1], names[3]]
+    assert names[2] in caplog.text
+
+
+def test_other_graphql_errors_are_not_retried_in_smaller_groups():
+    error = {"data": None, "errors": [{"type": "FORBIDDEN", "message": "Nope"}]}
+    github = FakeGitHub(graphql_responses=[httpx.Response(200, json=error)])
+
+    with pytest.raises(SourceUnavailable):
+        fetch(github, repos=["alice/tiny-editor", "bob/rustbox"])
+
+    assert len(github.bodies) == 1

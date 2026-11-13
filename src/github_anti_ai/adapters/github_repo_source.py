@@ -2,6 +2,7 @@
 the star history from one REST request per repo. See docs/datensammlung.md."""
 
 import dataclasses
+import logging
 import re
 from collections.abc import Sequence
 from datetime import UTC, date, datetime, timedelta
@@ -89,6 +90,13 @@ def _timestamp(text: str) -> datetime:
     return datetime.fromisoformat(text)
 
 
+log = logging.getLogger(__name__)
+
+
+class _TooExpensive(SourceUnavailable):
+    """GitHub refused the query: "Resource limits for this query exceeded"."""
+
+
 class GitHubRepoSource:
     def __init__(
         self,
@@ -103,20 +111,33 @@ class GitHubRepoSource:
         self._clock = clock
         self._batch_size = batch_size
 
-    def fetch(self, repos: Sequence[RepoId], now: datetime) -> list[Snapshot]:
+    def fetch(
+        self, repos: Sequence[RepoId], now: datetime, with_star_history: bool = True
+    ) -> list[Snapshot]:
         snapshots = []
         for start in range(0, len(repos), self._batch_size):
             batch = repos[start : start + self._batch_size]
-            variables = {"since": (now - COMMIT_LOOKBACK).strftime("%Y-%m-%dT%H:%M:%SZ")}
-            for i, repo in enumerate(batch):
-                variables[f"owner{i}"] = repo.owner
-                variables[f"name{i}"] = repo.name
-            data = self._query(_batch_query(len(batch)), variables)
-            for i in range(len(batch)):
-                node = data.get(f"r{i}")
-                if node is not None:  # repo does not exist (any more)
-                    snapshots.append(self._snapshot(node, now))
+            for node in self._nodes(batch, now):
+                snapshots.append(self._snapshot(node, now, with_star_history))
         return snapshots
+
+    def _nodes(self, batch: Sequence[RepoId], now: datetime) -> list[dict]:
+        """The GraphQL answers for a group. Repos that do not exist (any more) are left out."""
+        variables = {"since": (now - COMMIT_LOOKBACK).strftime("%Y-%m-%dT%H:%M:%SZ")}
+        for i, repo in enumerate(batch):
+            variables[f"owner{i}"] = repo.owner
+            variables[f"name{i}"] = repo.name
+        try:
+            data = self._query(_batch_query(len(batch)), variables)
+        except _TooExpensive:
+            if len(batch) == 1:
+                log.warning("%s ist GitHub zu aufwendig und wird ausgelassen", batch[0])
+                return []
+            # GitHub refuses some groups as a whole, halves of them usually pass
+            half = len(batch) // 2
+            return self._nodes(batch[:half], now) + self._nodes(batch[half:], now)
+        nodes = (data.get(f"r{i}") for i in range(len(batch)))
+        return [node for node in nodes if node is not None]
 
     def _query(self, query: str, variables: dict) -> dict:
         response = send(
@@ -131,12 +152,18 @@ class GitHubRepoSource:
         # NOT_FOUND only says that a repo does not exist (any more). Everything else
         # must not pass as a missing repo.
         errors = [e for e in payload.get("errors") or [] if e.get("type") != "NOT_FOUND"]
+        if any(
+            e.get("type") == "RESOURCE_LIMITS_EXCEEDED"
+            or "resource limits" in e.get("message", "").lower()
+            for e in errors
+        ):
+            raise _TooExpensive("GraphQL: Resource limits for this query exceeded.")
         if errors or payload.get("data") is None:
             messages = sorted({e.get("message", "?") for e in errors})
             raise SourceUnavailable(f"GraphQL: {'; '.join(messages) or 'keine Daten'}")
         return payload["data"]
 
-    def _snapshot(self, node: dict, now: datetime) -> Snapshot:
+    def _snapshot(self, node: dict, now: datetime, with_star_history: bool) -> Snapshot:
         repo = RepoId.parse(node["nameWithOwner"])
         branch = node.get("defaultBranchRef") or {}
         history = (branch.get("target") or {}).get("history") or {}
@@ -166,7 +193,7 @@ class GitHubRepoSource:
             recent_commits=tuple(_commit(c) for c in history.get("nodes", [])),
             star_history=StarHistory(daily=()),
         )
-        if snapshot.can_never_be_shown:
+        if not with_star_history or snapshot.can_never_be_shown:
             return snapshot  # saves a request, the history could not change its fate
         return dataclasses.replace(snapshot, star_history=self._star_history(repo, now.date()))
 

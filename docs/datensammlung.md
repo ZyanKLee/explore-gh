@@ -18,11 +18,17 @@ in der Domäne (`Snapshot.can_never_be_shown`). Das spart etwa 11 % der Anfragen
 CollectSnapshots.run()
   1. Kandidaten finden      alle CandidateSources fragen, Ergebnisse zusammenführen
   2. Schon Erledigtes       Repos mit Momentaufnahme von heute überspringen
-  3. In Gruppen von 20:     RepoSource.fetch(gruppe, jetzt)
+  3. Einteilen              neu holen / auffrischen / übernehmen
+  4. Übernehmen             ohne Anfragen
+  5. In Gruppen von 20:     RepoSource.fetch(gruppe, jetzt)
                             SnapshotStore.append(heute, momentaufnahmen)
-  4. Aufräumen              SnapshotStore.prune(heute − 14 Tage)
-  → CollectionReport        gefunden, gesammelt, fehlend, fehlgeschlagen, Fehler
+  6. Die Besten             je Sektion die 60 besten auffrischen
+  7. Aufräumen              SnapshotStore.prune(heute − 14 Tage)
+  → CollectionReport        gefunden, gesammelt, fehlend, fehlgeschlagen, Fehler,
+                            neu geholt, aufgefrischt, übernommen
 ```
+
+Die Schritte 3, 4 und 6 beschreibt der Abschnitt „Momentaufnahmen weiterverwenden“.
 
 - Kandidaten, die mehrere Quellen liefern, werden nur einmal geholt. `RepoId`
   vergleicht ohne Rücksicht auf Groß- und Kleinschreibung, wie GitHub selbst.
@@ -104,10 +110,11 @@ Stattdessen nutzen wir den neuen Endpunkt `GET /repos/{owner}/{repo}/stargazers/
 ```python
 class CandidateSource(Protocol):
     name: str
-    def discover(self, today: date, limit: int | None = None) -> list[RepoId]: ...
+    def discover(self, today: date, limit: int | None = None) -> list[Candidate]: ...
 
 class RepoSource(Protocol):
-    def fetch(self, repos: Sequence[RepoId], now: datetime) -> list[Snapshot]: ...
+    def fetch(self, repos: Sequence[RepoId], now: datetime,
+              with_star_history: bool = True) -> list[Snapshot]: ...
     # Repos, die es nicht (mehr) gibt, fehlen einfach im Ergebnis.
 
 class SnapshotStore(Protocol):
@@ -165,9 +172,12 @@ Gemeinsam für alle GitHub-Adapter:
 | GraphQL | eine je 20 Kandidaten | etwa 6 s je Gruppe (gemessen) |
 | Sternverlauf | eine je Kandidat | etwa 0,2 s je Repo (gemessen) |
 
-Gemessen am 12.11.2026: 60 Kandidaten in 35 Sekunden. Hochgerechnet auf 2000
-Kandidaten sind das etwa 2100 Anfragen und 20 Minuten. Erlaubt sind 5000 REST-Anfragen
-pro Stunde. Ein vollständiger Lauf ist noch nicht gemessen.
+Gemessen am 12.11.2026: 60 Kandidaten in 35 Sekunden.
+
+**Vollständiger Lauf, Nacht zum 13.11.2026:** 2937 Kandidaten, 2857 Momentaufnahmen,
+38 Minuten (Suche 2,5 Minuten, Momentaufnahmen 35 Minuten), rund 3000 Anfragen.
+Erlaubt sind 5000 REST-Anfragen pro Stunde. 4 von 147 Gruppen schlugen fehl: einmal
+HTTP 502, dreimal „Resource limits for this query exceeded“ (siehe „Offen“).
 
 Der automatische `GITHUB_TOKEN` in GitHub Actions hat nur 1000 Anfragen pro Stunde.
 Für den späteren Betrieb dort brauchen wir einen eigenen Token als Secret.
@@ -182,6 +192,160 @@ Für den späteren Betrieb dort brauchen wir einen eigenen Token als Secret.
 | `SNAPSHOT_RETENTION_DAYS` | 14 | Anwendung |
 | `FETCH_CHUNK_SIZE`, `MAX_CONSECUTIVE_FAILURES` | 20, 3 | Anwendung |
 | Suchfenster, Mindeststerne, Pause | 30 Tage, 50, 2 s | Adapter (Parameter) |
+
+## Momentaufnahmen weiterverwenden
+
+Umgesetzt am 13.11.2026. Die Tests stehen in
+`tests/unit/domain/test_snapshot_reuse.py`,
+`tests/unit/application/test_collect_reuse.py` und
+`tests/integration/test_reuse_adapters.py`.
+
+### Warum
+
+Ohne Weiterverwendung holt jeder Lauf alle Kandidaten vollständig neu. Gemessen in der
+Nacht zum 13.11.2026: 2937 Kandidaten, rund 3000 Anfragen, 38 Minuten. Fast alle Anfragen entfallen auf den
+Sternverlauf (eine je Repo), die übrigen Fakten kommen gebündelt (eine je 20 Repos).
+
+Die Suche liefert zu jedem Treffer die aktuelle Sternzahl gratis mit. Daraus führen
+wir den Sternverlauf selbst fort und brauchen die teure Anfrage nur noch für Repos, die
+wir zum ersten Mal sehen.
+
+### Regel
+
+Für jeden Kandidaten von heute sucht der Lauf die jüngste Momentaufnahme der letzten
+3 Tage und entscheidet:
+
+| Lage | Was geschieht | Anfragen |
+|---|---|---|
+| Keine Momentaufnahme in den letzten 3 Tagen | **neu holen:** Fakten und Sternverlauf von GitHub | 1/20 + 1 |
+| Fakten jünger als 3 Tage | **übernehmen:** Momentaufnahme gilt weiter, Sternzahl von heute aus der Suche | 0 |
+| Fakten 3 Tage alt oder älter | **auffrischen:** Fakten neu von GitHub, Sternverlauf aus eigenen Daten | 1/20 |
+| Unter den Besten (siehe unten) | **auffrischen**, auch wenn die Fakten jünger sind | 1/20 |
+
+Sonderfälle:
+
+- **Quelle ohne Sternzahl** (künftig Hacker News, Lobste.rs): Übernehmen geht nicht,
+  es wird aufgefrischt.
+- **Momentaufnahme ohne Sternverlauf** (das Repo war beim letzten Mal ein Fork oder
+  ohne Code): neu holen.
+- **Auffrischen schlägt fehl:** Die ältere Momentaufnahme wird übernommen und der
+  Fehler im Bericht vermerkt. Das Repo gilt nicht als fehlgeschlagen.
+
+### Eigener Sternverlauf
+
+`StarHistory.continued(days_passed, gained)` schiebt den Verlauf um die vergangenen
+Tage weiter und trägt den Gewinn am letzten Tag ein. Der Gewinn ist die Sternzahl von
+heute minus die der letzten Momentaufnahme, mindestens 0.
+
+- **Lücken:** Fehlt ein Repo an einem Tag in der Suche, steht für diesen Tag 0 im
+  Verlauf und der ganze Gewinn am Tag danach. Die Summe über 7 Tage, auf die es für
+  den Aufstieg ankommt, stimmt trotzdem.
+- **Verlorene Sterne** zählen als 0, nicht als Abzug.
+- Der Verlauf bleibt 35 Tage lang.
+
+### Alter der Fakten
+
+Eine Momentaufnahme bekommt ein zweites Datum:
+
+- `taken_at`: der Tag, zu dem die Momentaufnahme gehört
+- `facts_at`: wann die Fakten zuletzt von GitHub kamen. Bei einer frisch geholten
+  Momentaufnahme ist das dasselbe.
+
+Dateien aus der Zeit davor haben kein `facts_at`. Beim Lesen gilt dann `taken_at`.
+
+### Verschwundene Repos
+
+Dafür braucht es keine eigene Regel. Kandidat ist nur, was die Quellen heute finden.
+Ein gelöschtes, archiviertes oder privat gestelltes Repo taucht in der Suche nicht mehr
+auf und bekommt keine Momentaufnahme von heute. `publish` und `explain` lesen nur die
+Momentaufnahmen des Tages.
+
+### Die Besten vor der Veröffentlichung auffrischen
+
+Nichts auf der Seite soll älter als ein Tag sein. Nach dem Übernehmen bewertet der Lauf
+deshalb alle Momentaufnahmen von heute und frischt je Sektion die 60 nicht
+ausgeschlossenen Repos mit der höchsten Punktzahl auf, sofern ihre Fakten nicht von
+heute sind.
+
+- **60 je Sektion statt 100 insgesamt:** Sonst könnte die Hauptliste alle Plätze
+  belegen und die AI-Sektion ginge leer aus. 60 ist das Dreifache der 20 Plätze und
+  lässt Luft für Sperre und Vielfaltsregel. Das sind höchstens 6 Anfragen.
+- Die Punktzahl kann sich durch das Auffrischen ändern. Es wird nicht ein zweites Mal
+  nachgefasst.
+- `CollectSnapshots` bekommt dafür die Bewertungsfunktion (`assess`) als Parameter.
+  Ohne sie entfällt der Schritt.
+
+### Ablauf mit Weiterverwendung
+
+```
+CollectSnapshots.run()
+  1. Kandidaten finden      Quellen liefern Candidate(repo, stars)
+  2. Schon Erledigtes       Repos mit Momentaufnahme von heute überspringen
+  3. Einteilen              neu holen / auffrischen / übernehmen
+  4. Übernehmen             ohne Anfragen, sofort gespeichert
+  5. Neu holen              in Gruppen von 20, mit Sternverlauf
+  6. Auffrischen            in Gruppen von 20, ohne Sternverlauf
+  7. Die Besten             bewerten, je Sektion 60 auffrischen
+  8. Aufräumen              SnapshotStore.prune(heute − 14 Tage)
+  → CollectionReport        zusätzlich: fetched, refreshed, carried_over
+```
+
+Ein erneuter Lauf am selben Tag stellt keine Anfragen mehr, wenn alles da ist.
+
+### Änderungen an Ports und Modell
+
+```python
+@dataclass(frozen=True)
+class Candidate:
+    repo: RepoId
+    stars: int | None = None      # None, wenn die Quelle keine Sternzahl kennt
+
+class CandidateSource(Protocol):
+    def discover(self, today, limit=None) -> list[Candidate]: ...
+
+class RepoSource(Protocol):
+    def fetch(self, repos, now, with_star_history=True) -> list[Snapshot]: ...
+```
+
+- `GitHubSearchCandidates` liest `stargazers_count` aus den Suchtreffern.
+- `GitHubRepoSource` lässt mit `with_star_history=False` die Anfrage nach dem
+  Sternverlauf weg.
+- Die Prüfung `checks/request_count.py` zählt weiter die Anfragen eines Laufs ohne
+  Vorgeschichte. Ein zweiter Fall für den Folgetag fehlt noch.
+- Verschwindet ein Repo zwischen dem Übernehmen und dem Auffrischen der Besten, bleibt
+  seine übernommene Momentaufnahme des Tages stehen. Der Speicher kann nichts
+  zurücknehmen.
+
+### Gemessene Wirkung
+
+Zweiter Sammeltag, 13.11.2026, mit den Momentaufnahmen des Vortags:
+
+| | Erster Tag | Folgetag |
+|---|---|---|
+| Kandidaten | 2937 | 2846 |
+| Neu geholt | 2857 | 401 |
+| Übernommen | – | 2312 |
+| Als Beste aufgefrischt | – | 113 |
+| Dauer | 38 Minuten | 8 Minuten |
+
+- Von den 8 Minuten entfallen 2,5 auf die Suche, 4,5 auf das Neuholen und 1 auf das
+  Auffrischen der Besten.
+- **Unter „neu geholt“ sind rund 290 alte Bekannte:** Repos, die nie gezeigt werden
+  können (Fork, archiviert, ohne Code), haben keinen Sternverlauf und werden deshalb
+  jeden Tag neu geholt. Das kostet nur die gebündelte Abfrage, etwa 15 Anfragen.
+  Wirklich neu waren 129 Repos, dazu die 80 am Vortag gescheiterten.
+- 160 Repos des Vortags fand die Suche nicht mehr. Sie haben keine Momentaufnahme vom
+  13.11.
+- Eine Gruppe scheiterte an HTTP 502. Ein zweiter Lauf holte die 20 Repos in knapp 3
+  Minuten nach, fast alles davon Suche. Er fragte für nichts anderes an.
+- Das Auffrischen nach 3 Tagen ist noch nicht gelaufen, dafür fehlen die Tage.
+
+### Neue Konstanten
+
+| Name | Wert | Ort |
+|---|---|---|
+| `REFRESH_AFTER_DAYS` | 3 | Anwendung |
+| `FRESH_LEADERS_PER_SECTION` | 60 | Anwendung |
 
 ## Geplant: weitere Kandidatenquellen
 
@@ -207,7 +371,12 @@ Für die Bewertungsregeln fehlt noch:
 
 ## Offen
 
-- Ein vollständiger Lauf ohne `--limit` steht noch aus.
+- **„Resource limits for this query exceeded“:** GitHub lehnt manche Gruppen von 20
+  Repos als zu aufwendig ab. Im ersten vollständigen Lauf traf das 3 Gruppen. Seit dem
+  13.11.2026 halbiert `GitHubRepoSource` eine abgelehnte Gruppe und fragt erneut. Ein
+  einzelnes Repo, das auch allein zu aufwendig ist, wird ausgelassen und im Protokoll
+  genannt. Im zweiten Lauf trat der Fehler nicht auf, die Abhilfe ist also nur durch
+  Tests belegt.
 - Die Test-Fixtures für Suche und GraphQL sind von Hand geschrieben, damit keine Namen
   und E-Mail-Adressen echter Personen im Repo landen. Ihre Form ist gegen echte
   Antworten geprüft. Der Sternverlauf ist eine echte Antwort.

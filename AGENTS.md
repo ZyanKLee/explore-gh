@@ -104,7 +104,8 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Begriff | Code | Bedeutung |
 |---|---|---|
 | Repo | `Repo`, `RepoId` | GitHub-Repository als Kandidat, Identität `owner/name` |
-| Momentaufnahme | `Snapshot` | Alles, was zu einem Zeitpunkt über ein Repo gesammelt wurde |
+| Kandidat | `Candidate` | Repo, das eine Quelle heute gefunden hat, samt Sternzahl, falls die Quelle sie kennt |
+| Momentaufnahme | `Snapshot` | Alles, was zu einem Zeitpunkt über ein Repo gesammelt wurde. `facts_at` sagt, wann die Fakten zuletzt von GitHub kamen. |
 | Sternverlauf | `StarHistory` | Neue Sterne je Tag über 35 Tage. `gained()` ist der Gewinn der letzten 7 Tage. |
 | Commit | `Commit` | Zeitpunkt, Autor, Bot ja/nein, Co-Autoren, erste Zeile der Nachricht |
 | Kandidatenquelle | `CandidateSource` | Liefert Kandidaten für einen Tag |

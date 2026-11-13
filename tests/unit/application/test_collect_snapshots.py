@@ -9,7 +9,7 @@ from github_anti_ai.application.collect_snapshots import (
     CollectSnapshots,
 )
 from github_anti_ai.application.ports import SourceUnavailable
-from github_anti_ai.domain.model import RepoId
+from github_anti_ai.domain.model import Candidate, RepoId
 
 
 class FakeCandidateSource:
@@ -25,7 +25,7 @@ class FakeCandidateSource:
         self.asked_limit = limit
         if self.error:
             raise self.error
-        return list(self.repos[:limit])
+        return [Candidate(repo) for repo in self.repos[:limit]]
 
 
 class FakeRepoSource:
@@ -34,7 +34,7 @@ class FakeRepoSource:
         self.failing = {RepoId.parse(r) for r in failing}
         self.requests = []
 
-    def fetch(self, repos, now):
+    def fetch(self, repos, now, with_star_history=True):
         self.requests.append((list(repos), now))
         if any(r in self.failing for r in repos):
             raise SourceUnavailable("HTTP 502")
@@ -244,10 +244,10 @@ def test_progress_is_reported_for_each_chunk(caplog):
 
     messages = [r.getMessage() for r in caplog.records]
     assert messages == [
-        "45 Kandidaten, 45 davon noch zu holen",
-        "Momentaufnahmen 1/3: 20 von 45 Repos",
-        "Momentaufnahmen 2/3: 40 von 45 Repos",
-        "Momentaufnahmen 3/3: 45 von 45 Repos",
+        "45 Kandidaten: 45 neu holen, 0 auffrischen, 0 übernehmen, 0 schon da",
+        "Neu holen 1/3: 20 von 45 Repos",
+        "Neu holen 2/3: 40 von 45 Repos",
+        "Neu holen 3/3: 45 von 45 Repos",
     ]
 
 

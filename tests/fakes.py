@@ -11,7 +11,9 @@ class InMemorySnapshotStore:
         self.days.setdefault(day, []).extend(snapshots)
 
     def load(self, day):
-        return list(self.days.get(day, []))
+        """Like the port demands: the latest snapshot of each repo."""
+        latest = {snapshot.repo: snapshot for snapshot in self.days.get(day, [])}
+        return list(latest.values())
 
     def prune(self, before):
         self.days = {d: s for d, s in self.days.items() if d >= before}

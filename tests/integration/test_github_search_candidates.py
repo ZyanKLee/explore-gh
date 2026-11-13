@@ -70,7 +70,7 @@ def test_discovered_repos_are_taken_from_the_search_results():
         TODAY
     )
 
-    assert found == [RepoId.parse("alice/tiny-editor"), RepoId.parse("bob/rustbox")]
+    assert [c.repo for c in found] == [RepoId.parse("alice/tiny-editor"), RepoId.parse("bob/rustbox")]
 
 
 def test_repo_found_by_several_queries_is_returned_once():
@@ -99,7 +99,7 @@ def test_search_returns_no_more_candidates_than_the_limit():
         TODAY, limit=1
     )
 
-    assert found == [RepoId.parse("alice/tiny-editor")]
+    assert [c.repo for c in found] == [RepoId.parse("alice/tiny-editor")]
 
 
 def test_search_reports_its_progress(caplog):

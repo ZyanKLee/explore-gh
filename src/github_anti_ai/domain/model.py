@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -51,6 +52,14 @@ class RepoId:
 
 
 @dataclass(frozen=True)
+class Candidate:
+    """A repo a CandidateSource found, with the star count if the source knows it."""
+
+    repo: RepoId
+    stars: int | None = None
+
+
+@dataclass(frozen=True)
 class Commit:
     committed_at: datetime
     author: str
@@ -72,6 +81,20 @@ class StarHistory:
     def gained(self, days: int = GROWTH_WINDOW_DAYS) -> int:
         """Stars gained on the most recent days, the day of the snapshot included."""
         return sum(self.daily[-days:])
+
+    def continued(self, days_passed: int, gained: int) -> StarHistory:
+        """The history some days later. The whole gain is booked on the last day.
+
+        A history that was never collected stays empty.
+        """
+        if days_passed < 0 or gained < 0:
+            raise ValueError("Ein Sternverlauf lässt sich nur vorwärts und ohne Verlust fortführen")
+        if not self.daily:
+            return self
+        if days_passed == 0:
+            return StarHistory(daily=self.daily[:-1] + (self.daily[-1] + gained,))
+        daily = self.daily + (0,) * (days_passed - 1) + (gained,)
+        return StarHistory(daily=daily[-len(self.daily) :])
 
 
 @dataclass(frozen=True)
@@ -99,6 +122,24 @@ class Snapshot:
     readme: str
     recent_commits: tuple[Commit, ...]
     star_history: StarHistory
+    # When the facts last came from GitHub. A snapshot carried over from an earlier day
+    # is older here than in taken_at. None means: as old as the snapshot.
+    facts_at: datetime | None = None
+
+    def __post_init__(self):
+        if self.facts_at is None:
+            object.__setattr__(self, "facts_at", self.taken_at)
+
+    def carried_over(self, now: datetime, stars: int) -> Snapshot:
+        """This snapshot as the snapshot of a later day, with the star count of that day."""
+        days_passed = (now.date() - self.taken_at.date()).days
+        gained = max(0, stars - self.stars)  # people can remove their star again
+        return dataclasses.replace(
+            self,
+            taken_at=now,
+            stars=stars,
+            star_history=self.star_history.continued(days_passed, gained),
+        )
 
     @property
     def can_never_be_shown(self) -> bool:

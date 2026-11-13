@@ -7,7 +7,7 @@ import httpx
 
 from github_anti_ai.adapters.github_http import Sleep, send
 from github_anti_ai.application.ports import Clock
-from github_anti_ai.domain.model import RepoId
+from github_anti_ai.domain.model import Candidate, RepoId
 
 log = logging.getLogger(__name__)
 
@@ -40,8 +40,8 @@ class GitHubSearchCandidates:
         self._min_stars = min_stars
         self._pause_seconds = pause_seconds
 
-    def discover(self, today: date, limit: int | None = None) -> list[RepoId]:
-        found: dict[RepoId, None] = {}
+    def discover(self, today: date, limit: int | None = None) -> list[Candidate]:
+        found: dict[RepoId, Candidate] = {}
         queries = build_discovery_queries(today, self._window_days, self._min_stars)
         for index, query in enumerate(queries):
             if limit is not None and len(found) >= limit:
@@ -57,6 +57,7 @@ class GitHubSearchCandidates:
                 params={"q": query, "sort": "stars", "order": "desc", "per_page": 100},
             )
             for item in response.json()["items"]:
-                found.setdefault(RepoId.parse(item["full_name"]), None)
+                repo = RepoId.parse(item["full_name"])
+                found.setdefault(repo, Candidate(repo, stars=item.get("stargazers_count")))
             log.info("Suche %d/%d: %d Kandidaten bisher", index + 1, len(queries), len(found))
-        return list(found)[:limit]
+        return list(found.values())[:limit]

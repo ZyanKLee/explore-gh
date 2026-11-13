@@ -39,7 +39,9 @@ Danach `output/index.html` im Browser öffnen.
 
 ### 1. Sammeln (`collect`)
 
-- Dauert 30 bis 45 Minuten und zeigt den Fortschritt an.
+- Dauert beim ersten Mal knapp 40 Minuten (gemessen mit 2937 Repos) und zeigt den
+  Fortschritt an. An den Folgetagen sind es etwa 8 Minuten, weil der Lauf die
+  Momentaufnahmen der letzten Tage weiterverwendet und nur Neues holt.
 - Speichert nach jedem Block von 20 Repos. Bricht der Lauf ab, einfach denselben
   Befehl noch einmal starten: Er holt nur noch, was fehlt.
 - Steht am Ende „… fehlgeschlagen, ein erneuter Lauf holt sie nach“, den Befehl

@@ -5,7 +5,7 @@ from datetime import date, datetime
 from typing import Protocol
 
 from github_anti_ai.domain.edition import Edition
-from github_anti_ai.domain.model import Assessment, RepoId, Snapshot
+from github_anti_ai.domain.model import Assessment, Candidate, RepoId, Snapshot
 
 
 class SourceUnavailable(Exception):
@@ -27,14 +27,19 @@ class Clock(Protocol):
 class CandidateSource(Protocol):
     name: str
 
-    def discover(self, today: date, limit: int | None = None) -> list[RepoId]:
+    def discover(self, today: date, limit: int | None = None) -> list[Candidate]:
         """With a limit, the source stops looking once it has found that many."""
         ...
 
 
 class RepoSource(Protocol):
-    def fetch(self, repos: Sequence[RepoId], now: datetime) -> list[Snapshot]:
-        """Repos that do not exist (any more) are simply left out."""
+    def fetch(
+        self, repos: Sequence[RepoId], now: datetime, with_star_history: bool = True
+    ) -> list[Snapshot]:
+        """Repos that do not exist (any more) are simply left out.
+
+        Without the star history the snapshots come with an empty one.
+        """
         ...
 
 
