@@ -143,8 +143,9 @@ berechnet.
 
 ## Automatischer Betrieb auf GitHub
 
-Ein Workflow sammelt jeden Morgen um 05:17 UTC, erzeugt die Ausgabe, schreibt sie ins
-Repo und veröffentlicht die Seite auf GitHub Pages. Dafür braucht das Repo zweierlei:
+Ein Workflow sammelt jeden Morgen um 05:17 UTC, erzeugt die Ausgabe und schreibt sie
+ins Repo. Danach startet von selbst ein zweiter, der die Seite auf GitHub Pages
+veröffentlicht. Dafür braucht das Repo zweierlei:
 
 1. **Secret `COLLECT_TOKEN`:** unter *Settings → Secrets and variables → Actions* einen
    klassischen Personal Access Token ohne Scopes eintragen.

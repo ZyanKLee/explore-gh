@@ -1,9 +1,17 @@
-# Baut die Seite neu, wenn sich das Aussehen oder eine Ausgabe ändert, ohne zu sammeln.
-# Der tägliche Lauf veröffentlicht selbst: Was er ins Repo schreibt, löst diesen
-# Workflow nicht aus.
+# Baut die Seite und veröffentlicht sie auf GitHub Pages. Läuft
+#   - nach jedem erfolgreichen täglichen Lauf,
+#   - wenn sich das Aussehen oder eine Ausgabe ändert,
+#   - von Hand.
+#
+# Braucht im Repo: Settings → Pages → Source: "GitHub Actions"
 name: Website
 
 on:
+  # Was der tägliche Lauf ins Repo schreibt, löst keinen "push" aus. Deshalb hängt
+  # dieser Workflow ausdrücklich an seinem Ende.
+  workflow_run:
+    workflows: ["Tägliche Ausgabe"]
+    types: [completed]
   push:
     branches: [main]
     paths:
@@ -27,6 +35,8 @@ concurrency:
 
 jobs:
   build:
+    # Nach einem gescheiterten täglichen Lauf gibt es nichts Neues zu zeigen.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

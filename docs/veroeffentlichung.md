@@ -205,8 +205,8 @@ Drei Workflows in `.github/workflows/`:
 
 | Datei | Wann | Was |
 |---|---|---|
-| `daily.yml` | täglich 05:17 UTC, oder von Hand | sammeln, Ausgabe erzeugen, ins Repo schreiben, Seite veröffentlichen |
-| `site.yml` | bei Änderungen am Theme oder an den Ausgaben, oder von Hand | nur die Seite neu bauen und veröffentlichen |
+| `daily.yml` | täglich 05:17 UTC, oder von Hand | sammeln, Ausgabe erzeugen, ins Repo schreiben |
+| `site.yml` | nach jedem erfolgreichen täglichen Lauf, bei Änderungen am Theme oder an den Ausgaben, oder von Hand | die Seite bauen und veröffentlichen |
 | `tests.yml` | bei jedem Push und Pull Request | die Tests |
 
 ### Der tägliche Lauf
@@ -221,8 +221,11 @@ Drei Workflows in `.github/workflows/`:
    des Tages schon, wird der Schritt übersprungen.
 5. **Ausgabe ins Repo schreiben** (`data/editions/`), als Commit von
    `github-actions[bot]`. Daraus leitet sich die Sperre ab.
-6. **Seite bauen und veröffentlichen**, mit der Adresse von GitHub Pages für die
-   Feeds.
+6. **Der Workflow „Website“ startet**, sobald der Lauf erfolgreich fertig ist, und
+   baut und veröffentlicht die Seite mit der Adresse von GitHub Pages für die Feeds.
+   Was der Lauf ins Repo schreibt, löst von sich aus keinen Workflow aus, deshalb
+   hängt „Website“ ausdrücklich an seinem Ende (`workflow_run`). Nur dieser eine
+   Workflow veröffentlicht, so kann kein zweiter mit älterem Stand dazwischenkommen.
 
 ### Einmalig einrichten
 

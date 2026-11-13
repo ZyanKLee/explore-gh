@@ -1,10 +1,10 @@
-# Der tägliche Lauf: sammeln, Ausgabe erzeugen, ins Repo schreiben, Seite veröffentlichen.
+# Der tägliche Lauf: sammeln, Ausgabe erzeugen, ins Repo schreiben.
+# Ist er erfolgreich fertig, startet der Workflow "Website" und veröffentlicht die Seite.
 #
 # Braucht im Repo:
 #   - Secret COLLECT_TOKEN: klassischer Personal Access Token ohne Scopes.
 #     Der eingebaute Token erlaubt nur 1000 Anfragen pro Stunde, ein erster Lauf
 #     braucht rund 3000.
-#   - Settings → Pages → Source: "GitHub Actions"
 name: Tägliche Ausgabe
 
 on:
@@ -13,14 +13,8 @@ on:
     - cron: "17 5 * * *"
   workflow_dispatch:
 
-env:
-  # Zählt die Besuche der veröffentlichten Seite. Lokale Vorschauen zählen nicht.
-  PLAUSIBLE_SCRIPT: https://c.wcsstuttgart.dance/js/pa-10vu7R4kgjO_NSLSnZ7N8.js
-
 permissions:
   contents: write   # die Ausgabe des Tages wird ins Repo geschrieben
-  pages: write
-  id-token: write
 
 # Nie zwei Läufe gleichzeitig: Beide würden dieselbe Ausgabe schreiben wollen.
 concurrency:
@@ -31,8 +25,6 @@ jobs:
   edition:
     runs-on: ubuntu-latest
     timeout-minutes: 120
-    outputs:
-      day: ${{ steps.day.outputs.day }}
     steps:
       - uses: actions/checkout@v7
 
@@ -97,26 +89,3 @@ jobs:
             git pull --rebase
             git push
           fi
-
-      - uses: actions/configure-pages@v6
-        id: pages
-
-      - name: Website bauen
-        run: >
-          uv run github-anti-ai site --output _site
-          --site-url "${{ steps.pages.outputs.base_url }}/"
-          --plausible "$PLAUSIBLE_SCRIPT"
-
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: _site
-
-  deploy:
-    needs: edition
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/deploy-pages@v5
-        id: deployment
