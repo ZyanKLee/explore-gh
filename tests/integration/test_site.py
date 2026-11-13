@@ -159,6 +159,19 @@ def test_text_from_github_is_never_interpreted_as_html(site):
     assert "javascript:alert" not in html
 
 
+@pytest.mark.parametrize(
+    ("path", "favicon"),
+    [("index.html", "./theme/favicon.svg"), ("archiv/index.html", "../theme/favicon.svg"),
+     ("ai/2026/11/11/index.html", "../../../../theme/favicon.svg")],
+)
+def test_every_page_links_the_favicon(site, path, favicon):
+    assert f'<link rel="icon" href="{favicon}" type="image/svg+xml">' in page(site, path)
+
+
+def test_favicon_is_part_of_the_site(site):
+    assert page(site, "theme/favicon.svg").startswith("<svg")
+
+
 def test_site_needs_no_script_and_loads_nothing_from_other_servers(site):
     for path in ("index.html", "ai/index.html", "archiv/index.html", "2026/11/11/index.html"):
         html = page(site, path)

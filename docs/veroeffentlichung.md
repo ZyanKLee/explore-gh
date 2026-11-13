@@ -149,6 +149,10 @@ Entwurf vom 13.11.2026, als Leinwand in Claude Design:
 - **Schrift:** Atkinson Hyperlegible Next, entworfen für gute Lesbarkeit. Die Datei
   liegt im Theme (`theme/static/fonts/`, 34 KB), die Seite lädt weiter nichts von
   fremden Servern.
+- **Favicon:** ein geschliffener Stein, wörtlich ein Fundstück, in Kieferngrün mit
+  gelb glänzender oberer Fläche (`theme/static/favicon.svg`, unter
+  `/theme/favicon.svg`). Er bringt seinen hellen Grund mit und ist deshalb in hellen
+  und dunklen Browser-Tabs gleich gut zu sehen.
 - **Aufbau:** eine Spalte ohne Karten. Große Rangziffer links, Verlaufskurve rechts,
   auf dem Telefon untereinander.
 - **Begründung:** kein Tooltip mehr, sondern ein aufklappbarer Bereich „Warum Platz
