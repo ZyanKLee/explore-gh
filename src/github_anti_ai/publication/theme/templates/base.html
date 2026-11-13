@@ -8,6 +8,14 @@
   <link rel="stylesheet" href="{{ SITEURL }}/theme/css/style.css">
   <link rel="alternate" type="application/atom+xml" title="Fundstücke" href="{{ SITEURL }}/feed.xml">
   <link rel="alternate" type="application/atom+xml" title="AI-Sektion" href="{{ SITEURL }}/ai/feed.xml">
+  {% if PLAUSIBLE_SCRIPT %}
+  <!-- Privacy-friendly analytics by Plausible -->
+  <script async src="{{ PLAUSIBLE_SCRIPT }}"></script>
+  <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+  </script>
+  {% endif %}
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt springen</a>
@@ -25,7 +33,7 @@
     {% block content %}{% endblock %}
   </main>
   <footer class="site">
-    <p>Aufstrebende GitHub-Repos, überwiegend von Menschen geschrieben. Jeden Tag 20 Fundstücke, nach festen Regeln ausgewählt. Ohne Tracking, ohne Skripte.</p>
+    <p>Aufstrebende GitHub-Repos, überwiegend von Menschen geschrieben. Jeden Tag 20 Fundstücke, nach festen Regeln ausgewählt. {% if PLAUSIBLE_SCRIPT %}Besuche zählt Plausible, ohne Cookies und ohne Angaben zur Person.{% else %}Ohne Tracking, ohne Skripte.{% endif %}</p>
     <p>Als Feed abonnieren: <a href="{{ SITEURL }}/feed.xml">Hauptliste</a>, <a href="{{ SITEURL }}/ai/feed.xml">AI-Sektion</a></p>
   </footer>
 </body>

@@ -214,3 +214,48 @@ def test_pages_of_a_site_with_an_address_still_work_from_the_local_disk(addresse
 
     assert ADDRESS not in start
     assert 'href="./theme/css/style.css"' in start
+
+
+# --- visitor statistics ---------------------------------------------------------------
+
+PLAUSIBLE = "https://stats.example.org/js/pa-test.js"
+
+
+@pytest.fixture(scope="module")
+def counted_site(tmp_path_factory):
+    editions = tmp_path_factory.mktemp("editions")
+    output = tmp_path_factory.mktemp("output")
+    write_edition(editions, edition_json(day=NEW, main=[entry_json("alice/tiny-editor")]))
+    build_site(editions, output, plausible_script=PLAUSIBLE)
+    return output
+
+
+def test_site_counts_no_visits_unless_asked_to(site):
+    start = page(site, "index.html")
+
+    assert "plausible" not in start.lower()
+    assert "Ohne Tracking, ohne Skripte" in start
+
+
+@pytest.mark.parametrize("path", ["index.html", "ai/index.html", "archiv/index.html", "2026/11/12/index.html"])
+def test_every_page_of_a_counted_site_loads_the_plausible_script(counted_site, path):
+    html = page(counted_site, path)
+
+    assert f'<script async src="{PLAUSIBLE}"></script>' in html
+    assert "plausible.init()" in html
+
+
+def test_a_counted_site_does_not_claim_to_be_free_of_tracking(counted_site):
+    start = page(counted_site, "index.html")
+
+    assert "Ohne Tracking" not in start
+    assert "Plausible" in start
+
+
+def test_feeds_of_a_counted_site_carry_no_script(counted_site):
+    assert "<script" not in page(counted_site, "feed.xml")
+
+
+def test_plausible_script_must_be_loaded_over_https(tmp_path):
+    with pytest.raises(ValueError):
+        build_site(tmp_path / "editions", tmp_path / "output", plausible_script="javascript:alert(1)")

@@ -9,11 +9,21 @@ from pelican.settings import read_settings
 THEME = Path(__file__).with_name("theme")
 
 
-def build_site(editions_dir: Path, output_dir: Path, site_url: str | None = None) -> None:
+def build_site(
+    editions_dir: Path,
+    output_dir: Path,
+    site_url: str | None = None,
+    plausible_script: str | None = None,
+) -> None:
     """site_url is the public address of the site. The feeds need it for full links.
 
     The pages keep relative links either way, so they also work from the local disk.
+
+    plausible_script is the address of a Plausible script that counts visits. Without it
+    the pages contain no script at all and load nothing from other servers.
     """
+    if plausible_script is not None and not plausible_script.startswith("https://"):
+        raise ValueError("Das Plausible-Skript muss eine https-Adresse sein")
     # Pelican wants a content directory. Ours stays empty: the plugin supplies the articles.
     with tempfile.TemporaryDirectory() as no_content:
         settings = read_settings(
@@ -24,6 +34,7 @@ def build_site(editions_dir: Path, output_dir: Path, site_url: str | None = None
                 "PLUGINS": ["github_anti_ai.publication.pelican_plugin"],
                 "EDITIONS_PATH": str(editions_dir),
                 "SITENAME": "Fundstücke",
+                "PLAUSIBLE_SCRIPT": plausible_script,
                 "SITEURL": (site_url or "").rstrip("/"),
                 "RELATIVE_URLS": True,
                 "TIMEZONE": "UTC",

@@ -68,6 +68,8 @@ Danach `output/index.html` im Browser öffnen.
 - Der Schritt fragt GitHub nicht ab und lässt sich beliebig oft wiederholen.
 - Soll die Seite ins Netz, braucht der Befehl ihre Adresse, damit die Feeds
   vollständige Links bekommen: `uv run github-anti-ai site --site-url https://…`
+- Mit `--plausible https://…/js/….js` zählt die Seite ihre Besuche über Plausible.
+  Auf GitHub ist das eingeschaltet, lokal nicht.
 
 ### Schritt 1 und 2 in einem
 

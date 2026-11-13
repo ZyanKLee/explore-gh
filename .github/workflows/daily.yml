@@ -13,6 +13,10 @@ on:
     - cron: "17 5 * * *"
   workflow_dispatch:
 
+env:
+  # Zählt die Besuche der veröffentlichten Seite. Lokale Vorschauen zählen nicht.
+  PLAUSIBLE_SCRIPT: https://c.wcsstuttgart.dance/js/pa-10vu7R4kgjO_NSLSnZ7N8.js
+
 permissions:
   contents: write   # die Ausgabe des Tages wird ins Repo geschrieben
   pages: write
@@ -97,7 +101,10 @@ jobs:
         id: pages
 
       - name: Website bauen
-        run: uv run github-anti-ai site --output _site --site-url "${{ steps.pages.outputs.base_url }}/"
+        run: >
+          uv run github-anti-ai site --output _site
+          --site-url "${{ steps.pages.outputs.base_url }}/"
+          --plausible "$PLAUSIBLE_SCRIPT"
 
       - uses: actions/upload-pages-artifact@v3
         with:

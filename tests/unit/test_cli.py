@@ -110,3 +110,13 @@ def test_preview_is_served_on_port_8000_by_default():
 
 def test_port_of_the_preview_can_be_chosen():
     assert parse_args(["serve", "--port", "8080"]).port == 8080
+
+
+def test_site_counts_no_visits_by_default():
+    assert parse_args(["site"]).plausible is None
+
+
+def test_plausible_script_can_be_given_for_the_published_site():
+    args = parse_args(["site", "--plausible", "https://stats.example.org/js/pa-test.js"])
+
+    assert args.plausible == "https://stats.example.org/js/pa-test.js"

@@ -89,9 +89,10 @@ Fremden.
 - Alles wird beim Rendern maskiert (Autoescape). Ein `<script>` in einer Beschreibung
   erscheint als Text.
 - Eine Homepage wird nur verlinkt, wenn sie mit `http://` oder `https://` beginnt.
-- Die Seite lädt nichts von fremden Servern: keine Schriften, keine Skripte, kein
-  Tracking. Stile sind eingebettet oder liegen neben der Seite. JavaScript braucht die
-  Seite nicht.
+- Von sich aus lädt die Seite nichts von fremden Servern: keine Schriften, keine
+  Skripte, kein Tracking. Stile und Schrift liegen neben der Seite. JavaScript braucht
+  sie nicht. Einzige Ausnahme ist die Besuchszählung, wenn sie eingeschaltet ist (siehe
+  unten).
 
 ## Format der Ausgaben prüfen
 
@@ -156,6 +157,19 @@ github-anti-ai serve [--data-dir data] [--output output] [--port 8000]
   funktionierende Seite.
 - Pelicans eigenes `--autoreload` passt hier nicht: Es überwacht einen Inhaltsordner
   und eine Einstellungsdatei, beides gibt es bei uns nicht.
+
+## Besuchszählung
+
+Seit dem 13.11.2026 zählt die veröffentlichte Seite ihre Besuche mit Plausible, über
+die eigene Instanz des Projektinhabers.
+
+- `site --plausible https://…/js/….js` bindet das Skript in jede Seite ein. Ohne die
+  Option bleibt die Seite frei von Skripten. Lokale Bauten und die Vorschau zählen
+  deshalb nicht.
+- Die Adresse des Skripts steht in den Workflows (`PLAUSIBLE_SCRIPT`), nicht im Code.
+- Die Fußzeile sagt, was gilt: „Besuche zählt Plausible, ohne Cookies und ohne Angaben
+  zur Person.“ oder „Ohne Tracking, ohne Skripte.“
+- Die Adresse muss mit `https://` beginnen. Die Feeds enthalten nie ein Skript.
 
 ## Adresse der Seite
 

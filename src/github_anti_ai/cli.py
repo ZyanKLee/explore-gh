@@ -59,6 +59,11 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
                 default=None,
                 help="öffentliche Adresse der Seite, für vollständige Links in den Feeds",
             )
+            command.add_argument(
+                "--plausible",
+                default=None,
+                help="Adresse eines Plausible-Skripts, das die Besuche zählt",
+            )
         if name == "explain":
             command.add_argument("repo", help="owner/name")
         if name in ("publish", "explain"):
@@ -112,7 +117,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # imported here: only this command needs Pelican
         from github_anti_ai.publication.site import build_site
 
-        build_site(args.data_dir / "editions", args.output, args.site_url)
+        build_site(args.data_dir / "editions", args.output, args.site_url, args.plausible)
         print(f"Website gebaut: {args.output}/index.html")
         return 0
     if args.command == "serve":
