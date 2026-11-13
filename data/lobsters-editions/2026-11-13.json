@@ -8,7 +8,7 @@
         "title": "Announcing Rust 1.100.0",
         "url": "https://blog.rust-lang.org/2026/11/12/Rust-1.100.0/",
         "discussion_url": "https://lobste.rs/s/81hnjw",
-        "score": 121,
+        "score": 132,
         "comments": 9,
         "created_at": "2026-11-12T12:43:41.418000-06:00"
       },
@@ -19,26 +19,100 @@
       "license_id": "Apache-2.0",
       "is_fork": false,
       "is_archived": false,
-      "has_code": true
+      "has_code": true,
+      "topics": [
+        "compiler",
+        "language",
+        "rust"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.rust-lang.org. Repo und Story teilen „lang“, „rust“, „rustlang“."
+      ]
     },
     {
       "story": {
-        "id": "ii1gzp",
-        "title": "How a false smoke alarm almost drowned Jane Street's only NYC datacenter",
-        "url": "https://michael.bacarella.com/2026/11/10/false-smoke-alarm-jane-street-datacenter/",
-        "discussion_url": "https://lobste.rs/s/ii1gzp",
-        "score": 86,
-        "comments": 17,
-        "created_at": "2026-11-11T10:27:51.943000-06:00"
+        "id": "ooshl8",
+        "title": "The entirety of \"Let Over Lambda\" is now freely available online",
+        "url": "https://letoverlambda.com/",
+        "discussion_url": "https://lobste.rs/s/ooshl8",
+        "score": 65,
+        "comments": 22,
+        "created_at": "2026-11-12T06:44:34.403000-06:00"
       },
-      "repository_url": "https://github.com/bitbrain/jekyll-dash",
-      "project_url": "https://michael.bacarella.com/2026/11/10/false-smoke-alarm-jane-street-datacenter/",
-      "description": "🌒 Light and dark blog theme for Jekyll, inspired by Dash UI for Atom.",
-      "language": "SCSS",
-      "license_id": "Apache-2.0",
+      "repository_url": "https://github.com/thephoeron/let-over-lambda",
+      "project_url": "https://letoverlambda.com/",
+      "description": "Doug Hoyte's \"Production\" version of macros from Let Over Lambda, ready for ASDF and Quicklisp.",
+      "language": "Common Lisp",
+      "license_id": "NOASSERTION",
       "is_fork": false,
       "is_archived": false,
-      "has_code": true
+      "has_code": true,
+      "topics": [
+        "common-lisp",
+        "macros"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf letoverlambda.com. Repo und Story teilen „lambda“, „let“, „letoverlambda“, „over“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "sdtcvv",
+        "title": "I deleted all my SSH keys",
+        "url": "https://blog.infected.systems/posts/2026-11-03-i-deleted-all-my-ssh-keys/",
+        "discussion_url": "https://lobste.rs/s/sdtcvv",
+        "score": 64,
+        "comments": 24,
+        "created_at": "2026-11-10T14:49:23.641000-06:00"
+      },
+      "repository_url": "https://github.com/Foxboron/ssh-tpm-agent",
+      "project_url": "https://blog.infected.systems/posts/2026-11-03-i-deleted-all-my-ssh-keys/",
+      "description": ":computer: :key: ssh-agent for TPMs",
+      "language": "Go",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "go-tpm",
+        "golang",
+        "security",
+        "ssh",
+        "ssh-agent",
+        "tpm",
+        "tpm2"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.infected.systems. Repo und Story teilen „ssh“."
+      ]
+    },
+    {
+      "story": {
+        "id": "zy4p7f",
+        "title": "Using voltage glitching to unleash the A100 in my mining card",
+        "url": "https://blog.kate.land/posts/using-voltage-glitching-to-unlock-the-a100/",
+        "discussion_url": "https://lobste.rs/s/zy4p7f",
+        "score": 53,
+        "comments": 10,
+        "created_at": "2026-11-11T06:36:57.129000-06:00"
+      },
+      "repository_url": "https://github.com/kate-land/ga100vfi",
+      "project_url": "https://blog.kate.land/posts/using-voltage-glitching-to-unlock-the-a100/",
+      "description": "GA100 voltage glitch resources",
+      "language": "C",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.kate.land. Repo und Story teilen „kate“, „land“."
+      ]
     },
     {
       "story": {
@@ -46,7 +120,7 @@
         "title": "Hijacking Samsung TV Smart Hub Ads",
         "url": "https://dvratil.cz/2026/11/hijacking-samsung-tv-smart-hub-ads/",
         "discussion_url": "https://lobste.rs/s/2drgwh",
-        "score": 46,
+        "score": 50,
         "comments": 3,
         "created_at": "2026-11-12T05:08:45.506000-06:00"
       },
@@ -57,45 +131,102 @@
       "license_id": "MIT",
       "is_fork": false,
       "is_archived": false,
-      "has_code": true
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf dvratil.cz. Repo und Story teilen „samsung“."
+      ]
     },
     {
       "story": {
-        "id": "f6u0cg",
-        "title": "Contra \"Glue work considered harmful\"",
-        "url": "https://sunshowers.io/posts/glue-work/",
-        "discussion_url": "https://lobste.rs/s/f6u0cg",
-        "score": 19,
-        "comments": 0,
-        "created_at": "2026-11-12T20:36:05.139000-06:00"
+        "id": "v3uidx",
+        "title": "Lock your GitHub Actions",
+        "url": "https://hugovk.dev/blog/2026/lock-github-actions/",
+        "discussion_url": "https://lobste.rs/s/v3uidx",
+        "score": 31,
+        "comments": 10,
+        "created_at": "2026-11-11T12:16:01.014000-06:00"
       },
-      "repository_url": "https://github.com/oxidecomputer/omicron",
-      "project_url": "https://sunshowers.io/posts/glue-work/",
-      "description": "Omicron: Oxide control plane",
-      "language": "Rust",
-      "license_id": "MPL-2.0",
+      "repository_url": "https://github.com/github/gh-actions-lock",
+      "project_url": "https://hugovk.dev/blog/2026/lock-github-actions/",
+      "description": "A gh CLI extension that generates and verifies the GitHub Actions dependency lockfile, pinning every action your workflows use to an exact commit.",
+      "language": "Go",
+      "license_id": "MIT",
       "is_fork": false,
       "is_archived": false,
-      "has_code": true
+      "has_code": true,
+      "topics": [
+        "cli",
+        "dependency-pinning",
+        "gh-extension",
+        "github-actions",
+        "go",
+        "lockfile",
+        "security",
+        "supply-chain-security"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf hugovk.dev. Repo und Story teilen „actions“, „lock“."
+      ]
     },
     {
       "story": {
-        "id": "a3elxr",
-        "title": "JIT bitmap text rendering for microcontrollers",
-        "url": "https://linebender.org/blog/jit-bitmap-text/",
-        "discussion_url": "https://lobste.rs/s/a3elxr",
-        "score": 9,
-        "comments": 1,
-        "created_at": "2026-11-12T18:16:10.741000-06:00"
+        "id": "wfr0b4",
+        "title": "About the downtime and security incident",
+        "url": "https://danbooru.donmai.us/forum_topics/38685.html",
+        "discussion_url": "https://lobste.rs/s/wfr0b4",
+        "score": 23,
+        "comments": 9,
+        "created_at": "2026-11-11T10:58:45.890000-06:00"
       },
-      "repository_url": "https://github.com/raphlinus/vic-2350",
-      "project_url": "https://linebender.org/blog/jit-bitmap-text/",
-      "description": "An alternate universe 80s home computer, realized on RP2350 hardware",
-      "language": "Rust",
-      "license_id": "Apache-2.0",
+      "repository_url": "https://github.com/danbooru/danbooru",
+      "project_url": "https://danbooru.donmai.us/forum_topics/38685.html",
+      "description": "A taggable image board written in Rails.",
+      "language": "Ruby",
+      "license_id": "NOASSERTION",
       "is_fork": false,
       "is_archived": false,
-      "has_code": true
+      "has_code": true,
+      "topics": [
+        "anime",
+        "booru",
+        "danbooru",
+        "imageboard",
+        "rails",
+        "ruby"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf danbooru.donmai.us. Repo und Story teilen „danbooru“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "gejy85",
+        "title": "Adapting CPython for yk",
+        "url": "https://tratt.net/laurie/blog/2026/adapting_cpython_for_yk.html",
+        "discussion_url": "https://lobste.rs/s/gejy85",
+        "score": 23,
+        "comments": 2,
+        "created_at": "2026-11-12T06:29:56.716000-06:00"
+      },
+      "repository_url": "https://github.com/ykjit/yk",
+      "project_url": "https://tratt.net/laurie/blog/2026/adapting_cpython_for_yk.html",
+      "description": "yk packages",
+      "language": "Rust",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf tratt.net. Repo und Story teilen „yk“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
     },
     {
       "story": {
@@ -103,8 +234,8 @@
         "title": "Dyalog Version 21.0",
         "url": "https://dyalog.com/dyalog/dyalog-versions/210.htm",
         "discussion_url": "https://lobste.rs/s/pbc1ke",
-        "score": 8,
-        "comments": 3,
+        "score": 9,
+        "comments": 4,
         "created_at": "2026-11-12T13:13:49.174000-06:00"
       },
       "repository_url": "https://github.com/Dyalog/ride",
@@ -114,7 +245,21 @@
       "license_id": "MIT",
       "is_fork": false,
       "is_archived": false,
-      "has_code": true
+      "has_code": true,
+      "topics": [
+        "apl",
+        "cross-platform-ide",
+        "dyalog",
+        "dyalog-apl",
+        "ide",
+        "remote-access",
+        "remote-interpreter",
+        "ride"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf dyalog.com. Repo und Story teilen „dyalog“."
+      ]
     },
     {
       "story": {
@@ -126,14 +271,20 @@
         "comments": 0,
         "created_at": "2026-11-12T19:16:15.589000-06:00"
       },
-      "repository_url": "https://github.com/graphql/graphql.github.io",
+      "repository_url": "https://github.com/graphql/graphql-over-http",
       "project_url": "https://graphql.org/blog/2026-11-12-announcing-the-graphql-over-http-spec/",
-      "description": "The code of the graphql.org website",
-      "language": "TypeScript",
+      "description": "Working draft of \"GraphQL over HTTP\" specification",
+      "language": "HTML",
       "license_id": "MIT",
       "is_fork": false,
       "is_archived": false,
-      "has_code": true
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf graphql.org. Repo und Story teilen „graphql“, „http“, „over“."
+      ]
     }
-  ]
+  ],
+  "ai_projects": []
 }
