@@ -38,8 +38,9 @@ class HnProjectCandidate:
     is_archived: bool
     has_code: bool
     topics: tuple[str, ...] = ()
-    # Only read to decide on the AI section, never stored: like a Snapshot's README
-    readme: str = field(default="", compare=False, repr=False)
+    # Only read for the AI section and the exclusions, never stored, like a Snapshot's
+    # README. None: it could not be read, "": the repo has none.
+    readme: str | None = field(default=None, compare=False, repr=False)
 
     def __post_init__(self):
         object.__setattr__(self, "topics", tuple(self.topics))

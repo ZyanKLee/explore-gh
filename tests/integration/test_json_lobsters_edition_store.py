@@ -75,7 +75,7 @@ def test_lobsters_edition_keeps_its_ai_section_and_topics_but_not_the_readme(tmp
     loaded = store.load(edition.day)
     assert loaded == edition
     assert loaded.ai_projects[0].topics == ("llm", "mcp")
-    assert loaded.ai_projects[0].readme == ""
+    assert loaded.ai_projects[0].readme is None  # not stored, so not known
     assert "An LLM agent." not in (tmp_path / "editions" / f"{edition.day}.json").read_text()
 
 

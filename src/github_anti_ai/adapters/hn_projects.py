@@ -65,19 +65,24 @@ class HnProjectResolver:
             readme=self._readme(metadata.get("readme")),
         )
 
-    def _readme(self, source: tuple[str, httpx.Client | None, str] | None) -> str:
-        """The README decides on the AI section only. Without one the project stays."""
+    def _readme(self, source: tuple[str, httpx.Client | None, str, bool] | None) -> str | None:
+        """The README, "" if the repo has none, None if that is not known.
+
+        The last part of `source` says whether a 404 proves that there is no README.
+        """
         if source is None:
             return ""
-        url, client, accept = source
+        url, client, accept, missing_on_404 = source
         try:
             response = self._request(url, client=client, accept=accept)
         except SourceUnavailable:
+            return None
+        if response is not None and response.status_code == 404 and missing_on_404:
             return ""
         if response is None or response.status_code != 200:
-            return ""
+            return None
         if len(response.content) > MAX_PAGE_BYTES:
-            return ""
+            return None
         return response.text
 
     def _closest_repository(
@@ -119,6 +124,7 @@ class HnProjectResolver:
                     f"https://api.github.com/repos/{repo}/readme",
                     self._github_client,
                     "application/vnd.github.raw+json",
+                    True,  # GitHub finds a README of any name
                 ),
                 "description": metadata.get("description"),
                 "language": metadata.get("language"),
@@ -143,7 +149,7 @@ class HnProjectResolver:
             return str(gitlab["web_url"]).rstrip("/"), {
                 "topics": gitlab.get("topics"),
                 "readme": (
-                    (readme_url.replace("/-/blob/", "/-/raw/", 1), None, "text/plain")
+                    (readme_url.replace("/-/blob/", "/-/raw/", 1), None, "text/plain", True)
                     if isinstance(readme_url, str)
                     else None
                 ),
@@ -164,6 +170,7 @@ class HnProjectResolver:
                     f"{parsed.scheme}://{parsed.netloc}/api/v1/repos/{path}/raw/README.md",
                     None,
                     "text/plain",
+                    False,  # only README.md is asked for, the README may have another name
                 ),
                 "description": gitea.get("description"),
                 "language": gitea.get("language"),

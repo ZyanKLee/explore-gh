@@ -179,6 +179,12 @@ die Hauptliste (`projects`) und die AI-Sektion (`ai_projects`).
 
 1. Es bleiben nur Open-Source-Projekte (siehe „Lizenz“ in `datensammlung.md`) mit
    erkanntem Code, ohne Forks und ohne archivierte Repos.
+   **Ausschlüsse:** Dazu kommen die Ausschlüsse der GitHub-Listen, soweit sie nur Texte
+   brauchen (`ExclusionPolicy.check_text`, siehe `bewertung.md`): Sammlungen und
+   Lernmaterial, Köder für Schadsoftware, kein README, weder deutsch noch englisch,
+   Kryptowährungen. Konnte das README nicht gelesen werden, zählt das nicht als „kein
+   README“. Die Schwelle für neue Sterne entfällt, an ihre Stelle treten die Punkte der
+   Plattform.
 2. **Sperre:** Ein Repo, das an Tag D in einer Ausgabe derselben Plattform stand, ist
    bis einschließlich D + 29 gesperrt, wie bei GitHub (`COOLDOWN_DAYS`,
    `recently_shown`). Abgeleitet wird das aus den eigenen Ausgaben der letzten 30 Tage.
@@ -218,8 +224,6 @@ Welches Repo zu einer Story gehört, entscheidet schon die Datensammlung (siehe
 Damit HN und Lobsters denselben Regeln folgen wie die GitHub-Listen, kommen in dieser
 Reihenfolge in den gemeinsamen Kurator:
 
-- **Ausschlüsse:** dieselbe `ExclusionPolicy`, soweit sie ohne Sternverlauf auskommt
-  (Sammlungen, Köder, Kryptowährungen, kein README, Sprache).
 - **„Warum Platz …?“:** wie das Repo gefunden wurde und welche Signale es hat.
 
 Bewusst nicht vorgesehen: die Abwertung für AI-Mithilfe, weil sie Commits von allen

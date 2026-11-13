@@ -25,7 +25,7 @@ class Project:
     language: str | None = "Rust"
     description: str = "A small tool"
     topics: tuple[str, ...] = ()
-    readme: str = ""
+    readme: str | None = None  # None: not read, so no reason to exclude
 
     @property
     def is_open_source(self) -> bool:
@@ -244,3 +244,17 @@ def test_community_edition_rejects_a_repo_in_both_sections():
             [Project("https://github.com/a/tool", 1)], "HN",
             ai_projects=[Project("https://github.com/a/tool", 1)],
         )
+
+
+def test_community_curator_drops_a_project_the_github_exclusions_remove():
+    assert select(
+        Project("https://github.com/a/awesome-rust", 90),
+        Project("https://github.com/a/coin", 80, topics=("blockchain",)),
+        Project("https://github.com/a/empty", 70, readme=""),
+    ) == []
+
+
+def test_community_curator_keeps_a_project_whose_readme_could_not_be_read():
+    assert select(Project("https://github.com/a/tool", 10, readme=None)) == [
+        "https://github.com/a/tool"
+    ]

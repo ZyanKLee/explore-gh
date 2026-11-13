@@ -447,8 +447,15 @@ gewählte Repo das README, ein Repo pro Story also eine Anfrage mehr:
 - GitLab: `readme_url` aus der Projektabfrage, `/-/blob/` durch `/-/raw/` ersetzt
 - Gitea/Forgejo: `/api/v1/repos/{owner}/{name}/raw/README.md`
 
-Fehlt das README oder schlägt die Abfrage fehl, bleibt es leer. Das Projekt bleibt
-erhalten, die AI-Regel hat dann nur Name, Beschreibung und Topics.
+Das README hat drei Zustände:
+
+- **Text:** gelesen.
+- **Leer (`""`):** Das Repo hat sicher keines. GitHub und GitLab sagen das verlässlich
+  (404 bzw. kein `readme_url`). Das Projekt fällt dann wie bei GitHub heraus („Kein
+  README“).
+- **Unbekannt (`None`):** Die Abfrage ist fehlgeschlagen, oder Gitea kennt kein
+  `README.md` (das README kann anders heißen). Das Projekt bleibt, AI-Regel und
+  Sprachregel haben dann nur Name, Beschreibung und Topics.
 
 ### Forge oder nicht
 

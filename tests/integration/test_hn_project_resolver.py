@@ -349,3 +349,31 @@ def test_resolver_reads_topics_and_readme_of_a_gitea_repo():
 
     assert project.topics == ("editor",)
     assert project.readme == "# Tool"
+
+
+def test_resolver_marks_a_readme_it_could_not_read_as_unknown():
+    def handler(request):
+        if request.url.path.endswith("/readme"):
+            return httpx.Response(503)
+        return github_repo("alice/tool")
+
+    project = resolve_direct("https://github.com/alice/tool", handler)
+
+    assert project.readme is None
+
+
+def test_resolver_marks_a_missing_gitea_readme_md_as_unknown():
+    """Gitea is only asked for README.md; the repo may have a README of another name."""
+    def handler(request):
+        if request.url.path == "/api/v4/projects/owner%2Ftool":
+            return httpx.Response(404)
+        if request.url.path.endswith("/raw/README.md"):
+            return httpx.Response(404)
+        return httpx.Response(200, json={
+            "html_url": "https://codeberg.org/owner/tool", "license": ["MIT"],
+            "language": "Rust", "size": 10,
+        })
+
+    project = resolve_direct("https://codeberg.org/owner/tool", handler)
+
+    assert project.readme is None

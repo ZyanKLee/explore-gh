@@ -296,3 +296,34 @@ def test_a_logo_that_links_to_the_project_page_is_no_lure():
     )
 
     assert kind(readme=readme) is None
+
+
+def check_text(name="tiny-editor", description="A tiny terminal text editor", topics=(),
+               readme=ENGLISH):
+    return ExclusionPolicy().check_text(
+        name=name, description=description, topics=topics, readme=readme
+    )
+
+
+def test_texts_without_snapshot_pass_the_same_rules():
+    """HN and Lobsters projects have no Snapshot, only name, description, topics and README."""
+    assert check_text() is None
+
+
+@pytest.mark.parametrize(
+    ("overrides", "expected"),
+    [
+        ({"name": "awesome-rust"}, "collection"),
+        ({"description": "Photoshop 2026 full version, pre activated"}, "lure"),
+        ({"topics": ("blockchain",)}, "crypto"),
+        ({"readme": ""}, "no_readme"),
+        ({"readme": "Ceci est un éditeur de texte pour le terminal. " * 20}, "language"),
+    ],
+)
+def test_texts_without_snapshot_are_excluded_for_the_same_reasons(overrides, expected):
+    assert check_text(**overrides).kind == expected
+
+
+def test_unknown_readme_is_no_reason_to_exclude():
+    """None means the README could not be read, which is not the same as having none."""
+    assert check_text(readme=None) is None

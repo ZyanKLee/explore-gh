@@ -10,6 +10,7 @@ from urllib.parse import urlsplit
 
 from github_anti_ai.domain.ai_focus import AiFocusClassifier
 from github_anti_ai.domain.edition import COOLDOWN_DAYS, MAX_PER_LANGUAGE, MAX_PER_OWNER
+from github_anti_ai.domain.exclusion import ExclusionPolicy
 from github_anti_ai.domain.model import Section
 
 PROJECTS_PER_EDITION = 20
@@ -49,7 +50,7 @@ class CommunityProject(Protocol):
     @property
     def topics(self) -> tuple[str, ...]: ...
     @property
-    def readme(self) -> str: ...
+    def readme(self) -> str | None: ...
 
 
 Project = TypeVar("Project", bound=CommunityProject)
@@ -195,23 +196,35 @@ def shared_words(title: str, page_url: str, repository_url: str) -> set[str]:
 
 
 def _is_ai_focused(project: CommunityProject) -> bool:
-    name = [part for part in urlsplit(project.repository_url).path.split("/") if part][-1:]
     focus = AiFocusClassifier().classify_text(
-        name="".join(name),
+        name=_repo_name(project.repository_url),
         description=project.description,
         topics=project.topics,
-        readme=project.readme,
+        readme=project.readme or "",
     )
     return focus.section is Section.AI
 
 
 def _eligible(project: CommunityProject) -> bool:
+    """Open source with code, no fork, not archived, and none of the GitHub exclusions."""
+    excluded = ExclusionPolicy().check_text(
+        name=_repo_name(project.repository_url),
+        description=project.description,
+        topics=project.topics,
+        readme=project.readme,
+    )
     return (
         project.is_open_source
         and project.has_code
         and not project.is_fork
         and not project.is_archived
+        and excluded is None
     )
+
+
+def _repo_name(url: str) -> str:
+    parts = [part for part in urlsplit(url).path.split("/") if part]
+    return parts[-1] if parts else ""
 
 
 def _words(text: str) -> set[str]:

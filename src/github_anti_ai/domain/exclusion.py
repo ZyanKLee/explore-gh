@@ -1,6 +1,7 @@
 """Reasons to remove a repo completely. The first matching rule gives the reason."""
 
 import re
+from collections.abc import Sequence
 
 from github_anti_ai.domain.model import Exclusion, Snapshot
 from github_anti_ai.domain.text import TermList, number
@@ -122,24 +123,13 @@ class ExclusionPolicy:
             return Exclusion("Spiegel eines anderen Repos", "mirror")
         if not snapshot.primary_language:
             return Exclusion("GitHub erkennt keine Programmiersprache", "no_code")
-
-        labels = " . ".join([snapshot.repo.name, snapshot.description, *snapshot.topics])
-        if found := COLLECTION_TERMS.distinct(labels):
-            return Exclusion(f"Sammlung oder Lernmaterial („{found[0]}“)", "collection")
-        if found := LURE_TERMS.distinct(labels):
-            return Exclusion(f"Köder für Schadsoftware („{found[0]}“)", "lure")
-        if _LURE_BUTTON.search(snapshot.readme) and "powershell" in snapshot.readme.lower():
-            return Exclusion(
-                "Köder für Schadsoftware (README führt über einen Knopf zu einem "
-                "PowerShell-Befehl)",
-                "lure",
-            )
-        if not snapshot.readme.strip():
-            return Exclusion("Kein README", "no_readme")
-        if reason := foreign_language(snapshot.description, snapshot.readme):
-            return Exclusion(reason, "language")
-        if found := CRYPTO_TERMS.distinct(labels):
-            return Exclusion(f"Kryptowährungen („{found[0]}“)", "crypto")
+        if exclusion := self.check_text(
+            name=snapshot.repo.name,
+            description=snapshot.description,
+            topics=snapshot.topics,
+            readme=snapshot.readme,
+        ):
+            return exclusion
 
         gained = snapshot.star_history.gained()
         if gained < MIN_STARS_GAINED:
@@ -147,6 +137,32 @@ class ExclusionPolicy:
                 f"Nur {number(gained)} neue Sterne in 7 Tagen, nötig sind {MIN_STARS_GAINED}",
                 "low_momentum",
             )
+        return None
+
+    def check_text(
+        self, *, name: str, description: str, topics: Sequence[str], readme: str | None
+    ) -> Exclusion | None:
+        """The rules that need texts only, also for HN and Lobsters projects.
+
+        readme None means it could not be read: no reason to exclude, unlike an empty one.
+        """
+        labels = " . ".join([name, description, *topics])
+        if found := COLLECTION_TERMS.distinct(labels):
+            return Exclusion(f"Sammlung oder Lernmaterial („{found[0]}“)", "collection")
+        if found := LURE_TERMS.distinct(labels):
+            return Exclusion(f"Köder für Schadsoftware („{found[0]}“)", "lure")
+        if readme is not None and _LURE_BUTTON.search(readme) and "powershell" in readme.lower():
+            return Exclusion(
+                "Köder für Schadsoftware (README führt über einen Knopf zu einem "
+                "PowerShell-Befehl)",
+                "lure",
+            )
+        if readme is not None and not readme.strip():
+            return Exclusion("Kein README", "no_readme")
+        if reason := foreign_language(description, readme or ""):
+            return Exclusion(reason, "language")
+        if found := CRYPTO_TERMS.distinct(labels):
+            return Exclusion(f"Kryptowährungen („{found[0]}“)", "crypto")
         return None
 
 
