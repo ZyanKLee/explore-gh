@@ -189,7 +189,16 @@ Auswahlregeln (`CommunityCurator.select`):
 4. **Rangfolge:** von der Plattform vorgegeben.
    - HN: Punkte, dann Kommentare, dann die neuere Story.
    - Lobsters: Score, dann Kommentare, dann die neuere Story.
-5. Schluss nach 20 Projekten. Die Ausgabe wird nie aufgefüllt.
+5. **Vielfalt:** Der Reihe nach übernehmen. Ein Projekt wird übersprungen, wenn seine
+   Sprache schon 4-mal oder sein Besitzer schon 2-mal in der Ausgabe steht
+   (`MAX_PER_LANGUAGE`, `MAX_PER_OWNER`, wie bei GitHub). Projekte ohne erkannte Sprache
+   bilden eine eigene Gruppe. Besitzer ist der erste Teil des Pfads zusammen mit der
+   Forge: `github.com/alice` und `codeberg.org/alice` sind zwei Besitzer (`owner_key`).
+6. Schluss nach 20 Projekten. Die Ausgabe wird nie aufgefüllt.
+
+`HnEdition` und `LobstersEdition` prüfen beim Erzeugen selbst, dass sie höchstens 20
+Projekte enthalten, kein Repo doppelt und die Vielfaltsregel einhalten
+(`check_community_edition`). Das gilt auch beim Laden aus dem Archiv.
 
 Welches Repo zu einer Story gehört, entscheidet schon die Datensammlung (siehe
 „Bezug zur Story“ in `datensammlung.md`).
@@ -203,7 +212,6 @@ Reihenfolge in den gemeinsamen Kurator:
   Beschreibung, Topics und README.
 - **Ausschlüsse:** dieselbe `ExclusionPolicy`, soweit sie ohne Sternverlauf auskommt
   (Sammlungen, Köder, Kryptowährungen, kein README, Sprache).
-- **Vielfalt:** höchstens 4 je Sprache und 2 je Besitzer.
 - **„Warum Platz …?“:** wie das Repo gefunden wurde und welche Signale es hat.
 
 Bewusst nicht vorgesehen: die Abwertung für AI-Mithilfe, weil sie Commits von allen

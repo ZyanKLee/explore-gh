@@ -1,7 +1,15 @@
 from dataclasses import dataclass
 from datetime import date, timedelta
 
-from github_anti_ai.domain.community import CommunityCurator, recently_shown, repository_key
+import pytest
+
+from github_anti_ai.domain.community import (
+    CommunityCurator,
+    check_community_edition,
+    owner_key,
+    recently_shown,
+    repository_key,
+)
 
 
 @dataclass(frozen=True)
@@ -14,6 +22,7 @@ class Project:
     has_code: bool = True
     is_fork: bool = False
     is_archived: bool = False
+    language: str | None = "Rust"
 
     @property
     def is_open_source(self) -> bool:
@@ -68,12 +77,16 @@ def test_community_curator_keeps_one_repo_once_with_its_best_ranked_story():
 
 
 def test_community_curator_stops_after_20_projects():
-    projects = [Project(f"https://codeberg.org/a/tool{n}", n) for n in range(25)]
+    languages = ["Rust", "Go", "C", "Zig", "Python", "Lua", None]
+    projects = [
+        Project(f"https://codeberg.org/owner{n}/tool", n, language=languages[n % 7])
+        for n in range(25)
+    ]
 
     chosen = select(*projects)
 
     assert len(chosen) == 20
-    assert chosen[0] == "https://codeberg.org/a/tool24"
+    assert chosen[0] == "https://codeberg.org/owner24/tool"
 
 
 def test_repository_key_ignores_case_and_trailing_slash():
@@ -117,3 +130,61 @@ def test_cooldown_compares_repos_by_repository_key():
     assert recently_shown(TODAY, [shown(1, "https://github.com/A/Tool/")]) == {
         repository_key("https://github.com/a/tool")
     }
+
+
+def test_community_curator_takes_at_most_4_projects_of_one_language():
+    rust = [Project(f"https://github.com/owner{n}/tool", 100 - n) for n in range(5)]
+    go = Project("https://github.com/gopher/tool", 1, language="Go")
+
+    chosen = select(*rust, go)
+
+    assert chosen == [project.repository_url for project in rust[:4]] + [go.repository_url]
+
+
+def test_community_curator_treats_projects_without_language_as_one_language():
+    unknown = [Project(f"https://github.com/owner{n}/tool", 100 - n, language=None) for n in range(5)]
+
+    assert len(select(*unknown)) == 4
+
+
+def test_community_curator_takes_at_most_2_projects_of_one_owner():
+    chosen = select(
+        Project("https://github.com/rust-lang/rust", 90, language="Rust"),
+        Project("https://github.com/Rust-Lang/cargo", 80, language="Rust"),
+        Project("https://github.com/rust-lang/clippy", 70, language="Rust"),
+        Project("https://github.com/alice/tool", 10, language="Go"),
+    )
+
+    assert chosen == [
+        "https://github.com/rust-lang/rust",
+        "https://github.com/Rust-Lang/cargo",
+        "https://github.com/alice/tool",
+    ]
+
+
+def test_owners_of_the_same_name_on_different_forges_are_different_owners():
+    assert owner_key("https://github.com/alice/a") != owner_key("https://codeberg.org/alice/b")
+    assert owner_key("https://github.com/Alice/a") == owner_key("https://github.com/alice/b")
+
+
+def test_community_edition_accepts_a_varied_selection():
+    check_community_edition(
+        [Project("https://github.com/a/one", 1), Project("https://github.com/b/two", 1)], "HN"
+    )
+
+
+@pytest.mark.parametrize(
+    ("projects", "message"),
+    [
+        ([Project(f"https://github.com/o{n}/t", 1, language=f"L{n}") for n in range(21)],
+         "mehr als 20"),
+        ([Project(f"https://github.com/o{n}/t", 1) for n in range(5)], "Sprache"),
+        ([Project(f"https://github.com/o/t{n}", 1, language=f"L{n}") for n in range(3)],
+         "Besitzer"),
+        ([Project("https://github.com/o/t", 1), Project("https://github.com/O/T/", 1)],
+         "mehrfach"),
+    ],
+)
+def test_community_edition_rejects_a_selection_breaking_its_rules(projects, message):
+    with pytest.raises(ValueError, match=message):
+        check_community_edition(projects, "HN")

@@ -138,7 +138,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Sektion | `Section` | `MAIN` oder `AI` |
 | Ausgabe | `Edition` | Auswahl eines Tages, je Sektion bis zu 20 `Entry`s. Unveränderlich nach Veröffentlichung. |
 | Sperre | `Cooldown` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert. HN und Lobsters sperren je aus ihren eigenen Ausgaben (`recently_shown`). |
-| Vielfaltsregel | `MAX_PER_LANGUAGE`, `MAX_PER_OWNER` | Pro Sektion höchstens 4 Einträge je Programmiersprache und 2 je Besitzer |
+| Vielfaltsregel | `MAX_PER_LANGUAGE`, `MAX_PER_OWNER` | Pro Sektion höchstens 4 Einträge je Programmiersprache und 2 je Besitzer, ebenso in den HN- und Lobsters-Ausgaben |
 
 Persistenz-Abstraktionen heißen `…Store`, nicht „Repository“, weil „Repo“ schon das
 GitHub-Repository bezeichnet.

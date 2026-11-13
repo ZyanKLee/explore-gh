@@ -1,12 +1,13 @@
 """Rules shared by the community project lists (HN, Lobsters). See docs/ausgabe.md."""
 
 import re
+from collections import Counter
 from collections.abc import Callable, Collection, Iterable
 from datetime import date
 from typing import Protocol, TypeVar
 from urllib.parse import urlsplit
 
-from github_anti_ai.domain.edition import COOLDOWN_DAYS
+from github_anti_ai.domain.edition import COOLDOWN_DAYS, MAX_PER_LANGUAGE, MAX_PER_OWNER
 
 PROJECTS_PER_EDITION = 20
 
@@ -38,6 +39,8 @@ class CommunityProject(Protocol):
     def is_fork(self) -> bool: ...
     @property
     def is_archived(self) -> bool: ...
+    @property
+    def language(self) -> str | None: ...
 
 
 Project = TypeVar("Project", bound=CommunityProject)
@@ -70,7 +73,49 @@ class CommunityCurator:
                 continue
             if key not in best or rank(candidate) < rank(best[key]):
                 best[key] = candidate
-        return tuple(sorted(best.values(), key=rank))[:PROJECTS_PER_EDITION]
+        return _varied(sorted(best.values(), key=rank))
+
+
+def check_community_edition(projects: Iterable[CommunityProject], platform: str) -> None:
+    """The rules every HN or Lobsters edition keeps; `platform` names it in the message."""
+    projects = list(projects)
+    if len(projects) > PROJECTS_PER_EDITION:
+        raise ValueError(f"{platform}-Ausgabe: mehr als {PROJECTS_PER_EDITION} Projekte")
+    keys = [repository_key(project.repository_url) for project in projects]
+    if len(keys) != len(set(keys)):
+        raise ValueError(f"Ein Repo steht mehrfach in der {platform}-Ausgabe")
+    languages = Counter(project.language for project in projects)
+    if languages and max(languages.values()) > MAX_PER_LANGUAGE:
+        raise ValueError(
+            f"{platform}-Ausgabe: mehr als {MAX_PER_LANGUAGE} Projekte einer Sprache"
+        )
+    owners = Counter(owner_key(project.repository_url) for project in projects)
+    if owners and max(owners.values()) > MAX_PER_OWNER:
+        raise ValueError(f"{platform}-Ausgabe: mehr als {MAX_PER_OWNER} Repos eines Besitzers")
+
+
+def owner_key(url: str) -> str:
+    """Forge and first part of the path: `github.com/alice` is not `codeberg.org/alice`."""
+    parsed = urlsplit(url)
+    owner = next((part for part in parsed.path.split("/") if part), "")
+    return f"{parsed.hostname or ''}/{owner}".casefold()
+
+
+def _varied(ranked: list[Project]) -> tuple[Project, ...]:
+    """In ranking order, skipping a project whose language or owner is already full."""
+    selected: list[Project] = []
+    per_language: Counter[str | None] = Counter()
+    per_owner: Counter[str] = Counter()
+    for project in ranked:
+        owner = owner_key(project.repository_url)
+        if per_language[project.language] == MAX_PER_LANGUAGE or per_owner[owner] == MAX_PER_OWNER:
+            continue
+        per_language[project.language] += 1
+        per_owner[owner] += 1
+        selected.append(project)
+        if len(selected) == PROJECTS_PER_EDITION:
+            break
+    return tuple(selected)
 
 
 def recently_shown(day: date, past_editions: Iterable[CommunityEdition]) -> set[str]:

@@ -4,7 +4,11 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 
-from github_anti_ai.domain.community import CommunityCurator, recently_shown, repository_key
+from github_anti_ai.domain.community import (
+    CommunityCurator,
+    check_community_edition,
+    recently_shown,
+)
 from github_anti_ai.domain.opensource import is_open_source_license
 
 # Which stories the HN search asks for, see docs/datensammlung.md
@@ -46,9 +50,7 @@ class HnEdition:
 
     def __post_init__(self):
         object.__setattr__(self, "projects", tuple(self.projects))
-        urls = [repository_key(project.repository_url) for project in self.projects]
-        if len(urls) != len(set(urls)):
-            raise ValueError("Ein Repo steht mehrfach in der HN-Ausgabe")
+        check_community_edition(self.projects, "HN")
 
 
 class HnEditionCurator:
