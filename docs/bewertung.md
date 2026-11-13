@@ -159,8 +159,12 @@ man die Erwähnung in der Begründung sieht.
 echten Daten nannten es 29 von 519 Repos der Hauptliste, und fast alle waren Werkzeuge
 für AI-Agenten („Checkouts for agents“, „terminals for coding agents“). Ausgenommen
 bleiben feste Wendungen: `user agent`, `build agent`, `ssh agent`, `gpg agent`,
-`monitoring agent`, `agent based`. Die Änderung verschiebt 33 Repos in die AI-Sektion,
-etwa 6 davon zu Unrecht, weil sie Agenten nur am Rand erwähnen.
+`tpm agent`, `monitoring agent`, `agent based`. Die Änderung verschiebt 33 Repos in die
+AI-Sektion, etwa 6 davon zu Unrecht, weil sie Agenten nur am Rand erwähnen.
+
+`tpm agent` kam am 13.11.2026 dazu: `Foxboron/ssh-tpm-agent` (ein ssh-agent für TPMs)
+landete in der Lobsters-AI-Sektion, weil sein Name 36-mal im README steht und „ssh tpm
+agent“ nicht unter `ssh agent` fällt. Die Beispielsammlung enthält keinen solchen Fall.
 
 **Bewusst nicht dabei**, weil mehrdeutig: `prompt` (Shell-Prompt), `cursor`
 (Textcursor), `gemini` (Gemini-Protokoll), `diffusion` (Physik). Ebenfalls nicht dabei

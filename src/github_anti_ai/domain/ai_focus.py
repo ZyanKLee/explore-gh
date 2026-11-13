@@ -53,6 +53,7 @@ AI_TERMS = TermList(
         "build agent",
         "ssh agent",
         "gpg agent",
+        "tpm agent",  # ssh-tpm-agent and its relatives
         "monitoring agent",
         "agent based",
     ],

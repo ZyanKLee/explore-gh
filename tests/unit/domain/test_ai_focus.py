@@ -116,6 +116,7 @@ def test_classic_machine_learning_is_not_ai_focused():
         ("alice/build-agent", "A build agent for self-hosted CI", ("build-agent", "ci")),
         ("alice/keyring", "Unlocks the SSH agent and the GPG agent at login", ("ssh-agent",)),
         ("alice/flock", "Agent-based simulation of bird flocks", ("agent-based-modeling",)),
+        ("alice/ssh-tpm-agent", "ssh-agent for TPMs", ("ssh", "tpm")),
     ],
 )
 def test_ambiguous_words_are_not_ai_terms(repo, description, topics):
@@ -190,3 +191,17 @@ def test_texts_without_snapshot_are_classified_by_the_same_rule():
 
     assert ai.section is Section.AI
     assert plain.section is Section.MAIN
+
+
+def test_ssh_tpm_agent_with_its_name_all_over_the_readme_belongs_to_the_main_list():
+    readme = "# ssh-tpm-agent\n\n" + "Run ssh-tpm-agent as a service. " * 40
+
+    assert section("foxboron/ssh-tpm-agent", description="ssh-agent for TPMs", readme=readme) is (
+        Section.MAIN
+    )
+
+
+def test_an_ai_agent_for_tpm_keys_is_still_ai_focused():
+    assert section(
+        "alice/tpm-copilot", description="An AI agent that manages your TPM keys"
+    ) is Section.AI
