@@ -6,8 +6,8 @@
   <meta name="color-scheme" content="light dark">
   <title>{% block title %}{{ SITENAME }}{% endblock %}</title>
   <link rel="stylesheet" href="{{ SITEURL }}/theme/css/style.css">
-  <link rel="alternate" type="application/atom+xml" title="Fundstücke" href="{{ SITEURL }}/feed.xml">
-  <link rel="alternate" type="application/atom+xml" title="AI-Sektion" href="{{ SITEURL }}/ai/feed.xml">
+  <link rel="alternate" type="application/atom+xml" title="Trending auf GitHub" href="{{ SITEURL }}/feed.xml">
+  <link rel="alternate" type="application/atom+xml" title="AI-Projekte auf GitHub" href="{{ SITEURL }}/ai/feed.xml">
   {% if PLAUSIBLE_SCRIPT %}
   <!-- Privacy-friendly analytics by Plausible -->
   <script async src="{{ PLAUSIBLE_SCRIPT }}"></script>
@@ -23,11 +23,9 @@
     <a class="wordmark" href="{{ SITEURL }}/">{{ SITENAME }}</a>
     <nav aria-label="Bereiche">
       <ul>
-        <li><a href="{{ SITEURL }}/"{% if current == "main" %} aria-current="page"{% endif %}>Hauptliste</a></li>
-        <li><a href="{{ SITEURL }}/ai/"{% if current == "ai" %} aria-current="page"{% endif %}>AI-Sektion</a></li>
+        <li><a href="{{ SITEURL }}/"{% if current == "github" %} aria-current="page"{% endif %}>Trending auf GitHub</a></li>
         <li><a href="{{ SITEURL }}/hn/"{% if current == "hn" %} aria-current="page"{% endif %}>Trending auf HN</a></li>
         <li><a href="{{ SITEURL }}/lobsters/"{% if current == "lobsters" %} aria-current="page"{% endif %}>Trending auf Lobsters</a></li>
-        <li><a href="{{ SITEURL }}/archiv/"{% if current == "archiv" %} aria-current="page"{% endif %}>Archiv</a></li>
       </ul>
     </nav>
   </header>
@@ -36,7 +34,7 @@
   </main>
   <footer class="site">
     <p>Aufstrebende Open-Source-Projekte: eine nach festen Regeln kuratierte GitHub-Liste und eigene Community-Trendlisten. {% if PLAUSIBLE_SCRIPT %}Besuche zählt Plausible, ohne Cookies und ohne Angaben zur Person.{% else %}Ohne Tracking, ohne Skripte.{% endif %}</p>
-    <p>Als Feed abonnieren: <a href="{{ SITEURL }}/feed.xml">Hauptliste</a>, <a href="{{ SITEURL }}/hn/feed.xml">Trending auf HN</a>, <a href="{{ SITEURL }}/lobsters/feed.xml">Trending auf Lobsters</a>, <a href="{{ SITEURL }}/ai/feed.xml">AI-Sektion</a>, <a href="{{ SITEURL }}/hn/ai/feed.xml">AI-Projekte auf HN</a>, <a href="{{ SITEURL }}/lobsters/ai/feed.xml">AI-Projekte auf Lobsters</a></p>
+    <p>Als Feed abonnieren: <a href="{{ SITEURL }}/feed.xml">Trending auf GitHub</a>, <a href="{{ SITEURL }}/hn/feed.xml">Trending auf HN</a>, <a href="{{ SITEURL }}/lobsters/feed.xml">Trending auf Lobsters</a>, <a href="{{ SITEURL }}/ai/feed.xml">AI-Projekte auf GitHub</a>, <a href="{{ SITEURL }}/hn/ai/feed.xml">AI-Projekte auf HN</a>, <a href="{{ SITEURL }}/lobsters/ai/feed.xml">AI-Projekte auf Lobsters</a></p>
   </footer>
 </body>
 </html>

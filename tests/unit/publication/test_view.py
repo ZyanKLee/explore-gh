@@ -20,8 +20,8 @@ def test_main_list_and_ai_section_get_their_own_title_and_address():
     main, ai = section_view(edition, "main"), section_view(edition, "ai")
 
     assert main.day == date(2026, 11, 12)
-    assert main.title == "Fundstücke vom 12. November 2026"
-    assert ai.title == "AI-Sektion vom 12. November 2026"
+    assert main.title == "Trending auf GitHub vom 12. November 2026"
+    assert ai.title == "AI-Projekte auf GitHub vom 12. November 2026"
     assert main.url == "2026/11/12/"
     assert ai.url == "ai/2026/11/12/"
 

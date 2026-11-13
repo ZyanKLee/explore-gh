@@ -1,9 +1,9 @@
-{% set current = "archiv" %}
+{% set current = "github" %}
 {% extends "base.html" %}
-{% block title %}Archiv – {{ SITENAME }}{% endblock %}
+{% block title %}GitHub-Archiv – {{ SITENAME }}{% endblock %}
 {% block content %}
 <header class="edition">
-  <h1>Archiv</h1>
+  <h1>GitHub-Archiv</h1>
   {% if edition_days %}<p class="stats">Alle Tage, der neueste zuerst</p>{% endif %}
 </header>
 {% if not edition_days %}
@@ -13,8 +13,9 @@
   {% for day in edition_days %}
   <li>
     <span class="date">{{ day.date }}</span>
-    <a href="{{ SITEURL }}/{{ day.main.url }}">Hauptliste ({{ day.main.entries|length }})</a>
-    <a href="{{ SITEURL }}/{{ day.ai.url }}">AI-Sektion ({{ day.ai.entries|length }})</a>
+    {% set main_count, ai_count = day.main.entries|length, day.ai.entries|length %}
+    <a href="{{ SITEURL }}/{{ day.main.url }}">{{ main_count }} {{ "Repo" if main_count == 1 else "Repos" }}</a>
+    <a href="{{ SITEURL }}/{{ day.ai.url }}">{{ ai_count }} {{ "AI-Repo" if ai_count == 1 else "AI-Repos" }}</a>
   </li>
   {% endfor %}
 </ul>

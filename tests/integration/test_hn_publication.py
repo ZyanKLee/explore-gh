@@ -102,3 +102,20 @@ def test_hn_entry_explains_its_place(tmp_path):
     assert "Warum Platz 1?" in start
     assert "42 HN-Punkte" in start
     assert "Die Story verlinkt das Repo direkt." in start
+
+
+def test_hn_ai_page_links_back_to_trending_of_the_same_day(tmp_path):
+    story = HnStory("9", "Agent", "https://agent.example", 30, 2, datetime(2026, 11, 13, tzinfo=UTC))
+    project = HnProjectCandidate(
+        story=story, repository_url="https://codeberg.org/owner/agent", project_url=story.url,
+        description="", language="Rust", license_id="MIT", is_fork=False,
+        is_archived=False, has_code=True,
+    )
+    editions = tmp_path / "hn-editions"
+    JsonHnEditionStore(editions).save(HnEdition(day=story.created_at.date(), ai_projects=(project,)))
+
+    build_site(tmp_path / "editions", tmp_path / "output", hn_editions_dir=editions)
+
+    html = (tmp_path / "output/hn/ai/index.html").read_text(encoding="utf-8")
+    assert ">Trending dieses Tages</a>" in html
+    assert "Hauptliste" not in html

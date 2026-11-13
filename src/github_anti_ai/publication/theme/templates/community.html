@@ -7,7 +7,7 @@
   <nav class="days" aria-label="Andere Tage und Sektionen">
     <ul>
       {% if nav.older %}<li><a rel="prev" href="{{ SITEURL }}/{{ nav.older.url }}">Tag davor</a></li>{% endif %}
-      {% if nav.other %}<li><a href="{{ SITEURL }}/{{ nav.other.url }}">{{ "AI-Projekte" if view.section == "main" else "Hauptliste" }} dieses Tages</a></li>{% endif %}
+      {% if nav.other %}<li><a href="{{ SITEURL }}/{{ nav.other.url }}">{{ "AI-Projekte" if view.section == "main" else "Trending" }} dieses Tages</a></li>{% endif %}
       {% if nav.newer %}<li><a rel="next" href="{{ SITEURL }}/{{ nav.newer.url }}">Tag danach</a></li>{% endif %}
       <li><a href="{{ SITEURL }}/{{ archive_url }}">Archiv</a></li>
     </ul>

@@ -10,7 +10,7 @@ from datetime import date, datetime
 from pathlib import Path
 
 FORMAT_VERSION = 1
-SECTION_TITLES = {"main": "Fundstücke", "ai": "AI-Sektion"}
+SECTION_TITLES = {"main": "Trending auf GitHub", "ai": "AI-Projekte auf GitHub"}
 SECTION_PREFIXES = {"main": "", "ai": "ai/"}
 MONTHS = [
     "Januar", "Februar", "März", "April", "Mai", "Juni",

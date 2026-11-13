@@ -49,7 +49,7 @@ def page(site, path):
 def test_start_page_shows_the_main_list_of_the_newest_edition(site):
     html = page(site, "index.html")
 
-    assert "Fundstücke vom 12. November 2026" in html
+    assert "Trending auf GitHub vom 12. November 2026" in html
     assert "alice/tiny-editor" in html
     assert "old/gem" not in html
 
@@ -62,7 +62,7 @@ def test_ai_repos_never_appear_on_the_main_list(site):
 def test_ai_section_has_its_own_pages(site):
     html = page(site, "ai/index.html")
 
-    assert "AI-Sektion vom 12. November 2026" in html
+    assert "AI-Projekte auf GitHub vom 12. November 2026" in html
     assert "bob/agent-kit" in html
     assert "alice/tiny-editor" not in html
     assert "old/agent" in page(site, "ai/2026/11/11/index.html")
@@ -87,6 +87,46 @@ def test_archive_lists_all_days_newest_first_with_both_sections(site):
     assert html.index("12. November 2026") < html.index("11. November 2026")
     for address in ("2026/11/12/", "ai/2026/11/12/", "2026/11/11/", "ai/2026/11/11/"):
         assert address in html
+
+
+def main_navigation(html):
+    return re.search(r'<nav aria-label="Bereiche">(.*?)</nav>', html, re.S).group(1)
+
+
+def test_main_navigation_names_only_the_three_platforms(site):
+    nav = main_navigation(page(site, "index.html"))
+
+    assert re.findall(r">([^<]+)</a>", nav) == [
+        "Trending auf GitHub", "Trending auf HN", "Trending auf Lobsters",
+    ]
+
+
+@pytest.mark.parametrize(
+    "path", ["index.html", "ai/index.html", "archiv/index.html", "2026/11/11/index.html",
+             "ai/2026/11/11/index.html"],
+)
+def test_every_github_page_marks_trending_on_github_as_current(site, path):
+    nav = main_navigation(page(site, path))
+
+    assert re.search(r'aria-current="page">Trending auf GitHub</a>', nav)
+    assert nav.count("aria-current") == 1
+
+
+@pytest.mark.parametrize("path", ["index.html", "2026/11/12/index.html", "ai/index.html"])
+def test_github_pages_link_the_other_section_and_the_archive_themselves(site, path):
+    html = page(site, path)
+
+    assert re.search(r'href="[./]*archiv/">Archiv</a>', html)
+    other = "AI-Projekte" if not path.startswith("ai/") else "Trending"
+    assert f">{other} dieses Tages</a>" in html
+
+
+def test_github_archive_names_both_sections_of_each_day(site):
+    html = page(site, "archiv/index.html")
+
+    assert "GitHub-Archiv" in html
+    assert re.search(r'href="[./]*2026/11/12/">2 Repos</a>', html)
+    assert re.search(r'href="[./]*ai/2026/11/12/">1 AI-Repo</a>', html)
 
 
 def test_entry_shows_its_facts(site):

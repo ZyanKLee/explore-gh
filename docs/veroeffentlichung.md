@@ -46,11 +46,11 @@ Gebaut wird mit `build_site(editions_dir, output_dir)`
 
 | Adresse | Inhalt |
 |---|---|
-| `/` | Hauptliste der neuesten Ausgabe |
-| `/ai/` | AI-Sektion der neuesten Ausgabe |
+| `/` | Trending auf GitHub, neueste Ausgabe (Hauptliste) |
+| `/ai/` | AI-Projekte auf GitHub, neueste Ausgabe (AI-Sektion) |
 | `/2026/11/12/` | Hauptliste eines Tages |
 | `/ai/2026/11/12/` | AI-Sektion eines Tages |
-| `/archiv/` | alle Tage, neuester zuerst, je mit Link auf beide Sektionen |
+| `/archiv/` | GitHub-Archiv: alle Tage, neuester zuerst, je mit Link auf beide Sektionen |
 | `/feed.xml` | Atom-Feed der Hauptliste, ein Eintrag pro Tag |
 | `/ai/feed.xml` | Atom-Feed der AI-Sektion, ein Eintrag pro Tag |
 | `/hn/` | neueste HN-Trendliste |
@@ -72,8 +72,14 @@ Das HN- und das Lobsters-Archiv nennen je Tag beide Sektionen.
 
 - Die Hauptliste zeigt nie ein Repo der AI-Sektion und umgekehrt. Das gilt auch für
   die Feeds, und genauso für HN und Lobsters.
-- Jede Tagesseite verlinkt den Tag davor und danach sowie die andere Sektion
-  desselben Tages.
+- Die Hauptnavigation nennt nur die drei Plattformen: „Trending auf GitHub“, „Trending
+  auf HN“, „Trending auf Lobsters“. Alle Seiten einer Plattform (beide Sektionen,
+  Tagesseiten, Archiv) markieren dort ihre Plattform als aktuelle Seite.
+- Jede Tagesseite verlinkt den Tag davor und danach, die andere Sektion desselben
+  Tages („AI-Projekte dieses Tages“ bzw. „Trending dieses Tages“) und das Archiv ihrer
+  Plattform. Das gilt für GitHub, HN und Lobsters gleichermaßen.
+- Die Adressen der GitHub-Seiten und -Feeds blieben bei der Umbenennung (13.11.2026)
+  unverändert, damit bestehende Abos weiterlaufen.
 - Ist eine Sektion leer, steht dort „Heute nichts gefunden“
 - Gibt es noch keine Ausgabe, entsteht eine Startseite mit dem Hinweis „Noch keine
   Ausgabe“
@@ -96,7 +102,7 @@ ausgeschlossen, 212 als AI-Thema eingestuft“.
 
 | Was | Form |
 |---|---|
-| Titel | „Fundstücke vom 12. November 2026“ / „AI-Sektion vom 12. November 2026“ |
+| Titel | „Trending auf GitHub vom 12. November 2026“ / „AI-Projekte auf GitHub vom 12. November 2026“ |
 | Zahlen | deutsch mit Tausenderpunkt: `91.943` |
 | Gewinn | `+120` |
 | Gewichte | eine Nachkommastelle mit Komma und Vorzeichen: `+40,0`, `−3,0`, bei null `0` |

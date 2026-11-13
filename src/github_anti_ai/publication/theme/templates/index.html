@@ -1,6 +1,7 @@
-{% set current = "main" %}
+{% set current = "github" %}
 {% extends "base.html" %}
 {% from "macros.html" import section with context %}
+{% block title %}Trending auf GitHub – {{ SITENAME }}{% endblock %}
 {% block content %}
 {% if latest %}{{ section(latest.main.view, latest.main.nav) }}{% else %}<p class="empty">Noch keine Ausgabe</p>{% endif %}
 {% endblock %}
