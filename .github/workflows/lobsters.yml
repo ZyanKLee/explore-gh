@@ -1,0 +1,41 @@
+# Sucht täglich trendende Open-Source-Projekte in Lobsters' Hottest-Liste.
+name: Lobsters-Ausgabe
+
+on:
+  schedule:
+    - cron: "52 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lobsters-daily
+  cancel-in-progress: false
+
+jobs:
+  edition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Lobsters-Projekte suchen, sammeln und filtern
+        env:
+          GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
+        run: uv run github-anti-ai collect-lobsters
+      - name: Lobsters-Ausgabe ins Repo schreiben
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/lobsters-editions
+          if git diff --cached --quiet; then
+            echo "Nichts Neues."
+          else
+            git commit -m "Lobsters-Ausgabe vom $(date -u +%F)"
+            git pull --rebase
+            git push
+          fi

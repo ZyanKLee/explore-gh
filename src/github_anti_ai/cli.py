@@ -9,14 +9,24 @@ from collections.abc import Mapping, Sequence
 from datetime import date
 from pathlib import Path
 
+import httpx
+
 from github_anti_ai.adapters.clock import SystemClock
 from github_anti_ai.adapters.github_http import make_github_client
 from github_anti_ai.adapters.github_repo_source import GitHubRepoSource
 from github_anti_ai.adapters.github_search import GitHubSearchCandidates
+from github_anti_ai.adapters.hn_projects import HnProjectResolver
+from github_anti_ai.adapters.hn_search import HackerNewsSearch
+from github_anti_ai.adapters.json_lobsters_edition_store import JsonLobstersEditionStore
 from github_anti_ai.adapters.json_collection_status_store import JsonCollectionStatusStore
 from github_anti_ai.adapters.json_daily_record_store import JsonDailyRecordStore
 from github_anti_ai.adapters.json_edition_store import JsonEditionStore
+from github_anti_ai.adapters.json_hn_edition_store import JsonHnEditionStore
 from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
+from github_anti_ai.adapters.lobsters_projects import LobstersProjectResolver
+from github_anti_ai.adapters.lobsters_search import LobstersSearch
+from github_anti_ai.application.collect_hn_edition import CollectHnEdition
+from github_anti_ai.application.collect_lobsters_edition import CollectLobstersEdition
 from github_anti_ai.application.collect_snapshots import CollectionReport, CollectSnapshots
 from github_anti_ai.application.explain_assessment import ExplainAssessment, UnknownRepo
 from github_anti_ai.application.ports import (
@@ -42,6 +52,8 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
     commands = parser.add_subparsers(dest="command", required=True)
     for name, help_text in [
         ("collect", "Momentaufnahmen sammeln"),
+        ("collect-hn", "HN-Projekte suchen, sammeln und filtern"),
+        ("collect-lobsters", "Lobsters-Projekte suchen, sammeln und filtern"),
         ("publish", "heutige Ausgabe erzeugen"),
         ("daily", "sammeln und Ausgabe erzeugen"),
         ("site", "Website aus den Ausgaben bauen"),
@@ -74,7 +86,7 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
                 default=None,
                 help="Tag der Sammlung als JJJJ-MM-TT (Standard: heute)",
             )
-        if name in ("collect", "daily"):
+        if name in ("collect", "daily", "collect-hn", "collect-lobsters"):
             command.add_argument(
                 "--limit",
                 type=int,
@@ -118,7 +130,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         # imported here: only this command needs Pelican
         from github_anti_ai.publication.site import build_site
 
-        build_site(args.data_dir / "editions", args.output, args.site_url, args.plausible)
+        build_site(
+            args.data_dir / "editions",
+            args.output,
+            args.site_url,
+            args.plausible,
+            args.data_dir / "hn-editions",
+            args.data_dir / "lobsters-editions",
+        )
         print(f"Website gebaut: {args.output}/index.html")
         return 0
     if args.command == "serve":
@@ -128,8 +147,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         logging.getLogger().setLevel(logging.WARNING)  # Pelican is chatty on every rebuild
         editions = args.data_dir / "editions"
         serve(
-            build=lambda: build_site(editions, args.output),
-            watch=[editions, THEME],
+            build=lambda: build_site(
+                editions,
+                args.output,
+                hn_editions_dir=args.data_dir / "hn-editions",
+                lobsters_editions_dir=args.data_dir / "lobsters-editions",
+            ),
+            watch=[
+                editions,
+                args.data_dir / "hn-editions",
+                args.data_dir / "lobsters-editions",
+                THEME,
+            ],
             output_dir=args.output,
             port=args.port,
         )
@@ -137,6 +166,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         if args.command == "explain":
             print(explain(args.data_dir, args.day, args.repo))
+            return 0
+        if args.command == "collect-hn":
+            edition = collect_hn(
+                args.data_dir,
+                load_token(os.environ, Path(".env")),
+                args.limit,
+            )
+            print(f"HN-Ausgabe {edition.day}: {len(edition.projects)} OSS-Projekte")
+            return 0
+        if args.command == "collect-lobsters":
+            edition = collect_lobsters(
+                args.data_dir,
+                load_token(os.environ, Path(".env")),
+                args.limit,
+            )
+            print(f"Lobsters-Ausgabe {edition.day}: {len(edition.projects)} OSS-Projekte")
             return 0
         day = getattr(args, "day", None)
         if args.command in ("collect", "daily"):
@@ -190,6 +235,62 @@ def collect(data_dir: Path, token: str, limit: int | None) -> CollectionReport:
     for error in report.source_errors + report.fetch_errors:
         print(f"  Fehler: {error}")
     return report
+
+
+def collect_hn(data_dir: Path, token: str, limit: int | None = None):
+    clock = SystemClock()
+    with (
+        httpx.Client(
+            base_url="https://hn.algolia.com/api/v1",
+            headers={"User-Agent": "github-anti-ai"},
+            timeout=10,
+            trust_env=False,
+        ) as hn_client,
+        httpx.Client(
+            headers={"User-Agent": "github-anti-ai project resolver"},
+            timeout=10,
+            trust_env=False,
+        ) as project_client,
+        make_github_client(token) as github_client,
+    ):
+        use_case = CollectHnEdition(
+            story_source=HackerNewsSearch(hn_client),
+            project_resolver=HnProjectResolver(
+                project_client, github_client=github_client
+            ),
+            edition_store=JsonHnEditionStore(data_dir / "hn-editions"),
+            clock=clock,
+            limit=limit,
+        )
+        return use_case.run()
+
+
+def collect_lobsters(data_dir: Path, token: str, limit: int | None = None):
+    clock = SystemClock()
+    with (
+        httpx.Client(
+            base_url="https://lobste.rs",
+            headers={"User-Agent": "github-anti-ai"},
+            timeout=10,
+            trust_env=False,
+        ) as lobsters_client,
+        httpx.Client(
+            headers={"User-Agent": "github-anti-ai project resolver"},
+            timeout=10,
+            trust_env=False,
+        ) as project_client,
+        make_github_client(token) as github_client,
+    ):
+        use_case = CollectLobstersEdition(
+            story_source=LobstersSearch(lobsters_client),
+            project_resolver=LobstersProjectResolver(
+                project_client, github_client=github_client
+            ),
+            edition_store=JsonLobstersEditionStore(data_dir / "lobsters-editions"),
+            clock=clock,
+            limit=limit,
+        )
+        return use_case.run()
 
 
 def publish(

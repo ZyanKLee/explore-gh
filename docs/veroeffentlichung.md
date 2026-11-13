@@ -2,14 +2,17 @@
 
 ## Aufgabe
 
-Aus den gespeicherten Ausgaben (`data/editions/*.json`) entsteht eine statische
-Website mit Archiv und Feeds. Die Veröffentlichung kennt nur das JSON-Format aus
-`ausgabe.md`. Sie fragt keine API ab, bewertet nichts und wählt nichts aus.
+Aus den gespeicherten GitHub-Ausgaben (`data/editions/*.json`), HN-Ausgaben
+(`data/hn-editions/*.json`) und Lobsters-Ausgaben (`data/lobsters-editions/*.json`)
+entsteht eine statische Website mit getrennten Archiven und Feeds. Die Veröffentlichung
+kennt nur diese JSON-Formate. Sie fragt keine API ab, bewertet nichts und wählt nichts aus.
 
 ## Aufbau
 
 ```
-data/editions/*.json
+data/editions/*.json ── GitHub-Ausgaben
+data/hn-editions/*.json ── eigenständige HN-Ausgaben
+data/lobsters-editions/*.json ── eigenständige Lobsters-Ausgaben
    │  load_editions()        lesen, Format prüfen, nach Datum sortieren
    ▼
 section_view()               je Ausgabe und Sektion ein fertiges Seitenmodell
@@ -26,11 +29,11 @@ Zwei Teile mit klarer Grenze:
 - **Seitenmodell** (`src/github_anti_ai/publication/view.py`): reine Funktionen ohne
   Pelican. Hier steht alles, was Text und Zahlen betrifft. Schnell und einfach zu
   testen.
-- **Pelican-Anbindung** (`src/github_anti_ai/publication/pelican_plugin.py` und
-  `theme/` daneben): so dünn wie möglich. Das Plugin hängt pro Ausgabe zwei Artikel
-  ein (Hauptliste und AI-Sektion). Das Theme setzt nur noch zusammen und denkt sich
-  keine Texte aus. Plugin und Theme liegen im Python-Paket, damit der Bau sie
-  unabhängig vom Arbeitsverzeichnis findet.
+| **Pelican-Anbindung** (`src/github_anti_ai/publication/pelican_plugin.py` und
+  `theme/` daneben): so dünn wie möglich. Das Plugin hängt GitHub-Artikel für
+  Hauptliste und AI-Sektion sowie getrennte HN- und Lobsters-Artikel ein. Das Theme
+  setzt nur noch zusammen und denkt sich keine Texte aus. Plugin und Theme liegen im Python-Paket,
+  damit der Bau sie unabhängig vom Arbeitsverzeichnis findet.
 
 Gebaut wird mit `build_site(editions_dir, output_dir)`
 (`src/github_anti_ai/publication/site.py`). Die Funktion ruft Pelican auf.
@@ -46,6 +49,14 @@ Gebaut wird mit `build_site(editions_dir, output_dir)`
 | `/archiv/` | alle Tage, neuester zuerst, je mit Link auf beide Sektionen |
 | `/feed.xml` | Atom-Feed der Hauptliste, ein Eintrag pro Tag |
 | `/ai/feed.xml` | Atom-Feed der AI-Sektion, ein Eintrag pro Tag |
+| `/hn/` | neueste HN-Trendliste |
+| `/hn/2026/11/13/` | HN-Ausgabe eines Tages |
+| `/hn/archiv/` | alle HN-Tage, neuester zuerst |
+| `/hn/feed.xml` | Atom-Feed der HN-Liste |
+| `/lobsters/` | neueste Lobsters-Trendliste |
+| `/lobsters/2026/11/13/` | Lobsters-Ausgabe eines Tages |
+| `/lobsters/archiv/` | alle Lobsters-Tage, neuester zuerst |
+| `/lobsters/feed.xml` | Atom-Feed der Lobsters-Liste |
 
 - Die Hauptliste zeigt nie ein Repo der AI-Sektion und umgekehrt. Das gilt auch für
   die Feeds.
@@ -104,6 +115,7 @@ halb verstandene Ausgabe soll nie veröffentlicht werden.
 
 ```
 github-anti-ai site [--data-dir data] [--output output] [--site-url https://…]
+github-anti-ai collect-hn [--data-dir data] [--limit N]
 ```
 
 `daily` baut die Website nicht. Im Betrieb folgt `site` als eigener Schritt.

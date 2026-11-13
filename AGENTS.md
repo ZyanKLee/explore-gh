@@ -1,8 +1,10 @@
 # github-anti-ai
 
-Eine persönliche „Explore“-Seite für GitHub: Sie zeigt aufstrebende, aktive Repos, die
-überwiegend von Menschen geschrieben wurden. Reine AI- und LLM-Tools sollen die
-Hauptlisten nicht verwässern.
+Eine persönliche Explore-Seite für Open-Source-Software. Die Hauptliste zeigt
+aufstrebende, aktive GitHub-Repos, die überwiegend von Menschen geschrieben wurden.
+Separate Plattformlisten (beginnend mit HN) zeigen trendende OSS-Projekte von
+GitHub, GitLab und öffentlichen Gitea-/Forgejo-Instanzen. Reine AI- und LLM-Tools
+sollen die Hauptliste nicht verwässern.
 
 Der Projektinhaber ist kein Software-Entwickler. Code und Workflows deshalb einfach,
 gut nachvollziehbar und wartungsarm halten.
@@ -34,7 +36,8 @@ Es gibt keine offizielle Trending- oder Explore-API. Trending berechnen wir selb
 - ecosyste.ms: Repos, Pakete, Abhängigkeiten, Commits
 - deps.dev und OpenSSF Scorecard: Abhängigkeiten, Qualitätssignale
 - Paket-Registries (crates.io, PyPI, npm …): Downloadzahlen
-- Hacker News (Algolia-API), Lobste.rs, Reddit: menschliche Kuratierungssignale
+- Hacker News (Algolia-API), Lobste.rs, Reddit: eigene Trendlisten, keine Signale in
+  der GitHub-Bewertung
 
 Awesome-Listen bewusst **nicht** verwenden.
 
@@ -71,6 +74,11 @@ Awesome-Listen bewusst **nicht** verwenden.
   Tastatur und auf dem Telefon schlecht erreichbar war.
 - **Ausgabe**: statische Website plus RSS-Feed, täglich 20 Repos in der Hauptliste und
   20 in der separaten AI-Sektion. Archiv frühere Tage, zum Durchblättern.
+- **Community-Ausgaben**: eigene Such-, Erhebungs-, OSS-Filter- und Publikationsläufe
+  für HN und Lobsters. Die jeweiligen Plattform-Punkte bestimmen die Rangfolge;
+  Projekte gelangen nicht in die GitHub-Bewertung. Projekt-Websites werden zu
+  öffentlichen Repos auf GitHub, GitLab und Gitea-/Forgejo-kompatiblen Instanzen
+  verfolgt.
 - **Hosting**: GitHub Pages mit GitHub Actions, täglicher Lauf per Cron. Das Repo ist
   `ZyanKLee/explore-gh`. Die Workflows beschreibt `docs/veroeffentlichung.md`.
 - **Token**: klassischer personal access token ohne Scopes (damit ist alles geprüft).
@@ -94,6 +102,11 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 
 - **Acquisition**: Kandidaten finden, APIs abfragen, Ergebnisse in `Snapshot`s übersetzen.
   API-Formate gelangen nie in die Domäne.
+- **HN Trending**: HN-Storys finden, Projekt-Websites zu öffentlichen Forge-Repos
+  auflösen und eigene HN-Ausgaben kuratieren. Getrennt von GitHub `Snapshot`s.
+- **Lobsters Trending**: Lobsters-Storys finden, Projekt-Websites zu öffentlichen
+  Forge-Repos auflösen und eigene Lobsters-Ausgaben kuratieren. Getrennt von GitHub
+  `Snapshot`s und HN-Ausgaben.
 - **Assessment** (Core): Signale, Ausschlüsse, Sektion, Punktzahl
 - **Curation** (Core): tägliche `Edition` mit Sperre, Vielfaltsregel und Top 20
 - **Publication**: Seitenmodell (reine Funktionen) plus dünne Pelican-Anbindung. Kennt
@@ -104,6 +117,8 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Begriff | Code | Bedeutung |
 |---|---|---|
 | Repo | `Repo`, `RepoId` | GitHub-Repository als Kandidat, Identität `owner/name` |
+| HN-Projekt | `HnProjectCandidate` | öffentliches, auf HN verlinktes Softwareprojekt samt Forge- und HN-Fakten |
+| Lobsters-Projekt | `LobstersProjectCandidate` | öffentliches, auf Lobsters verlinktes Softwareprojekt samt Forge- und Lobsters-Fakten |
 | Kandidat | `Candidate` | Repo, das eine Quelle heute gefunden hat, samt Sternzahl, falls die Quelle sie kennt |
 | Momentaufnahme | `Snapshot` | Alles, was zu einem Zeitpunkt über ein Repo gesammelt wurde. `facts_at` sagt, wann die Fakten zuletzt von GitHub kamen. |
 | Sternverlauf | `StarHistory` | Neue Sterne je Tag über 35 Tage. `gained()` ist der Gewinn der letzten 7 Tage. |
@@ -148,7 +163,7 @@ docs/                  # Konzepte mit Stand und Geplantem: datensammlung.md (Acq
                        # bewertung.md (Assessment), ausgabe.md (Curation),
                        # veroeffentlichung.md (Publication), langzeitdaten.md
 data/                  # editions/ (versioniert), snapshots/ (Arbeitsdaten, 14 Tage),
-                       # history/ (Langzeitdaten, versioniert)
+                       # history/ (versioniert), hn-editions/ und lobsters-editions/ (versioniert)
 tests/unit/            # Domäne und Use Cases
 tests/integration/     # Adapter gegen aufgezeichnete Antworten in fixtures/, dazu die
                        # Regeln gegen die Beispielsammlung (fixtures/labelled/)

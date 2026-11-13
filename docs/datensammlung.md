@@ -349,15 +349,37 @@ Zweiter Sammeltag, 13.11.2026, mit den Momentaufnahmen des Vortags:
 | `REFRESH_AFTER_DAYS` | 3 | Anwendung |
 | `FRESH_LEADERS_PER_SECTION` | 60 | Anwendung |
 
-## Geplant: weitere Kandidatenquellen
+## Separate Trendlisten
 
-- **Hacker News** (Algolia-API) und **Lobste.rs** (JSON-Endpunkte): Beiträge der
-  letzten Tage, die auf ein GitHub-Repo verlinken. Menschen empfehlen dort Projekte
-  unabhängig von deren Alter.
-- **OSS Insight** (Trending-API): vor dem Bau prüfen, ob und wie sie erreichbar ist.
-- **Herkunft bleibt erhalten:** Eine Quelle liefert künftig nicht nur die `RepoId`,
-  sondern auch, wo und wie stark das Repo erwähnt wurde (z. B. „Hacker News, 300
-  Punkte“). `Assessment` macht daraus ein Signal.
+Hacker News und Lobsters haben getrennte Datenflüsse und speisen keine GitHub-Kandidaten ein:
+
+1. `HackerNewsSearch` liest die aktuelle Frontpage über die Algolia-API.
+2. `HnProjectResolver` folgt Links von Projekt-Websites zu öffentlichen
+  GitHub-, GitLab- und Gitea-/Forgejo-Repositories. GitHub-Metadaten kommen über die
+  GitHub-API, die anderen bekannten Formate über die jeweilige Forge-API.
+3. `HnEditionCurator` verlangt eine erkannte Lizenz aus der OSS-Freigabeliste,
+  vorhandenen Code und schließt Forks sowie archivierte Repos aus. HN-Punkte bestimmen
+  die Rangfolge; die GitHub-Momentum-Regel wird nicht angewendet.
+4. `JsonHnEditionStore` schreibt eine unveränderliche Tagesausgabe nach
+  `data/hn-editions/`. Pelican liest sie getrennt von `data/editions/`.
+
+Lobsters folgt demselben Projekt- und OSS-Modell, aber mit einer eigenen Story-Quelle
+und Rangfolge:
+
+1. `LobstersSearch` liest `/hottest.json`; newest-Storys werden nicht mit aktuellen
+  Trends vermischt.
+2. `LobstersProjectResolver` erhält Lobsters-Story und Diskussionslink, während der
+  gemeinsame Resolver Projektseiten und Forge-APIs prüft.
+3. `LobstersEditionCurator` sortiert nach Lobsters-Score und wendet dieselben OSS-,
+  Code-, Fork- und Archivfilter an wie die HN-Ausgabe.
+4. `JsonLobstersEditionStore` schreibt getrennt nach `data/lobsters-editions/`.
+
+Die Lizenzliste ist bewusst fail-closed, aber nicht vollständig: Eine gültige
+OSS-Lizenz, die noch nicht aufgelistet ist, wird vorerst nicht aufgenommen. Der Resolver
+kennt derzeit GitHub, GitLab und Gitea-/Forgejo-API-Formate; beliebige unbekannte
+Forge-APIs lassen sich nicht automatisch beurteilen.
+
+Reddit bleibt wegen OAuth-, Lösch- und Aufbewahrungsregeln zurückgestellt.
 
 ## Geplant: mehr Daten in der Momentaufnahme
 

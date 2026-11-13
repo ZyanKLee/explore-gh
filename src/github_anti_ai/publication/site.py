@@ -14,6 +14,8 @@ def build_site(
     output_dir: Path,
     site_url: str | None = None,
     plausible_script: str | None = None,
+    hn_editions_dir: Path | None = None,
+    lobsters_editions_dir: Path | None = None,
 ) -> None:
     """site_url is the public address of the site. The feeds need it for full links.
 
@@ -33,6 +35,10 @@ def build_site(
                 "THEME": str(THEME),
                 "PLUGINS": ["github_anti_ai.publication.pelican_plugin"],
                 "EDITIONS_PATH": str(editions_dir),
+                "HN_EDITIONS_PATH": str(hn_editions_dir) if hn_editions_dir else None,
+                "LOBSTERS_EDITIONS_PATH": (
+                    str(lobsters_editions_dir) if lobsters_editions_dir else None
+                ),
                 "SITENAME": "Fundstücke",
                 "PLAUSIBLE_SCRIPT": plausible_script,
                 "SITEURL": (site_url or "").rstrip("/"),
@@ -41,9 +47,15 @@ def build_site(
                 "DEFAULT_LANG": "de",
                 # text from GitHub must never be interpreted as HTML
                 "JINJA_ENVIRONMENT": {"autoescape": True, "trim_blocks": True, "lstrip_blocks": True},
-                "DIRECT_TEMPLATES": ["index", "ai", "archiv"],
+                "DIRECT_TEMPLATES": [
+                    "index", "ai", "archiv", "hn", "hn_archiv", "lobsters", "lobsters_archiv"
+                ],
                 "AI_SAVE_AS": "ai/index.html",
                 "ARCHIV_SAVE_AS": "archiv/index.html",
+                "HN_SAVE_AS": "hn/index.html",
+                "HN_ARCHIV_SAVE_AS": "hn/archiv/index.html",
+                "LOBSTERS_SAVE_AS": "lobsters/index.html",
+                "LOBSTERS_ARCHIV_SAVE_AS": "lobsters/archiv/index.html",
                 "CATEGORY_FEED_ATOM": "{slug}feed.xml",
                 "FEED_ALL_ATOM": None,
                 "AUTHOR_FEED_ATOM": None,

@@ -1,11 +1,14 @@
 # github-anti-ai
 
-Eine persönliche „Explore“-Seite für GitHub. Sie zeigt jeden Tag 20 aufstrebende Repos,
-die überwiegend von Menschen geschrieben wurden, und getrennt davon 20 Repos zum Thema
-AI. Köder für Schadsoftware, Linksammlungen, Kryptowährungen und Repos in fremden
-Sprachen fliegen raus.
+Eine persönliche Explore-Seite für Open-Source-Software. Die GitHub-Liste zeigt jeden
+Tag 20 aufstrebende Repos, die überwiegend von Menschen geschrieben wurden. Eine
+getrennte HN- und Lobsters-Listen zeigen trendende OSS-Projekte, auch auf GitLab sowie
+öffentlichen Gitea-/Forgejo-Instanzen. Repos zum Thema AI stehen in einer eigenen
+GitHub-Sektion.
+Köder für Schadsoftware, Linksammlungen, Kryptowährungen und Repos in fremden Sprachen
+fliegen raus.
 
-Das Ergebnis ist eine statische Website mit Archiv und zwei Feeds.
+Das Ergebnis ist eine statische Website mit Archiven und eigenen Feeds je Liste.
 
   > [https://zyanklee.github.io/explore-gh/](https://zyanklee.github.io/explore-gh/)
 
@@ -67,9 +70,33 @@ Danach `output/index.html` im Browser öffnen.
 - Hat das Sammeln über Mitternacht gedauert, gehören die Daten zum Tag, an dem es
   begonnen hat: `uv run github-anti-ai publish --day 2026-11-13`
 
+### HN-Liste aktualisieren (`collect-hn`)
+
+- Sucht aktuelle HN-Frontpage-Storys, folgt Projekt-Websites zu öffentlichen
+  Repositories und verlangt eine erkannte Open-Source-Lizenz sowie vorhandenen Code.
+- Sortiert die eigenständige HN-Ausgabe nach HN-Punkten. Sie fließt nicht in die
+  GitHub-Bewertung ein.
+- Schreibt eine unveränderliche Datei nach `data/hn-editions/`.
+
+```
+uv run github-anti-ai collect-hn
+```
+
+### Lobsters-Liste aktualisieren (`collect-lobsters`)
+
+- Liest Lobsters' Hottest-Liste, folgt Projekt-Websites zu öffentlichen Repositories
+  und nutzt dieselbe OSS- und Forge-Prüfung wie die HN-Liste.
+- Sortiert nach Lobsters-Punkten und speichert getrennt unter
+  `data/lobsters-editions/`.
+
+```
+uv run github-anti-ai collect-lobsters
+```
+
 ### 3. Website bauen (`site`)
 
-- Baut aus allen Ausgaben in `data/editions/` die Seite nach `output/`.
+- Baut aus den GitHub-Ausgaben und, falls vorhanden, den HN- und Lobsters-Ausgaben die
+  Seite nach `output/`.
 - Der Schritt fragt GitHub nicht ab und lässt sich beliebig oft wiederholen.
 - Soll die Seite ins Netz, braucht der Befehl ihre Adresse, damit die Feeds
   vollständige Links bekommen: `uv run github-anti-ai site --site-url https://…`
@@ -90,9 +117,9 @@ uv run github-anti-ai serve
 ```
 
 Baut die Seite und zeigt sie unter <http://127.0.0.1:8000>. Ändert sich eine Ausgabe
-in `data/editions/` oder eine Datei des Themes, baut der Befehl neu und der Browser
-lädt die Seite von selbst nach. Strg+C beendet die Vorschau. Mit `--port 8080` läuft
-sie auf einem anderen Port.
+in `data/editions/`, `data/hn-editions/` oder `data/lobsters-editions/` oder eine Datei
+des Themes, baut der Befehl neu und der Browser lädt die Seite von selbst nach. Strg+C
+beendet die Vorschau. Mit `--port 8080` läuft sie auf einem anderen Port.
 
 Die Vorschau ist nur vom eigenen Rechner aus erreichbar.
 
@@ -125,7 +152,9 @@ beginnen, sind von Git ausgenommen.
 | Ort | Inhalt |
 |---|---|
 | `data/snapshots/` | Momentaufnahmen, Arbeitsdaten für 14 Tage, nicht in Git |
-| `data/editions/` | die Ausgaben, eine Datei pro Tag, in Git |
+| `data/editions/` | GitHub-Ausgaben, eine Datei pro Tag, in Git |
+| `data/hn-editions/` | HN-Projektausgaben, eine Datei pro Tag, in Git |
+| `data/lobsters-editions/` | Lobsters-Projektausgaben, eine Datei pro Tag, in Git |
 | `data/history/` | Langzeitdaten: Zahlen und Urteil zu jedem bewerteten Repo, eine Datei pro Tag, in Git |
 | `output/` | die gebaute Website, nicht in Git |
 | `docs/` | Konzepte: Datensammlung, Bewertung, Ausgabe, Veröffentlichung |
@@ -148,17 +177,16 @@ berechnet.
 
 ## Automatischer Betrieb auf GitHub
 
-Ein Workflow sammelt jeden Morgen um 05:17 UTC, erzeugt die Ausgabe und schreibt sie
-ins Repo. Danach startet von selbst ein zweiter, der die Seite auf GitHub Pages
-veröffentlicht. Dafür braucht das Repo zweierlei:
+Getrennte Workflows sammeln die GitHub-Ausgabe um 05:17 UTC, HN um 06:37 UTC und
+Lobsters um 06:52 UTC. Sie schreiben ihre Ergebnisse ins Repo und lösen den
+Website-Workflow aus. Dafür braucht das Repo zweierlei:
 
 1. **Secret `COLLECT_TOKEN`:** unter *Settings → Secrets and variables → Actions* einen
    klassischen Personal Access Token ohne Scopes eintragen.
 2. **Pages:** unter *Settings → Pages* als Quelle „GitHub Actions“ wählen.
 
-Von Hand starten: im Reiter *Actions* den Workflow „Tägliche Ausgabe“ wählen und
-*Run workflow* drücken. Der Workflow „Website“ baut nur die Seite neu, etwa nach einer
-Änderung am Aussehen.
+Von Hand starten: im Reiter *Actions* „Tägliche Ausgabe“, „HN-Ausgabe“ oder
+„Lobsters-Ausgabe“ wählen und *Run workflow* drücken. „Website“ baut die Seite neu.
 
 Scheitert das Sammeln, gibt es an dem Tag keine Ausgabe. Die Seite bleibt, wie sie
 war, und GitHub schickt eine Mail über den gescheiterten Lauf.

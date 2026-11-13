@@ -25,6 +25,8 @@
       <ul>
         <li><a href="{{ SITEURL }}/"{% if current == "main" %} aria-current="page"{% endif %}>Hauptliste</a></li>
         <li><a href="{{ SITEURL }}/ai/"{% if current == "ai" %} aria-current="page"{% endif %}>AI-Sektion</a></li>
+        <li><a href="{{ SITEURL }}/hn/"{% if current == "hn" %} aria-current="page"{% endif %}>Trending auf HN</a></li>
+        <li><a href="{{ SITEURL }}/lobsters/"{% if current == "lobsters" %} aria-current="page"{% endif %}>Trending auf Lobsters</a></li>
         <li><a href="{{ SITEURL }}/archiv/"{% if current == "archiv" %} aria-current="page"{% endif %}>Archiv</a></li>
       </ul>
     </nav>
@@ -33,8 +35,8 @@
     {% block content %}{% endblock %}
   </main>
   <footer class="site">
-    <p>Aufstrebende GitHub-Repos, überwiegend von Menschen geschrieben. Jeden Tag 20 Fundstücke, nach festen Regeln ausgewählt. {% if PLAUSIBLE_SCRIPT %}Besuche zählt Plausible, ohne Cookies und ohne Angaben zur Person.{% else %}Ohne Tracking, ohne Skripte.{% endif %}</p>
-    <p>Als Feed abonnieren: <a href="{{ SITEURL }}/feed.xml">Hauptliste</a>, <a href="{{ SITEURL }}/ai/feed.xml">AI-Sektion</a></p>
+    <p>Aufstrebende Open-Source-Projekte: eine nach festen Regeln kuratierte GitHub-Liste und eigene Community-Trendlisten. {% if PLAUSIBLE_SCRIPT %}Besuche zählt Plausible, ohne Cookies und ohne Angaben zur Person.{% else %}Ohne Tracking, ohne Skripte.{% endif %}</p>
+    <p>Als Feed abonnieren: <a href="{{ SITEURL }}/feed.xml">Hauptliste</a>, <a href="{{ SITEURL }}/hn/feed.xml">Trending auf HN</a>, <a href="{{ SITEURL }}/lobsters/feed.xml">Trending auf Lobsters</a>, <a href="{{ SITEURL }}/ai/feed.xml">AI-Sektion</a></p>
   </footer>
 </body>
 </html>

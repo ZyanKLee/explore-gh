@@ -1,0 +1,38 @@
+{% set current = "hn" %}
+{% extends "base.html" %}
+{% block title %}{{ article.title }} – {{ SITENAME }}{% endblock %}
+{% block content %}
+<header class="edition">
+  <h1>{{ article.hn_view.title }}</h1>
+  <p class="stats">{{ article.hn_view.stats }}</p>
+  <nav class="days" aria-label="Andere HN-Tage">
+    <ul>
+      {% if article.hn_nav.older %}<li><a rel="prev" href="{{ SITEURL }}/{{ article.hn_nav.older.url }}">Tag davor</a></li>{% endif %}
+      {% if article.hn_nav.newer %}<li><a rel="next" href="{{ SITEURL }}/{{ article.hn_nav.newer.url }}">Tag danach</a></li>{% endif %}
+    </ul>
+  </nav>
+</header>
+{% if not article.hn_view.entries %}
+<p class="empty">Heute nichts gefunden</p>
+{% else %}
+<ol class="entries" role="list">
+  {% for entry in article.hn_view.entries %}
+  <li class="entry">
+    <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
+    <div class="body">
+      <h2><a href="{{ entry.repository_url }}">{{ entry.title }}</a></h2>
+      {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
+      <ul class="facts" role="list">
+        {% if entry.language %}<li>{{ entry.language }}</li>{% endif %}
+        <li>Lizenz {{ entry.license_id }}</li>
+        <li>{{ entry.points }} HN-Punkte</li>
+        <li>{{ entry.comments }} Kommentare</li>
+        {% if entry.project_url %}<li><a href="{{ entry.project_url }}">Projektseite</a></li>{% endif %}
+        <li><a href="{{ entry.story_url }}">Diskussion auf HN</a></li>
+      </ul>
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+{% endif %}
+{% endblock %}

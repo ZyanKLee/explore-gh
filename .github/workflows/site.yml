@@ -1,5 +1,7 @@
 # Baut die Seite und veröffentlicht sie auf GitHub Pages. Läuft
 #   - nach jedem erfolgreichen täglichen Lauf,
+#   - nach jeder erfolgreichen HN-Ausgabe,
+#   - nach jeder erfolgreichen Lobsters-Ausgabe,
 #   - wenn sich das Aussehen oder eine Ausgabe ändert,
 #   - von Hand.
 #
@@ -10,13 +12,16 @@ on:
   # Was der tägliche Lauf ins Repo schreibt, löst keinen "push" aus. Deshalb hängt
   # dieser Workflow ausdrücklich an seinem Ende.
   workflow_run:
-    workflows: ["Tägliche Ausgabe"]
+    workflows: ["Tägliche Ausgabe", "HN-Ausgabe"]
+    workflows: ["Tägliche Ausgabe", "HN-Ausgabe", "Lobsters-Ausgabe"]
     types: [completed]
   push:
     branches: [main]
     paths:
       - "src/github_anti_ai/publication/**"
       - "data/editions/**"
+      - "data/hn-editions/**"
+      - "data/lobsters-editions/**"
       - ".github/workflows/site.yml"
   workflow_dispatch:
 

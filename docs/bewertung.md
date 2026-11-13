@@ -365,4 +365,5 @@ Diese Regeln brauchen Daten, die wir noch nicht sammeln (siehe `datensammlung.md
 - AI-Thema über Abhängigkeiten (`openai`, `langchain` in den Manifesten)
 - Anweisungsdateien in Unterordnern (`.github/copilot-instructions.md`)
 - „50 000 Zeilen in drei Tagen von einer Person“
-- Erwähnungen auf Hacker News und Lobste.rs als positives Signal
+- Community-Trends aus Hacker News und Lobste.rs laufen in eigenen Listen, nicht als
+  positives Signal in der GitHub-Bewertung

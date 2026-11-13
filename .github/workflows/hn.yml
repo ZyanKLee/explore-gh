@@ -1,0 +1,42 @@
+# Sucht täglich trendende Open-Source-Projekte in den HN-Frontpage-Storys.
+name: HN-Ausgabe
+
+on:
+  schedule:
+    # Nach dem längeren GitHub-Lauf, damit beide Jobs denselben Token nicht belasten.
+    - cron: "37 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hn-daily
+  cancel-in-progress: false
+
+jobs:
+  edition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: HN-Projekte suchen, sammeln und filtern
+        env:
+          GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
+        run: uv run github-anti-ai collect-hn
+      - name: HN-Ausgabe ins Repo schreiben
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/hn-editions
+          if git diff --cached --quiet; then
+            echo "Nichts Neues."
+          else
+            git commit -m "HN-Ausgabe vom $(date -u +%F)"
+            git pull --rebase
+            git push
+          fi

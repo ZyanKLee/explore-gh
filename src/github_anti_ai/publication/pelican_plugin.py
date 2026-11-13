@@ -17,6 +17,11 @@ from github_anti_ai.publication.view import (
     long_date,
     section_view,
 )
+from github_anti_ai.publication.hn_view import hn_feed_html, load_hn_editions
+from github_anti_ai.publication.lobsters_view import (
+    load_lobsters_editions,
+    lobsters_feed_html,
+)
 
 # CATEGORY_FEED_ATOM is "{slug}feed.xml": the main list gets /feed.xml, the AI section /ai/feed.xml
 FEED_SLUGS = {"main": "", "ai": "ai/"}
@@ -77,6 +82,80 @@ def add_editions(generator):
         for views in newest_first[:1]
         for section in SECTION_TITLES
     }
+    _add_hn_editions(generator)
+    _add_lobsters_editions(generator)
+
+
+def _add_hn_editions(generator):
+    editions_path = generator.settings.get("HN_EDITIONS_PATH")
+    if not editions_path:
+        return
+    editions = load_hn_editions(editions_path)
+    category = Category("Trending auf HN", generator.settings)
+    category.slug = "hn/"
+    days = list(reversed(editions))
+    for index, view in enumerate(days):
+        older = days[index + 1] if index + 1 < len(days) else None
+        newer = days[index - 1] if index > 0 else None
+        generator.articles.append(
+            Article(
+                hn_feed_html(view),
+                {
+                    "title": view.title,
+                    "date": SafeDatetime(view.day.year, view.day.month, view.day.day, tzinfo=UTC),
+                    "category": category,
+                    "slug": f"hn-{view.day.isoformat()}",
+                    "url": view.url,
+                    "save_as": f"{view.url}index.html",
+                    "template": "hn-article",
+                    "hn_view": view,
+                    "hn_nav": {"older": older, "newer": newer},
+                    "summary": hn_feed_html(view),
+                },
+                settings=generator.settings,
+                context=generator.context,
+            )
+        )
+    if days:
+        generator.context["latest_hn"] = days[0]
+        generator.context["hn_edition_days"] = days
+    generator.articles.sort(key=lambda article: article.date, reverse=True)
+
+
+def _add_lobsters_editions(generator):
+    editions_path = generator.settings.get("LOBSTERS_EDITIONS_PATH")
+    if not editions_path:
+        return
+    editions = load_lobsters_editions(editions_path)
+    category = Category("Trending auf Lobsters", generator.settings)
+    category.slug = "lobsters/"
+    days = list(reversed(editions))
+    for index, view in enumerate(days):
+        older = days[index + 1] if index + 1 < len(days) else None
+        newer = days[index - 1] if index > 0 else None
+        generator.articles.append(
+            Article(
+                lobsters_feed_html(view),
+                {
+                    "title": view.title,
+                    "date": SafeDatetime(view.day.year, view.day.month, view.day.day, tzinfo=UTC),
+                    "category": category,
+                    "slug": f"lobsters-{view.day.isoformat()}",
+                    "url": view.url,
+                    "save_as": f"{view.url}index.html",
+                    "template": "lobsters-article",
+                    "lobsters_view": view,
+                    "lobsters_nav": {"older": older, "newer": newer},
+                    "summary": lobsters_feed_html(view),
+                },
+                settings=generator.settings,
+                context=generator.context,
+            )
+        )
+    if days:
+        generator.context["latest_lobsters"] = days[0]
+        generator.context["lobsters_edition_days"] = days
+    generator.articles.sort(key=lambda article: article.date, reverse=True)
 
 
 def register():

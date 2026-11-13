@@ -1,0 +1,168 @@
+{
+  "format_version": 1,
+  "day": "2026-11-13",
+  "projects": [
+    {
+      "story": {
+        "id": "50472038",
+        "title": "Rust 1.100",
+        "url": "https://blog.rust-lang.org/2026/11/12/Rust-1.100.0/",
+        "points": 714,
+        "comments": 263,
+        "created_at": "2026-11-12T18:39:05+00:00"
+      },
+      "repository_url": "https://github.com/rust-lang/rust",
+      "project_url": "https://blog.rust-lang.org/2026/11/12/Rust-1.100.0/",
+      "description": "Empowering everyone to build reliable and efficient software.",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true
+    },
+    {
+      "story": {
+        "id": "50470488",
+        "title": "Show HN: My $300 embroidery machine needed a subscription, so I built my own app",
+        "url": "https://github.com/simpsoka/zigzag",
+        "points": 551,
+        "comments": 190,
+        "created_at": "2026-11-12T17:02:42+00:00"
+      },
+      "repository_url": "https://github.com/simpsoka/zigzag",
+      "project_url": "https://github.com/simpsoka/zigzag",
+      "description": "Free, open-source embroidery software for Mac and Windows. Turn SVG artwork into machine embroidery, edit stitches visually, and create designs with AI agents via MCP.",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true
+    },
+    {
+      "story": {
+        "id": "50468888",
+        "title": "I'm making LLMs work on small and old devices",
+        "url": "https://github.com/hyperionaidev/smolmaxxing/",
+        "points": 390,
+        "comments": 138,
+        "created_at": "2026-11-12T15:23:10+00:00"
+      },
+      "repository_url": "https://github.com/hyperionaidev/smolmaxxing",
+      "project_url": "https://github.com/hyperionaidev/smolmaxxing/",
+      "description": "maxxing the ability to run different LLMs on the smallest devices possible",
+      "language": "C",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true
+    },
+    {
+      "story": {
+        "id": "50475713",
+        "title": "Edge0-145B: Frontier AI Capabilities on Your Own Computer",
+        "url": "https://edge0.ai/blog/introducing-edge0-145b-frontier-ai-capabilities-on-your-own-computer",
+        "points": 268,
+        "comments": 76,
+        "created_at": "2026-11-12T23:06:17+00:00"
+      },
+      "repository_url": "https://github.com/Edge0-AI/Edge0",
+      "project_url": "https://edge0.ai/blog/introducing-edge0-145b-frontier-ai-capabilities-on-your-own-computer",
+      "description": "Device-native foundation models: 145B on a laptop, 35B on a phone. Latent MoE, SSD-streamed weights, a router that predicts loads a step ahead. Mac, iPhone, Android, Windows.",
+      "language": "C++",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true
+    },
+    {
+      "story": {
+        "id": "50474361",
+        "title": "Foundation Models framework",
+        "url": "https://developer.apple.com/foundation-models-framework/",
+        "points": 217,
+        "comments": 31,
+        "created_at": "2026-11-12T21:13:26+00:00"
+      },
+      "repository_url": "https://github.com/apple/coreai-models",
+      "project_url": "https://developer.apple.com/foundation-models-framework/",
+      "description": "Model export recipes, Python primitives, and Swift runtime utilities for on-device AI",
+      "language": "Swift",
+      "license_id": "BSD-3-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true
+    },
+    {
+      "story": {
+        "id": "50458849",
+        "title": "Relax: JIT compiler for Rust to reduce build times",
+        "url": "https://makepad.github.io/relax/",
+        "points": 163,
+        "comments": 81,
+        "created_at": "2026-11-11T21:20:01+00:00"
+      },
+      "repository_url": "https://github.com/makepad/relax",
+      "project_url": "https://makepad.github.io/relax/",
+      "description": "Relax Rust JIT",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true
+    },
+    {
+      "story": {
+        "id": "50477649",
+        "title": "Brave Search API now accepts agentic payments via the x402 protocol",
+        "url": "https://brave.com/blog/search-api-agentic-payments/",
+        "points": 122,
+        "comments": 76,
+        "created_at": "2026-11-13T03:08:08+00:00"
+      },
+      "repository_url": "https://github.com/brave/brave-search-mcp-server",
+      "project_url": "https://brave.com/blog/search-api-agentic-payments/",
+      "description": "",
+      "language": "TypeScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true
+    },
+    {
+      "story": {
+        "id": "50471650",
+        "title": "Show HN: AgentRun – open-source, Self-improving Managed Agents",
+        "url": "https://github.com/Parcha-ai/agentrun/blob/main/README.md",
+        "points": 109,
+        "comments": 29,
+        "created_at": "2026-11-12T18:15:48+00:00"
+      },
+      "repository_url": "https://github.com/Parcha-ai/agentrun",
+      "project_url": "https://github.com/Parcha-ai/agentrun/blob/main/README.md",
+      "description": "AgentRun is an open-source platform that supercharges your agents. It adds self-improvement, durable execution and a control plane on top of your favorite agent harness. Your agents become smarter, more fault tolerant and use fewer tokens with every run.",
+      "language": "JavaScript",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true
+    },
+    {
+      "story": {
+        "id": "50460263",
+        "title": "Sift: LSP, Lint, Format Lisp, Scheme and Emacs Lisp",
+        "url": "https://github.com/jjba23/sift",
+        "points": 60,
+        "comments": 8,
+        "created_at": "2026-11-11T23:09:27+00:00"
+      },
+      "repository_url": "https://github.com/jjba23/sift",
+      "project_url": "https://github.com/jjba23/sift",
+      "description": "Lisp, Scheme and Emacs Lisp formatter, linter and LSP (language server)",
+      "language": "Scheme",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true
+    }
+  ]
+}

@@ -112,6 +112,22 @@ def test_port_of_the_preview_can_be_chosen():
     assert parse_args(["serve", "--port", "8080"]).port == 8080
 
 
+def test_hn_collection_has_its_own_command_and_data_directory():
+    args = parse_args(["collect-hn", "--limit", "20"])
+
+    assert args.command == "collect-hn"
+    assert args.data_dir == Path("data")
+    assert args.limit == 20
+
+
+def test_lobsters_collection_has_its_own_command_and_data_directory():
+    args = parse_args(["collect-lobsters", "--limit", "20"])
+
+    assert args.command == "collect-lobsters"
+    assert args.data_dir == Path("data")
+    assert args.limit == 20
+
+
 def test_site_counts_no_visits_by_default():
     assert parse_args(["site"]).plausible is None
 

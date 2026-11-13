@@ -1,0 +1,48 @@
+from datetime import UTC, datetime
+
+from github_anti_ai.adapters.json_hn_edition_store import JsonHnEditionStore
+from github_anti_ai.domain.hn import HnEdition, HnProjectCandidate, HnStory
+from github_anti_ai.publication.site import build_site
+
+
+def test_hn_projects_have_a_separate_page_archive_and_feed(tmp_path):
+    story = HnStory(
+        id="123",
+        title="A project worth exploring",
+        url="https://project.example",
+        points=42,
+        comments=9,
+        created_at=datetime(2026, 11, 13, tzinfo=UTC),
+    )
+    edition = HnEdition(
+        day=story.created_at.date(),
+        projects=(
+            HnProjectCandidate(
+                story=story,
+                repository_url="https://codeberg.org/owner/project",
+                project_url=story.url,
+                description="A useful open source project",
+                language="Rust",
+                license_id="MIT",
+                is_fork=False,
+                is_archived=False,
+                has_code=True,
+            ),
+        ),
+    )
+    hn_editions = tmp_path / "hn-editions"
+    JsonHnEditionStore(hn_editions).save(edition)
+
+    build_site(tmp_path / "editions", tmp_path / "output", hn_editions_dir=hn_editions)
+
+    start = (tmp_path / "output/hn/index.html").read_text(encoding="utf-8")
+    day = (tmp_path / "output/hn/2026/11/13/index.html").read_text(encoding="utf-8")
+    archive = (tmp_path / "output/hn/archiv/index.html").read_text(encoding="utf-8")
+    feed = (tmp_path / "output/hn/feed.xml").read_text(encoding="utf-8")
+
+    assert "Trending auf HN" in start
+    assert "owner/project" in start
+    assert "https://news.ycombinator.com/item?id=123" in day
+    assert "13. November 2026" in archive
+    assert "owner/project" in feed
+    assert "owner/project" not in (tmp_path / "output/index.html").read_text(encoding="utf-8")

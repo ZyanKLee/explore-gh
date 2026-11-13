@@ -1,0 +1,18 @@
+{% set current = "hn" %}
+{% extends "base.html" %}
+{% block title %}HN-Archiv – {{ SITENAME }}{% endblock %}
+{% block content %}
+<header class="edition"><h1>HN-Archiv</h1></header>
+{% if not hn_edition_days %}
+<p class="empty">Noch keine HN-Ausgabe</p>
+{% else %}
+<ul class="archive" role="list">
+  {% for edition in hn_edition_days %}
+  <li>
+    <span class="date">{{ edition.title }}</span>
+    <a href="{{ SITEURL }}/{{ edition.url }}">{{ edition.entries|length }} Projekte</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
