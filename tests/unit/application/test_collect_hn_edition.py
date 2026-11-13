@@ -1,8 +1,8 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from builders import FixedClock
 from github_anti_ai.application.collect_hn_edition import CollectHnEdition
-from github_anti_ai.domain.hn import HnProjectCandidate, HnStory
+from github_anti_ai.domain.hn import HnEdition, HnProjectCandidate, HnStory
 
 
 NOW = datetime(2026, 11, 13, tzinfo=UTC)
@@ -13,8 +13,8 @@ class StorySource:
         self.stories = stories
         self.asked_for = None
 
-    def discover(self, today, limit=None):
-        self.asked_for = today
+    def discover(self, now, limit=None):
+        self.asked_for = now
         return self.stories[:limit]
 
 
@@ -29,12 +29,18 @@ class ProjectResolver:
 
 
 class EditionStore:
-    def __init__(self, existing=None):
+    def __init__(self, existing=None, past=()):
         self.saved = []
         self.existing = existing
+        self.past = list(past)
+        self.asked_since = None
 
     def load(self, day):
         return self.existing if self.existing and self.existing.day == day else None
+
+    def since(self, day):
+        self.asked_since = day
+        return [edition for edition in self.past if edition.day >= day]
 
     def save(self, edition):
         self.saved.append(edition)
@@ -71,7 +77,7 @@ def test_hn_collection_uses_its_own_search_resolution_filter_and_store():
         clock=FixedClock(NOW),
     ).run()
 
-    assert stories.asked_for == NOW.date()
+    assert stories.asked_for == NOW
     assert resolver.stories == [story]
     assert store.saved == [edition]
     assert edition.projects == (project,)
@@ -92,3 +98,26 @@ def test_hn_collection_returns_an_existing_daily_edition_without_searching_again
     assert edition is existing
     assert stories.asked_for is None
     assert store.saved == []
+
+def test_hn_collection_leaves_out_repos_of_its_editions_from_the_last_30_days():
+    def found(story_id, repo):
+        story = HnStory(story_id, "Tool", f"https://{story_id}.example", 42, 9, NOW)
+        return story, HnProjectCandidate(
+            story=story, repository_url=repo, project_url=story.url, description="",
+            language="Rust", license_id="MIT", is_fork=False, is_archived=False, has_code=True,
+        )
+
+    old_story, again = found("again", "https://github.com/a/shown")
+    new_story, fresh = found("fresh", "https://github.com/a/fresh")
+    yesterday = HnEdition(day=NOW.date() - timedelta(days=1), projects=(again,))
+    store = EditionStore(past=[yesterday])
+
+    edition = CollectHnEdition(
+        story_source=StorySource([old_story, new_story]),
+        project_resolver=ProjectResolver({"again": again, "fresh": fresh}),
+        edition_store=store,
+        clock=FixedClock(NOW),
+    ).run()
+
+    assert store.asked_since == NOW.date() - timedelta(days=30)
+    assert edition.projects == (fresh,)

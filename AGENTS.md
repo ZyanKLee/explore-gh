@@ -119,6 +119,8 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Repo | `Repo`, `RepoId` | GitHub-Repository als Kandidat, Identität `owner/name` |
 | HN-Projekt | `HnProjectCandidate` | öffentliches, auf HN verlinktes Softwareprojekt samt Forge- und HN-Fakten |
 | Lobsters-Projekt | `LobstersProjectCandidate` | öffentliches, auf Lobsters verlinktes Softwareprojekt samt Forge- und Lobsters-Fakten |
+| Community-Kurator | `CommunityCurator` | gemeinsame Auswahlregeln der HN- und Lobsters-Ausgaben, die Rangfolge gibt die Plattform vor |
+| Bezug zur Story | `relates_to_story`, `shared_words` | ein auf einer Website gefundenes Repo teilt Wörter mit Titel, Hostname oder Pfad der Story; das Repo mit den meisten gewinnt |
 | Kandidat | `Candidate` | Repo, das eine Quelle heute gefunden hat, samt Sternzahl, falls die Quelle sie kennt |
 | Momentaufnahme | `Snapshot` | Alles, was zu einem Zeitpunkt über ein Repo gesammelt wurde. `facts_at` sagt, wann die Fakten zuletzt von GitHub kamen. |
 | Sternverlauf | `StarHistory` | Neue Sterne je Tag über 35 Tage. `gained()` ist der Gewinn der letzten 7 Tage. |
@@ -135,7 +137,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Tageswert | `DailyRecord` | Was von einer Bewertung dauerhaft bleibt: Zahlen, Urteil, Rang. Ohne Texte, Commits und Personen. |
 | Sektion | `Section` | `MAIN` oder `AI` |
 | Ausgabe | `Edition` | Auswahl eines Tages, je Sektion bis zu 20 `Entry`s. Unveränderlich nach Veröffentlichung. |
-| Sperre | `Cooldown` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert |
+| Sperre | `Cooldown` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert. HN und Lobsters sperren je aus ihren eigenen Ausgaben (`recently_shown`). |
 | Vielfaltsregel | `MAX_PER_LANGUAGE`, `MAX_PER_OWNER` | Pro Sektion höchstens 4 Einträge je Programmiersprache und 2 je Besitzer |
 
 Persistenz-Abstraktionen heißen `…Store`, nicht „Repository“, weil „Repo“ schon das

@@ -1,4 +1,4 @@
-"""Conservative SPDX license allowlist shared by community project lists."""
+"""Which licenses the community project lists accept. See docs/datensammlung.md."""
 
 OPEN_SOURCE_LICENSES = frozenset(
     {
@@ -12,3 +12,11 @@ OPEN_SOURCE_LICENSES = frozenset(
         "Zlib",
     }
 )
+# What GitHub reports for a license file it cannot identify, typically two license files
+# (MIT and Apache) or a modified license text. The resolver maps GitLab's "other" to it.
+UNRECOGNIZED_LICENSE = "NOASSERTION"
+
+
+def is_open_source_license(license_id: str | None) -> bool:
+    """An approved license, or a license file the forge cannot identify."""
+    return license_id in OPEN_SOURCE_LICENSES or license_id == UNRECOGNIZED_LICENSE

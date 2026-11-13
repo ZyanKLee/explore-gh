@@ -353,30 +353,115 @@ Zweiter Sammeltag, 13.11.2026, mit den Momentaufnahmen des Vortags:
 
 Hacker News und Lobsters haben getrennte Datenflüsse und speisen keine GitHub-Kandidaten ein:
 
-1. `HackerNewsSearch` liest die aktuelle Frontpage über die Algolia-API.
+1. `HackerNewsSearch` holt über die Algolia-API (`/search_by_date`) alle Storys der
+  letzten 48 Stunden mit mindestens 50 Punkten (`STORY_WINDOW`, `MIN_STORY_POINTS` in
+  `domain/hn.py`).
 2. `HnProjectResolver` folgt Links von Projekt-Websites zu öffentlichen
   GitHub-, GitLab- und Gitea-/Forgejo-Repositories. GitHub-Metadaten kommen über die
   GitHub-API, die anderen bekannten Formate über die jeweilige Forge-API.
-3. `HnEditionCurator` verlangt eine erkannte Lizenz aus der OSS-Freigabeliste,
-  vorhandenen Code und schließt Forks sowie archivierte Repos aus. HN-Punkte bestimmen
-  die Rangfolge; die GitHub-Momentum-Regel wird nicht angewendet.
+3. `HnEditionCurator` wählt mit dem gemeinsamen `CommunityCurator` aus (siehe
+  „Community-Ausgaben“ in `ausgabe.md`). HN-Punkte bestimmen die Rangfolge; die
+  GitHub-Momentum-Regel wird nicht angewendet.
 4. `JsonHnEditionStore` schreibt eine unveränderliche Tagesausgabe nach
   `data/hn-editions/`. Pelican liest sie getrennt von `data/editions/`.
 
 Lobsters folgt demselben Projekt- und OSS-Modell, aber mit einer eigenen Story-Quelle
 und Rangfolge:
 
-1. `LobstersSearch` liest `/hottest.json`; newest-Storys werden nicht mit aktuellen
-  Trends vermischt.
+1. `LobstersSearch` liest die ersten zwei Seiten von „hottest“ (`/hottest.json`,
+  `/page/2.json`) und die Storys mit dem Tag `show` aus den letzten 7 Tagen
+  (`/t/show.json`). Steht eine Story auf mehreren Seiten, zählt sie einmal.
+  `newest` bleibt draußen, weil dort noch nichts bewertet ist (`HOTTEST_PAGES`,
+  `SHOW_WINDOW` in `domain/lobsters.py`).
 2. `LobstersProjectResolver` erhält Lobsters-Story und Diskussionslink, während der
   gemeinsame Resolver Projektseiten und Forge-APIs prüft.
-3. `LobstersEditionCurator` sortiert nach Lobsters-Score und wendet dieselben OSS-,
-  Code-, Fork- und Archivfilter an wie die HN-Ausgabe.
+3. `LobstersEditionCurator` sortiert nach Lobsters-Score und nutzt denselben
+  `CommunityCurator` wie die HN-Ausgabe.
 4. `JsonLobstersEditionStore` schreibt getrennt nach `data/lobsters-editions/`.
 
-Die Lizenzliste ist bewusst fail-closed, aber nicht vollständig: Eine gültige
-OSS-Lizenz, die noch nicht aufgelistet ist, wird vorerst nicht aufgenommen. Der Resolver
-kennt derzeit GitHub, GitLab und Gitea-/Forgejo-API-Formate; beliebige unbekannte
+### Zeitraum der Suchen
+
+Gemessen am 13.11.2026 gegen 15 Uhr:
+
+| Quelle | Storys | Alter |
+|---|---|---|
+| HN-Startseite (bis dahin genutzt) | 30, ab 3 Punkten | 1 bis 40 Stunden |
+| HN, 48 Stunden ab 50 Punkten | 107, davon 7 Show HN und 12 direkt auf einer Forge | bis 48 Stunden |
+| Lobsters `hottest` (bis dahin genutzt) | 25 | 2 bis 40 Stunden |
+| Lobsters `hottest` Seite 2 | 25 | 4 bis 69 Stunden |
+| Lobsters `show` | 25, davon 11 direkt auf einer Forge | 15 bis 87 Tage |
+
+Die Startseite zeigte nur, was um 06:37 UTC gerade oben stand. Storys, die tagsüber
+oben standen und vor dem Lauf herausgefallen waren, fehlten, ganz neue mit 3 Punkten
+waren dabei. Die Schwelle von 50 Punkten entspricht den 50 neuen Sternen der
+GitHub-Liste. Das Fenster ist länger als ein Tag, damit keine Story zwischen zwei Läufe
+fällt. Dass sie dann an zwei Tagen gefunden wird, fängt die Sperre ab (siehe
+„Community-Ausgaben“ in `ausgabe.md`). Lobsters bietet keine Suche nach Datum, deshalb
+dort mehr Seiten statt eines Zeitfensters.
+
+### Bezug zur Story (`relates_to_story`)
+
+Verlinkt eine Story direkt ein Repo, gehört dieses Repo zur Story. Verlinkt sie eine
+Website, sucht der Resolver dort Links zu Repos. Blogs verlinken aber oft auch ihr
+Theme, den Arbeitgeber des Autors oder den Code der Website. Am 13.11.2026 waren
+deshalb drei von sieben Lobsters-Einträgen falsch, etwa `bitbrain/jekyll-dash`
+(Blog-Theme) unter einem Artikel über ein Rechenzentrum.
+
+Ein auf einer Website gefundenes Repo zählt deshalb nur, wenn es einen Bezug zur Story
+hat (`shared_words` in `domain/community.py`).
+
+- **Wörter des Repos:** Besitzer (erster Teil des Pfads) und Name (letzter Teil),
+  zerlegt an allem, was kein Buchstabe und keine Ziffer ist, dazu Besitzer und Name
+  ohne Trennzeichen. `rust-lang/rust` ergibt `rust`, `lang`, `rustlang`.
+- **Wörter der Story:** der Titel, der Hostname und der Pfad der Website, genauso
+  zerlegt. `blog.rust-lang.org` ergibt `blog`, `rust`, `lang`, `rustlang`, `org`. Der
+  Pfad findet Projekte, die nur in der Adresse stehen, etwa
+  `moddb.com/mods/openq4/…` für `themuffinator/openQ4`.
+- **Bezug:** mindestens ein gemeinsames Wort. Nicht mit zählen Wörter unter 3 Zeichen,
+  reine Zahlen und allgemeine Wörter wie `blog`, `www`, `com`, `org`, `github`
+  (`GENERIC_WORDS`). Der vollständige Repo-Name zählt ab 2 Zeichen: „Adapting CPython
+  for yk“ findet `ykjit/yk`, ein Teil wie `yk` in `yk-tools` zählt dagegen nicht.
+- **Websites als Repo:** Repos mit dem Namen `….github.io`, `….gitlab.io` oder
+  `….codeberg.page` enthalten den Code einer Website. Auf einer Website gefunden
+  zählen sie nie.
+
+**Welches Repo gewinnt:** Der Resolver betrachtet alle Repo-Links der Seite mit Bezug
+und nimmt das Repo mit den meisten gemeinsamen Wörtern, bei Gleichstand das erste auf
+der Seite. Unter „Announcing the GraphQL over HTTP specification“ gewinnt so
+`graphql/graphql-over-http` (`graphql`, `over`, `http`) gegen `graphql/graphql-spec`
+(`graphql`, `spec`). Links ohne Bezug fragt er gar nicht erst bei der Forge an. Links
+auf Unterseiten eines Repos (`…/tree/main`, `…/-/blob/…`, `…/src/…`) gelten als Link
+auf das Repo, so dass jedes Repo nur einmal angefragt wird.
+
+Am 13.11.2026 entfernt die Regel `bitbrain/jekyll-dash`, `oxidecomputer/omicron` und
+`graphql/graphql.github.io`. Sie kostet auch einen richtigen Fund:
+`raphlinus/vic-2350` unter „JIT bitmap text rendering for microcontrollers“ auf
+`linebender.org`. Lieber ein Projekt zu wenig als eines, das nicht zur Story gehört.
+
+### Forge oder nicht
+
+Für einen Link auf einen unbekannten Host fragt der Resolver auf Verdacht die APIs von
+GitLab (`/api/v4/projects/…`) und Gitea/Forgejo (`/api/v1/repos/…`) ab. Antwortet ein
+solcher Host mit einem Fehler oder gar nicht, ist er keine Forge, und der Resolver liest
+die Seite wie jede andere Website. Nur bei GitHub, gitlab.com und codeberg.org
+(`KNOWN_FORGE_HOSTS`) bedeuten 403, 429 und 5xx einen Ausfall (`SourceUnavailable`).
+Vorher hat ein 403 von einer Nachrichtenseite die ganze Story verworfen.
+
+### Lizenz
+
+Ein Projekt gilt als Open Source (`is_open_source_license`), wenn
+
+- seine Lizenz auf der Freigabeliste steht (`OPEN_SOURCE_LICENSES`), oder
+- es eine Lizenzdatei hat, die die Forge nicht erkennt (`NOASSERTION`). GitHub meldet
+  das zum Beispiel bei zwei Lizenzdateien für MIT und Apache oder bei abgewandelten
+  Lizenztexten. GitLab meldet `other`, der Resolver übersetzt das in `NOASSERTION`.
+
+Ohne Lizenzdatei oder mit einer Lizenz außerhalb der Liste (etwa `BUSL-1.1`) bleibt ein
+Projekt draußen. Seit dem 13.11.2026 so entschieden: Vorher fielen echte Projekte wie
+`ykjit/yk` und `ice-wm/icewm` heraus. Die Seite zeigt `NOASSERTION` nicht als
+Lizenznamen, genau wie bei den GitHub-Listen.
+
+Der Resolver kennt GitHub, GitLab und Gitea-/Forgejo-API-Formate; beliebige unbekannte
 Forge-APIs lassen sich nicht automatisch beurteilen.
 
 Reddit bleibt wegen OAuth-, Lösch- und Aufbewahrungsregeln zurückgestellt.

@@ -25,7 +25,7 @@ class LobstersEntryView:
     discussion_url: str
     description: str
     language: str | None
-    license_id: str
+    license_id: str | None
     score: str
     comments: str
 
@@ -81,7 +81,7 @@ def _entry_view(project: dict, rank: int) -> LobstersEntryView:
         or f"https://lobste.rs/s/{quote(story['id'])}",
         description=project["description"],
         language=project["language"],
-        license_id=project["license_id"],
+        license_id=_shown_license(project["license_id"]),
         score=_number(story["score"]),
         comments=_number(story["comments"]),
     )
@@ -112,3 +112,7 @@ def _number(value: int) -> str:
 
 def _long_date(day: date) -> str:
     return f"{day.day}. {_MONTHS[day.month - 1]} {day.year}"
+
+def _shown_license(license_id: str | None) -> str | None:
+    """GitHub's placeholder for an unidentified license file is not a license name."""
+    return None if license_id == "NOASSERTION" else license_id

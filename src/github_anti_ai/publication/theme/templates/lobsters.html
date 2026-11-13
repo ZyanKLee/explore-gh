@@ -21,7 +21,7 @@
       {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
       <ul class="facts" role="list">
         {% if entry.language %}<li>{{ entry.language }}</li>{% endif %}
-        <li>Lizenz {{ entry.license_id }}</li>
+        {% if entry.license_id %}<li>Lizenz {{ entry.license_id }}</li>{% endif %}
         <li>{{ entry.score }} Lobsters-Punkte</li>
         <li>{{ entry.comments }} Kommentare</li>
         {% if entry.project_url %}<li><a href="{{ entry.project_url }}">Projektseite</a></li>{% endif %}

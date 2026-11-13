@@ -166,6 +166,50 @@ Assessor = Callable[[Snapshot], Assessment]
 - `RepoId` bekommt eine `url`. Die Seite verlinkt damit, ohne URLs selbst
   zusammenzubauen.
 
+## Community-Ausgaben (HN, Lobsters)
+
+HN und Lobsters haben eigene Ausgaben (`HnEdition`, `LobstersEdition`) mit eigenem
+Speicherformat. Die Auswahlregeln sind für beide gleich und stehen deshalb nur einmal
+im Code: im gemeinsamen Kurator `CommunityCurator` (`domain/community.py`). Die
+Kuratoren der Plattformen (`HnEditionCurator`, `LobstersEditionCurator`) geben ihm nur
+ihre Rangfolge mit und verpacken das Ergebnis in ihre Ausgabe.
+
+Auswahlregeln (`CommunityCurator.select`):
+
+1. Es bleiben nur Open-Source-Projekte (siehe „Lizenz“ in `datensammlung.md`) mit
+   erkanntem Code, ohne Forks und ohne archivierte Repos.
+2. **Sperre:** Ein Repo, das an Tag D in einer Ausgabe derselben Plattform stand, ist
+   bis einschließlich D + 29 gesperrt, wie bei GitHub (`COOLDOWN_DAYS`,
+   `recently_shown`). Abgeleitet wird das aus den eigenen Ausgaben der letzten 30 Tage.
+   HN und Lobsters sperren sich nicht gegenseitig, und auch nicht gegen die
+   GitHub-Listen.
+3. **Ein Repo nur einmal:** Verlinken mehrere Storys dasselbe Repo, zählt die Story
+   mit dem besseren Rang. Gleich sind Repos, deren Adressen bis auf Groß- und
+   Kleinschreibung und einen Schrägstrich am Ende übereinstimmen.
+4. **Rangfolge:** von der Plattform vorgegeben.
+   - HN: Punkte, dann Kommentare, dann die neuere Story.
+   - Lobsters: Score, dann Kommentare, dann die neuere Story.
+5. Schluss nach 20 Projekten. Die Ausgabe wird nie aufgefüllt.
+
+Welches Repo zu einer Story gehört, entscheidet schon die Datensammlung (siehe
+„Bezug zur Story“ in `datensammlung.md`).
+
+### Geplant
+
+Damit HN und Lobsters denselben Regeln folgen wie die GitHub-Listen, kommen in dieser
+Reihenfolge in den gemeinsamen Kurator:
+
+- **AI-Sektion:** derselbe `AiFocusClassifier` wie bei GitHub, aus Name,
+  Beschreibung, Topics und README.
+- **Ausschlüsse:** dieselbe `ExclusionPolicy`, soweit sie ohne Sternverlauf auskommt
+  (Sammlungen, Köder, Kryptowährungen, kein README, Sprache).
+- **Vielfalt:** höchstens 4 je Sprache und 2 je Besitzer.
+- **„Warum Platz …?“:** wie das Repo gefunden wurde und welche Signale es hat.
+
+Bewusst nicht vorgesehen: die Abwertung für AI-Mithilfe, weil sie Commits von allen
+Forges bräuchte. Die Plattform-Vorlieben (Linux, Windows, Apple) sind noch nicht
+entschieden.
+
 ## Unvollständige Sammlung
 
 Eine Ausgabe wird nie ersetzt, und ihre Repos sind 30 Tage gesperrt. Deshalb darf sie

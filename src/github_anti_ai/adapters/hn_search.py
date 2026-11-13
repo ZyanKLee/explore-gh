@@ -1,11 +1,13 @@
-"""Search Hacker News' current front page through the Algolia HN API."""
+"""Search recent Hacker News stories through the Algolia HN API."""
 
-from datetime import UTC, date, datetime
+from datetime import UTC, datetime
 
 import httpx
 
 from github_anti_ai.application.ports import SourceUnavailable
-from github_anti_ai.domain.hn import HnStory
+from github_anti_ai.domain.hn import MIN_STORY_POINTS, STORY_WINDOW, HnStory
+
+MAX_HITS = 1000  # the most Algolia returns for one query
 
 
 class HackerNewsSearch:
@@ -14,10 +16,16 @@ class HackerNewsSearch:
     def __init__(self, client: httpx.Client):
         self._client = client
 
-    def discover(self, today: date, limit: int | None = None) -> list[HnStory]:
-        del today  # the front-page listing is a live ranking, not a date query
+    def discover(self, now: datetime, limit: int | None = None) -> list[HnStory]:
+        """All stories of the last 48 hours with at least 50 points, newest first."""
+        since = int((now - STORY_WINDOW).timestamp())
+        params = {
+            "tags": "story",
+            "numericFilters": f"created_at_i>{since},points>={MIN_STORY_POINTS}",
+            "hitsPerPage": MAX_HITS,
+        }
         try:
-            response = self._client.get("/search", params={"tags": "front_page", "hitsPerPage": 100})
+            response = self._client.get("/search_by_date", params=params)
             response.raise_for_status()
             hits = response.json()["hits"]
         except (httpx.HTTPError, KeyError, TypeError, ValueError) as error:

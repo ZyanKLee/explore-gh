@@ -1,6 +1,6 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
-from github_anti_ai.domain.hn import HnProjectCandidate, HnEditionCurator, HnStory
+from github_anti_ai.domain.hn import HnEdition, HnEditionCurator, HnProjectCandidate, HnStory
 
 
 NOW = datetime(2026, 11, 13, tzinfo=UTC)
@@ -35,8 +35,8 @@ def test_hn_edition_filters_non_oss_and_ranks_projects_by_hn_points():
         NOW.date(),
         [
             project("lower", "https://codeberg.org/a/lower", 20),
-                project("unlicensed", "https://codeberg.org/a/unlicensed", 100,
-                    license_id="NOASSERTION"),
+            project("unlicensed", "https://codeberg.org/a/unlicensed", 100, license_id=None),
+            project("source-available", "https://codeberg.org/a/busl", 90, license_id="BUSL-1.1"),
             project("higher", "https://gitlab.com/a/higher", 50),
         ],
     )
@@ -58,3 +58,35 @@ def test_hn_edition_rejects_projects_without_code_or_with_fork_or_archive_status
     )
 
     assert edition.projects == ()
+
+def test_hn_edition_keeps_a_project_whose_license_file_is_not_recognized():
+    edition = HnEditionCurator().curate(
+        NOW.date(),
+        [project("dual", "https://github.com/a/dual", 10, license_id="NOASSERTION")],
+    )
+
+    assert [entry.repository_url for entry in edition.projects] == ["https://github.com/a/dual"]
+
+
+def test_hn_edition_leaves_out_a_repo_it_showed_in_the_last_30_days():
+    shown = project("old", "https://github.com/a/shown", 10)
+    yesterday = HnEdition(day=NOW.date() - timedelta(days=1), projects=(shown,))
+    month_ago = HnEdition(
+        day=NOW.date() - timedelta(days=30),
+        projects=(project("older", "https://github.com/a/released", 10),),
+    )
+
+    edition = HnEditionCurator().curate(
+        NOW.date(),
+        [
+            project("again", "https://github.com/a/shown", 500),
+            project("back", "https://github.com/a/released", 50),
+            project("fresh", "https://github.com/a/fresh", 20),
+        ],
+        past_editions=[month_ago, yesterday],
+    )
+
+    assert [entry.repository_url for entry in edition.projects] == [
+        "https://github.com/a/released",
+        "https://github.com/a/fresh",
+    ]

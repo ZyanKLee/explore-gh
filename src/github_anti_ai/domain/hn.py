@@ -1,9 +1,15 @@
 """Hacker News stories used by the independent HN project list."""
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
-from github_anti_ai.domain.opensource import OPEN_SOURCE_LICENSES
+from github_anti_ai.domain.community import CommunityCurator, recently_shown, repository_key
+from github_anti_ai.domain.opensource import is_open_source_license
+
+# Which stories the HN search asks for, see docs/datensammlung.md
+STORY_WINDOW = timedelta(hours=48)
+MIN_STORY_POINTS = 50
 
 
 @dataclass(frozen=True)
@@ -30,7 +36,7 @@ class HnProjectCandidate:
 
     @property
     def is_open_source(self) -> bool:
-        return self.license_id in OPEN_SOURCE_LICENSES
+        return is_open_source_license(self.license_id)
 
 
 @dataclass(frozen=True)
@@ -40,33 +46,23 @@ class HnEdition:
 
     def __post_init__(self):
         object.__setattr__(self, "projects", tuple(self.projects))
-        urls = [_repository_key(project.repository_url) for project in self.projects]
+        urls = [repository_key(project.repository_url) for project in self.projects]
         if len(urls) != len(set(urls)):
             raise ValueError("Ein Repo steht mehrfach in der HN-Ausgabe")
 
 
 class HnEditionCurator:
-    def curate(self, day: date, candidates: list[HnProjectCandidate]) -> HnEdition:
-        eligible = [
-            candidate
-            for candidate in candidates
-            if candidate.is_open_source
-            and candidate.has_code
-            and not candidate.is_fork
-            and not candidate.is_archived
-        ]
-        unique: dict[str, HnProjectCandidate] = {}
-        for candidate in eligible:
-            key = _repository_key(candidate.repository_url)
-            current = unique.get(key)
-            if current is None or _story_rank(candidate) < _story_rank(current):
-                unique[key] = candidate
-        projects = tuple(sorted(unique.values(), key=_story_rank))
-        return HnEdition(day=day, projects=projects[:20])
-
-
-def _repository_key(url: str) -> str:
-    return url.rstrip("/").casefold()
+    def curate(
+        self,
+        day: date,
+        candidates: list[HnProjectCandidate],
+        past_editions: Iterable[HnEdition] = (),
+    ) -> HnEdition:
+        """`past_editions` are this platform's own editions; their repos are under cooldown."""
+        projects = CommunityCurator().select(
+            candidates, rank=_story_rank, cooled_down=recently_shown(day, past_editions)
+        )
+        return HnEdition(day=day, projects=projects)
 
 
 def _story_rank(project: HnProjectCandidate) -> tuple[int, int, float]:

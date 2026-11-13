@@ -1,9 +1,15 @@
 """Domain types for the independent Lobsters project list."""
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
-from github_anti_ai.domain.opensource import OPEN_SOURCE_LICENSES
+from github_anti_ai.domain.community import CommunityCurator, recently_shown, repository_key
+from github_anti_ai.domain.opensource import is_open_source_license
+
+# Which stories the Lobsters search reads, see docs/datensammlung.md
+HOTTEST_PAGES = 2
+SHOW_WINDOW = timedelta(days=7)
 
 
 @dataclass(frozen=True)
@@ -31,7 +37,7 @@ class LobstersProjectCandidate:
 
     @property
     def is_open_source(self) -> bool:
-        return self.license_id in OPEN_SOURCE_LICENSES
+        return is_open_source_license(self.license_id)
 
 
 @dataclass(frozen=True)
@@ -41,35 +47,23 @@ class LobstersEdition:
 
     def __post_init__(self):
         object.__setattr__(self, "projects", tuple(self.projects))
-        urls = [_repository_key(project.repository_url) for project in self.projects]
+        urls = [repository_key(project.repository_url) for project in self.projects]
         if len(urls) != len(set(urls)):
             raise ValueError("Ein Repo steht mehrfach in der Lobsters-Ausgabe")
 
 
 class LobstersEditionCurator:
     def curate(
-        self, day: date, candidates: list[LobstersProjectCandidate]
+        self,
+        day: date,
+        candidates: list[LobstersProjectCandidate],
+        past_editions: Iterable[LobstersEdition] = (),
     ) -> LobstersEdition:
-        eligible = [
-            candidate
-            for candidate in candidates
-            if candidate.is_open_source
-            and candidate.has_code
-            and not candidate.is_fork
-            and not candidate.is_archived
-        ]
-        unique: dict[str, LobstersProjectCandidate] = {}
-        for candidate in eligible:
-            key = _repository_key(candidate.repository_url)
-            current = unique.get(key)
-            if current is None or _story_rank(candidate) < _story_rank(current):
-                unique[key] = candidate
-        projects = tuple(sorted(unique.values(), key=_story_rank))
-        return LobstersEdition(day=day, projects=projects[:20])
-
-
-def _repository_key(url: str) -> str:
-    return url.rstrip("/").casefold()
+        """`past_editions` are this platform's own editions; their repos are under cooldown."""
+        projects = CommunityCurator().select(
+            candidates, rank=_story_rank, cooled_down=recently_shown(day, past_editions)
+        )
+        return LobstersEdition(day=day, projects=projects)
 
 
 def _story_rank(project: LobstersProjectCandidate) -> tuple[int, int, float]:

@@ -10,11 +10,20 @@ from urllib.parse import quote, urljoin, urlsplit
 import httpx
 
 from github_anti_ai.application.ports import SourceUnavailable
+from github_anti_ai.domain.community import relates_to_story, shared_words
 from github_anti_ai.domain.hn import HnProjectCandidate, HnStory
-from github_anti_ai.domain.opensource import OPEN_SOURCE_LICENSES
+from github_anti_ai.domain.opensource import UNRECOGNIZED_LICENSE
 
 MAX_PAGE_BYTES = 1_000_000
-_LICENSE_ALIASES = {"mit": "MIT", "apache-2.0": "Apache-2.0", "bsd-3-clause": "BSD-3-Clause"}
+_LICENSE_ALIASES = {
+    "mit": "MIT",
+    "apache-2.0": "Apache-2.0",
+    "bsd-3-clause": "BSD-3-Clause",
+    "other": UNRECOGNIZED_LICENSE,  # GitLab: license file found, but not identified
+}
+# Forges whose failures mean an outage. Any other website is only probed for a forge API,
+# and an error there just means it is not a forge.
+KNOWN_FORGE_HOSTS = frozenset({"github.com", "gitlab.com", "codeberg.org"})
 
 
 class HnProjectResolver:
@@ -36,10 +45,7 @@ class HnProjectResolver:
             html = self._get_html(project_url)
             if html is None:
                 return None
-            for candidate_url in _repository_links(html, project_url):
-                repository_url, metadata = self._inspect_repository(candidate_url)
-                if metadata is not None:
-                    break
+            repository_url, metadata = self._closest_repository(story.title, project_url, html)
         if metadata is None or repository_url is None:
             return None
 
@@ -55,6 +61,22 @@ class HnProjectResolver:
             is_archived=bool(metadata.get("archived")),
             has_code=bool(metadata.get("has_code")),
         )
+
+    def _closest_repository(
+        self, title: str, page_url: str, html: str
+    ) -> tuple[str | None, dict | None]:
+        """The linked repo sharing the most words with the story; on a tie the first one."""
+        best_words, repository_url, metadata = 0, None, None
+        for link in _repository_links(html, page_url):
+            if not relates_to_story(title, page_url, link):
+                continue  # spares a request for the blog theme in the footer
+            url, found = self._inspect_repository(link)
+            if found is None or url is None:
+                continue
+            words = len(shared_words(title, page_url, url))
+            if words > best_words:
+                best_words, repository_url, metadata = words, url, found
+        return repository_url, metadata
 
     def _inspect_repository(self, url: str) -> tuple[str | None, dict | None]:
         if not _safe_public_url(url, self._resolve_host):
@@ -82,12 +104,15 @@ class HnProjectResolver:
                 "has_code": bool(metadata.get("language")) and int(metadata.get("size") or 0) > 0,
             }
 
+        probe = host not in KNOWN_FORGE_HOSTS
         gitlab = self._json(
-            f"{parsed.scheme}://{parsed.netloc}/api/v4/projects/{quote(path, safe='')}"
+            f"{parsed.scheme}://{parsed.netloc}/api/v4/projects/{quote(path, safe='')}",
+            probe=probe,
         )
         if gitlab is not None and "web_url" in gitlab:
             languages = self._json(
-                f"{parsed.scheme}://{parsed.netloc}/api/v4/projects/{gitlab['id']}/languages"
+                f"{parsed.scheme}://{parsed.netloc}/api/v4/projects/{gitlab['id']}/languages",
+                probe=probe,
             ) if gitlab.get("id") is not None else None
             language = max(languages, key=languages.get) if languages else None
             return str(gitlab["web_url"]).rstrip("/"), {
@@ -99,7 +124,7 @@ class HnProjectResolver:
                 "has_code": bool(language) and not gitlab.get("empty_repo", False),
             }
 
-        gitea = self._json(f"{parsed.scheme}://{parsed.netloc}/api/v1/repos/{path}")
+        gitea = self._json(f"{parsed.scheme}://{parsed.netloc}/api/v1/repos/{path}", probe=probe)
         if gitea is not None and "html_url" in gitea:
             licenses = gitea.get("license") or []
             return str(gitea["html_url"]).rstrip("/"), {
@@ -121,9 +146,19 @@ class HnProjectResolver:
         content_type = response.headers.get("content-type", "")
         return response.text if "html" in content_type.lower() else None
 
-    def _json(self, url: str, *, client: httpx.Client | None = None) -> dict | None:
-        response = self._request(url, client=client)
+    def _json(
+        self, url: str, *, client: httpx.Client | None = None, probe: bool = False
+    ) -> dict | None:
+        """With `probe`, any failure only means the website has no forge API."""
+        try:
+            response = self._request(url, client=client)
+        except SourceUnavailable:
+            if probe:
+                return None
+            raise
         if response is None or response.status_code == 404:
+            return None
+        if probe and response.status_code != 200:
             return None
         if response.status_code >= 500 or response.status_code in (403, 429):
             raise SourceUnavailable(f"HTTP {response.status_code} bei {url}")
@@ -195,8 +230,21 @@ def _repository_links(html: str, page_url: str) -> list[str]:
             word in f"{text} {urlsplit(target).hostname or ''}".lower()
             for word in ("source", "repository", "github", "gitlab", "codeberg", "gitea", "forgejo")
         ):
-            candidates.append(target.rstrip("/"))
+            candidates.append(_repository_root(target))
     return list(dict.fromkeys(candidates))
+
+
+def _repository_root(url: str) -> str:
+    """`github.com/a/tool/blob/main/x` and `gitlab.example/a/tool/-/tree/main` name `a/tool`."""
+    parsed = urlsplit(url)
+    parts = [part for part in parsed.path.split("/") if part]
+    if (parsed.hostname or "").lower() in {"github.com", "codeberg.org"}:
+        parts = parts[:2]
+    for marker in ("-", "src", "tree", "blob"):
+        if marker in parts:
+            parts = parts[: parts.index(marker)]
+    path = "/".join(parts).removesuffix(".git")
+    return f"{parsed.scheme}://{parsed.netloc}/{path}".rstrip("/")
 
 
 def _license_id(value) -> str | None:

@@ -2,10 +2,11 @@
 
 import logging
 from collections.abc import Sequence
-from datetime import date
+from datetime import date, datetime, timedelta
 from typing import Protocol
 
 from github_anti_ai.application.ports import AlreadyPublished, Clock, SourceUnavailable
+from github_anti_ai.domain.edition import COOLDOWN_DAYS
 from github_anti_ai.domain.lobsters import (
     LobstersEdition,
     LobstersEditionCurator,
@@ -17,7 +18,7 @@ log = logging.getLogger(__name__)
 
 
 class LobstersStorySource(Protocol):
-    def discover(self, today: date, limit: int | None = None) -> list[LobstersStory]: ...
+    def discover(self, now: datetime, limit: int | None = None) -> list[LobstersStory]: ...
 
 
 class LobstersProjectResolver(Protocol):
@@ -28,6 +29,8 @@ class LobstersEditionStore(Protocol):
     def load(self, day: date) -> LobstersEdition | None: ...
 
     def save(self, edition: LobstersEdition) -> None: ...
+
+    def since(self, day: date) -> list[LobstersEdition]: ...
 
 
 class CollectLobstersEdition:
@@ -48,11 +51,12 @@ class CollectLobstersEdition:
         self._limit = limit
 
     def run(self) -> LobstersEdition:
-        today = self._clock.now().date()
+        now = self._clock.now()
+        today = now.date()
         if existing := self._edition_store.load(today):
             log.info("Lobsters-Ausgabe vom %s existiert bereits; Sammlung übersprungen", today)
             return existing
-        stories = self._story_source.discover(today, self._limit)
+        stories = self._story_source.discover(now, self._limit)
         candidates = []
         for story in stories:
             try:
@@ -63,7 +67,8 @@ class CollectLobstersEdition:
             if candidate is not None:
                 candidates.append(candidate)
 
-        edition = self._curator.curate(today, candidates)
+        past_editions = self._edition_store.since(today - timedelta(days=COOLDOWN_DAYS))
+        edition = self._curator.curate(today, candidates, past_editions)
         try:
             self._edition_store.save(edition)
         except AlreadyPublished:

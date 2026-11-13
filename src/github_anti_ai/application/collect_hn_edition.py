@@ -2,17 +2,18 @@
 
 import logging
 from collections.abc import Sequence
-from datetime import date
+from datetime import date, datetime, timedelta
 from typing import Protocol
 
 from github_anti_ai.application.ports import AlreadyPublished, Clock, SourceUnavailable
+from github_anti_ai.domain.edition import COOLDOWN_DAYS
 from github_anti_ai.domain.hn import HnEdition, HnEditionCurator, HnProjectCandidate, HnStory
 
 log = logging.getLogger(__name__)
 
 
 class HnStorySource(Protocol):
-    def discover(self, today: date, limit: int | None = None) -> list[HnStory]: ...
+    def discover(self, now: datetime, limit: int | None = None) -> list[HnStory]: ...
 
 
 class HnProjectResolver(Protocol):
@@ -23,6 +24,8 @@ class HnEditionStore(Protocol):
     def load(self, day: date) -> HnEdition | None: ...
 
     def save(self, edition: HnEdition) -> None: ...
+
+    def since(self, day: date) -> list[HnEdition]: ...
 
 
 class CollectHnEdition:
@@ -43,11 +46,12 @@ class CollectHnEdition:
         self._limit = limit
 
     def run(self) -> HnEdition:
-        today = self._clock.now().date()
+        now = self._clock.now()
+        today = now.date()
         if existing := self._edition_store.load(today):
             log.info("HN-Ausgabe vom %s existiert bereits; Sammlung übersprungen", today)
             return existing
-        stories = self._story_source.discover(today, self._limit)
+        stories = self._story_source.discover(now, self._limit)
         candidates = []
         for story in stories:
             try:
@@ -58,7 +62,8 @@ class CollectHnEdition:
             if candidate is not None:
                 candidates.append(candidate)
 
-        edition = self._curator.curate(today, candidates)
+        past_editions = self._edition_store.since(today - timedelta(days=COOLDOWN_DAYS))
+        edition = self._curator.curate(today, candidates, past_editions)
         try:
             self._edition_store.save(edition)
         except AlreadyPublished:
