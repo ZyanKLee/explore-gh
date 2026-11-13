@@ -29,8 +29,12 @@ class ProjectResolver:
 
 
 class EditionStore:
-    def __init__(self):
+    def __init__(self, existing=None):
         self.saved = []
+        self.existing = existing
+
+    def load(self, day):
+        return self.existing if self.existing and self.existing.day == day else None
 
     def save(self, edition):
         self.saved.append(edition)
@@ -71,3 +75,20 @@ def test_hn_collection_uses_its_own_search_resolution_filter_and_store():
     assert resolver.stories == [story]
     assert store.saved == [edition]
     assert edition.projects == (project,)
+
+
+def test_hn_collection_returns_an_existing_daily_edition_without_searching_again():
+    existing = type("Edition", (), {"day": NOW.date()})()
+    stories = StorySource([])
+    store = EditionStore(existing=existing)
+
+    edition = CollectHnEdition(
+        story_source=stories,
+        project_resolver=ProjectResolver({}),
+        edition_store=store,
+        clock=FixedClock(NOW),
+    ).run()
+
+    assert edition is existing
+    assert stories.asked_for is None
+    assert store.saved == []
