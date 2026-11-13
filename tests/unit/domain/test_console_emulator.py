@@ -40,7 +40,7 @@ def test_the_reason_names_emulator_and_console():
         "A terminal emulator with GPU rendering",
         "Emulate macOS on iOS and iPadOS",
         "Companion app for your Xbox controller",
-        "A native PC port of a Switch 2 game",
+        "A Switch 2 game built with",
     ],
 )
 def test_emulator_or_console_alone_is_no_reason(description):
