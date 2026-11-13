@@ -4,10 +4,10 @@
 {% block content %}
 <header class="edition">
   <h1>Archiv</h1>
-  {% if edition_days %}<p class="stats">Alle Tage, der neueste zuerst.</p>{% endif %}
+  {% if edition_days %}<p class="stats">Alle Tage, der neueste zuerst</p>{% endif %}
 </header>
 {% if not edition_days %}
-<p class="empty">Noch keine Ausgabe.</p>
+<p class="empty">Noch keine Ausgabe</p>
 {% else %}
 <ul class="archive" role="list">
   {% for day in edition_days %}

@@ -2,5 +2,5 @@
 {% extends "base.html" %}
 {% from "macros.html" import section with context %}
 {% block content %}
-{% if latest %}{{ section(latest.main.view, latest.main.nav) }}{% else %}<p class="empty">Noch keine Ausgabe.</p>{% endif %}
+{% if latest %}{{ section(latest.main.view, latest.main.nav) }}{% else %}<p class="empty">Noch keine Ausgabe</p>{% endif %}
 {% endblock %}

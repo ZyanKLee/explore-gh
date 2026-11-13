@@ -51,9 +51,9 @@ Gebaut wird mit `build_site(editions_dir, output_dir)`
   die Feeds.
 - Jede Tagesseite verlinkt den Tag davor und danach sowie die andere Sektion
   desselben Tages.
-- Ist eine Sektion leer, steht dort „Heute nichts gefunden.“
+- Ist eine Sektion leer, steht dort „Heute nichts gefunden“
 - Gibt es noch keine Ausgabe, entsteht eine Startseite mit dem Hinweis „Noch keine
-  Ausgabe.“
+  Ausgabe“
 
 ## Ein Eintrag auf der Seite
 
@@ -125,6 +125,21 @@ Entwurf vom 13.11.2026, als Leinwand in Claude Design:
   3?“ mit einer Tabelle aller Signale und der Summe. Ein Tooltip war mit Tastatur und
   auf dem Telefon schlecht erreichbar. Der Bereich ist ein `<details>`-Element und
   braucht kein JavaScript.
+
+### Nachschliff
+
+Am 13.11.2026 gegen die Prüfliste „unslop“ von Damir Sokolovsky geprüft
+(<https://github.com/heydamir/unslop>, CC BY 4.0). Grobe Merkmale generierter Seiten
+fand sie nicht. Nachgebessert wurde:
+
+- **Gewichte:** Nur der Tagestitel und die Rangziffer sind sehr fett (800). Alles
+  andere, was hervorgehoben ist, hat 600. Die Prüfliste will höchstens 600 überall;
+  die beiden Ausnahmen sind bewusst, sie sind das Erkennungsmerkmal der Seite.
+- **Laufweite:** eng nur bei Tagestitel und Rangziffer.
+- **Abstände** auf einem 4-Pixel-Raster.
+- **Rundungen:** Schaltflächen 8 Pixel, nichts unter 4. Eine volle Rundung hat nur
+  noch das Sprach-Etikett.
+- **Kurze Zeilen ohne Punkt am Ende.**
 
 ### Barrierefreiheit
 

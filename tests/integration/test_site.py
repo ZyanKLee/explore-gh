@@ -145,13 +145,13 @@ def test_empty_section_says_so(tmp_path):
 
     build_site(tmp_path / "editions", tmp_path / "output")
 
-    assert "Heute nichts gefunden." in page(tmp_path / "output", "ai/index.html")
+    assert "Heute nichts gefunden</p>" in page(tmp_path / "output", "ai/index.html")
 
 
 def test_site_without_any_edition_says_so(tmp_path):
     build_site(tmp_path / "editions", tmp_path / "output")
 
-    assert "Noch keine Ausgabe." in page(tmp_path / "output", "index.html")
+    assert "Noch keine Ausgabe</p>" in page(tmp_path / "output", "index.html")
 
 
 def test_editions_written_by_the_edition_store_can_be_published(tmp_path):
