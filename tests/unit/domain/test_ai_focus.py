@@ -113,7 +113,9 @@ def test_classic_machine_learning_is_not_ai_focused():
         ("alice/cursor-theme", "A mouse cursor theme for Linux desktops", ("cursor",)),
         ("alice/gemini-client", "A client for the Gemini protocol", ("gemini", "smallweb")),
         ("alice/heat", "Simulates heat diffusion in solids", ("diffusion", "physics")),
-        ("alice/build-agent", "A build agent for self-hosted CI", ("agent", "ci")),
+        ("alice/build-agent", "A build agent for self-hosted CI", ("build-agent", "ci")),
+        ("alice/keyring", "Unlocks the SSH agent and the GPG agent at login", ("ssh-agent",)),
+        ("alice/flock", "Agent-based simulation of bird flocks", ("agent-based-modeling",)),
     ],
 )
 def test_ambiguous_words_are_not_ai_terms(repo, description, topics):
@@ -140,3 +142,23 @@ def test_repo_without_description_and_topics_is_judged_by_its_readme_alone():
 
 def test_a_readme_alone_is_not_enough_when_the_description_says_something_else():
     assert section(readme=AI_README * 2, topics=()) is Section.MAIN
+
+
+@pytest.mark.parametrize(
+    ("repo", "description", "topics"),
+    [
+        ("alice/ovnfs", "Checkouts for agents: copy-on-write copies of any folder", ("agents",)),
+        ("alice/agent-terminal", "Terminals for coding agents", ()),
+        ("alice/harness", "A reactive harness for agents", ("agent", "typescript")),
+    ],
+)
+def test_agent_is_an_ai_term(repo, description, topics):
+    # decided on 2026-11-13: on GitHub the word hardly means anything else any more
+    assert section(repo, description=description, topics=topics) is Section.AI
+
+
+def test_agent_in_a_single_place_is_shown_but_does_not_move_the_repo():
+    focus = classify(description="Mirror your phone to the desktop, plus a skill for agents")
+
+    assert focus.section is Section.MAIN
+    assert len(focus.signals) == 1

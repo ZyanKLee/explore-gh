@@ -30,7 +30,7 @@ Repos. So zeigt `explain` das ganze Bild.
 ## Punktzahl
 
 **Die Punktzahl ist die Summe der Gewichte aller Signale.** Mehr steckt nicht dahinter.
-Der Tooltip auf der Seite listet die Signale auf und erklärt damit die Punktzahl
+Die Begründung auf der Seite listet die Signale auf und erklärt damit die Punktzahl
 vollständig.
 
 Ein `Signal` hat eine Art (`kind`), ein Gewicht in Punkten und eine Begründung in
@@ -136,21 +136,27 @@ Beispielsammlung auch nicht geschafft.
 
 Eine einzelne Erwähnung reicht also nicht. Ein Editor mit „AI auto captions“ in der
 Beschreibung bleibt in der Hauptliste, bekommt aber ein Signal mit Gewicht 0, damit
-man die Erwähnung im Tooltip sieht.
+man die Erwähnung in der Begründung sieht.
 
 **AI-Begriffe:** `ai`, `llm`, `llms`, `gpt`, `chatgpt`, `openai`, `anthropic`, `claude`,
 `deepseek`, `copilot`, `codex`, `ollama`, `langchain`, `mcp`, `rag`, `agentic`,
-`ai agent`, `coding agent`, `agent skill`, `subagent`, `multi agent`, `chatbot`,
+`agent`, `ai agent`, `coding agent`, `agent skill`, `subagent`, `multi agent`, `chatbot`,
 `genai`, `generative ai`, `large language model`, `prompt engineering`,
 `system prompt`, `vibe coding`, `stable diffusion`, `diffusion model`, `comfyui`,
 `midjourney`, `text to image`, `image generation`, `text to video`,
 `video generation`, `text to music`, `music generation`.
 
-**Bewusst nicht dabei**, weil mehrdeutig: `agent` (User-Agent, Build-Agent), `prompt`
-(Shell-Prompt), `cursor` (Textcursor), `gemini` (Gemini-Protokoll), `diffusion`
-(Physik). Ebenfalls nicht dabei sind die Begriffe des klassischen maschinellen
-Lernens: `machine learning`, `deep learning`, `neural network`, `pytorch`,
-`tensorflow`, `computer vision`.
+**`agent` zählt seit dem 13.11.2026 mit.** Vorher galt das Wort als mehrdeutig. In den
+echten Daten nannten es 29 von 519 Repos der Hauptliste, und fast alle waren Werkzeuge
+für AI-Agenten („Checkouts for agents“, „terminals for coding agents“). Ausgenommen
+bleiben feste Wendungen: `user agent`, `build agent`, `ssh agent`, `gpg agent`,
+`monitoring agent`, `agent based`. Die Änderung verschiebt 33 Repos in die AI-Sektion,
+etwa 6 davon zu Unrecht, weil sie Agenten nur am Rand erwähnen.
+
+**Bewusst nicht dabei**, weil mehrdeutig: `prompt` (Shell-Prompt), `cursor`
+(Textcursor), `gemini` (Gemini-Protokoll), `diffusion` (Physik). Ebenfalls nicht dabei
+sind die Begriffe des klassischen maschinellen Lernens: `machine learning`,
+`deep learning`, `neural network`, `pytorch`, `tensorflow`, `computer vision`.
 
 ## Aufstieg (`MomentumCalculator`)
 
@@ -260,12 +266,13 @@ Ebenfalls eine Vorliebe des Projektinhabers, entschieden am 13.11.2026.
 |---|---|---|
 | `console_emulator` | Name, Beschreibung oder Topics nennen einen Emulator **und** eine Spielkonsole | −10 |
 
-- **Emulator:** `emulator`, `emulation`.
+- **Emulator:** `emulator`, `emulation`, `recompilation`, `recompiled`, `recompiler`,
+  `recomp`.
 - **Konsole:** `ps4`, `ps5`, `playstation`, `switch2`, `switch 2`, `nintendo`, `xbox`.
 - Beides muss vorkommen. Ein Terminal-Emulator oder eine App für den Xbox-Controller
   bekommt keinen Abzug.
-- **Nicht erfasst:** Portierungen von Konsolenspielen, die sich „recompiled“ oder
-  „native port“ nennen und das Wort Emulator vermeiden.
+- **Nicht erfasst:** Portierungen von Konsolenspielen, die sich nur „native port“
+  nennen.
 
 ## Unerwünschte Themen (`DislikedTopics`)
 
@@ -307,7 +314,7 @@ uv run python checks/make_labelled_examples.py data-test/snapshots/2026-11-12.js
 
 | Was | Vorher | Nachher |
 |---|---|---|
-| AI-Thema stimmt mit dem Urteil überein | 85 von 102 | 88 von 102 |
+| AI-Thema stimmt mit dem Urteil überein | 85 von 102 | 88 von 102 (87, seit `agent` als AI-Begriff zählt) |
 | Englische READMEs fälschlich als fremdsprachig aussortiert (alle 880) | 6 | 0 |
 | Bester Rang eines Köders in der Hauptliste (421 Repos) | 51 | 201 |
 

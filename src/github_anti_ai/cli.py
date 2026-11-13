@@ -13,11 +13,17 @@ from github_anti_ai.adapters.clock import SystemClock
 from github_anti_ai.adapters.github_http import make_github_client
 from github_anti_ai.adapters.github_repo_source import GitHubRepoSource
 from github_anti_ai.adapters.github_search import GitHubSearchCandidates
+from github_anti_ai.adapters.json_collection_status_store import JsonCollectionStatusStore
 from github_anti_ai.adapters.json_edition_store import JsonEditionStore
 from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
 from github_anti_ai.application.collect_snapshots import CollectionReport, CollectSnapshots
 from github_anti_ai.application.explain_assessment import ExplainAssessment, UnknownRepo
-from github_anti_ai.application.ports import AlreadyPublished, NothingToPublish, SourceUnavailable
+from github_anti_ai.application.ports import (
+    AlreadyPublished,
+    IncompleteCollection,
+    NothingToPublish,
+    SourceUnavailable,
+)
 from github_anti_ai.application.publish_edition import PublishEdition
 from github_anti_ai.domain.assessor import Assessor
 from github_anti_ai.domain.edition import Edition
@@ -39,11 +45,20 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
         ("daily", "sammeln und Ausgabe erzeugen"),
         ("site", "Website aus den Ausgaben bauen"),
         ("explain", "Bewertung eines Repos erklären"),
+        ("serve", "Vorschau der Website mit automatischem Neuladen"),
     ]:
         command = commands.add_parser(name, help=help_text)
         command.add_argument("--data-dir", type=Path, default=Path("data"))
-        if name == "site":
+        if name in ("site", "serve"):
             command.add_argument("--output", type=Path, default=Path("output"))
+        if name == "serve":
+            command.add_argument("--port", type=int, default=8000)
+        if name == "site":
+            command.add_argument(
+                "--site-url",
+                default=None,
+                help="öffentliche Adresse der Seite, für vollständige Links in den Feeds",
+            )
         if name == "explain":
             command.add_argument("repo", help="owner/name")
         if name in ("publish", "explain"):
@@ -65,6 +80,11 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
                 "--ignore-cooldown",
                 action="store_true",
                 help="Sperre ignorieren (nur für die Entwicklung)",
+            )
+            command.add_argument(
+                "--allow-incomplete",
+                action="store_true",
+                help="Ausgabe auch aus einer unvollständigen Sammlung erzeugen",
             )
     return parser.parse_args(argv)
 
@@ -92,8 +112,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         # imported here: only this command needs Pelican
         from github_anti_ai.publication.site import build_site
 
-        build_site(args.data_dir / "editions", args.output)
+        build_site(args.data_dir / "editions", args.output, args.site_url)
         print(f"Website gebaut: {args.output}/index.html")
+        return 0
+    if args.command == "serve":
+        from github_anti_ai.publication.dev_server import serve
+        from github_anti_ai.publication.site import THEME, build_site
+
+        logging.getLogger().setLevel(logging.WARNING)  # Pelican is chatty on every rebuild
+        editions = args.data_dir / "editions"
+        serve(
+            build=lambda: build_site(editions, args.output),
+            watch=[editions, THEME],
+            output_dir=args.output,
+            port=args.port,
+        )
         return 0
     try:
         if args.command == "explain":
@@ -105,9 +138,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             complete = not report.failed
             day = report.day  # a run across midnight still belongs to the day it started
         if args.command in ("publish", "daily"):
-            publish(args.data_dir, day, args.ignore_cooldown)
+            publish(args.data_dir, day, args.ignore_cooldown, args.allow_incomplete)
     except AlreadyPublished as error:
         print(f"Fehler: Für den {error} gibt es schon eine Ausgabe.", file=sys.stderr)
+        return 1
+    except IncompleteCollection as error:
+        print(f"Fehler: {error}", file=sys.stderr)
+        print(
+            "  Mit 'collect' holt ein erneuter Lauf nach, was fehlt. "
+            "Mit --allow-incomplete entsteht die Ausgabe trotzdem.",
+            file=sys.stderr,
+        )
         return 1
     except NothingToPublish as error:
         print(f"Fehler: Für den {error} gibt es keine Momentaufnahmen.", file=sys.stderr)
@@ -128,6 +169,7 @@ def collect(data_dir: Path, token: str, limit: int | None) -> CollectionReport:
             clock=clock,
             assess=Assessor().assess,
             limit=limit,
+            status_store=JsonCollectionStatusStore(data_dir / "snapshots"),
         )
         report = use_case.run()
     print(f"{report.day}: {report.discovered} Kandidaten, {report.collected} Momentaufnahmen")
@@ -144,13 +186,17 @@ def collect(data_dir: Path, token: str, limit: int | None) -> CollectionReport:
     return report
 
 
-def publish(data_dir: Path, day: date | None, ignore_cooldown: bool) -> Edition:
+def publish(
+    data_dir: Path, day: date | None, ignore_cooldown: bool, allow_incomplete: bool = False
+) -> Edition:
     use_case = PublishEdition(
         snapshot_store=JsonSnapshotStore(data_dir / "snapshots"),
         edition_store=JsonEditionStore(data_dir / "editions"),
+        collection_status_store=JsonCollectionStatusStore(data_dir / "snapshots"),
         assess=Assessor().assess,
         clock=SystemClock(),
         ignore_cooldown=ignore_cooldown,
+        allow_incomplete=allow_incomplete,
     )
     edition = use_case.run(day)
     stats = edition.stats

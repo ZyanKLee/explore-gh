@@ -131,6 +131,8 @@ Adapter melden Ausfälle als `SourceUnavailable`.
 ## Speicherung
 
 - `data/snapshots/YYYY-MM-DD.jsonl.gz`, eine Momentaufnahme pro Zeile
+- `data/snapshots/YYYY-MM-DD.status.json`: wie der Lauf des Tages ausging. `publish`
+  prüft daran, ob die Sammlung vollständig ist (siehe `ausgabe.md`).
 - Aufbewahrung: 14 Tage. Das reicht, um Bewertungsregeln an echten Daten
   auszuprobieren, ohne die APIs erneut abzufragen.
 - Arbeitsdaten, **nicht** im Git-Repo. Dauerhaft gespeichert werden nur die Ausgaben

@@ -171,3 +171,46 @@ def test_editions_written_by_the_edition_store_can_be_published(tmp_path):
     assert "alice/tiny-editor" in html
     assert "+120 Sterne in 7 Tagen bei 812 insgesamt" in html
     assert "10 Repos geprüft, 3 ausgeschlossen, 2 als AI-Thema eingestuft" in html
+
+
+# --- the address of the site, for the feeds -------------------------------------------
+
+ADDRESS = "https://example.org/fundstuecke"
+
+
+@pytest.fixture(scope="module")
+def addressed_site(tmp_path_factory):
+    editions = tmp_path_factory.mktemp("editions")
+    output = tmp_path_factory.mktemp("output")
+    write_edition(editions, edition_json(day=NEW, main=[entry_json("alice/tiny-editor")]))
+    build_site(editions, output, site_url=ADDRESS + "/")
+    return output
+
+
+def test_feed_of_a_site_with_an_address_links_to_the_days_in_full(addressed_site):
+    feed = page(addressed_site, "feed.xml")
+
+    assert f'<link href="{ADDRESS}/2026/11/12/" rel="alternate"/>' in feed
+    assert f'<link href="{ADDRESS}/feed.xml" rel="self"/>' in feed
+
+
+def test_ai_feed_of_a_site_with_an_address_links_in_full_too(addressed_site):
+    feed = page(addressed_site, "ai/feed.xml")
+
+    assert f'<link href="{ADDRESS}/ai/2026/11/12/" rel="alternate"/>' in feed
+    assert f'<link href="{ADDRESS}/ai/feed.xml" rel="self"/>' in feed
+
+
+def test_feed_entries_of_a_site_with_an_address_have_ids_that_never_change(addressed_site):
+    # feed readers tell entries apart by their id
+    ids = re.findall(r"<id>([^<]*)</id>", page(addressed_site, "feed.xml"))
+
+    assert ids
+    assert all(i.startswith(("https://", "tag:")) for i in ids)
+
+
+def test_pages_of_a_site_with_an_address_still_work_from_the_local_disk(addressed_site):
+    start = page(addressed_site, "index.html")
+
+    assert ADDRESS not in start
+    assert 'href="./theme/css/style.css"' in start

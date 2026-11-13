@@ -3,8 +3,8 @@ from datetime import timedelta
 import pytest
 
 from builders import NOW, TODAY, FixedClock, make_edition, make_snapshot
-from fakes import InMemoryEditionStore, InMemorySnapshotStore
-from github_anti_ai.application.ports import AlreadyPublished, NothingToPublish
+from fakes import InMemoryCollectionStatusStore, InMemoryEditionStore, InMemorySnapshotStore
+from github_anti_ai.application.ports import AlreadyPublished, CollectionStatus, NothingToPublish
 from github_anti_ai.application.publish_edition import PublishEdition
 from github_anti_ai.domain.model import Assessment, Section
 
@@ -31,6 +31,9 @@ def publish(snapshots, editions=None, assess=None, ignore_cooldown=False, day=No
     use_case = PublishEdition(
         snapshot_store=snapshot_store,
         edition_store=edition_store,
+        collection_status_store=InMemoryCollectionStatusStore(
+            [CollectionStatus(day=day or TODAY, discovered=1, collected=1, failed=0)]
+        ),
         assess=assess or assess_all_as(),
         clock=FixedClock(NOW),
         ignore_cooldown=ignore_cooldown,

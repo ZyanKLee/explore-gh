@@ -5,7 +5,9 @@ from github_anti_ai.domain.text import TermList, quoted
 
 CONSOLE_EMULATOR_PENALTY = 10.0
 
-EMULATOR_TERMS = TermList(["emulator", "emulation"])
+EMULATOR_TERMS = TermList(
+    ["emulator", "emulation", "recompilation", "recompiled", "recompiler", "recomp"]
+)
 CONSOLE_TERMS = TermList(
     ["ps4", "ps5", "playstation", "switch2", "switch 2", "nintendo", "xbox"]
 )

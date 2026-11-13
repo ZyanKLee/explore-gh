@@ -1,0 +1,114 @@
+# Der tägliche Lauf: sammeln, Ausgabe erzeugen, ins Repo schreiben, Seite veröffentlichen.
+#
+# Braucht im Repo:
+#   - Secret COLLECT_TOKEN: klassischer Personal Access Token ohne Scopes.
+#     Der eingebaute Token erlaubt nur 1000 Anfragen pro Stunde, ein erster Lauf
+#     braucht rund 3000.
+#   - Settings → Pages → Source: "GitHub Actions"
+name: Tägliche Ausgabe
+
+on:
+  schedule:
+    # 05:17 UTC. Krumme Minute, weil zur vollen Stunde viele Läufe gleichzeitig starten.
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # die Ausgabe des Tages wird ins Repo geschrieben
+  pages: write
+  id-token: write
+
+# Nie zwei Läufe gleichzeitig: Beide würden dieselbe Ausgabe schreiben wollen.
+concurrency:
+  group: daily
+  cancel-in-progress: false
+
+jobs:
+  edition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    outputs:
+      day: ${{ steps.day.outputs.day }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - run: uv sync --locked
+
+      # Der Tag steht fest, bevor gesammelt wird: Ein Lauf über Mitternacht (UTC)
+      # gehört zu dem Tag, an dem er begonnen hat.
+      - name: Tag festlegen
+        id: day
+        run: echo "day=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+
+      # Momentaufnahmen der letzten Tage. Sie liegen nicht im Repo, werden aber
+      # gebraucht, damit der Lauf nur Neues holt (8 statt 40 Minuten). Fehlt der
+      # Cache, holt der Lauf alles neu.
+      - name: Momentaufnahmen der letzten Tage holen
+        uses: actions/cache/restore@v4
+        with:
+          path: data/snapshots
+          key: snapshots-${{ steps.day.outputs.day }}-${{ github.run_id }}
+          restore-keys: |
+            snapshots-
+
+      - name: Sammeln
+        env:
+          GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
+        run: |
+          # Ein zweiter Versuch holt nach, was beim ersten gescheitert ist.
+          uv run github-anti-ai collect || uv run github-anti-ai collect
+
+      # Auch nach einem gescheiterten Lauf: Was gesammelt ist, muss nicht noch einmal
+      # geholt werden.
+      - name: Momentaufnahmen aufheben
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/snapshots
+          key: snapshots-${{ steps.day.outputs.day }}-${{ github.run_id }}
+
+      - name: Ausgabe erzeugen
+        run: |
+          if [ -f "data/editions/${{ steps.day.outputs.day }}.json" ]; then
+            echo "Die Ausgabe vom ${{ steps.day.outputs.day }} gibt es schon."
+          else
+            uv run github-anti-ai publish --day "${{ steps.day.outputs.day }}"
+          fi
+
+      - name: Ausgabe ins Repo schreiben
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/editions
+          if git diff --cached --quiet; then
+            echo "Nichts Neues."
+          else
+            git commit -m "Ausgabe vom ${{ steps.day.outputs.day }}"
+            # falls während des Laufs jemand etwas ins Repo geschrieben hat
+            git pull --rebase
+            git push
+          fi
+
+      - uses: actions/configure-pages@v5
+        id: pages
+
+      - name: Website bauen
+        run: uv run github-anti-ai site --output _site --site-url "${{ steps.pages.outputs.base_url }}/"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: edition
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

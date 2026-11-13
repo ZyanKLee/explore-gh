@@ -1,6 +1,7 @@
 """Ports: what the use cases need from the outside world."""
 
 from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Protocol
 
@@ -18,6 +19,24 @@ class AlreadyPublished(Exception):
 
 class NothingToPublish(Exception):
     """There are no snapshots of the day to build an Edition from."""
+
+
+class IncompleteCollection(Exception):
+    """The collection of the day has holes. An Edition built from it could not be replaced."""
+
+
+@dataclass(frozen=True)
+class CollectionStatus:
+    """How the collection of a day ended."""
+
+    day: date
+    discovered: int
+    collected: int
+    failed: int  # could not be fetched. Repos that no longer exist do not count.
+
+    @property
+    def is_complete(self) -> bool:
+        return self.failed == 0
 
 
 class Clock(Protocol):
@@ -49,6 +68,16 @@ class SnapshotStore(Protocol):
     def load(self, day: date) -> list[Snapshot]:
         """The latest snapshot of each repo of that day."""
         ...
+
+    def prune(self, before: date) -> None: ...
+
+
+class CollectionStatusStore(Protocol):
+    def save(self, status: CollectionStatus) -> None:
+        """Replaces an earlier status of the same day."""
+        ...
+
+    def load(self, day: date) -> CollectionStatus | None: ...
 
     def prune(self, before: date) -> None: ...
 

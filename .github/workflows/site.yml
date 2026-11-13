@@ -1,0 +1,50 @@
+# Baut die Seite neu, wenn sich das Aussehen oder eine Ausgabe ändert, ohne zu sammeln.
+# Der tägliche Lauf veröffentlicht selbst: Was er ins Repo schreibt, löst diesen
+# Workflow nicht aus.
+name: Website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/github_anti_ai/publication/**"
+      - "data/editions/**"
+      - ".github/workflows/site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - uses: actions/configure-pages@v5
+        id: pages
+      - name: Website bauen
+        run: uv run github-anti-ai site --output _site --site-url "${{ steps.pages.outputs.base_url }}/"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

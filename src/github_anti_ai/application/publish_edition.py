@@ -4,7 +4,9 @@ from github_anti_ai.application.ports import (
     AlreadyPublished,
     Assessor,
     Clock,
+    CollectionStatusStore,
     EditionStore,
+    IncompleteCollection,
     NothingToPublish,
     SnapshotStore,
 )
@@ -16,15 +18,19 @@ class PublishEdition:
         self,
         snapshot_store: SnapshotStore,
         edition_store: EditionStore,
+        collection_status_store: CollectionStatusStore,
         assess: Assessor,
         clock: Clock,
         ignore_cooldown: bool = False,
+        allow_incomplete: bool = False,
     ):
         self._snapshot_store = snapshot_store
         self._edition_store = edition_store
         self._assess = assess
         self._clock = clock
+        self._collection_status_store = collection_status_store
         self._ignore_cooldown = ignore_cooldown
+        self._allow_incomplete = allow_incomplete
         self._curator = EditionCurator()
 
     def run(self, day: date | None = None) -> Edition:
@@ -35,6 +41,8 @@ class PublishEdition:
         snapshots = self._snapshot_store.load(today)
         if not snapshots:
             raise NothingToPublish(today)
+        if not self._allow_incomplete:
+            self._refuse_incomplete_collection(today)
 
         assessments = [self._assess(snapshot) for snapshot in snapshots]
         past_editions = (
@@ -45,3 +53,13 @@ class PublishEdition:
         edition = self._curator.curate(today, assessments, past_editions)
         self._edition_store.save(edition)
         return edition
+
+    def _refuse_incomplete_collection(self, day: date) -> None:
+        status = self._collection_status_store.load(day)
+        if status is None:
+            raise IncompleteCollection(f"Die Sammlung vom {day} ist nicht abgeschlossen.")
+        if not status.is_complete:
+            raise IncompleteCollection(
+                f"Die Sammlung vom {day} ist unvollständig: "
+                f"{status.failed} von {status.discovered} Repos konnten nicht geholt werden."
+            )

@@ -10,6 +10,8 @@ from github_anti_ai.application.ports import (
     Assessor,
     CandidateSource,
     Clock,
+    CollectionStatus,
+    CollectionStatusStore,
     RepoSource,
     SnapshotStore,
     SourceUnavailable,
@@ -50,6 +52,7 @@ class CollectSnapshots:
         clock: Clock,
         assess: Assessor | None = None,
         limit: int | None = None,
+        status_store: CollectionStatusStore | None = None,
     ):
         self._candidate_sources = candidate_sources
         self._repo_source = repo_source
@@ -57,6 +60,7 @@ class CollectSnapshots:
         self._clock = clock
         self._assess = assess
         self._limit = limit
+        self._status_store = status_store
 
     def run(self) -> CollectionReport:
         now = self._clock.now()
@@ -117,11 +121,23 @@ class CollectSnapshots:
 
         refreshed_leaders = self._refresh_leaders(run, today)
 
-        self._snapshot_store.prune(before=today - timedelta(days=SNAPSHOT_RETENTION_DAYS))
+        collected = sum(1 for candidate in candidates if candidate.repo in done)
+        oldest = today - timedelta(days=SNAPSHOT_RETENTION_DAYS)
+        self._snapshot_store.prune(before=oldest)
+        if self._status_store is not None:
+            self._status_store.save(
+                CollectionStatus(
+                    day=today,
+                    discovered=len(candidates),
+                    collected=collected,
+                    failed=len(run.failed),
+                )
+            )
+            self._status_store.prune(before=oldest)
         return CollectionReport(
             day=today,
             discovered=len(candidates),
-            collected=sum(1 for candidate in candidates if candidate.repo in done),
+            collected=collected,
             missing=tuple(run.missing),
             failed=tuple(run.failed),
             source_errors=tuple(source_errors),

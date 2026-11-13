@@ -22,6 +22,7 @@ AI_TERMS = TermList(
         "mcp",
         "rag",
         "agentic",
+        "agent",
         "ai agent",
         "coding agent",
         "agent skill",
@@ -44,7 +45,16 @@ AI_TERMS = TermList(
         "video generation",
         "text to music",
         "music generation",
-    ]
+    ],
+    # "agent" has older meanings that have nothing to do with AI
+    unless_in=[
+        "user agent",
+        "build agent",
+        "ssh agent",
+        "gpg agent",
+        "monitoring agent",
+        "agent based",
+    ],
 )
 MIN_PLACES = 2
 MIN_README_MENTIONS = 5

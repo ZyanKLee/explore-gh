@@ -33,7 +33,8 @@ schon. Die Domäne bleibt unverändert.
 
 ```
 github-anti-ai collect [--limit N]                   # Momentaufnahmen sammeln
-github-anti-ai publish [--ignore-cooldown] [--day T]  # Ausgabe erzeugen (Standard: heute)
+github-anti-ai publish [--ignore-cooldown] [--allow-incomplete] [--day T]
+                                                     # Ausgabe erzeugen (Standard: heute)
 github-anti-ai daily [--limit N] [--ignore-cooldown] # beides nacheinander
 github-anti-ai explain owner/name [--day T]          # Bewertung eines Repos erklären
 github-anti-ai site [--output output]                # Website bauen (siehe veroeffentlichung.md)
@@ -51,7 +52,7 @@ Die Auswahl braucht von der Bewertung (siehe `bewertung.md`) nur diese Form:
 
 ```python
 Assessment(snapshot, section, score, signals, exclusion)
-Signal(kind, weight, reason)   # reason ist der Tooltip-Text
+Signal(kind, weight, reason)   # reason ist der Text der Begründung auf der Seite
 Exclusion(reason, kind)
 ```
 
@@ -165,7 +166,19 @@ Assessor = Callable[[Snapshot], Assessment]
 - `RepoId` bekommt eine `url`. Die Seite verlinkt damit, ohne URLs selbst
   zusammenzubauen.
 
-## Geplant
+## Unvollständige Sammlung
 
-- **Unvollständige Sammlung:** `publish` soll warnen oder ablehnen, wenn die Sammlung
-  des Tages fehlgeschlagene Repos enthält.
+Eine Ausgabe wird nie ersetzt, und ihre Repos sind 30 Tage gesperrt. Deshalb darf sie
+nicht aus einer Sammlung mit Lücken entstehen.
+
+- `collect` hält am Ende jedes Laufs fest, wie er ausging:
+  `data/snapshots/JJJJ-MM-TT.status.json` mit der Zahl der gefundenen, gesammelten und
+  fehlgeschlagenen Repos. Ein späterer Lauf desselben Tages überschreibt die Datei.
+- `publish` lehnt ab (`IncompleteCollection`), wenn
+  - es für den Tag keinen Status gibt: Der Lauf wurde abgebrochen, oder die Daten
+    stammen aus der Zeit vor dieser Regel (vor dem 13.11.2026).
+  - der Status fehlgeschlagene Repos nennt.
+- Repos, die es nicht mehr gibt, machen eine Sammlung nicht unvollständig.
+- `daily` erzeugt damit nach einem Lauf mit Fehlern keine Ausgabe.
+- **Bewusst übergehen:** `publish --allow-incomplete` und `daily --allow-incomplete`.
+- Der Status wird wie die Momentaufnahmen nach 14 Tagen gelöscht.

@@ -40,7 +40,7 @@ def test_the_reason_names_emulator_and_console():
         "A terminal emulator with GPU rendering",
         "Emulate macOS on iOS and iPadOS",
         "Companion app for your Xbox controller",
-        "Static recompilation of a Switch 2 game to native Windows",
+        "A native PC port of a Switch 2 game",
     ],
 )
 def test_emulator_or_console_alone_is_no_reason(description):
@@ -54,3 +54,22 @@ def test_the_assessor_includes_the_console_emulator_in_the_score():
     console = Assessor().assess(make_snapshot(description="A PS4 emulator"))
 
     assert console.score == pytest.approx(plain.score - CONSOLE_EMULATOR_PENALTY)
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"description": "A Native Recompilation Of The Legend Of Zelda: Nintendo Switch 2 Remake"},
+        {"description": "Pokémon Pokopia (Switch 2) recompiled to run natively on Windows"},
+        {"description": "Static recompiler for Nintendo Switch and Switch 2 games"},
+        {"repo": "alice/ocarina-recomp", "description": "Ocarina of Time for Nintendo 64 on PC"},
+    ],
+)
+def test_a_recompilation_of_a_console_game_counts_like_an_emulator(overrides):
+    repo = overrides.pop("repo", "alice/tiny-editor")
+
+    assert signal(repo, **overrides).weight == -CONSOLE_EMULATOR_PENALTY
+
+
+def test_a_recompilation_without_a_console_is_no_reason():
+    assert signal(description="Incremental recompilation for large Rust workspaces") is None

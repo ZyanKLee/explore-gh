@@ -3,48 +3,58 @@
   <h1>{{ view.title }}</h1>
   <p class="stats">{{ view.stats }}</p>
   <nav class="days" aria-label="Andere Tage und Sektionen">
-    {% if nav.older %}<a rel="prev" href="{{ SITEURL }}/{{ nav.older.url }}">← Tag davor</a>{% endif %}
-    {% if nav.other %}<a href="{{ SITEURL }}/{{ nav.other.url }}">{{ "AI-Sektion" if view.section == "main" else "Hauptliste" }} dieses Tages</a>{% endif %}
-    {% if nav.newer %}<a rel="next" href="{{ SITEURL }}/{{ nav.newer.url }}">Tag danach →</a>{% endif %}
+    <ul>
+      {% if nav.older %}<li><a rel="prev" href="{{ SITEURL }}/{{ nav.older.url }}">Tag davor</a></li>{% endif %}
+      {% if nav.other %}<li><a href="{{ SITEURL }}/{{ nav.other.url }}">{{ "AI-Sektion" if view.section == "main" else "Hauptliste" }} dieses Tages</a></li>{% endif %}
+      {% if nav.newer %}<li><a rel="next" href="{{ SITEURL }}/{{ nav.newer.url }}">Tag danach</a></li>{% endif %}
+    </ul>
   </nav>
 </header>
 {% if not view.entries %}
 <p class="empty">Heute nichts gefunden.</p>
 {% else %}
-<ol class="entries">
+<ol class="entries" role="list">
   {% for entry in view.entries %}
+  {% set owner, name = entry.repo.split("/", 1) %}
   <li class="entry">
     <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
     <div class="body">
-      <h2><a href="{{ entry.url }}">{{ entry.repo }}</a></h2>
+      <h2><a href="{{ entry.url }}"><span class="owner">{{ owner }}/</span>{{ name }}</a></h2>
       {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
-      <ul class="facts">
+      <ul class="facts" role="list">
         {% if entry.language %}<li class="language">{{ entry.language }}</li>{% endif %}
         <li>{{ entry.stars }} Sterne</li>
-        <li class="gained">{{ entry.gained }} in 7 Tagen</li>
         <li>{{ entry.forks }} Forks</li>
         <li>{{ entry.active_authors }} {{ "aktiver Autor" if entry.active_authors == 1 else "aktive Autoren" }}</li>
         <li>{{ entry.age }}</li>
-        {% if entry.license %}<li>{{ entry.license }}</li>{% endif %}
-        {% if entry.homepage %}<li><a href="{{ entry.homepage }}" rel="noopener noreferrer">{{ entry.homepage }}</a></li>{% endif %}
+        {% if entry.license %}<li>Lizenz {{ entry.license }}</li>{% endif %}
+        {% if entry.homepage %}<li class="homepage"><a href="{{ entry.homepage }}" rel="noopener noreferrer">{{ entry.homepage|replace("https://", "")|replace("http://", "")|trim("/") }}</a></li>{% endif %}
       </ul>
     </div>
-    <div class="side">
-      <svg class="spark" viewBox="-1 -2 122 28" role="img" aria-label="Neue Sterne je Tag in den letzten 35 Tagen">
-        <polyline points="{{ entry.sparkline }}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+    <figure class="climb">
+      <svg viewBox="0 -2 120 28" preserveAspectRatio="none" role="img" aria-label="Neue Sterne je Tag in den letzten 35 Tagen">
+        <polygon class="area" points="0,24 {{ entry.sparkline }} 120,24"/>
+        <polyline class="line" points="{{ entry.sparkline }}"/>
       </svg>
-      <div class="why">
-        <button type="button" aria-describedby="why-{{ view.section }}-{{ entry.rank }}" aria-label="Begründung der Bewertung">i</button>
-        <div class="tip" role="tooltip" id="why-{{ view.section }}-{{ entry.rank }}">
-          <p class="score">Punktzahl <strong>{{ entry.score }}</strong></p>
-          <ul>
-            {% for line in entry.signals %}
-            <li><span class="weight">{{ line.weight }}</span> <span>{{ line.reason }}</span></li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    </div>
+      <figcaption><mark>{{ entry.gained }}</mark> Sterne in 7 Tagen</figcaption>
+    </figure>
+    <details class="why">
+      <summary>Warum Platz {{ entry.rank }}? <span class="score">{{ entry.score }} Punkte</span></summary>
+      <table>
+        <caption>So setzt sich die Punktzahl zusammen</caption>
+        <tbody>
+          {% for line in entry.signals %}
+          <tr class="{{ "plus" if line.weight.startswith("+") else ("minus" if line.weight.startswith("−") else "zero") }}">
+            <td class="weight">{{ line.weight }}</td>
+            <td>{{ line.reason }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr><td class="weight">{{ entry.score }}</td><td>Punkte insgesamt</td></tr>
+        </tfoot>
+      </table>
+    </details>
   </li>
   {% endfor %}
 </ol>

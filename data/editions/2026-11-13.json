@@ -1,0 +1,3981 @@
+{
+  "format_version": 1,
+  "day": "2026-11-13",
+  "stats": {
+    "assessed": 2846,
+    "excluded": 2089,
+    "ai_focused": 271
+  },
+  "sections": {
+    "main": [
+      {
+        "rank": 1,
+        "repo": "anefzaoui/misterdownloadmanager",
+        "url": "https://github.com/anefzaoui/misterdownloadmanager",
+        "description": "misterdownloadmanager: The ultimate open-source, clean-room download manager written from scratch in pure Rust for Windows, Mac, and Linux",
+        "homepage": "https://misterdownloadmanager.com",
+        "language": "Rust",
+        "topics": [
+          "download-accelerator",
+          "download-manager",
+          "egui",
+          "idm-alternative",
+          "magnet",
+          "rust",
+          "torrent-client",
+          "video-downloader",
+          "yt-dlp",
+          "idm",
+          "bittorrent-client",
+          "debrid",
+          "downloadmanager",
+          "file-downloader",
+          "gallery-dl",
+          "internet-download-manager",
+          "m3u8-downloader",
+          "playlist-downloader",
+          "real-debrid",
+          "youtube-downloader"
+        ],
+        "stars": 8218,
+        "stars_gained": 7869,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          3,
+          64,
+          148,
+          63,
+          71,
+          79,
+          1984,
+          2208,
+          1371,
+          1164,
+          677,
+          386
+        ],
+        "created_at": "2026-10-29T01:25:19Z",
+        "pushed_at": "2026-11-13T06:48:52Z",
+        "license": "GPL-3.0",
+        "forks": 671,
+        "active_authors": 11,
+        "score": 102.43216163740357,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 77.08216163740357,
+            "reason": "+7.869 Sterne in 7 Tagen bei 8.218 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "11 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 88 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 15 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -7.65,
+            "reason": "51% der letzten Commits mit AI-Beteiligung (51 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .claude, CLAUDE.md"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          }
+        ]
+      },
+      {
+        "rank": 2,
+        "repo": "libracoder/kiri",
+        "url": "https://github.com/libracoder/kiri",
+        "description": "A small, fast container runtime for macOS, Windows and Linux",
+        "homepage": "https://runkiri.com",
+        "language": "Rust",
+        "topics": [
+          "containers",
+          "docker",
+          "kubernetes",
+          "linux",
+          "macos",
+          "oci",
+          "windows"
+        ],
+        "stars": 1837,
+        "stars_gained": 1236,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          65,
+          137,
+          194,
+          205,
+          371,
+          329,
+          112,
+          77,
+          171,
+          46,
+          130
+        ],
+        "created_at": "2026-11-02T16:11:30Z",
+        "pushed_at": "2026-11-13T06:31:33Z",
+        "license": "Apache-2.0",
+        "forks": 110,
+        "active_authors": 9,
+        "score": 92.2829578294958,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 56.2829578294958,
+            "reason": "+1.236 Sterne in 7 Tagen bei 1.837 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "9 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 34 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 10 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          }
+        ]
+      },
+      {
+        "rank": 3,
+        "repo": "serveroshq/panel",
+        "url": "https://github.com/serveroshq/panel",
+        "description": "The open source ServerOS panel: one place to run the Linux servers you already own.",
+        "homepage": "https://serveros.com",
+        "language": "PHP",
+        "topics": [
+          "agpl",
+          "control-panel",
+          "devops",
+          "laravel",
+          "open-source",
+          "self-hosted",
+          "server-management",
+          "serveros",
+          "vps"
+        ],
+        "stars": 645,
+        "stars_gained": 645,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          8,
+          451,
+          185
+        ],
+        "created_at": "2026-11-09T00:47:33Z",
+        "pushed_at": "2026-11-13T06:53:11Z",
+        "license": "AGPL-3.0",
+        "forks": 52,
+        "active_authors": 5,
+        "score": 89.19119429270535,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 56.19119429270535,
+            "reason": "+645 Sterne in 7 Tagen bei 645 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "5 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 4 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 4 Tage alt"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .claude, AGENTS.md"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          }
+        ]
+      },
+      {
+        "rank": 4,
+        "repo": "huamidev/GestaltX",
+        "url": "https://github.com/huamidev/GestaltX",
+        "description": "An MobileGestalt editor for iOS 27.x, featuring region-code tweaks, device presets, backups.",
+        "homepage": null,
+        "language": "Swift",
+        "topics": [],
+        "stars": 7059,
+        "stars_gained": 7059,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          157,
+          3120,
+          2237,
+          1099,
+          313,
+          133
+        ],
+        "created_at": "2026-11-09T05:15:48Z",
+        "pushed_at": "2026-11-12T19:14:56Z",
+        "license": "GPL-3.0",
+        "forks": 2574,
+        "active_authors": 10,
+        "score": 82.97486363791367,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 76.97486363791367,
+            "reason": "+7.059 Sterne in 7 Tagen bei 7.059 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "10 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 81 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 4 Tage alt"
+          },
+          {
+            "kind": "apple",
+            "weight": -10.0,
+            "reason": "Für macOS oder iOS („ios“)"
+          }
+        ]
+      },
+      {
+        "rank": 5,
+        "repo": "storytold/craft-anything",
+        "url": "https://github.com/storytold/craft-anything",
+        "description": "Craft Anything: understand how any software works, and craft your own.",
+        "homepage": null,
+        "language": "Rust",
+        "topics": [],
+        "stars": 30432,
+        "stars_gained": 11610,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          175,
+          1660,
+          3535,
+          3968,
+          3765,
+          2893,
+          2826,
+          2464,
+          2039,
+          1796,
+          2020,
+          1816,
+          835,
+          640
+        ],
+        "created_at": "2026-10-31T14:50:00Z",
+        "pushed_at": "2026-11-12T19:50:17Z",
+        "license": "Apache-2.0",
+        "forks": 6218,
+        "active_authors": 18,
+        "score": 78.75524496183264,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 65.75524496183264,
+            "reason": "+11.610 Sterne in 7 Tagen bei 30.432 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "18 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 57 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 12 Tage alt"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 62-mal AI-Begriffe („ai“, „coding agent“, „agent“, „mcp“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 6,
+        "repo": "KevenGoncalves/lig",
+        "url": "https://github.com/KevenGoncalves/lig",
+        "description": "IDE-style autocomplete for your terminal on macOS, Linux and Windows.",
+        "homepage": null,
+        "language": "Rust",
+        "topics": [],
+        "stars": 143,
+        "stars_gained": 124,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          2,
+          3,
+          1,
+          4,
+          1,
+          1,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          13,
+          5,
+          45,
+          61,
+          0
+        ],
+        "created_at": "2026-10-15T12:35:34Z",
+        "pushed_at": "2026-11-12T14:15:40Z",
+        "license": "MIT",
+        "forks": 10,
+        "active_authors": 5,
+        "score": 76.4281531445668,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 40.42815314456681,
+            "reason": "+124 Sterne in 7 Tagen bei 143 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "5 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 5 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 28 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          }
+        ]
+      },
+      {
+        "rank": 7,
+        "repo": "starman-tech/mousepods",
+        "url": "https://github.com/starman-tech/mousepods",
+        "description": "Your AirPods are a mouse: AirPods 3 head tracking on Linux, and the first public documentation of Apple RemoteHID (HID over AACP)",
+        "homepage": "https://starman-tech.github.io/mousepods/",
+        "language": "Python",
+        "topics": [
+          "aacp",
+          "accessibility",
+          "airpods",
+          "bluetooth",
+          "head-mouse",
+          "head-tracking",
+          "imu",
+          "librepods",
+          "linux",
+          "python",
+          "reverse-engineering",
+          "wayland",
+          "airpods-3",
+          "apple-accessory-protocol",
+          "remotehid"
+        ],
+        "stars": 400,
+        "stars_gained": 262,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7,
+          73,
+          57,
+          85,
+          80,
+          41,
+          17,
+          13,
+          6,
+          20
+        ],
+        "created_at": "2026-11-04T18:44:41Z",
+        "pushed_at": "2026-11-10T15:53:17Z",
+        "license": "Apache-2.0",
+        "forks": 33,
+        "active_authors": 2,
+        "score": 71.75482592021645,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 43.75482592021645,
+            "reason": "+262 Sterne in 7 Tagen bei 400 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 8 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“, „wayland“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 9-mal AI-Begriffe („ai“, „claude“, „anthropic“, „agent“)"
+          }
+        ]
+      },
+      {
+        "rank": 8,
+        "repo": "tangerineturtle1/NX2navi",
+        "url": "https://github.com/tangerineturtle1/NX2navi",
+        "description": "",
+        "homepage": null,
+        "language": "C",
+        "topics": [],
+        "stars": 3650,
+        "stars_gained": 3650,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          369,
+          1206,
+          961,
+          432,
+          361,
+          223,
+          98
+        ],
+        "created_at": "2026-11-07T10:01:23Z",
+        "pushed_at": "2026-11-13T05:29:54Z",
+        "license": "MIT",
+        "forks": 257,
+        "active_authors": 8,
+        "score": 70.59585728912948,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 71.24585728912949,
+            "reason": "+3.650 Sterne in 7 Tagen bei 3.650 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "8 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 87 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 5 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -13.65,
+            "reason": "91% der letzten Commits mit AI-Beteiligung (91 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md, CLAUDE.md"
+          }
+        ]
+      },
+      {
+        "rank": 9,
+        "repo": "opentrap/opentrap",
+        "url": "https://github.com/opentrap/opentrap",
+        "description": "A free, open-source alternative to Burp Suite: an intercepting proxy and web app security testing suite with Repeater, Intruder, Collaborator and a built-in OWASP ZAP scanner. Linux, AGPL-3.0.",
+        "homepage": "https://opentrap.github.io/opentrap",
+        "language": "Java",
+        "topics": [
+          "application-security",
+          "appsec",
+          "bug-bounty",
+          "burp-alternative",
+          "http-proxy",
+          "infosec",
+          "intercepting-proxy",
+          "java",
+          "owasp",
+          "penetration-testing",
+          "pentesting",
+          "security",
+          "security-tools",
+          "vulnerability-scanner",
+          "web-application-security",
+          "web-security",
+          "burp-suite",
+          "dast",
+          "owasp-zap"
+        ],
+        "stars": 772,
+        "stars_gained": 344,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          43,
+          64,
+          75,
+          38,
+          21,
+          7,
+          77,
+          21,
+          2,
+          1,
+          1,
+          2,
+          53,
+          13,
+          4,
+          1,
+          1,
+          0,
+          2,
+          1,
+          105,
+          96,
+          71,
+          2,
+          56,
+          13
+        ],
+        "created_at": "2026-10-19T03:29:08Z",
+        "pushed_at": "2026-11-08T14:37:22Z",
+        "license": "AGPL-3.0",
+        "forks": 14,
+        "active_authors": 4,
+        "score": 70.29786452401981,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 42.29786452401982,
+            "reason": "+344 Sterne in 7 Tagen bei 772 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "4 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 25 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          }
+        ]
+      },
+      {
+        "rank": 10,
+        "repo": "yappologistic/CUI",
+        "url": "https://github.com/yappologistic/CUI",
+        "description": "Native UI components for C: about 150 of them, with spring motion and full keyboard support. Windows, macOS and Linux, no dependencies.",
+        "homepage": null,
+        "language": "C",
+        "topics": [
+          "c",
+          "c99",
+          "cross-platform",
+          "gui",
+          "native",
+          "ui-components"
+        ],
+        "stars": 974,
+        "stars_gained": 767,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7,
+          200,
+          103,
+          153,
+          317,
+          113,
+          32,
+          34,
+          15
+        ],
+        "created_at": "2026-11-05T08:18:08Z",
+        "pushed_at": "2026-11-13T06:52:02Z",
+        "license": "MIT",
+        "forks": 62,
+        "active_authors": 4,
+        "score": 69.74755573602249,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 54.44755573602249,
+            "reason": "+767 Sterne in 7 Tagen bei 974 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "4 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 14 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 7 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -14.7,
+            "reason": "98% der letzten Commits mit AI-Beteiligung (98 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: CLAUDE.md"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 7-mal AI-Begriffe („ai“, „agent“)"
+          }
+        ]
+      },
+      {
+        "rank": 11,
+        "repo": "apex-compute/ANR",
+        "url": "https://github.com/apex-compute/ANR",
+        "description": "Apex Neural Rendering (ANR) by Apex Compute",
+        "homepage": "https://apexcompute.com/neural-rendering",
+        "language": "C++",
+        "topics": [],
+        "stars": 1094,
+        "stars_gained": 1094,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          112,
+          802,
+          176
+        ],
+        "created_at": "2026-11-11T04:27:17Z",
+        "pushed_at": "2026-11-12T18:20:33Z",
+        "license": null,
+        "forks": 13,
+        "active_authors": 1,
+        "score": 68.78034643994825,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 60.78034643994825,
+            "reason": "+1.094 Sterne in 7 Tagen bei 1.094 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 21 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 2 Tage alt"
+          }
+        ]
+      },
+      {
+        "rank": 12,
+        "repo": "NotRexed/Hookshot",
+        "url": "https://github.com/NotRexed/Hookshot",
+        "description": "A Native Recompilation Of The Legend Of Zelda: Ocarina Of Time Nintendo Switch 2 Remake",
+        "homepage": null,
+        "language": "C++",
+        "topics": [],
+        "stars": 8986,
+        "stars_gained": 8432,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          24,
+          530,
+          1526,
+          1346,
+          2072,
+          1376,
+          1223,
+          631,
+          258
+        ],
+        "created_at": "2026-11-05T12:18:58Z",
+        "pushed_at": "2026-11-13T06:32:14Z",
+        "license": "GPL-3.0",
+        "forks": 821,
+        "active_authors": 39,
+        "score": 68.73916449820274,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 77.28916449820274,
+            "reason": "+8.432 Sterne in 7 Tagen bei 8.986 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "39 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 90 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 7 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -11.55,
+            "reason": "77% der letzten Commits mit AI-Beteiligung (77 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .claude, AGENTS.md"
+          },
+          {
+            "kind": "console_emulator",
+            "weight": -10.0,
+            "reason": "Emulator für Spielkonsolen („recompilation“, „nintendo“, „switch 2“)"
+          }
+        ]
+      },
+      {
+        "rank": 13,
+        "repo": "mirkobrombin/raven",
+        "url": "https://github.com/mirkobrombin/raven",
+        "description": "A Windows your apps recognize.",
+        "homepage": "https://useraven.org",
+        "language": "C",
+        "topics": [
+          "cmake",
+          "compatibility-layer",
+          "cpp",
+          "cpp20",
+          "desktop-applications",
+          "direct3d",
+          "directx",
+          "dxvk",
+          "gaming",
+          "installer",
+          "linux",
+          "pe-loader",
+          "ptrace",
+          "vulkan",
+          "wayland",
+          "win32",
+          "win32-api",
+          "windows",
+          "windows-compatibility",
+          "x11"
+        ],
+        "stars": 1078,
+        "stars_gained": 190,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          263,
+          142,
+          43,
+          51,
+          26,
+          26,
+          18,
+          125,
+          80,
+          42,
+          32,
+          18,
+          11,
+          11,
+          36,
+          10,
+          39,
+          61,
+          35,
+          9,
+          0
+        ],
+        "created_at": "2026-10-24T17:13:42Z",
+        "pushed_at": "2026-11-12T11:59:14Z",
+        "license": "NOASSERTION",
+        "forks": 49,
+        "active_authors": 5,
+        "score": 68.35429400465608,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 32.354294004656076,
+            "reason": "+190 Sterne in 7 Tagen bei 1.078 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "5 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 30 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 19 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“, „wayland“)"
+          }
+        ]
+      },
+      {
+        "rank": 14,
+        "repo": "HolyArrs/HolyArrs",
+        "url": "https://github.com/HolyArrs/HolyArrs",
+        "description": "One self-hosted app for your shows, movies and music.",
+        "homepage": "https://holyarrs.com",
+        "language": "Go",
+        "topics": [
+          "docker",
+          "homelab",
+          "jellyfin",
+          "media-server",
+          "plex",
+          "self-hosted"
+        ],
+        "stars": 1017,
+        "stars_gained": 1017,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          41,
+          609,
+          215,
+          98,
+          54
+        ],
+        "created_at": "2026-11-09T23:53:25Z",
+        "pushed_at": "2026-11-12T18:04:47Z",
+        "license": "AGPL-3.0",
+        "forks": 56,
+        "active_authors": 1,
+        "score": 68.1464190584549,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 60.146419058454896,
+            "reason": "+1.017 Sterne in 7 Tagen bei 1.017 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 37 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 3 Tage alt"
+          }
+        ]
+      },
+      {
+        "rank": 15,
+        "repo": "saulob/13-sentinels-aegis-rim-pc",
+        "url": "https://github.com/saulob/13-sentinels-aegis-rim-pc",
+        "description": "13 Sentinels: Aegis Rim native PC port for Windows and Linux, with direct PS4 PKG installation, TRG launcher and modern graphics options",
+        "homepage": null,
+        "language": "C++",
+        "topics": [
+          "linux",
+          "native-port",
+          "native-ports",
+          "pc-port",
+          "playstation",
+          "playstation-4",
+          "ps4",
+          "steam-deck",
+          "vanillaware",
+          "windows",
+          "13-sentinels",
+          "13-sentinels-aegis-rim"
+        ],
+        "stars": 96,
+        "stars_gained": 96,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          37,
+          31,
+          16,
+          4,
+          6,
+          2
+        ],
+        "created_at": "2026-11-07T04:16:55Z",
+        "pushed_at": "2026-11-09T01:29:41Z",
+        "license": "GPL-2.0",
+        "forks": 1,
+        "active_authors": 1,
+        "score": 67.64542466079138,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 39.64542466079137,
+            "reason": "+96 Sterne in 7 Tagen bei 96 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 5 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 6 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          }
+        ]
+      },
+      {
+        "rank": 16,
+        "repo": "noon-at-cgn/geforce-sriov",
+        "url": "https://github.com/noon-at-cgn/geforce-sriov",
+        "description": "Enable SR-IOV vGPU for consumer Ampere and Ada GeForce cards.",
+        "homepage": null,
+        "language": "C",
+        "topics": [
+          "dkms",
+          "geforce",
+          "gpu-virtualization",
+          "homelab",
+          "kvm",
+          "linux-kernel",
+          "nvidia",
+          "proxmox",
+          "sriov",
+          "vgpu"
+        ],
+        "stars": 173,
+        "stars_gained": 94,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          25,
+          39,
+          14,
+          1,
+          12,
+          28,
+          22,
+          24,
+          2,
+          6,
+          0
+        ],
+        "created_at": "2026-11-03T14:20:31Z",
+        "pushed_at": "2026-11-12T13:26:57Z",
+        "license": "NOASSERTION",
+        "forks": 14,
+        "active_authors": 2,
+        "score": 67.2756883336265,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 34.2756883336265,
+            "reason": "+94 Sterne in 7 Tagen bei 173 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 3 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 9 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          }
+        ]
+      },
+      {
+        "rank": 17,
+        "repo": "2hjaito/davish",
+        "url": "https://github.com/2hjaito/davish",
+        "description": "Your server, as a desktop. A lightweight SSH client with an OS-like UI. Nothing to install on the server.",
+        "homepage": null,
+        "language": "Go",
+        "topics": [
+          "devops",
+          "linux",
+          "server-monitor",
+          "ssh",
+          "ssh-client",
+          "server-management",
+          "terminal"
+        ],
+        "stars": 111,
+        "stars_gained": 82,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          8,
+          1,
+          0,
+          2,
+          2,
+          2,
+          2,
+          1,
+          9,
+          23,
+          21,
+          14,
+          5,
+          12,
+          5,
+          2
+        ],
+        "created_at": "2026-10-26T16:57:09Z",
+        "pushed_at": "2026-11-13T06:54:41Z",
+        "license": "GPL-3.0",
+        "forks": 17,
+        "active_authors": 2,
+        "score": 67.08735175974527,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 35.587351759745275,
+            "reason": "+82 Sterne in 7 Tagen bei 111 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 3 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 17 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -1.5,
+            "reason": "10% der letzten Commits mit AI-Beteiligung (10 von 100)"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          }
+        ]
+      },
+      {
+        "rank": 18,
+        "repo": "YusufCeng1z/ding",
+        "url": "https://github.com/YusufCeng1z/ding",
+        "description": "Toasts with real spring physics. One toast that morphs in place. No dependencies. React, Svelte, Vue and plain DOM.",
+        "homepage": "https://ding.yusufcengiz.dev",
+        "language": "TypeScript",
+        "topics": [
+          "animation",
+          "notifications",
+          "react",
+          "spring-physics",
+          "svelte",
+          "toast",
+          "typescript",
+          "ui-components",
+          "zero-dependency",
+          "nextjs",
+          "react-hot-toast",
+          "shadcn",
+          "sonner",
+          "toast-notifications",
+          "nuxt",
+          "vue"
+        ],
+        "stars": 623,
+        "stars_gained": 552,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          56,
+          15,
+          61,
+          25,
+          159,
+          185,
+          69,
+          41,
+          12
+        ],
+        "created_at": "2026-11-05T07:04:50Z",
+        "pushed_at": "2026-11-12T18:30:52Z",
+        "license": "MIT",
+        "forks": 16,
+        "active_authors": 2,
+        "score": 66.22911217827121,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 53.22911217827121,
+            "reason": "+552 Sterne in 7 Tagen bei 623 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 4 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 7 Tage alt"
+          }
+        ]
+      },
+      {
+        "rank": 19,
+        "repo": "jhaizhou-ops/S2Arm",
+        "url": "https://github.com/jhaizhou-ops/S2Arm",
+        "description": "Run your own Switch games natively on iPhone, iPad and Mac: game code rewritten to ARM64, graphics direct to Metal, one app for the whole library. Bring your own games and keys. 把你自己的 Switch 游戏原生带到 iPhone / iPad / Mac。",
+        "homepage": "https://s2arm.com",
+        "language": "C#",
+        "topics": [
+          "apple-silicon",
+          "arm64",
+          "game-porting",
+          "ios",
+          "ipados",
+          "macos",
+          "metal",
+          "static-recompilation",
+          "switch",
+          "s2arm"
+        ],
+        "stars": 2800,
+        "stars_gained": 2800,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1028,
+          1115,
+          341,
+          187,
+          84,
+          45
+        ],
+        "created_at": "2026-11-08T05:49:46Z",
+        "pushed_at": "2026-11-13T06:51:02Z",
+        "license": "Apache-2.0",
+        "forks": 515,
+        "active_authors": 8,
+        "score": 65.64316062684439,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 68.94316062684439,
+            "reason": "+2.800 Sterne in 7 Tagen bei 2.800 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "8 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 56 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 5 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -6.3,
+            "reason": "42% der letzten Commits mit AI-Beteiligung (42 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
+          },
+          {
+            "kind": "apple",
+            "weight": -10.0,
+            "reason": "Für macOS oder iOS („iphone“, „ipad“, „mac“, „apple silicon“ …)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 12-mal AI-Begriffe („ai“, „llm“)"
+          }
+        ]
+      },
+      {
+        "rank": 20,
+        "repo": "blue0x1/EmuFive",
+        "url": "https://github.com/blue0x1/EmuFive",
+        "description": "A PS5 emulator for the PS4. Runs on a jailbroken PS4 with Linux, installed through PS4 Multiboot.",
+        "homepage": "https://github.com/blue0x1/EmuFive/releases",
+        "language": "Python",
+        "topics": [
+          "emulator",
+          "goldhen",
+          "goldhen-ps4",
+          "homebrew",
+          "linux",
+          "ps4",
+          "ps4-jailbreak",
+          "ps5-emulator",
+          "vulkan",
+          "emufive"
+        ],
+        "stars": 233,
+        "stars_gained": 233,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          33,
+          94,
+          72,
+          24,
+          10
+        ],
+        "created_at": "2026-11-09T09:18:32Z",
+        "pushed_at": "2026-11-12T20:39:25Z",
+        "license": "GPL-2.0",
+        "forks": 10,
+        "active_authors": 1,
+        "score": 65.34711842052037,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 47.347118420520374,
+            "reason": "+233 Sterne in 7 Tagen bei 233 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 14 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 3 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "console_emulator",
+            "weight": -10.0,
+            "reason": "Emulator für Spielkonsolen („emulator“, „ps5“, „ps4“)"
+          }
+        ]
+      }
+    ],
+    "ai": [
+      {
+        "rank": 1,
+        "repo": "FrigadeHQ/yogurt",
+        "url": "https://github.com/FrigadeHQ/yogurt",
+        "description": "Private AI meeting notes. Free and open source.",
+        "homepage": "https://yogurt.so",
+        "language": "TypeScript",
+        "topics": [
+          "electron",
+          "linux",
+          "llama-cpp",
+          "local-ai",
+          "macos",
+          "meeting-notes",
+          "privacy",
+          "transcription",
+          "whisper",
+          "windows",
+          "mcp",
+          "open-source",
+          "ai-meeting-assistant",
+          "speech-to-text",
+          "whisper-cpp"
+        ],
+        "stars": 1037,
+        "stars_gained": 1037,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          578,
+          347,
+          111
+        ],
+        "created_at": "2026-11-10T20:01:01Z",
+        "pushed_at": "2026-11-13T06:47:34Z",
+        "license": "MIT",
+        "forks": 39,
+        "active_authors": 5,
+        "score": 96.31557512778082,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 60.31557512778082,
+            "reason": "+1.037 Sterne in 7 Tagen bei 1.037 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "5 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 12 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 2 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „ai“, „mcp“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 10-mal AI-Begriffe („ai“, „mcp“, „gpt“)"
+          }
+        ]
+      },
+      {
+        "rank": 2,
+        "repo": "shinyobjectz/raea",
+        "url": "https://github.com/shinyobjectz/raea",
+        "description": "Render Anything Engine: tell your AI what to make. Videos, motion graphics, 3D and games as React and TypeScript, rendered on your own GPU. Rust + Bevy, macOS, Linux and Windows.",
+        "homepage": "https://raea.io",
+        "language": "TypeScript",
+        "topics": [
+          "agent-skills",
+          "bevy",
+          "claude-code",
+          "game-engine",
+          "gpu",
+          "motion-graphics",
+          "react",
+          "rust",
+          "typescript",
+          "video-editing",
+          "3d",
+          "ai-agents",
+          "ai-video",
+          "linux",
+          "macos",
+          "motion-design",
+          "video-rendering",
+          "wgpu",
+          "windows"
+        ],
+        "stars": 2306,
+        "stars_gained": 1773,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          35,
+          404,
+          94,
+          112,
+          251,
+          847,
+          292,
+          159,
+          80,
+          32
+        ],
+        "created_at": "2026-10-18T18:08:48Z",
+        "pushed_at": "2026-11-13T06:43:54Z",
+        "license": "NOASSERTION",
+        "forks": 167,
+        "active_authors": 3,
+        "score": 93.97335120520921,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 60.973351205209205,
+            "reason": "+1.773 Sterne in 7 Tagen bei 2.306 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "3 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 28 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 25 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „agent skill“, „claude“, „ai agent“, „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 19-mal AI-Begriffe („ai“, „agent skill“, „claude“, „agent“)"
+          }
+        ]
+      },
+      {
+        "rank": 3,
+        "repo": "IainKay/ram-altman",
+        "url": "https://github.com/IainKay/ram-altman",
+        "description": "Monitors your RAM and reports any \"quite terrible\" unused capacity directly to the CEO of OpenAI.",
+        "homepage": "https://ram-altman.lol",
+        "language": "Shell",
+        "topics": [
+          "bash",
+          "cron",
+          "dram",
+          "email",
+          "humor",
+          "linux",
+          "meminfo",
+          "memory",
+          "monitoring",
+          "openai",
+          "parody",
+          "ram",
+          "sam-altman",
+          "sam-altman-openai",
+          "shell-script",
+          "sysadmin",
+          "ram-altman"
+        ],
+        "stars": 2040,
+        "stars_gained": 1983,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          51,
+          49,
+          787,
+          640,
+          313,
+          117,
+          63,
+          14
+        ],
+        "created_at": "2026-11-05T16:16:41Z",
+        "pushed_at": "2026-11-06T15:58:11Z",
+        "license": "Unlicense",
+        "forks": 63,
+        "active_authors": 1,
+        "score": 93.48253533612127,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 65.48253533612127,
+            "reason": "+1.983 Sterne in 7 Tagen bei 2.040 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 19 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 7 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „openai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „openai“"
+          }
+        ]
+      },
+      {
+        "rank": 4,
+        "repo": "shanselman/gputaskman",
+        "url": "https://github.com/shanselman/gputaskman",
+        "description": "A GPU task manager for Windows, Linux, and WSL: per-process VRAM, GPU activity, and LLM model/KV-cache insights (Windows AMD and NVIDIA).",
+        "homepage": null,
+        "language": "Python",
+        "topics": [],
+        "stars": 2819,
+        "stars_gained": 2529,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          30,
+          53,
+          27,
+          13,
+          167,
+          300,
+          627,
+          318,
+          213,
+          438,
+          511,
+          122
+        ],
+        "created_at": "2026-11-03T00:49:34Z",
+        "pushed_at": "2026-11-13T06:14:40Z",
+        "license": "MIT",
+        "forks": 132,
+        "active_authors": 10,
+        "score": 91.61112025005983,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 66.26112025005983,
+            "reason": "+2.529 Sterne in 7 Tagen bei 2.819 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "10 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 22 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 10 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -7.65,
+            "reason": "51% der letzten Commits mit AI-Beteiligung (51 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „llm“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 10-mal AI-Begriffe („llm“, „ai“, „ollama“)"
+          }
+        ]
+      },
+      {
+        "rank": 5,
+        "repo": "expo/exact",
+        "url": "https://github.com/expo/exact",
+        "description": "Write an app once. It runs natively on the web, macOS, iOS, and Linux, and an AI agent can build it, run it, see it, and test it on every one of them.",
+        "homepage": null,
+        "language": "Rust",
+        "topics": [
+          "ai-agents",
+          "appkit",
+          "coding-agents",
+          "cross-platform",
+          "css",
+          "ios",
+          "linux",
+          "macos",
+          "native-apps",
+          "rust",
+          "swift",
+          "uikit",
+          "web"
+        ],
+        "stars": 3505,
+        "stars_gained": 3505,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1376,
+          1053,
+          630,
+          288,
+          158
+        ],
+        "created_at": "2026-11-02T01:29:01Z",
+        "pushed_at": "2026-11-13T06:55:39Z",
+        "license": "MIT",
+        "forks": 85,
+        "active_authors": 3,
+        "score": 86.49376044605356,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 70.89376044605355,
+            "reason": "+3.505 Sterne in 7 Tagen bei 3.505 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "3 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 23 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 11 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -14.399999999999999,
+            "reason": "96% der letzten Commits mit AI-Beteiligung (96 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .claude, AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „ai agent“, „coding agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 20-mal AI-Begriffe („ai agent“, „coding agent“, „claude“, „agent“)"
+          }
+        ]
+      },
+      {
+        "rank": 6,
+        "repo": "ersinkoc/phonebox",
+        "url": "https://github.com/ersinkoc/phonebox",
+        "description": "Turn an old Android phone into a local desk panel for Windows, Linux and macOS. 55 widgets, Smart Stack, AI quotas and sessions, media controls, USB or paired Wi-Fi.",
+        "homepage": "https://ersinkoc.github.io/phonebox/",
+        "language": "C#",
+        "topics": [
+          "android",
+          "claude-code",
+          "dotnet",
+          "stream-deck",
+          "system-monitor",
+          "windows",
+          "desk-panel",
+          "dashboard",
+          "old-phone",
+          "tailscale",
+          "webhooks",
+          "widgets",
+          "codex",
+          "linux",
+          "macos",
+          "smart-stack"
+        ],
+        "stars": 257,
+        "stars_gained": 257,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          25,
+          33,
+          69,
+          37,
+          59,
+          23,
+          11
+        ],
+        "created_at": "2026-11-07T16:45:16Z",
+        "pushed_at": "2026-11-11T11:29:09Z",
+        "license": "MIT",
+        "forks": 25,
+        "active_authors": 3,
+        "score": 81.19866246662589,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 48.19866246662589,
+            "reason": "+257 Sterne in 7 Tagen bei 257 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "3 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 4 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 5 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „claude“, „codex“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 50-mal AI-Begriffe („agent“, „ai“, „claude“, „codex“)"
+          }
+        ]
+      },
+      {
+        "rank": 7,
+        "repo": "21stware/bowel",
+        "url": "https://github.com/21stware/bowel",
+        "description": "Bowel is a mihomo client for macOS, Windows, Linux and Android.",
+        "homepage": "https://bowel.dev",
+        "language": "Go",
+        "topics": [
+          "android",
+          "clash",
+          "clash-meta",
+          "linux",
+          "macos",
+          "mcp",
+          "mihomo",
+          "proxy-client",
+          "windows"
+        ],
+        "stars": 469,
+        "stars_gained": 469,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          305,
+          68,
+          50,
+          24,
+          13,
+          9
+        ],
+        "created_at": "2026-11-07T17:45:52Z",
+        "pushed_at": "2026-11-13T06:55:02Z",
+        "license": "NOASSERTION",
+        "forks": 24,
+        "active_authors": 4,
+        "score": 76.37345685430166,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 53.42345685430167,
+            "reason": "+469 Sterne in 7 Tagen bei 469 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "4 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 28 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 5 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -7.05,
+            "reason": "47% der letzten Commits mit AI-Beteiligung (47 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .agents, .claude"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „mcp“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 18-mal AI-Begriffe („mcp“, „claude“, „agent“, „ai“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 8,
+        "repo": "vercel-labs/ui",
+        "url": "https://github.com/vercel-labs/ui",
+        "description": "A library of behaviors for agents to build the next generation of user interfaces.",
+        "homepage": "https://ui-sdk.dev",
+        "language": "TypeScript",
+        "topics": [
+          "agent",
+          "component",
+          "component-library",
+          "headless",
+          "mcp",
+          "react",
+          "solid",
+          "svelte",
+          "vue",
+          "web-components",
+          "accessibility",
+          "agents",
+          "aria",
+          "behaviors",
+          "webmcp"
+        ],
+        "stars": 2273,
+        "stars_gained": 2274,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1245,
+          1028
+        ],
+        "created_at": "2026-10-26T17:39:27Z",
+        "pushed_at": "2026-11-12T20:45:19Z",
+        "license": "Apache-2.0",
+        "forks": 48,
+        "active_authors": 3,
+        "score": 72.13580920703433,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 67.13580920703433,
+            "reason": "+2.274 Sterne in 7 Tagen bei 2.273 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "3 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 17 Tage alt"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .agents, .claude, AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „agent“, „mcp“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „agent“"
+          }
+        ]
+      },
+      {
+        "rank": 9,
+        "repo": "heydamir/unslop",
+        "url": "https://github.com/heydamir/unslop",
+        "description": "A Claude skill that turns vibecoded, AI-looking UI into a designed interface",
+        "homepage": null,
+        "language": "JavaScript",
+        "topics": [],
+        "stars": 15275,
+        "stars_gained": 4387,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1636,
+          2147,
+          1402,
+          1433,
+          1141,
+          1174,
+          1166,
+          789,
+          586,
+          719,
+          789,
+          1046,
+          701,
+          376,
+          170
+        ],
+        "created_at": "2026-10-29T15:41:21Z",
+        "pushed_at": "2026-11-08T21:18:33Z",
+        "license": "CC-BY-4.0",
+        "forks": 869,
+        "active_authors": 6,
+        "score": 71.94047744170416,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 55.94047744170417,
+            "reason": "+4.387 Sterne in 7 Tagen bei 15.275 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "6 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 7 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 14 Tage alt"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „claude“, „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 18-mal AI-Begriffe („claude“, „codex“, „ai“, „agent“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 10,
+        "repo": "lxe/phoneuse",
+        "url": "https://github.com/lxe/phoneuse",
+        "description": "See and operate an unmodified iPhone from a Linux PC: AirPlay mirror in, Bluetooth HID mouse/keyboard out, plus a CLI and skill for agents.",
+        "homepage": null,
+        "language": "Python",
+        "topics": [],
+        "stars": 638,
+        "stars_gained": 634,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          211,
+          269,
+          61,
+          45,
+          26,
+          20,
+          2
+        ],
+        "created_at": "2026-11-07T01:28:30Z",
+        "pushed_at": "2026-11-13T06:24:18Z",
+        "license": "MIT",
+        "forks": 61,
+        "active_authors": 2,
+        "score": 71.20380725576965,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 55.95380725576965,
+            "reason": "+634 Sterne in 7 Tagen bei 638 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 6 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -12.75,
+            "reason": "85% der letzten Commits mit AI-Beteiligung (85 von 100)"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 7-mal AI-Begriffe („ai agent“, „claude“, „codex“, „agent“)"
+          }
+        ]
+      },
+      {
+        "rank": 11,
+        "repo": "kunchenguid/headless",
+        "url": "https://github.com/kunchenguid/headless",
+        "description": "Agent skill that sets up a headless Mac, Linux or Windows machine over SSH, step by step, without ever seeing the admin password.",
+        "homepage": null,
+        "language": "Shell",
+        "topics": [],
+        "stars": 190,
+        "stars_gained": 190,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          62,
+          82,
+          31,
+          7,
+          4,
+          4,
+          0
+        ],
+        "created_at": "2026-11-07T06:24:18Z",
+        "pushed_at": "2026-11-13T06:07:25Z",
+        "license": "MIT",
+        "forks": 12,
+        "active_authors": 2,
+        "score": 70.57507201905658,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 45.57507201905658,
+            "reason": "+190 Sterne in 7 Tagen bei 190 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 6 Tage alt"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „agent skill“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 9-mal AI-Begriffe („agent skill“, „agent“)"
+          }
+        ]
+      },
+      {
+        "rank": 12,
+        "repo": "Zleap-AI/SAG-Wiki",
+        "url": "https://github.com/Zleap-AI/SAG-Wiki",
+        "description": "A lightweight knowledge base for people and agents, with ultra fast indexing and most precise retrieval.",
+        "homepage": "https://sag-wiki.zleap.com",
+        "language": "Rust",
+        "topics": [
+          "knowledge-base",
+          "knowledge-graph",
+          "rag",
+          "rust",
+          "sag",
+          "wiki",
+          "sag-wiki"
+        ],
+        "stars": 1136,
+        "stars_gained": 972,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          3,
+          2,
+          6,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          2,
+          1,
+          2,
+          0,
+          3,
+          0,
+          1,
+          53,
+          84,
+          40,
+          73,
+          278,
+          404,
+          124,
+          24,
+          29
+        ],
+        "created_at": "2026-10-18T14:51:30Z",
+        "pushed_at": "2026-11-13T06:50:17Z",
+        "license": "MIT",
+        "forks": 135,
+        "active_authors": 8,
+        "score": 70.51271776097374,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 57.51271776097375,
+            "reason": "+972 Sterne in 7 Tagen bei 1.136 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "8 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 12 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 25 Tage alt"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „rag“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 52-mal AI-Begriffe („ai“, „agent“, „llm“, „coding agent“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 13,
+        "repo": "qybaihe/bla",
+        "url": "https://github.com/qybaihe/bla",
+        "description": "🛡️ BLA (Blind LLM Agents) — Adversarial defense shield that protects binaries, Electron apps, JS bundles, Python, and WebAssembly against AI reverse-engineering agents like REA. Poison -> Exhaust -> Hallucinate.",
+        "homepage": "https://bla.tools",
+        "language": "TypeScript",
+        "topics": [
+          "adversarial-ai",
+          "claude-code",
+          "cursor",
+          "electron-security",
+          "llm-security",
+          "mcp",
+          "mcp-server",
+          "obfuscation",
+          "reverse-engineering",
+          "webassembly"
+        ],
+        "stars": 5485,
+        "stars_gained": 2876,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          27,
+          143,
+          31,
+          810,
+          486,
+          238,
+          145,
+          123,
+          95,
+          256,
+          108,
+          146,
+          457,
+          871,
+          662,
+          543,
+          226,
+          86,
+          31
+        ],
+        "created_at": "2026-10-25T05:25:45Z",
+        "pushed_at": "2026-11-13T03:38:17Z",
+        "license": "MIT",
+        "forks": 667,
+        "active_authors": 6,
+        "score": 69.63341609143774,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 59.63341609143773,
+            "reason": "+2.876 Sterne in 7 Tagen bei 5.485 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "6 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 11 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 19 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -3.0,
+            "reason": "20% der letzten Commits mit AI-Beteiligung (20 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .agents, AGENTS.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „ai“, „claude“, „llm“, „mcp“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „llm“, „agent“, „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 61-mal AI-Begriffe („ai“, „llm“, „agent“, „mcp“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 14,
+        "repo": "mdiri-ai/SoduWork",
+        "url": "https://github.com/mdiri-ai/SoduWork",
+        "description": "The AI-native engine for teams and their agents. Multi-harness, multi-agent, self-hosted.",
+        "homepage": "https://www.soduwork.ai",
+        "language": "JavaScript",
+        "topics": [
+          "agent-harness",
+          "agent-orchestration",
+          "agent-workflows",
+          "ai-agents",
+          "ai-workflows",
+          "anti-slop",
+          "harness",
+          "human-in-the-loop",
+          "multi-agent",
+          "claude-code",
+          "codex",
+          "deepseek",
+          "electron",
+          "fastapi",
+          "mcp",
+          "opencode",
+          "plugin-system",
+          "self-hosted",
+          "team-collaboration",
+          "llm"
+        ],
+        "stars": 479,
+        "stars_gained": 478,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          8,
+          240,
+          116,
+          45,
+          68
+        ],
+        "created_at": "2026-10-29T02:43:14Z",
+        "pushed_at": "2026-11-13T06:01:59Z",
+        "license": "MIT",
+        "forks": 99,
+        "active_authors": 7,
+        "score": 66.560574343442,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 53.56057434344199,
+            "reason": "+478 Sterne in 7 Tagen bei 479 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "7 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 19 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 15 Tage alt"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „agent“, „ai agent“, „ai“, „multi agent“ …"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“, „agent“, „multi agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 98-mal AI-Begriffe („ai“, „agent“, „multi agent“, „deepseek“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 15,
+        "repo": "Sandflow-ai/sand3d",
+        "url": "https://github.com/Sandflow-ai/sand3d",
+        "description": "3D modeling in Python, built for LLMs.",
+        "homepage": "https://sandflow.ai/sand3d/",
+        "language": "HTML",
+        "topics": [
+          "3d",
+          "blender",
+          "cad",
+          "llm",
+          "procedural-modeling",
+          "python",
+          "usd"
+        ],
+        "stars": 1931,
+        "stars_gained": 1058,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          468,
+          405,
+          260,
+          360,
+          171,
+          138,
+          81,
+          36,
+          12
+        ],
+        "created_at": "2026-11-03T08:23:03Z",
+        "pushed_at": "2026-11-12T16:28:07Z",
+        "license": "Apache-2.0",
+        "forks": 214,
+        "active_authors": 7,
+        "score": 65.6322344510169,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 52.6322344510169,
+            "reason": "+1.058 Sterne in 7 Tagen bei 1.931 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "7 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 3 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 9 Tage alt"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .claude, AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „llm“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „llm“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 43-mal AI-Begriffe („ai“, „llm“, „system prompt“)"
+          }
+        ]
+      },
+      {
+        "rank": 16,
+        "repo": "OmniJev/Flide",
+        "url": "https://github.com/OmniJev/Flide",
+        "description": "🔥🔥 The extremely fast inference engine for decision model",
+        "homepage": "https://flide.org",
+        "language": "Python",
+        "topics": [
+          "gemma",
+          "inference-engine",
+          "llm-inference",
+          "llm-serving",
+          "pytorch",
+          "qwen",
+          "triton",
+          "ai-agents",
+          "cuda",
+          "decision-making",
+          "deterministic-inference",
+          "kv-cache",
+          "large-language-models",
+          "linear-attention",
+          "llm",
+          "llm-agents",
+          "llm-as-a-judge",
+          "multimodal",
+          "prefix-caching",
+          "jev"
+        ],
+        "stars": 483,
+        "stars_gained": 455,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          2,
+          0,
+          3,
+          1,
+          0,
+          0,
+          12,
+          2,
+          2,
+          4,
+          1,
+          8,
+          272,
+          92,
+          56,
+          26,
+          0
+        ],
+        "created_at": "2026-10-24T12:34:07Z",
+        "pushed_at": "2026-11-12T14:59:30Z",
+        "license": "Apache-2.0",
+        "forks": 31,
+        "active_authors": 4,
+        "score": 65.37828820849057,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 52.37828820849058,
+            "reason": "+455 Sterne in 7 Tagen bei 483 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "4 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "continuity",
+            "weight": 5.0,
+            "reason": "Commits in 4 verschiedenen Wochen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 19 Tage alt"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „llm“, „ai agent“, „large language model“, „agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 13-mal AI-Begriffe („ai“, „agent“)"
+          }
+        ]
+      },
+      {
+        "rank": 17,
+        "repo": "jazzenchen/agent-hud-open",
+        "url": "https://github.com/jazzenchen/agent-hud-open",
+        "description": "A HUD for Claude Code, Codex and 25 more coding agents. Know your quotas, tokens and sessions at a glance, answer requests and jump back in one click. On Mac, Windows and Linux, your phone and your watch.",
+        "homepage": "https://agenthud.app",
+        "language": "Rust",
+        "topics": [
+          "ai-agents",
+          "claude-code",
+          "codex",
+          "coding-agents",
+          "cursor",
+          "deepseek",
+          "developer-tools",
+          "github-copilot",
+          "grok",
+          "hud",
+          "linux",
+          "macos",
+          "notch",
+          "opencode",
+          "rust",
+          "tauri",
+          "token-usage",
+          "windows",
+          "mcp",
+          "vibe-coding"
+        ],
+        "stars": 420,
+        "stars_gained": 294,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          7,
+          12,
+          26,
+          12,
+          15,
+          10,
+          6,
+          8,
+          3,
+          5,
+          6,
+          5,
+          3,
+          0,
+          4,
+          5,
+          61,
+          80,
+          66,
+          46,
+          21,
+          15
+        ],
+        "created_at": "2026-10-22T09:27:58Z",
+        "pushed_at": "2026-11-13T06:17:38Z",
+        "license": "Apache-2.0",
+        "forks": 70,
+        "active_authors": 3,
+        "score": 64.38514873370107,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 45.335148733701075,
+            "reason": "+294 Sterne in 7 Tagen bei 420 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "3 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 26 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 21 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -13.950000000000001,
+            "reason": "93% der letzten Commits mit AI-Beteiligung (93 von 100)"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „ai agent“, „claude“, „codex“, „coding agent“ …"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Name: AI-Begriffe „agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „claude“, „codex“, „coding agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 149-mal AI-Begriffe („agent“, „claude“, „codex“, „deepseek“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 18,
+        "repo": "RunanywhereAI/trnrt",
+        "url": "https://github.com/RunanywhereAI/trnrt",
+        "description": "The open LLM inference engine for AWS Trainium: NKI megakernels, 1M-token context, OpenAI-compatible API. By RunAnywhere.",
+        "homepage": "https://runanywhere.ai/blog/glm-5-3-flash-trainium2-nki-megakernels",
+        "language": "Python",
+        "topics": [
+          "aws",
+          "glm",
+          "inference",
+          "llm",
+          "llm-serving",
+          "neuron",
+          "nki",
+          "openai-api",
+          "trainium",
+          "megakernels"
+        ],
+        "stars": 1572,
+        "stars_gained": 1563,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7,
+          1,
+          1,
+          0,
+          4,
+          481,
+          624,
+          272,
+          175,
+          7
+        ],
+        "created_at": "2026-10-30T18:30:04Z",
+        "pushed_at": "2026-11-11T10:04:47Z",
+        "license": "Apache-2.0",
+        "forks": 15,
+        "active_authors": 3,
+        "score": 64.28761819728514,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 63.78761819728514,
+            "reason": "+1.563 Sterne in 7 Tagen bei 1.572 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "3 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 13 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -4.5,
+            "reason": "30% der letzten Commits mit AI-Beteiligung (30 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „llm“, „openai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „llm“, „openai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 18-mal AI-Begriffe („llm“, „ai“, „large language model“, „openai“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 19,
+        "repo": "bytesbay/pi-gpui",
+        "url": "https://github.com/bytesbay/pi-gpui",
+        "description": "A native GUI for the pi coding agent, built with Rust and GPUI. For macOS (Apple silicon) and Linux.",
+        "homepage": "https://pi-gpui.dev",
+        "language": "Rust",
+        "topics": [
+          "ai-coding-agent",
+          "claude-code",
+          "codex",
+          "coding-agent",
+          "desktop-app",
+          "gpui",
+          "llm",
+          "macos",
+          "native-app",
+          "pi",
+          "pi-agent",
+          "pi-coding-agent",
+          "rust",
+          "zed",
+          "pi-gui"
+        ],
+        "stars": 119,
+        "stars_gained": 113,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          5,
+          1,
+          0,
+          1,
+          14,
+          8,
+          66,
+          17,
+          7
+        ],
+        "created_at": "2026-11-04T22:12:59Z",
+        "pushed_at": "2026-11-12T09:40:23Z",
+        "license": "MIT",
+        "forks": 10,
+        "active_authors": 1,
+        "score": 63.537292068242266,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 40.537292068242266,
+            "reason": "+113 Sterne in 7 Tagen bei 119 insgesamt"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 8 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „ai“, „coding agent“, „claude“, „codex“ …"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „coding agent“"
+          }
+        ]
+      },
+      {
+        "rank": 20,
+        "repo": "Licoy/sshyard",
+        "url": "https://github.com/Licoy/sshyard",
+        "description": "SSHYard is a native desktop SSH / SFTP client for macOS, Windows and Linux, bringing terminals, file management and AI assistance into one app. | SSHYard 是一款跨平台桌面 SSH / SFTP 客户端，支持 macOS、Windows 和 Linux，搭配 AI Agent以及更多工具帮助您提升效率",
+        "homepage": "https://sshyard.com",
+        "language": "Go",
+        "topics": [
+          "ssh",
+          "ssh-client",
+          "ai-assistance",
+          "sftp",
+          "sftp-client",
+          "terminal"
+        ],
+        "stars": 259,
+        "stars_gained": 99,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          85,
+          49,
+          28,
+          15,
+          11,
+          13,
+          28,
+          22,
+          8,
+          2
+        ],
+        "created_at": "2026-10-26T07:06:29Z",
+        "pushed_at": "2026-11-13T01:13:51Z",
+        "license": "AGPL-3.0",
+        "forks": 23,
+        "active_authors": 4,
+        "score": 62.29446853287248,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 32.29446853287248,
+            "reason": "+99 Sterne in 7 Tagen bei 259 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "4 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 38 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 17 Tage alt"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“, „ai agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 21-mal AI-Begriffe („ai“, „agent“, „claude“, „codex“ …)"
+          }
+        ]
+      }
+    ]
+  }
+}

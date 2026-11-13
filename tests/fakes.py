@@ -33,3 +33,17 @@ class InMemoryEditionStore:
 
     def since(self, day):
         return [self.editions[d] for d in sorted(self.editions) if d >= day]
+
+
+class InMemoryCollectionStatusStore:
+    def __init__(self, statuses=()):
+        self.statuses = {status.day: status for status in statuses}
+
+    def save(self, status):
+        self.statuses[status.day] = status
+
+    def load(self, day):
+        return self.statuses.get(day)
+
+    def prune(self, before):
+        self.statuses = {d: s for d, s in self.statuses.items() if d >= before}

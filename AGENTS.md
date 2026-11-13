@@ -66,13 +66,13 @@ Awesome-Listen bewusst **nicht** verwenden.
   (Linksammlungen, Tutorials, Material zur Vorbereitung auf Bewerbungsgespräche,
   Dotfiles, Prompt-Sammlungen), Köder für Schadsoftware und Kryptowährungen.
 - **Sprache**: nur Repos mit deutscher oder englischer Beschreibung und README.
-- **Transparenz**: Jede Auf- oder Abwertung wird hinter einem kleinen (i) mit Tooltip
-  (Mouse-Over) begründet.
+- **Transparenz**: Jede Auf- oder Abwertung wird beim Eintrag begründet, in einem
+  aufklappbaren Bereich „Warum Platz …?“. Zuerst war das ein (i) mit Tooltip, der mit
+  Tastatur und auf dem Telefon schlecht erreichbar war.
 - **Ausgabe**: statische Website plus RSS-Feed, täglich 20 Repos in der Hauptliste und
   20 in der separaten AI-Sektion. Archiv frühere Tage, zum Durchblättern.
-- **Hosting**: zuerst ein lokaler Proof of Concept. Danach GitHub Pages mit GitHub
-  Actions (Cron), wahrscheinlich als öffentliches, aber nicht beworbenes Repo
-  (noch zu bestätigen).
+- **Hosting**: GitHub Pages mit GitHub Actions, täglicher Lauf per Cron. Das Repo ist
+  `ZyanKLee/explore-gh`. Die Workflows beschreibt `docs/veroeffentlichung.md`.
 - **Token**: klassischer personal access token ohne Scopes (damit ist alles geprüft).
 - **Technik**: Python. Gerendert wird mit Pelican (Jinja2-Vorlagen, eigenes Theme).
   Jeder Tag ist ein Artikel, die AI-Sektion läuft als eigene Kategorie und bekommt
@@ -109,7 +109,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Sternverlauf | `StarHistory` | Neue Sterne je Tag über 35 Tage. `gained()` ist der Gewinn der letzten 7 Tage. |
 | Commit | `Commit` | Zeitpunkt, Autor, Bot ja/nein, Co-Autoren, erste Zeile der Nachricht |
 | Kandidatenquelle | `CandidateSource` | Liefert Kandidaten für einen Tag |
-| Signal | `Signal` | Beobachtete Tatsache mit Gewicht und Begründung (Text für den (i)-Tooltip) |
+| Signal | `Signal` | Beobachtete Tatsache mit Gewicht und Begründung (Text für „Warum Platz …?“ auf der Seite) |
 | Aufstieg | `Momentum` | Aktueller Zugewinn an Aufmerksamkeit, aus der Momentaufnahme abgeleitet |
 | AI-Thema | `AiFocus` | Repo existiert für den Einsatz von AI und kommt in die AI-Sektion |
 | AI-Mithilfe | `AiAssistance` | Hinweise auf AI-geschriebenen Code, führt nur zur Abwertung |
@@ -130,7 +130,8 @@ GitHub-Repository bezeichnet.
 - Aggregate: `Edition`. Sie prüft ihre Invarianten
   selbst: höchstens 20 pro Sektion, Vielfaltsregel, keine Duplikate. Sie trägt die
   Statistik des Tages (`EditionStats`).
-- Ports: `CandidateSource`, `RepoSource`, `SnapshotStore`, `EditionStore`, `Clock`.
+- Ports: `CandidateSource`, `RepoSource`, `SnapshotStore`, `CollectionStatusStore`,
+  `EditionStore`, `Clock`.
   Adapter melden Ausfälle als `SourceUnavailable`.
 - `domain/` ist frei von Ein- und Ausgabe. Die aktuelle Zeit kommt nur über `Clock`.
 - Schwellenwerte, Gewichte und Keyword-Listen stehen als benannte Konstanten in der

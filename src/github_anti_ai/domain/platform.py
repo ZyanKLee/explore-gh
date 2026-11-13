@@ -4,7 +4,7 @@ A project that serves Linux too is not rated down for the other platforms.
 """
 
 from github_anti_ai.domain.model import Signal, Snapshot
-from github_anti_ai.domain.text import TermList, normalize, quoted
+from github_anti_ai.domain.text import TermList, quoted
 
 WINDOWS_PENALTY = 10.0
 APPLE_PENALTY = 10.0
@@ -12,7 +12,8 @@ LINUX_BONUS = 20.0
 
 WINDOWS_TERMS = TermList(["windows", "win32", "win10", "win11", "winui", "wpf"])
 APPLE_TERMS = TermList(
-    [
+    unless_in=["mac address"],
+    terms=[
         "macos",
         "mac",
         "osx",
@@ -43,15 +44,12 @@ LINUX_TERMS = TermList(
         "hyprland",
     ]
 )
-_NOT_A_PLATFORM = ["mac address"]
 
 
 class PlatformPreference:
     def signals(self, snapshot: Snapshot) -> tuple[Signal, ...]:
         """Looks at name, description and topics. A README names every platform it installs on."""
-        text = normalize(" . ".join([snapshot.repo.name, snapshot.description, *snapshot.topics]))
-        for phrase in _NOT_A_PLATFORM:
-            text = text.replace(phrase, " ")
+        text = " . ".join([snapshot.repo.name, snapshot.description, *snapshot.topics])
         found = []
         for kind, label, terms, weight in [
             ("windows", "Für Windows", WINDOWS_TERMS, -WINDOWS_PENALTY),

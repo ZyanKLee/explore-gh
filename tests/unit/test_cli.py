@@ -78,3 +78,35 @@ def test_token_in_env_file_may_be_quoted(tmp_path):
     (tmp_path / ".env").write_text('GITHUB_TOKEN="from_file"\n')
 
     assert load_token({}, tmp_path / ".env") == "from_file"
+
+
+def test_publish_refuses_an_incomplete_collection_by_default():
+    assert parse_args(["publish"]).allow_incomplete is False
+
+
+@pytest.mark.parametrize("command", ["publish", "daily"])
+def test_incomplete_collection_can_be_allowed_from_the_command_line(command):
+    assert parse_args([command, "--allow-incomplete"]).allow_incomplete is True
+
+
+def test_site_has_no_address_by_default():
+    assert parse_args(["site"]).site_url is None
+
+
+def test_address_of_the_site_can_be_given_for_the_feeds():
+    args = parse_args(["site", "--site-url", "https://example.org/fundstuecke/"])
+
+    assert args.site_url == "https://example.org/fundstuecke/"
+
+
+def test_preview_is_served_on_port_8000_by_default():
+    args = parse_args(["serve"])
+
+    assert args.command == "serve"
+    assert args.port == 8000
+    assert args.output == Path("output")
+    assert args.data_dir == Path("data")
+
+
+def test_port_of_the_preview_can_be_chosen():
+    assert parse_args(["serve", "--port", "8080"]).port == 8080

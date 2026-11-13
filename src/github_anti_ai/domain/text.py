@@ -10,9 +10,16 @@ def normalize(text: str) -> str:
 
 
 class TermList:
-    """Finds terms as whole words. A plural s at the end of a term counts as well."""
+    """Finds terms as whole words. A plural s at the end of a term counts as well.
 
-    def __init__(self, terms: Iterable[str]):
+    Phrases in unless_in are taken out of the text first: in them a term means something else.
+    """
+
+    def __init__(self, terms: Iterable[str], unless_in: Iterable[str] = ()):
+        self._unless_in = [
+            re.compile(rf"(?<![a-z0-9]){re.escape(phrase).replace(r'\ ', r'\s+')}s?(?![a-z0-9])")
+            for phrase in unless_in
+        ]
         # longer terms first, so that "ai agent" is found before "ai"
         ordered = sorted(set(terms), key=lambda term: (-len(term), term))
         alternatives = "|".join(re.escape(term).replace(r"\ ", r"\s+") for term in ordered)
@@ -20,7 +27,10 @@ class TermList:
 
     def find(self, text: str) -> list[str]:
         """Every occurrence in the order of the text, without overlaps."""
-        return [re.sub(r"\s+", " ", found) for found in self._pattern.findall(normalize(text))]
+        text = normalize(text)
+        for phrase in self._unless_in:
+            text = phrase.sub(" ", text)
+        return [re.sub(r"\s+", " ", found) for found in self._pattern.findall(text)]
 
     def distinct(self, text: str) -> list[str]:
         return list(dict.fromkeys(self.find(text)))

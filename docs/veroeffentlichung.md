@@ -13,7 +13,7 @@ data/editions/*.json
    │  load_editions()        lesen, Format prüfen, nach Datum sortieren
    ▼
 section_view()               je Ausgabe und Sektion ein fertiges Seitenmodell
-   │                         (Texte, Zahlen, Tooltip-Zeilen, Verlaufskurve)
+   │                         (Texte, Zahlen, Begründung, Verlaufskurve)  
    ▼
 Pelican                      Plugin macht aus jedem Seitenmodell einen Artikel,
    │                         das Theme rendert, Pelican schreibt Archiv und Feeds
@@ -62,9 +62,9 @@ Gebaut wird mit `build_site(editions_dir, output_dir)`
 - Verlaufskurve der letzten 35 Tage als kleines eingebettetes SVG
 - Lizenz, Forks, aktive Autoren, Alter
 - Link zur Homepage, falls vorhanden
-- **(i) mit Begründung:** die Punktzahl und darunter jedes Signal mit Gewicht und
-  Text, in der Reihenfolge der Ausgabe. Der Tooltip erscheint beim Überfahren mit
-  der Maus und bei Tastaturfokus. Sein Inhalt steht im HTML, nicht in JavaScript.
+- **Begründung zum Aufklappen:** „Warum Platz 3? 89,2 Punkte“. Darunter jedes Signal
+  mit Gewicht und Text, in der Reihenfolge der Ausgabe, und die Summe. Der Inhalt
+  steht im HTML, nicht in JavaScript.
 
 Über der Liste steht die Statistik des Tages: „1.834 Repos geprüft, 420
 ausgeschlossen, 212 als AI-Thema eingestuft“.
@@ -102,26 +102,117 @@ halb verstandene Ausgabe soll nie veröffentlicht werden.
 ## Kommandozeile
 
 ```
-github-anti-ai site [--data-dir data] [--output output]   # Website bauen
+github-anti-ai site [--data-dir data] [--output output] [--site-url https://…]
 ```
 
 `daily` baut die Website nicht. Im Betrieb folgt `site` als eigener Schritt.
 
 ## Gestaltung
 
-Schlicht und gut lesbar: eine Spalte, Karten, helles und dunkles Farbschema nach
-Systemeinstellung, auf dem Telefon ohne Querscrollen. Die genaue Gestaltung entsteht
-beim Bau des Themes und ist nicht Teil der Tests.
+Entwurf vom 13.11.2026, als Leinwand in Claude Design:
+<https://claude.ai/artifact/7vnxersetXqxviX1vi1pQa> (privat).
+
+- **Farben:** kühler heller Grund, kieferngrüne Tinte, dazu ein einziger Akzent:
+  Textmarker-Gelb für das, was aufsteigt (der Gewinn der Woche und die Fläche unter
+  der Verlaufskurve). Dunkles Schema nach Systemeinstellung.
+- **Schrift:** Atkinson Hyperlegible Next, entworfen für gute Lesbarkeit. Die Datei
+  liegt im Theme (`theme/static/fonts/`, 34 KB), die Seite lädt weiter nichts von
+  fremden Servern.
+- **Aufbau:** eine Spalte ohne Karten. Große Rangziffer links, Verlaufskurve rechts,
+  auf dem Telefon untereinander.
+- **Begründung:** kein Tooltip mehr, sondern ein aufklappbarer Bereich „Warum Platz
+  3?“ mit einer Tabelle aller Signale und der Summe. Ein Tooltip war mit Tastatur und
+  auf dem Telefon schlecht erreichbar. Der Bereich ist ein `<details>`-Element und
+  braucht kein JavaScript.
+
+### Barrierefreiheit
+
+- **Kontrast:** Jeder Text erreicht mindestens 6,5:1 gegen seinen Grund, in beiden
+  Farbschemata (gerechnet, WCAG AAA verlangt 7:1 für Fließtext, AA 4,5:1).
+- **Tastatur:** Sprunglink zum Inhalt, deutlich sichtbarer Fokus, alle Bedienelemente
+  mindestens 44 Pixel hoch.
+- **Nicht nur Farbe:** Plus und Minus stehen als Zeichen vor dem Gewicht, die aktuelle
+  Seite ist per `aria-current` und Unterstrich markiert.
+- **Screenreader:** Liste als Liste, Rangziffer versteckt (die Liste zählt selbst),
+  Verlaufskurve mit Beschriftung, Tabelle mit Überschrift.
+- **Rücksicht:** weniger Bewegung, erzwungene Farben (Kontrastmodus) und Druck sind
+  berücksichtigt.
+- **Nicht geprüft:** mit einem echten Screenreader und mit einem Prüfwerkzeug wie axe.
+
+## Vorschau (`serve`)
+
+```
+github-anti-ai serve [--data-dir data] [--output output] [--port 8000]
+```
+
+`src/github_anti_ai/publication/dev_server.py` baut die Seite, liefert sie auf
+`127.0.0.1` aus und baut neu, sobald sich eine Datei in `data/editions/` oder im Theme
+ändert. Geprüft wird zweimal pro Sekunde.
+
+- **Der Browser lädt selbst nach.** Dafür fügt der Server beim Ausliefern ein kleines
+  Skript in die HTML-Seiten ein, das jede Sekunde nach der Version fragt. Die gebauten
+  Dateien in `output/` bleiben ohne Skript.
+- **Schlägt ein Bau fehl**, meldet die Vorschau den Fehler und zeigt weiter die letzte
+  funktionierende Seite.
+- Pelicans eigenes `--autoreload` passt hier nicht: Es überwacht einen Inhaltsordner
+  und eine Einstellungsdatei, beides gibt es bei uns nicht.
+
+## Adresse der Seite
+
+`site --site-url https://…` nennt die öffentliche Adresse. Die Feeds bekommen damit
+vollständige Links und dauerhafte Kennungen, an denen Feed-Leser die Einträge
+unterscheiden. Die Seiten selbst behalten relative Links und lassen sich weiter von
+der Festplatte öffnen. Ohne die Option enthalten die Feeds nur relative Links. Das
+reicht zum Ansehen, nicht zum Abonnieren.
 
 ## Offen
 
-- **Adresse der Seite für die Feeds:** Ohne feste Adresse enthalten die Feeds nur
-  relative Links und keine sauberen Kennungen. Für den Betrieb braucht `site` eine
-  Option für die Adresse (z. B. `--site-url`).
-- Im Browser geprüft sind bisher nur Startseite und Telefonbreite, an einer
-  Beispielseite mit erfundenen Punktzahlen.
+- Im Browser geprüft sind Startseite (hell, dunkel, Telefonbreite, aufgeklappte
+  Begründung) der echten Ausgabe vom 13.11.2026, per Screenshot. Die Feeds sind in keinem Feed-Leser ausprobiert.
+
+## Betrieb auf GitHub
+
+Drei Workflows in `.github/workflows/`:
+
+| Datei | Wann | Was |
+|---|---|---|
+| `daily.yml` | täglich 05:17 UTC, oder von Hand | sammeln, Ausgabe erzeugen, ins Repo schreiben, Seite veröffentlichen |
+| `site.yml` | bei Änderungen am Theme oder an den Ausgaben, oder von Hand | nur die Seite neu bauen und veröffentlichen |
+| `tests.yml` | bei jedem Push und Pull Request | die Tests |
+
+### Der tägliche Lauf
+
+1. **Tag festlegen** (UTC), bevor gesammelt wird.
+2. **Momentaufnahmen der letzten Tage** aus dem Cache von GitHub Actions holen. Sie
+   liegen nicht im Repo. Fehlt der Cache, holt der Lauf alles neu (etwa 40 Minuten).
+3. **Sammeln**, bei Fehlern ein zweiter Versuch. Danach wandern die Momentaufnahmen
+   zurück in den Cache, auch wenn der Lauf scheitert.
+4. **Ausgabe erzeugen.** Ist die Sammlung unvollständig, bricht der Lauf hier ab: An
+   dem Tag gibt es keine Ausgabe, die Seite bleibt, wie sie war. Gibt es die Ausgabe
+   des Tages schon, wird der Schritt übersprungen.
+5. **Ausgabe ins Repo schreiben** (`data/editions/`), als Commit von
+   `github-actions[bot]`. Daraus leitet sich die Sperre ab.
+6. **Seite bauen und veröffentlichen**, mit der Adresse von GitHub Pages für die
+   Feeds.
+
+### Einmalig einrichten
+
+- **Secret `COLLECT_TOKEN`:** ein klassischer Personal Access Token ohne Scopes, unter
+  *Settings → Secrets and variables → Actions*. Der eingebaute Token erlaubt nur 1000
+  Anfragen pro Stunde, ein erster Lauf braucht rund 3000.
+- **Pages:** unter *Settings → Pages* als Quelle „GitHub Actions“ wählen.
+
+### Bekannte Grenzen
+
+- GitHub löscht Caches, die 7 Tage nicht benutzt wurden, und hält höchstens 10 GB je
+  Repo. Bei täglichem Lauf bleibt der Cache erhalten. Jeder Lauf legt einen neuen an
+  (rund 250 MB bei 14 Tagen), alte räumt GitHub selbst ab.
+- Geplante Läufe starten bei hoher Last auf GitHub verspätet.
+- Die Workflows sind noch nie gelaufen. Geprüft ist nur, dass die Dateien gültiges
+  YAML sind und dass die Befehle darin lokal funktionieren.
+- Die Versionen der verwendeten Actions (`actions/checkout@v4` und andere) habe ich
+  aus dem Gedächtnis gewählt. Es kann neuere geben.
 
 ## Geplant
 
 - Verweis auf die Fundstelle (Hacker News, Lobste.rs), sobald es diese Quellen gibt
-- Betrieb auf GitHub Pages über GitHub Actions

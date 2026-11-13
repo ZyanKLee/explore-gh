@@ -1,11 +1,15 @@
+{% set current = "archiv" %}
 {% extends "base.html" %}
-{% block title %}Archiv · {{ SITENAME }}{% endblock %}
+{% block title %}Archiv – {{ SITENAME }}{% endblock %}
 {% block content %}
-<header class="edition"><h1>Archiv</h1></header>
+<header class="edition">
+  <h1>Archiv</h1>
+  {% if edition_days %}<p class="stats">Alle Tage, der neueste zuerst.</p>{% endif %}
+</header>
 {% if not edition_days %}
 <p class="empty">Noch keine Ausgabe.</p>
 {% else %}
-<ul class="archive">
+<ul class="archive" role="list">
   {% for day in edition_days %}
   <li>
     <span class="date">{{ day.date }}</span>
