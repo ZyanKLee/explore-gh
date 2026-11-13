@@ -162,3 +162,16 @@ def test_agent_in_a_single_place_is_shown_but_does_not_move_the_repo():
 
     assert focus.section is Section.MAIN
     assert len(focus.signals) == 1
+
+
+def test_a_readme_that_talks_about_little_else_than_ai_is_enough_on_its_own():
+    # seen live: storytold/craft-anything, 62 AI terms in the README, none anywhere else
+    focus = classify(readme=AI_README * 9)  # 54 terms
+
+    assert focus.section is Section.AI
+    assert len(focus.signals) == 1
+    assert "54" in focus.signals[0].reason
+
+
+def test_a_readme_just_below_that_mark_still_needs_a_second_place():
+    assert section(readme=AI_README * 8) is Section.MAIN  # 48 terms

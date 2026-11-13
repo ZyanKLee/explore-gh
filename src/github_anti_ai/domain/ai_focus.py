@@ -60,6 +60,8 @@ MIN_PLACES = 2
 MIN_README_MENTIONS = 5
 # A repo without description and topics has only name and README left to show its purpose.
 MIN_README_MENTIONS_ALONE = 10
+# A README that talks about little else than AI decides on its own, whatever the rest says.
+MIN_README_MENTIONS_DOMINANT = 50
 
 
 @dataclass(frozen=True)
@@ -85,7 +87,11 @@ class AiFocusClassifier:
             signals.append(_signal(f"README: {len(mentions)}-mal AI-Begriffe ({terms})"))
 
         bare = not snapshot.description.strip() and not snapshot.topics
-        focused = len(signals) >= MIN_PLACES or (bare and len(mentions) >= MIN_README_MENTIONS_ALONE)
+        focused = (
+            len(signals) >= MIN_PLACES
+            or len(mentions) >= MIN_README_MENTIONS_DOMINANT
+            or (bare and len(mentions) >= MIN_README_MENTIONS_ALONE)
+        )
         section = Section.AI if focused else Section.MAIN
         return AiFocus(section=section, signals=tuple(signals))
 

@@ -5,12 +5,15 @@ from github_anti_ai.application.ports import (
     Assessor,
     Clock,
     CollectionStatusStore,
+    DailyRecordStore,
     EditionStore,
     IncompleteCollection,
     NothingToPublish,
     SnapshotStore,
 )
 from github_anti_ai.domain.edition import COOLDOWN_DAYS, Edition, EditionCurator
+from github_anti_ai.domain.history import DailyRecord
+from github_anti_ai.domain.model import Section
 
 
 class PublishEdition:
@@ -19,6 +22,7 @@ class PublishEdition:
         snapshot_store: SnapshotStore,
         edition_store: EditionStore,
         collection_status_store: CollectionStatusStore,
+        record_store: DailyRecordStore,
         assess: Assessor,
         clock: Clock,
         ignore_cooldown: bool = False,
@@ -29,6 +33,7 @@ class PublishEdition:
         self._assess = assess
         self._clock = clock
         self._collection_status_store = collection_status_store
+        self._record_store = record_store
         self._ignore_cooldown = ignore_cooldown
         self._allow_incomplete = allow_incomplete
         self._curator = EditionCurator()
@@ -51,6 +56,18 @@ class PublishEdition:
             else self._edition_store.since(today - timedelta(days=COOLDOWN_DAYS))
         )
         edition = self._curator.curate(today, assessments, past_editions)
+
+        ranks = {
+            entry.repo: place
+            for section in Section
+            for place, entry in enumerate(edition.entries(section), start=1)
+        }
+        records = [
+            DailyRecord.from_assessment(today, assessment, rank=ranks.get(assessment.repo))
+            for assessment in assessments
+        ]
+        # The records first: an Edition can never be replaced. If they fail, the day stays open.
+        self._record_store.save(today, records)
         self._edition_store.save(edition)
         return edition
 

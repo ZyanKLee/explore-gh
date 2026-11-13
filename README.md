@@ -121,6 +121,7 @@ beginnen, sind von Git ausgenommen.
 |---|---|
 | `data/snapshots/` | Momentaufnahmen, Arbeitsdaten für 14 Tage, nicht in Git |
 | `data/editions/` | die Ausgaben, eine Datei pro Tag, in Git |
+| `data/history/` | Langzeitdaten: Zahlen und Urteil zu jedem bewerteten Repo, eine Datei pro Tag, in Git |
 | `output/` | die gebaute Website, nicht in Git |
 | `docs/` | Konzepte: Datensammlung, Bewertung, Ausgabe, Veröffentlichung |
 | `AGENTS.md` | Entscheidungen, Glossar und Regeln für die Entwicklung |

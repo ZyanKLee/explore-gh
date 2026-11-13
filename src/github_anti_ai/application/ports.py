@@ -6,6 +6,7 @@ from datetime import date, datetime
 from typing import Protocol
 
 from github_anti_ai.domain.edition import Edition
+from github_anti_ai.domain.history import DailyRecord
 from github_anti_ai.domain.model import Assessment, Candidate, RepoId, Snapshot
 
 
@@ -80,6 +81,16 @@ class CollectionStatusStore(Protocol):
     def load(self, day: date) -> CollectionStatus | None: ...
 
     def prune(self, before: date) -> None: ...
+
+
+class DailyRecordStore(Protocol):
+    def save(self, day: date, records: Sequence[DailyRecord]) -> None:
+        """Replaces the records of that day."""
+        ...
+
+    def load(self, day: date) -> list[DailyRecord]: ...
+
+    def days(self) -> list[date]: ...
 
 
 class EditionStore(Protocol):

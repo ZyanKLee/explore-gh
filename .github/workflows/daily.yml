@@ -34,9 +34,9 @@ jobs:
     outputs:
       day: ${{ steps.day.outputs.day }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
 
@@ -52,7 +52,7 @@ jobs:
       # gebraucht, damit der Lauf nur Neues holt (8 statt 40 Minuten). Fehlt der
       # Cache, holt der Lauf alles neu.
       - name: Momentaufnahmen der letzten Tage holen
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: data/snapshots
           key: snapshots-${{ steps.day.outputs.day }}-${{ github.run_id }}
@@ -70,7 +70,7 @@ jobs:
       # geholt werden.
       - name: Momentaufnahmen aufheben
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: data/snapshots
           key: snapshots-${{ steps.day.outputs.day }}-${{ github.run_id }}
@@ -83,11 +83,12 @@ jobs:
             uv run github-anti-ai publish --day "${{ steps.day.outputs.day }}"
           fi
 
-      - name: Ausgabe ins Repo schreiben
+      - name: Ausgabe und Langzeitdaten ins Repo schreiben
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/editions
+          mkdir -p data/history
+          git add data/editions data/history
           if git diff --cached --quiet; then
             echo "Nichts Neues."
           else
@@ -97,7 +98,7 @@ jobs:
             git push
           fi
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
         id: pages
 
       - name: Website bauen
@@ -106,7 +107,7 @@ jobs:
           --site-url "${{ steps.pages.outputs.base_url }}/"
           --plausible "$PLAUSIBLE_SCRIPT"
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
@@ -117,5 +118,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v5
         id: deployment

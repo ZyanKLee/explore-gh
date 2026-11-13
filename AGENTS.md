@@ -117,6 +117,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Substanz | `SubstanceCheck` | Hinweise auf echte Arbeit und echtes Interesse: Team, Kontinuität, Issues. Dazu die Gegenprobe zu gekauften Sternen. |
 | Plattform | `PlatformPreference` | Vorliebe des Inhabers: Linux wertet auf, Windows und Apple werten ab |
 | Bewertung | `Assessment` | Sektion, Punktzahl, Signale, ggf. Ausschluss. Die Punktzahl ist die Summe der Signalgewichte. Erzeugt vom `Assessor`. |
+| Tageswert | `DailyRecord` | Was von einer Bewertung dauerhaft bleibt: Zahlen, Urteil, Rang. Ohne Texte, Commits und Personen. |
 | Sektion | `Section` | `MAIN` oder `AI` |
 | Ausgabe | `Edition` | Auswahl eines Tages, je Sektion bis zu 20 `Entry`s. Unveränderlich nach Veröffentlichung. |
 | Sperre | `Cooldown` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert |
@@ -131,7 +132,7 @@ GitHub-Repository bezeichnet.
   selbst: höchstens 20 pro Sektion, Vielfaltsregel, keine Duplikate. Sie trägt die
   Statistik des Tages (`EditionStats`).
 - Ports: `CandidateSource`, `RepoSource`, `SnapshotStore`, `CollectionStatusStore`,
-  `EditionStore`, `Clock`.
+  `DailyRecordStore`, `EditionStore`, `Clock`.
   Adapter melden Ausfälle als `SourceUnavailable`.
 - `domain/` ist frei von Ein- und Ausgabe. Die aktuelle Zeit kommt nur über `Clock`.
 - Schwellenwerte, Gewichte und Keyword-Listen stehen als benannte Konstanten in der
@@ -145,8 +146,9 @@ src/github_anti_ai/{domain,application,adapters,publication}/
                        # publication/ enthält auch Pelican-Plugin und theme/
 docs/                  # Konzepte mit Stand und Geplantem: datensammlung.md (Acquisition),
                        # bewertung.md (Assessment), ausgabe.md (Curation),
-                       # veroeffentlichung.md (Publication)
-data/                  # editions/ (versioniert), snapshots/ (Arbeitsdaten, 14 Tage)
+                       # veroeffentlichung.md (Publication), langzeitdaten.md
+data/                  # editions/ (versioniert), snapshots/ (Arbeitsdaten, 14 Tage),
+                       # history/ (Langzeitdaten, versioniert)
 tests/unit/            # Domäne und Use Cases
 tests/integration/     # Adapter gegen aufgezeichnete Antworten in fixtures/, dazu die
                        # Regeln gegen die Beispielsammlung (fixtures/labelled/)

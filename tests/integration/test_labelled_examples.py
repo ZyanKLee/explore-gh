@@ -16,9 +16,10 @@ from github_anti_ai.domain.assessor import Assessor
 from github_anti_ai.domain.model import RepoId, Section
 
 FIXTURES = Path(__file__).parent / "fixtures" / "labelled"
-# Of 102. It was 88 until "agent" became an AI term on 2026-11-13: the owner accepted
-# that TechTideOhio/binnacle ("The Evaluator Agent") moves to the AI section for it.
-MIN_AI_FOCUS_AGREEMENT = 87
+# Of 102. It was 88. The owner accepted two losses on 2026-11-13:
+# - "agent" became an AI term: TechTideOhio/binnacle ("The Evaluator Agent") moves.
+# - a README with 50 or more AI terms decides alone: zainudinnoori/gitmanual moves.
+MIN_AI_FOCUS_AGREEMENT = 86
 MIN_SLOP_EXCLUDED = 13  # of 18
 
 

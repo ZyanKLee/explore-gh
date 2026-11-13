@@ -3,7 +3,12 @@
 import pytest
 
 from builders import NOW, TODAY, FixedClock, make_snapshot
-from fakes import InMemoryCollectionStatusStore, InMemoryEditionStore, InMemorySnapshotStore
+from fakes import (
+    InMemoryCollectionStatusStore,
+    InMemoryDailyRecordStore,
+    InMemoryEditionStore,
+    InMemorySnapshotStore,
+)
 from github_anti_ai.application.collect_snapshots import FETCH_CHUNK_SIZE, CollectSnapshots
 from github_anti_ai.application.ports import (
     CollectionStatus,
@@ -26,6 +31,7 @@ def publish(statuses, allow_incomplete=False):
         snapshot_store=InMemorySnapshotStore({TODAY: [make_snapshot()]}),
         edition_store=editions,
         collection_status_store=InMemoryCollectionStatusStore(statuses),
+        record_store=InMemoryDailyRecordStore(),
         assess=lambda s: Assessment(snapshot=s, section=Section.MAIN, score=1.0, signals=()),
         clock=FixedClock(NOW),
         allow_incomplete=allow_incomplete,

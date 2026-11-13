@@ -124,8 +124,17 @@ von vier Stellen** stehen.
 | Beschreibung | die Beschreibung einen AI-Begriff enthält |
 | README | das README mindestens 5 AI-Begriffe enthält |
 
-**Ausnahme:** Hat ein Repo weder Beschreibung noch Topics, bleiben ihm nur zwei
-Stellen. Dann genügt ein README mit mindestens 10 AI-Begriffen.
+**Zwei Ausnahmen, in denen das README allein genügt:**
+
+- Hat ein Repo weder Beschreibung noch Topics, bleiben ihm nur zwei Stellen. Dann
+  reicht ein README mit mindestens 10 AI-Begriffen.
+- Ein README mit mindestens 50 AI-Begriffen entscheidet immer, egal was sonst dasteht.
+  Anlass war `storytold/craft-anything` am 13.11.2026: 62 AI-Begriffe im README, aber
+  keiner in Name, Beschreibung oder Topics, und damit auf Platz 5 der Hauptliste.
+
+Die Schwelle 50 ist vorsichtig gewählt. In den Daten vom 13.11. verschiebt sie 2 von
+486 Repos der Hauptliste. Schon ab 40 wären es 7, ab 30 wären es 11, darunter aber
+zunehmend Werkzeuge, die AI nur nebenbei erwähnen.
 
 **Bekannte Schwäche:** Die Regel erfasst auch Werkzeuge, die AI nur als Nebenfunktion
 erwähnen, etwa einen GPU-Taskmanager mit „LLM model insights“ oder ein Schreibtisch-
@@ -314,7 +323,7 @@ uv run python checks/make_labelled_examples.py data-test/snapshots/2026-11-12.js
 
 | Was | Vorher | Nachher |
 |---|---|---|
-| AI-Thema stimmt mit dem Urteil überein | 85 von 102 | 88 von 102 (87, seit `agent` als AI-Begriff zählt) |
+| AI-Thema stimmt mit dem Urteil überein | 85 von 102 | 88 von 102 (86 seit dem 13.11.: `agent` als AI-Begriff und die README-Schwelle 50 kosten je ein Urteil) |
 | Englische READMEs fälschlich als fremdsprachig aussortiert (alle 880) | 6 | 0 |
 | Bester Rang eines Köders in der Hauptliste (421 Repos) | 51 | 201 |
 

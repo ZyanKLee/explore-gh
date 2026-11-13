@@ -47,3 +47,17 @@ class InMemoryCollectionStatusStore:
 
     def prune(self, before):
         self.statuses = {d: s for d, s in self.statuses.items() if d >= before}
+
+
+class InMemoryDailyRecordStore:
+    def __init__(self):
+        self.by_day = {}
+
+    def save(self, day, records):
+        self.by_day[day] = list(records)
+
+    def load(self, day):
+        return list(self.by_day.get(day, []))
+
+    def days(self):
+        return sorted(self.by_day)

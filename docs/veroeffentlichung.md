@@ -224,8 +224,10 @@ Drei Workflows in `.github/workflows/`:
 - Geplante Läufe starten bei hoher Last auf GitHub verspätet.
 - Die Workflows sind noch nie gelaufen. Geprüft ist nur, dass die Dateien gültiges
   YAML sind und dass die Befehle darin lokal funktionieren.
-- Die Versionen der verwendeten Actions (`actions/checkout@v4` und andere) habe ich
-  aus dem Gedächtnis gewählt. Es kann neuere geben.
+- Die Versionen der verwendeten Actions sind am 13.11.2026 gegen die jeweils neueste
+  Veröffentlichung geprüft und angehoben worden. `astral-sh/setup-uv` hat keinen
+  mitwandernden Hauptversions-Tag mehr und ist deshalb auf eine genaue Version
+  festgelegt (`v10.3.3`). Sie muss von Hand angehoben werden.
 
 ## Geplant
 

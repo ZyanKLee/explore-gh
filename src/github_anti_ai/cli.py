@@ -14,6 +14,7 @@ from github_anti_ai.adapters.github_http import make_github_client
 from github_anti_ai.adapters.github_repo_source import GitHubRepoSource
 from github_anti_ai.adapters.github_search import GitHubSearchCandidates
 from github_anti_ai.adapters.json_collection_status_store import JsonCollectionStatusStore
+from github_anti_ai.adapters.json_daily_record_store import JsonDailyRecordStore
 from github_anti_ai.adapters.json_edition_store import JsonEditionStore
 from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
 from github_anti_ai.application.collect_snapshots import CollectionReport, CollectSnapshots
@@ -198,6 +199,7 @@ def publish(
         snapshot_store=JsonSnapshotStore(data_dir / "snapshots"),
         edition_store=JsonEditionStore(data_dir / "editions"),
         collection_status_store=JsonCollectionStatusStore(data_dir / "snapshots"),
+        record_store=JsonDailyRecordStore(data_dir / "history"),
         assess=Assessor().assess,
         clock=SystemClock(),
         ignore_cooldown=ignore_cooldown,
