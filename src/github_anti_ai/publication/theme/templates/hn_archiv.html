@@ -1,18 +1,5 @@
 {% set current = "hn" %}
 {% extends "base.html" %}
+{% from "community.html" import community_archive with context %}
 {% block title %}HN-Archiv – {{ SITENAME }}{% endblock %}
-{% block content %}
-<header class="edition"><h1>HN-Archiv</h1></header>
-{% if not hn_edition_days %}
-<p class="empty">Noch keine HN-Ausgabe</p>
-{% else %}
-<ul class="archive" role="list">
-  {% for edition in hn_edition_days %}
-  <li>
-    <span class="date">{{ edition.title }}</span>
-    <a href="{{ SITEURL }}/{{ edition.url }}">{{ edition.entries|length }} Projekte</a>
-  </li>
-  {% endfor %}
-</ul>
-{% endif %}
-{% endblock %}
+{% block content %}{{ community_archive(hn_edition_days, "HN-Archiv") }}{% endblock %}

@@ -1,0 +1,66 @@
+{# Pages of the community lists (HN, Lobsters). Texts and numbers come from community_view.py. #}
+
+{% macro community_section(view, nav, archive_url) %}
+<header class="edition">
+  <h1>{{ view.title }}</h1>
+  <p class="stats">{{ view.stats }}</p>
+  <nav class="days" aria-label="Andere Tage und Sektionen">
+    <ul>
+      {% if nav.older %}<li><a rel="prev" href="{{ SITEURL }}/{{ nav.older.url }}">Tag davor</a></li>{% endif %}
+      {% if nav.other %}<li><a href="{{ SITEURL }}/{{ nav.other.url }}">{{ "AI-Projekte" if view.section == "main" else "Hauptliste" }} dieses Tages</a></li>{% endif %}
+      {% if nav.newer %}<li><a rel="next" href="{{ SITEURL }}/{{ nav.newer.url }}">Tag danach</a></li>{% endif %}
+      <li><a href="{{ SITEURL }}/{{ archive_url }}">Archiv</a></li>
+    </ul>
+  </nav>
+</header>
+{% if not view.entries %}
+<p class="empty">Heute nichts gefunden</p>
+{% else %}
+<ol class="entries" role="list">
+  {% for entry in view.entries %}
+  <li class="entry">
+    <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
+    <div class="body">
+      <h2><a href="{{ entry.repository_url }}">{{ entry.title }}</a></h2>
+      {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
+      <ul class="facts" role="list">
+        {% if entry.language %}<li>{{ entry.language }}</li>{% endif %}
+        {% if entry.license_id %}<li>Lizenz {{ entry.license_id }}</li>{% endif %}
+        <li>{{ entry.points }} {{ view.points_label }}</li>
+        <li>{{ entry.comments }} Kommentare</li>
+        {% if entry.project_url %}<li><a href="{{ entry.project_url }}">Projektseite</a></li>{% endif %}
+        <li><a href="{{ entry.discussion_url }}">{{ view.discussion_label }}</a></li>
+      </ul>
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+{% endif %}
+{% endmacro %}
+
+{# The newest edition of one section, or a note if there is none yet #}
+{% macro community_latest(latest, section, heading, archive_url) %}
+{% if latest %}
+{{ community_section(latest[section].view, latest[section].nav, archive_url) }}
+{% else %}
+<header class="edition"><h1>{{ heading }}</h1></header>
+<p class="empty">Noch keine Ausgabe</p>
+{% endif %}
+{% endmacro %}
+
+{% macro community_archive(days, heading) %}
+<header class="edition"><h1>{{ heading }}</h1></header>
+{% if not days %}
+<p class="empty">Noch keine Ausgabe</p>
+{% else %}
+<ul class="archive" role="list">
+  {% for day in days %}
+  <li>
+    <span class="date">{{ day.main.title }}</span>
+    <a href="{{ SITEURL }}/{{ day.main.url }}">{{ day.main.stats }}</a>
+    <a href="{{ SITEURL }}/{{ day.ai.url }}">{{ day.ai.stats }}</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}

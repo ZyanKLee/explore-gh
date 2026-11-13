@@ -55,3 +55,40 @@ def test_lobsters_projects_have_separate_pages_archive_and_feed(tmp_path):
     assert "13. November 2026" in archive
     assert "owner/project" in feed
     assert "owner/project" not in (tmp_path / "output/index.html").read_text(encoding="utf-8")
+
+
+def test_lobsters_ai_projects_have_their_own_pages_archive_entry_and_feed(tmp_path):
+    def project(repo, story):
+        return LobstersProjectCandidate(
+            story=story, repository_url=f"https://codeberg.org/{repo}", project_url=story.url,
+            description="", language="Rust", license_id="MIT", is_fork=False,
+            is_archived=False, has_code=True,
+        )
+
+    story = LobstersStory("ag", "Agent", "https://agent.example", "https://lobste.rs/s/ag", 30, 2,
+                          datetime(2026, 11, 13, tzinfo=UTC))
+    main_story = LobstersStory("ag", "Editor", "https://editor.example", "https://lobste.rs/s/ag", 30, 2,
+                          datetime(2026, 11, 13, tzinfo=UTC))
+    edition = LobstersEdition(
+        day=story.created_at.date(),
+        projects=(project("owner/editor", main_story),),
+        ai_projects=(project("owner/agent", story),),
+    )
+    editions = tmp_path / "lobsters-editions"
+    JsonLobstersEditionStore(editions).save(edition)
+
+    build_site(tmp_path / "editions", tmp_path / "output", lobsters_editions_dir=editions)
+
+    def page(path):
+        return (tmp_path / "output" / path).read_text(encoding="utf-8")
+
+    assert "AI-Projekte auf Lobsters" in page("lobsters/ai/index.html")
+    assert "owner/agent" in page("lobsters/ai/index.html")
+    assert "owner/editor" not in page("lobsters/ai/index.html")
+    assert "https://lobste.rs/s/ag" in page("lobsters/ai/2026/11/13/index.html")
+    assert "owner/agent" in page("lobsters/ai/feed.xml")
+    assert "owner/agent" not in page("lobsters/index.html")
+    assert "owner/agent" not in page("lobsters/2026/11/13/index.html")
+    assert "owner/agent" not in page("lobsters/feed.xml")
+    assert "lobsters/ai/2026/11/13/" in page("lobsters/archiv/index.html")
+    assert "lobsters/ai/" in page("lobsters/index.html")

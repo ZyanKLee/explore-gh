@@ -1,35 +1,5 @@
 {% set current = "lobsters" %}
 {% extends "base.html" %}
+{% from "community.html" import community_latest with context %}
 {% block title %}Trending auf Lobsters – {{ SITENAME }}{% endblock %}
-{% block content %}
-<header class="edition">
-  <h1>Trending auf Lobsters</h1>
-  {% if latest_lobsters %}<p class="stats">{{ latest_lobsters.title }} · {{ latest_lobsters.stats }}</p>{% endif %}
-  <nav class="days" aria-label="Lobsters-Ausgaben">
-    <ul><li><a href="{{ SITEURL }}/lobsters/archiv/">Archiv</a></li></ul>
-  </nav>
-</header>
-{% if not latest_lobsters or not latest_lobsters.entries %}
-<p class="empty">Noch keine Lobsters-Projekte gefunden</p>
-{% else %}
-<ol class="entries" role="list">
-  {% for entry in latest_lobsters.entries %}
-  <li class="entry">
-    <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
-    <div class="body">
-      <h2><a href="{{ entry.repository_url }}">{{ entry.title }}</a></h2>
-      {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
-      <ul class="facts" role="list">
-        {% if entry.language %}<li>{{ entry.language }}</li>{% endif %}
-        {% if entry.license_id %}<li>Lizenz {{ entry.license_id }}</li>{% endif %}
-        <li>{{ entry.score }} Lobsters-Punkte</li>
-        <li>{{ entry.comments }} Kommentare</li>
-        {% if entry.project_url %}<li><a href="{{ entry.project_url }}">Projektseite</a></li>{% endif %}
-        <li><a href="{{ entry.discussion_url }}">Diskussion auf Lobsters</a></li>
-      </ul>
-    </div>
-  </li>
-  {% endfor %}
-</ol>
-{% endif %}
-{% endblock %}
+{% block content %}{{ community_latest(latest_lobsters, "main", "Trending auf Lobsters", "lobsters/archiv/") }}{% endblock %}

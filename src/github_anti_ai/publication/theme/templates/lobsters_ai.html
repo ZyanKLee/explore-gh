@@ -1,0 +1,5 @@
+{% set current = "lobsters" %}
+{% extends "base.html" %}
+{% from "community.html" import community_latest with context %}
+{% block title %}AI-Projekte auf Lobsters – {{ SITENAME }}{% endblock %}
+{% block content %}{{ community_latest(latest_lobsters, "ai", "AI-Projekte auf Lobsters", "lobsters/archiv/") }}{% endblock %}

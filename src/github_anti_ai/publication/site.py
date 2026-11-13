@@ -48,14 +48,18 @@ def build_site(
                 # text from GitHub must never be interpreted as HTML
                 "JINJA_ENVIRONMENT": {"autoescape": True, "trim_blocks": True, "lstrip_blocks": True},
                 "DIRECT_TEMPLATES": [
-                    "index", "ai", "archiv", "hn", "hn_archiv", "lobsters", "lobsters_archiv"
+                    "index", "ai", "archiv",
+                    "hn", "hn_ai", "hn_archiv",
+                    "lobsters", "lobsters_ai", "lobsters_archiv",
                 ],
                 "AI_SAVE_AS": "ai/index.html",
                 "ARCHIV_SAVE_AS": "archiv/index.html",
                 "HN_SAVE_AS": "hn/index.html",
                 "HN_ARCHIV_SAVE_AS": "hn/archiv/index.html",
+                "HN_AI_SAVE_AS": "hn/ai/index.html",
                 "LOBSTERS_SAVE_AS": "lobsters/index.html",
                 "LOBSTERS_ARCHIV_SAVE_AS": "lobsters/archiv/index.html",
+                "LOBSTERS_AI_SAVE_AS": "lobsters/ai/index.html",
                 "CATEGORY_FEED_ATOM": "{slug}feed.xml",
                 "FEED_ALL_ATOM": None,
                 "AUTHOR_FEED_ATOM": None,

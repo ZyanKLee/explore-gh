@@ -1,5 +1,7 @@
 """Pelican plugin: turns every edition into two articles, main list and AI section.
 
+This holds for the GitHub editions as well as for the HN and Lobsters editions.
+
 Kept thin on purpose. Texts and numbers come from view.py, the theme only arranges them.
 """
 
@@ -17,10 +19,14 @@ from github_anti_ai.publication.view import (
     long_date,
     section_view,
 )
-from github_anti_ai.publication.hn_view import hn_feed_html, load_hn_editions
-from github_anti_ai.publication.lobsters_view import (
-    load_lobsters_editions,
-    lobsters_feed_html,
+from github_anti_ai.publication.community_view import (
+    HN,
+    LOBSTERS,
+    SECTIONS,
+    community_feed_html,
+    load_community_editions,
+    section_heading,
+    section_url,
 )
 
 # CATEGORY_FEED_ATOM is "{slug}feed.xml": the main list gets /feed.xml, the AI section /ai/feed.xml
@@ -82,80 +88,67 @@ def add_editions(generator):
         for views in newest_first[:1]
         for section in SECTION_TITLES
     }
-    _add_hn_editions(generator)
-    _add_lobsters_editions(generator)
+    _add_community_editions(generator, HN, settings.get("HN_EDITIONS_PATH"))
+    _add_community_editions(generator, LOBSTERS, settings.get("LOBSTERS_EDITIONS_PATH"))
 
 
-def _add_hn_editions(generator):
-    editions_path = generator.settings.get("HN_EDITIONS_PATH")
+def _add_community_editions(generator, platform, editions_path):
+    """Two articles per day, main list and AI section, each with its own feed."""
     if not editions_path:
         return
-    editions = load_hn_editions(editions_path)
-    category = Category("Trending auf HN", generator.settings)
-    category.slug = "hn/"
-    days = list(reversed(editions))
-    for index, view in enumerate(days):
+    categories = {}
+    for section in SECTIONS:
+        categories[section] = Category(section_heading(platform, section), generator.settings)
+        categories[section].slug = section_url(platform, section)  # hn/feed.xml, hn/ai/feed.xml
+    archive_url = f"{platform.slug}/archiv/"
+    days = list(reversed(load_community_editions(editions_path, platform)))  # newest first
+    for index, day in enumerate(days):
         older = days[index + 1] if index + 1 < len(days) else None
         newer = days[index - 1] if index > 0 else None
-        generator.articles.append(
-            Article(
-                hn_feed_html(view),
-                {
-                    "title": view.title,
-                    "date": SafeDatetime(view.day.year, view.day.month, view.day.day, tzinfo=UTC),
-                    "category": category,
-                    "slug": f"hn-{view.day.isoformat()}",
-                    "url": view.url,
-                    "save_as": f"{view.url}index.html",
-                    "template": "hn-article",
-                    "hn_view": view,
-                    "hn_nav": {"older": older, "newer": newer},
-                    "summary": hn_feed_html(view),
-                },
-                settings=generator.settings,
-                context=generator.context,
+        for section in SECTIONS:
+            view = day.section(section)
+            generator.articles.append(
+                Article(
+                    community_feed_html(view),
+                    {
+                        "title": view.title,
+                        "date": SafeDatetime(
+                            view.day.year, view.day.month, view.day.day, tzinfo=UTC
+                        ),
+                        "category": categories[section],
+                        "slug": f"{platform.slug}-{section}-{view.day.isoformat()}",
+                        "url": view.url,
+                        "save_as": f"{view.url}index.html",
+                        "template": "community-article",
+                        "community_current": platform.slug,
+                        "community_view": view,
+                        "community_archive_url": archive_url,
+                        "community_nav": _community_nav(older, newer, day, section),
+                        "summary": community_feed_html(view),
+                    },
+                    settings=generator.settings,
+                    context=generator.context,
+                )
             )
-        )
     if days:
-        generator.context["latest_hn"] = days[0]
-        generator.context["hn_edition_days"] = days
+        generator.context[f"latest_{platform.slug}"] = {
+            section: {
+                "view": days[0].section(section),
+                "nav": _community_nav(days[1] if len(days) > 1 else None, None, days[0], section),
+            }
+            for section in SECTIONS
+        }
+    generator.context[f"{platform.slug}_edition_days"] = days
     generator.articles.sort(key=lambda article: article.date, reverse=True)
 
 
-def _add_lobsters_editions(generator):
-    editions_path = generator.settings.get("LOBSTERS_EDITIONS_PATH")
-    if not editions_path:
-        return
-    editions = load_lobsters_editions(editions_path)
-    category = Category("Trending auf Lobsters", generator.settings)
-    category.slug = "lobsters/"
-    days = list(reversed(editions))
-    for index, view in enumerate(days):
-        older = days[index + 1] if index + 1 < len(days) else None
-        newer = days[index - 1] if index > 0 else None
-        generator.articles.append(
-            Article(
-                lobsters_feed_html(view),
-                {
-                    "title": view.title,
-                    "date": SafeDatetime(view.day.year, view.day.month, view.day.day, tzinfo=UTC),
-                    "category": category,
-                    "slug": f"lobsters-{view.day.isoformat()}",
-                    "url": view.url,
-                    "save_as": f"{view.url}index.html",
-                    "template": "lobsters-article",
-                    "lobsters_view": view,
-                    "lobsters_nav": {"older": older, "newer": newer},
-                    "summary": lobsters_feed_html(view),
-                },
-                settings=generator.settings,
-                context=generator.context,
-            )
-        )
-    if days:
-        generator.context["latest_lobsters"] = days[0]
-        generator.context["lobsters_edition_days"] = days
-    generator.articles.sort(key=lambda article: article.date, reverse=True)
+def _community_nav(older, newer, day, section):
+    other = "ai" if section == "main" else "main"
+    return {
+        "older": older.section(section) if older else None,
+        "newer": newer.section(section) if newer else None,
+        "other": day.section(other),
+    }
 
 
 def register():

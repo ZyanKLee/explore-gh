@@ -26,12 +26,16 @@ output/
 
 Zwei Teile mit klarer Grenze:
 
-- **Seitenmodell** (`src/github_anti_ai/publication/view.py`): reine Funktionen ohne
-  Pelican. Hier steht alles, was Text und Zahlen betrifft. Schnell und einfach zu
-  testen.
+- **Seitenmodell** (`src/github_anti_ai/publication/view.py` für GitHub,
+  `community_view.py` für HN und Lobsters): reine Funktionen ohne Pelican. Hier steht
+  alles, was Text und Zahlen betrifft. Schnell und einfach zu testen. HN und Lobsters
+  unterscheiden sich nur in einer `Platform` (Name, Adresse, Bezeichnung der Punkte,
+  Link zur Diskussion).
 | **Pelican-Anbindung** (`src/github_anti_ai/publication/pelican_plugin.py` und
   `theme/` daneben): so dünn wie möglich. Das Plugin hängt GitHub-Artikel für
-  Hauptliste und AI-Sektion sowie getrennte HN- und Lobsters-Artikel ein. Das Theme
+  Hauptliste und AI-Sektion sowie getrennte HN- und Lobsters-Artikel ein, ebenfalls je
+  Hauptliste und AI-Sektion. HN und Lobsters teilen sich die Makros in
+  `theme/templates/community.html` und die Tagesvorlage `community-article.html`. Das Theme
   setzt nur noch zusammen und denkt sich keine Texte aus. Plugin und Theme liegen im Python-Paket,
   damit der Bau sie unabhängig vom Arbeitsverzeichnis findet.
 
@@ -53,13 +57,21 @@ Gebaut wird mit `build_site(editions_dir, output_dir)`
 | `/hn/2026/11/13/` | HN-Ausgabe eines Tages |
 | `/hn/archiv/` | alle HN-Tage, neuester zuerst |
 | `/hn/feed.xml` | Atom-Feed der HN-Liste |
+| `/hn/ai/` | neueste AI-Projekte auf HN |
+| `/hn/ai/2026/11/13/` | AI-Projekte auf HN an einem Tag |
+| `/hn/ai/feed.xml` | Atom-Feed der AI-Projekte auf HN |
 | `/lobsters/` | neueste Lobsters-Trendliste |
 | `/lobsters/2026/11/13/` | Lobsters-Ausgabe eines Tages |
 | `/lobsters/archiv/` | alle Lobsters-Tage, neuester zuerst |
 | `/lobsters/feed.xml` | Atom-Feed der Lobsters-Liste |
+| `/lobsters/ai/` | neueste AI-Projekte auf Lobsters |
+| `/lobsters/ai/2026/11/13/` | AI-Projekte auf Lobsters an einem Tag |
+| `/lobsters/ai/feed.xml` | Atom-Feed der AI-Projekte auf Lobsters |
+
+Das HN- und das Lobsters-Archiv nennen je Tag beide Sektionen.
 
 - Die Hauptliste zeigt nie ein Repo der AI-Sektion und umgekehrt. Das gilt auch für
-  die Feeds.
+  die Feeds, und genauso für HN und Lobsters.
 - Jede Tagesseite verlinkt den Tag davor und danach sowie die andere Sektion
   desselben Tages.
 - Ist eine Sektion leer, steht dort „Heute nichts gefunden“

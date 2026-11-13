@@ -46,3 +46,39 @@ def test_hn_projects_have_a_separate_page_archive_and_feed(tmp_path):
     assert "13. November 2026" in archive
     assert "owner/project" in feed
     assert "owner/project" not in (tmp_path / "output/index.html").read_text(encoding="utf-8")
+
+
+def test_hn_ai_projects_have_their_own_pages_archive_entry_and_feed(tmp_path):
+    def project(repo, story):
+        return HnProjectCandidate(
+            story=story, repository_url=f"https://codeberg.org/{repo}", project_url=story.url,
+            description="", language="Rust", license_id="MIT", is_fork=False,
+            is_archived=False, has_code=True,
+        )
+
+    story = HnStory("9", "Agent", "https://agent.example", 30, 2, datetime(2026, 11, 13, tzinfo=UTC))
+    main_story = HnStory("9", "Editor", "https://editor.example", 30, 2, datetime(2026, 11, 13, tzinfo=UTC))
+    edition = HnEdition(
+        day=story.created_at.date(),
+        projects=(project("owner/editor", main_story),),
+        ai_projects=(project("owner/agent", story),),
+    )
+    editions = tmp_path / "hn-editions"
+    JsonHnEditionStore(editions).save(edition)
+
+    build_site(tmp_path / "editions", tmp_path / "output", hn_editions_dir=editions)
+
+    def page(path):
+        return (tmp_path / "output" / path).read_text(encoding="utf-8")
+
+    assert "AI-Projekte auf HN" in page("hn/ai/index.html")
+    assert "owner/agent" in page("hn/ai/index.html")
+    assert "owner/editor" not in page("hn/ai/index.html")
+    assert "https://news.ycombinator.com/item?id=9" in page("hn/ai/2026/11/13/index.html")
+    assert "owner/agent" in page("hn/ai/feed.xml")
+    assert "owner/agent" not in page("hn/index.html")
+    assert "owner/agent" not in page("hn/2026/11/13/index.html")
+    assert "owner/agent" not in page("hn/feed.xml")
+    assert "hn/ai/2026/11/13/" in page("hn/archiv/index.html")
+    assert "1 AI-Projekt<" in page("hn/archiv/index.html")
+    assert "hn/ai/" in page("hn/index.html")

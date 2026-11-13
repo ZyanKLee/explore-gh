@@ -1,18 +1,5 @@
 {% set current = "lobsters" %}
 {% extends "base.html" %}
+{% from "community.html" import community_archive with context %}
 {% block title %}Lobsters-Archiv – {{ SITENAME }}{% endblock %}
-{% block content %}
-<header class="edition"><h1>Lobsters-Archiv</h1></header>
-{% if not lobsters_edition_days %}
-<p class="empty">Noch keine Lobsters-Ausgabe</p>
-{% else %}
-<ul class="archive" role="list">
-  {% for edition in lobsters_edition_days %}
-  <li>
-    <span class="date">{{ edition.title }}</span>
-    <a href="{{ SITEURL }}/{{ edition.url }}">{{ edition.entries|length }} Projekte</a>
-  </li>
-  {% endfor %}
-</ul>
-{% endif %}
-{% endblock %}
+{% block content %}{{ community_archive(lobsters_edition_days, "Lobsters-Archiv") }}{% endblock %}
