@@ -12,7 +12,6 @@ on:
   # Was der tägliche Lauf ins Repo schreibt, löst keinen "push" aus. Deshalb hängt
   # dieser Workflow ausdrücklich an seinem Ende.
   workflow_run:
-    workflows: ["Tägliche Ausgabe", "HN-Ausgabe"]
     workflows: ["Tägliche Ausgabe", "HN-Ausgabe", "Lobsters-Ausgabe"]
     types: [completed]
   push:
