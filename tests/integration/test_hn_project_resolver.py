@@ -224,7 +224,7 @@ def test_resolver_asks_the_forge_only_once_per_repo_and_never_for_unrelated_repo
     )
 
     github = [request.url.path for request in requests if request.url.host == "api.github.com"]
-    assert github == ["/repos/alice/tv-ads"]
+    assert github == ["/repos/alice/tv-ads", "/repos/alice/tv-ads/readme"]
 
 
 def news_site_answering_forge_probes_with(answer):
@@ -274,3 +274,78 @@ def test_resolver_reports_github_refusing_requests_as_source_unavailable():
 
     with pytest.raises(SourceUnavailable):
         HnProjectResolver(client, resolve_host=lambda host: True).resolve(story)
+
+
+def resolve_direct(url, handler):
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    story = HnStory("1", "Tool", url, 42, 9, NOW)
+    return HnProjectResolver(client, resolve_host=lambda host: True).resolve(story)
+
+
+def test_resolver_reads_topics_and_readme_of_a_github_repo():
+    def handler(request):
+        if request.url.path == "/repos/alice/tool/readme":
+            assert request.headers["accept"] == "application/vnd.github.raw+json"
+            return httpx.Response(200, text="# Tool\n\nAn LLM agent.")
+        response = github_repo("alice/tool")
+        data = response.json() | {"topics": ["llm", "mcp"]}
+        return httpx.Response(200, json=data)
+
+    project = resolve_direct("https://github.com/alice/tool", handler)
+
+    assert project.topics == ("llm", "mcp")
+    assert project.readme == "# Tool\n\nAn LLM agent."
+
+
+def test_resolver_keeps_a_github_repo_without_readme():
+    def handler(request):
+        if request.url.path.endswith("/readme"):
+            return httpx.Response(404)
+        return github_repo("alice/tool")
+
+    project = resolve_direct("https://github.com/alice/tool", handler)
+
+    assert project.readme == ""
+    assert project.topics == ()
+
+
+def test_resolver_reads_topics_and_readme_of_a_gitlab_project():
+    def handler(request):
+        if request.url.path == "/group/tool/-/raw/main/README.md":
+            return httpx.Response(200, text="# Tool")
+        if request.url.path == "/api/v4/projects/1/languages":
+            return httpx.Response(200, json={"Rust": 100.0})
+        return httpx.Response(200, json={
+            "id": 1,
+            "web_url": "https://gitlab.example/group/tool",
+            "readme_url": "https://gitlab.example/group/tool/-/blob/main/README.md",
+            "topics": ["editor"],
+            "license": {"key": "mit"},
+            "archived": False,
+            "empty_repo": False,
+        })
+
+    project = resolve_direct("https://gitlab.example/group/tool", handler)
+
+    assert project.topics == ("editor",)
+    assert project.readme == "# Tool"
+
+
+def test_resolver_reads_topics_and_readme_of_a_gitea_repo():
+    def handler(request):
+        if request.url.path == "/api/v4/projects/owner%2Ftool":
+            return httpx.Response(404)
+        if request.url.path == "/api/v1/repos/owner/tool/raw/README.md":
+            return httpx.Response(200, text="# Tool")
+        return httpx.Response(200, json={
+            "html_url": "https://codeberg.org/owner/tool",
+            "topics": ["editor"],
+            "license": ["MIT"],
+            "language": "Rust",
+            "size": 10,
+        })
+
+    project = resolve_direct("https://codeberg.org/owner/tool", handler)
+
+    assert project.topics == ("editor",)
+    assert project.readme == "# Tool"

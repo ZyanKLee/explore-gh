@@ -1,5 +1,6 @@
 """Decides whether a repo exists for the use of AI and therefore belongs to the AI section."""
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 from github_anti_ai.domain.model import Section, Signal, Snapshot
@@ -72,21 +73,32 @@ class AiFocus:
 
 class AiFocusClassifier:
     def classify(self, snapshot: Snapshot) -> AiFocus:
+        return self.classify_text(
+            name=snapshot.repo.name,
+            description=snapshot.description,
+            topics=snapshot.topics,
+            readme=snapshot.readme,
+        )
+
+    def classify_text(
+        self, *, name: str, description: str, topics: Sequence[str], readme: str
+    ) -> AiFocus:
+        """The same rule for repos without Snapshot, such as HN and Lobsters projects."""
         signals = []
         for place, text in [
-            ("Topics", " . ".join(snapshot.topics)),
-            ("Name", snapshot.repo.name),
-            ("Beschreibung", snapshot.description),
+            ("Topics", " . ".join(topics)),
+            ("Name", name),
+            ("Beschreibung", description),
         ]:
             if found := AI_TERMS.distinct(text):
                 signals.append(_signal(f"{place}: AI-Begriffe {quoted(found)}"))
 
-        mentions = AI_TERMS.find(snapshot.readme)
+        mentions = AI_TERMS.find(readme)
         if len(mentions) >= MIN_README_MENTIONS:
             terms = quoted(dict.fromkeys(mentions))
             signals.append(_signal(f"README: {len(mentions)}-mal AI-Begriffe ({terms})"))
 
-        bare = not snapshot.description.strip() and not snapshot.topics
+        bare = not description.strip() and not topics
         focused = (
             len(signals) >= MIN_PLACES
             or len(mentions) >= MIN_README_MENTIONS_DOMINANT

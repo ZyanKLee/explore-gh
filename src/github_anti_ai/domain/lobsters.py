@@ -1,7 +1,7 @@
 """Domain types for the independent Lobsters project list."""
 
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 
 from github_anti_ai.domain.community import (
@@ -38,6 +38,12 @@ class LobstersProjectCandidate:
     is_fork: bool
     is_archived: bool
     has_code: bool
+    topics: tuple[str, ...] = ()
+    # Only read to decide on the AI section, never stored: like a Snapshot's README
+    readme: str = field(default="", compare=False, repr=False)
+
+    def __post_init__(self):
+        object.__setattr__(self, "topics", tuple(self.topics))
 
     @property
     def is_open_source(self) -> bool:
@@ -47,11 +53,13 @@ class LobstersProjectCandidate:
 @dataclass(frozen=True)
 class LobstersEdition:
     day: date
-    projects: tuple[LobstersProjectCandidate, ...] = ()
+    projects: tuple[LobstersProjectCandidate, ...] = ()  # the main section
+    ai_projects: tuple[LobstersProjectCandidate, ...] = ()
 
     def __post_init__(self):
         object.__setattr__(self, "projects", tuple(self.projects))
-        check_community_edition(self.projects, "Lobsters")
+        object.__setattr__(self, "ai_projects", tuple(self.ai_projects))
+        check_community_edition(self.projects, "Lobsters", ai_projects=self.ai_projects)
 
 
 class LobstersEditionCurator:
@@ -62,10 +70,10 @@ class LobstersEditionCurator:
         past_editions: Iterable[LobstersEdition] = (),
     ) -> LobstersEdition:
         """`past_editions` are this platform's own editions; their repos are under cooldown."""
-        projects = CommunityCurator().select(
+        selection = CommunityCurator().select(
             candidates, rank=_story_rank, cooled_down=recently_shown(day, past_editions)
         )
-        return LobstersEdition(day=day, projects=projects)
+        return LobstersEdition(day=day, projects=selection.main, ai_projects=selection.ai)
 
 
 def _story_rank(project: LobstersProjectCandidate) -> tuple[int, int, float]:

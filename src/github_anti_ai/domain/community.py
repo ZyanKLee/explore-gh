@@ -4,10 +4,13 @@ import re
 from collections import Counter
 from collections.abc import Callable, Collection, Iterable
 from datetime import date
-from typing import Protocol, TypeVar
+from dataclasses import dataclass
+from typing import Generic, Protocol, TypeVar
 from urllib.parse import urlsplit
 
+from github_anti_ai.domain.ai_focus import AiFocusClassifier
 from github_anti_ai.domain.edition import COOLDOWN_DAYS, MAX_PER_LANGUAGE, MAX_PER_OWNER
+from github_anti_ai.domain.model import Section
 
 PROJECTS_PER_EDITION = 20
 
@@ -41,6 +44,12 @@ class CommunityProject(Protocol):
     def is_archived(self) -> bool: ...
     @property
     def language(self) -> str | None: ...
+    @property
+    def description(self) -> str: ...
+    @property
+    def topics(self) -> tuple[str, ...]: ...
+    @property
+    def readme(self) -> str: ...
 
 
 Project = TypeVar("Project", bound=CommunityProject)
@@ -53,6 +62,16 @@ class CommunityEdition(Protocol):
     def day(self) -> date: ...
     @property
     def projects(self) -> tuple[CommunityProject, ...]: ...
+    @property
+    def ai_projects(self) -> tuple[CommunityProject, ...]: ...
+
+
+@dataclass(frozen=True)
+class CommunitySelection(Generic[Project]):
+    """Main section and AI section of one community edition, each in ranking order."""
+
+    main: tuple[Project, ...]
+    ai: tuple[Project, ...]
 
 
 class CommunityCurator:
@@ -61,10 +80,11 @@ class CommunityCurator:
         candidates: Iterable[Project],
         rank: Callable[[Project], tuple],
         cooled_down: Collection[str] = frozenset(),
-    ) -> tuple[Project, ...]:
+    ) -> CommunitySelection[Project]:
         """The projects of one community edition. `rank` sorts the best project first.
 
         `cooled_down` holds the repository keys under cooldown, see `recently_shown`.
+        AI-focused projects go into the AI section, with the GitHub rule (`AiFocusClassifier`).
         """
         best: dict[str, Project] = {}
         for candidate in candidates:
@@ -73,17 +93,29 @@ class CommunityCurator:
                 continue
             if key not in best or rank(candidate) < rank(best[key]):
                 best[key] = candidate
-        return _varied(sorted(best.values(), key=rank))
+        ranked = sorted(best.values(), key=rank)
+        ai = [project for project in ranked if _is_ai_focused(project)]
+        main = [project for project in ranked if project not in ai]
+        return CommunitySelection(main=_varied(main), ai=_varied(ai))
 
 
-def check_community_edition(projects: Iterable[CommunityProject], platform: str) -> None:
+def check_community_edition(
+    projects: Iterable[CommunityProject],
+    platform: str,
+    ai_projects: Iterable[CommunityProject] = (),
+) -> None:
     """The rules every HN or Lobsters edition keeps; `platform` names it in the message."""
-    projects = list(projects)
-    if len(projects) > PROJECTS_PER_EDITION:
-        raise ValueError(f"{platform}-Ausgabe: mehr als {PROJECTS_PER_EDITION} Projekte")
-    keys = [repository_key(project.repository_url) for project in projects]
+    projects, ai_projects = list(projects), list(ai_projects)
+    keys = [repository_key(project.repository_url) for project in projects + ai_projects]
     if len(keys) != len(set(keys)):
         raise ValueError(f"Ein Repo steht mehrfach in der {platform}-Ausgabe")
+    _check_section(projects, platform)
+    _check_section(ai_projects, f"{platform}-AI")
+
+
+def _check_section(projects: list[CommunityProject], platform: str) -> None:
+    if len(projects) > PROJECTS_PER_EDITION:
+        raise ValueError(f"{platform}-Ausgabe: mehr als {PROJECTS_PER_EDITION} Projekte")
     languages = Counter(project.language for project in projects)
     if languages and max(languages.values()) > MAX_PER_LANGUAGE:
         raise ValueError(
@@ -119,12 +151,15 @@ def _varied(ranked: list[Project]) -> tuple[Project, ...]:
 
 
 def recently_shown(day: date, past_editions: Iterable[CommunityEdition]) -> set[str]:
-    """Repository keys under cooldown on `day`: shown on day D, blocked through D + 29."""
+    """Repository keys under cooldown on `day`: shown on day D, blocked through D + 29.
+
+    Whichever section the repo stood in, as with GitHub.
+    """
     return {
         repository_key(project.repository_url)
         for edition in past_editions
         if 0 <= (day - edition.day).days < COOLDOWN_DAYS
-        for project in edition.projects
+        for project in edition.projects + edition.ai_projects
     }
 
 
@@ -157,6 +192,17 @@ def shared_words(title: str, page_url: str, repository_url: str) -> set[str]:
         repo_words.add(full_name)
     story_words = _words(title) | _words(host) | _joined(host) | _words(page.path)
     return repo_words & story_words
+
+
+def _is_ai_focused(project: CommunityProject) -> bool:
+    name = [part for part in urlsplit(project.repository_url).path.split("/") if part][-1:]
+    focus = AiFocusClassifier().classify_text(
+        name="".join(name),
+        description=project.description,
+        topics=project.topics,
+        readme=project.readme,
+    )
+    return focus.section is Section.AI
 
 
 def _eligible(project: CommunityProject) -> bool:

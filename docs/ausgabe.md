@@ -174,7 +174,8 @@ im Code: im gemeinsamen Kurator `CommunityCurator` (`domain/community.py`). Die
 Kuratoren der Plattformen (`HnEditionCurator`, `LobstersEditionCurator`) geben ihm nur
 ihre Rangfolge mit und verpacken das Ergebnis in ihre Ausgabe.
 
-Auswahlregeln (`CommunityCurator.select`):
+Auswahlregeln (`CommunityCurator.select`). Wie bei GitHub gibt es zwei Sektionen:
+die Hauptliste (`projects`) und die AI-Sektion (`ai_projects`).
 
 1. Es bleiben nur Open-Source-Projekte (siehe „Lizenz“ in `datensammlung.md`) mit
    erkanntem Code, ohne Forks und ohne archivierte Repos.
@@ -186,19 +187,28 @@ Auswahlregeln (`CommunityCurator.select`):
 3. **Ein Repo nur einmal:** Verlinken mehrere Storys dasselbe Repo, zählt die Story
    mit dem besseren Rang. Gleich sind Repos, deren Adressen bis auf Groß- und
    Kleinschreibung und einen Schrägstrich am Ende übereinstimmen.
-4. **Rangfolge:** von der Plattform vorgegeben.
+4. **AI-Thema:** Projekte, die für den Einsatz von AI gebaut sind, kommen in die
+   AI-Sektion. Entschieden wird mit derselben Regel wie bei GitHub
+   (`AiFocusClassifier.classify_text`, siehe „AI-Thema“ in `bewertung.md`), aus Name,
+   Beschreibung, Topics und README.
+5. **Rangfolge:** von der Plattform vorgegeben.
    - HN: Punkte, dann Kommentare, dann die neuere Story.
    - Lobsters: Score, dann Kommentare, dann die neuere Story.
-5. **Vielfalt:** Der Reihe nach übernehmen. Ein Projekt wird übersprungen, wenn seine
+6. **Vielfalt:** Je Sektion der Reihe nach übernehmen. Ein Projekt wird übersprungen, wenn seine
    Sprache schon 4-mal oder sein Besitzer schon 2-mal in der Ausgabe steht
    (`MAX_PER_LANGUAGE`, `MAX_PER_OWNER`, wie bei GitHub). Projekte ohne erkannte Sprache
    bilden eine eigene Gruppe. Besitzer ist der erste Teil des Pfads zusammen mit der
    Forge: `github.com/alice` und `codeberg.org/alice` sind zwei Besitzer (`owner_key`).
-6. Schluss nach 20 Projekten. Die Ausgabe wird nie aufgefüllt.
+7. Schluss nach 20 Projekten je Sektion. Die Ausgabe wird nie aufgefüllt.
 
-`HnEdition` und `LobstersEdition` prüfen beim Erzeugen selbst, dass sie höchstens 20
-Projekte enthalten, kein Repo doppelt und die Vielfaltsregel einhalten
-(`check_community_edition`). Das gilt auch beim Laden aus dem Archiv.
+`HnEdition` und `LobstersEdition` prüfen beim Erzeugen selbst, dass jede Sektion
+höchstens 20 Projekte enthält und die Vielfaltsregel einhält und dass kein Repo doppelt
+vorkommt, auch nicht über beide Sektionen (`check_community_edition`). Das gilt auch
+beim Laden aus dem Archiv.
+
+Gespeichert werden je Projekt auch die Topics, das README nicht (wie bei GitHub). Eine
+Ausgabe von vor dem 13.11.2026 hat weder `ai_projects` noch `topics`; sie wird mit
+leerer AI-Sektion und ohne Topics gelesen. Die Sperre gilt für beide Sektionen.
 
 Welches Repo zu einer Story gehört, entscheidet schon die Datensammlung (siehe
 „Bezug zur Story“ in `datensammlung.md`).
@@ -208,8 +218,6 @@ Welches Repo zu einer Story gehört, entscheidet schon die Datensammlung (siehe
 Damit HN und Lobsters denselben Regeln folgen wie die GitHub-Listen, kommen in dieser
 Reihenfolge in den gemeinsamen Kurator:
 
-- **AI-Sektion:** derselbe `AiFocusClassifier` wie bei GitHub, aus Name,
-  Beschreibung, Topics und README.
 - **Ausschlüsse:** dieselbe `ExclusionPolicy`, soweit sie ohne Sternverlauf auskommt
   (Sammlungen, Köder, Kryptowährungen, kein README, Sprache).
 - **„Warum Platz …?“:** wie das Repo gefunden wurde und welche Signale es hat.

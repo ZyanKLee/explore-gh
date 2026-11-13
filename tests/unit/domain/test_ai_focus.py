@@ -175,3 +175,18 @@ def test_a_readme_that_talks_about_little_else_than_ai_is_enough_on_its_own():
 
 def test_a_readme_just_below_that_mark_still_needs_a_second_place():
     assert section(readme=AI_README * 8) is Section.MAIN  # 48 terms
+
+
+def test_texts_without_snapshot_are_classified_by_the_same_rule():
+    """HN and Lobsters projects have no Snapshot, only name, description, topics and README."""
+    classifier = AiFocusClassifier()
+
+    ai = classifier.classify_text(
+        name="mcp-gateway", description="A fast LLM inference server", topics=(), readme=""
+    )
+    plain = classifier.classify_text(
+        name="tiny-editor", description="A tiny terminal text editor", topics=(), readme=""
+    )
+
+    assert ai.section is Section.AI
+    assert plain.section is Section.MAIN

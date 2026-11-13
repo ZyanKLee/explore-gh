@@ -1,7 +1,7 @@
 """Hacker News stories used by the independent HN project list."""
 
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 
 from github_anti_ai.domain.community import (
@@ -37,6 +37,12 @@ class HnProjectCandidate:
     is_fork: bool
     is_archived: bool
     has_code: bool
+    topics: tuple[str, ...] = ()
+    # Only read to decide on the AI section, never stored: like a Snapshot's README
+    readme: str = field(default="", compare=False, repr=False)
+
+    def __post_init__(self):
+        object.__setattr__(self, "topics", tuple(self.topics))
 
     @property
     def is_open_source(self) -> bool:
@@ -46,11 +52,13 @@ class HnProjectCandidate:
 @dataclass(frozen=True)
 class HnEdition:
     day: date
-    projects: tuple[HnProjectCandidate, ...] = ()
+    projects: tuple[HnProjectCandidate, ...] = ()  # the main section
+    ai_projects: tuple[HnProjectCandidate, ...] = ()
 
     def __post_init__(self):
         object.__setattr__(self, "projects", tuple(self.projects))
-        check_community_edition(self.projects, "HN")
+        object.__setattr__(self, "ai_projects", tuple(self.ai_projects))
+        check_community_edition(self.projects, "HN", ai_projects=self.ai_projects)
 
 
 class HnEditionCurator:
@@ -61,10 +69,10 @@ class HnEditionCurator:
         past_editions: Iterable[HnEdition] = (),
     ) -> HnEdition:
         """`past_editions` are this platform's own editions; their repos are under cooldown."""
-        projects = CommunityCurator().select(
+        selection = CommunityCurator().select(
             candidates, rank=_story_rank, cooled_down=recently_shown(day, past_editions)
         )
-        return HnEdition(day=day, projects=projects)
+        return HnEdition(day=day, projects=selection.main, ai_projects=selection.ai)
 
 
 def _story_rank(project: HnProjectCandidate) -> tuple[int, int, float]:

@@ -50,6 +50,7 @@ class HnProjectResolver:
             return None
 
         license_id = _license_id(metadata.get("license"))
+        topics = metadata.get("topics")
         return HnProjectCandidate(
             story=story,
             repository_url=repository_url,
@@ -60,7 +61,24 @@ class HnProjectResolver:
             is_fork=bool(metadata.get("fork")),
             is_archived=bool(metadata.get("archived")),
             has_code=bool(metadata.get("has_code")),
+            topics=tuple(str(topic) for topic in topics) if isinstance(topics, list) else (),
+            readme=self._readme(metadata.get("readme")),
         )
+
+    def _readme(self, source: tuple[str, httpx.Client | None, str] | None) -> str:
+        """The README decides on the AI section only. Without one the project stays."""
+        if source is None:
+            return ""
+        url, client, accept = source
+        try:
+            response = self._request(url, client=client, accept=accept)
+        except SourceUnavailable:
+            return ""
+        if response is None or response.status_code != 200:
+            return ""
+        if len(response.content) > MAX_PAGE_BYTES:
+            return ""
+        return response.text
 
     def _closest_repository(
         self, title: str, page_url: str, html: str
@@ -96,6 +114,12 @@ class HnProjectResolver:
                 return None, None
             repo = metadata.get("full_name", path)
             return f"https://github.com/{repo}", {
+                "topics": metadata.get("topics"),
+                "readme": (
+                    f"https://api.github.com/repos/{repo}/readme",
+                    self._github_client,
+                    "application/vnd.github.raw+json",
+                ),
                 "description": metadata.get("description"),
                 "language": metadata.get("language"),
                 "license": (metadata.get("license") or {}).get("spdx_id"),
@@ -115,7 +139,14 @@ class HnProjectResolver:
                 probe=probe,
             ) if gitlab.get("id") is not None else None
             language = max(languages, key=languages.get) if languages else None
+            readme_url = gitlab.get("readme_url")
             return str(gitlab["web_url"]).rstrip("/"), {
+                "topics": gitlab.get("topics"),
+                "readme": (
+                    (readme_url.replace("/-/blob/", "/-/raw/", 1), None, "text/plain")
+                    if isinstance(readme_url, str)
+                    else None
+                ),
                 "description": gitlab.get("description"),
                 "language": language,
                 "license": (gitlab.get("license") or {}).get("key"),
@@ -128,6 +159,12 @@ class HnProjectResolver:
         if gitea is not None and "html_url" in gitea:
             licenses = gitea.get("license") or []
             return str(gitea["html_url"]).rstrip("/"), {
+                "topics": gitea.get("topics"),
+                "readme": (
+                    f"{parsed.scheme}://{parsed.netloc}/api/v1/repos/{path}/raw/README.md",
+                    None,
+                    "text/plain",
+                ),
                 "description": gitea.get("description"),
                 "language": gitea.get("language"),
                 "license": licenses[0] if isinstance(licenses, list) and licenses else licenses,
@@ -171,7 +208,11 @@ class HnProjectResolver:
         return data if isinstance(data, dict) else None
 
     def _request(
-        self, url: str, *, client: httpx.Client | None = None
+        self,
+        url: str,
+        *,
+        client: httpx.Client | None = None,
+        accept: str = "application/json, text/html;q=0.9",
     ) -> httpx.Response | None:
         for _ in range(4):
             if not _safe_public_url(url, self._resolve_host):
@@ -179,7 +220,7 @@ class HnProjectResolver:
             try:
                 response = (client or self._client).get(
                     url,
-                    headers={"Accept": "application/json, text/html;q=0.9"},
+                    headers={"Accept": accept},
                     follow_redirects=False,
                     timeout=10,
                 )

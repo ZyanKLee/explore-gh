@@ -34,4 +34,6 @@ class LobstersProjectResolver:
             is_fork=project.is_fork,
             is_archived=project.is_archived,
             has_code=project.has_code,
+            topics=project.topics,
+            readme=project.readme,
         )

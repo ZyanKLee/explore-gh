@@ -90,3 +90,30 @@ def test_hn_edition_leaves_out_a_repo_it_showed_in_the_last_30_days():
         "https://github.com/a/released",
         "https://github.com/a/fresh",
     ]
+
+
+def test_hn_edition_puts_ai_focused_projects_into_its_ai_section():
+    agent = project("agent", "https://github.com/a/agent", 90,
+                    description="An LLM agent", topics=("mcp",))
+    editor = project("editor", "https://github.com/b/editor", 10)
+
+    edition = HnEditionCurator().curate(NOW.date(), [agent, editor])
+
+    assert edition.projects == (editor,)
+    assert edition.ai_projects == (agent,)
+
+
+def test_hn_edition_leaves_out_a_repo_of_its_past_ai_section():
+    agent = project("agent", "https://github.com/a/agent", 90, description="An LLM agent",
+                    topics=("mcp",))
+    yesterday = HnEdition(day=NOW.date() - timedelta(days=1), ai_projects=(agent,))
+
+    edition = HnEditionCurator().curate(NOW.date(), [agent], past_editions=[yesterday])
+
+    assert edition.ai_projects == ()
+
+
+def test_hn_project_readme_is_input_only_and_not_part_of_its_identity():
+    assert project("a", "https://github.com/a/a", 1, readme="# A") == project(
+        "a", "https://github.com/a/a", 1, readme=""
+    )

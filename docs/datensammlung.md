@@ -438,6 +438,18 @@ Am 13.11.2026 entfernt die Regel `bitbrain/jekyll-dash`, `oxidecomputer/omicron`
 `raphlinus/vic-2350` unter „JIT bitmap text rendering for microcontrollers“ auf
 `linebender.org`. Lieber ein Projekt zu wenig als eines, das nicht zur Story gehört.
 
+### Topics und README
+
+Für die AI-Sektion holt der Resolver die Topics aus der Repo-Abfrage und für das
+gewählte Repo das README, ein Repo pro Story also eine Anfrage mehr:
+
+- GitHub: `/repos/{owner}/{name}/readme` (roh)
+- GitLab: `readme_url` aus der Projektabfrage, `/-/blob/` durch `/-/raw/` ersetzt
+- Gitea/Forgejo: `/api/v1/repos/{owner}/{name}/raw/README.md`
+
+Fehlt das README oder schlägt die Abfrage fehl, bleibt es leer. Das Projekt bleibt
+erhalten, die AI-Regel hat dann nur Name, Beschreibung und Topics.
+
 ### Forge oder nicht
 
 Für einen Link auf einen unbekannten Host fragt der Resolver auf Verdacht die APIs von

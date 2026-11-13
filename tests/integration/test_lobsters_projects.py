@@ -46,4 +46,27 @@ def test_project_resolver_maps_shared_forge_facts_to_a_lobsters_project():
     assert project.license_id == "MIT"
     assert project.language == "Rust"
     assert project.is_open_source
-    assert len(requests) == 2
+    assert len(requests) == 3  # GitLab probe, Gitea repo, Gitea README
+
+def test_project_resolver_passes_topics_and_readme_on_to_the_lobsters_project():
+    def handler(request):
+        if request.url.path == "/api/v4/projects/owner%2Fproject":
+            return httpx.Response(404)
+        if request.url.path.endswith("/raw/README.md"):
+            return httpx.Response(200, text="# Project")
+        return httpx.Response(200, json={
+            "html_url": "https://codeberg.org/owner/project",
+            "topics": ["editor"],
+            "license": ["MIT"],
+            "language": "Rust",
+            "size": 15,
+        })
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    story = LobstersStory("abc", "Project", "https://codeberg.org/owner/project",
+                          "https://lobste.rs/s/abc", 42, 9, NOW)
+
+    project = LobstersProjectResolver(client, resolve_host=lambda host: True).resolve(story)
+
+    assert project.topics == ("editor",)
+    assert project.readme == "# Project"

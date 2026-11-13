@@ -55,28 +55,32 @@ def _to_json(edition: LobstersEdition) -> dict:
     return {
         "format_version": FORMAT_VERSION,
         "day": edition.day.isoformat(),
-        "projects": [
-            {
-                "story": {
-                    "id": project.story.id,
-                    "title": project.story.title,
-                    "url": project.story.url,
-                    "discussion_url": project.story.discussion_url,
-                    "score": project.story.score,
-                    "comments": project.story.comments,
-                    "created_at": project.story.created_at.isoformat(),
-                },
-                "repository_url": project.repository_url,
-                "project_url": project.project_url,
-                "description": project.description,
-                "language": project.language,
-                "license_id": project.license_id,
-                "is_fork": project.is_fork,
-                "is_archived": project.is_archived,
-                "has_code": project.has_code,
-            }
-            for project in edition.projects
-        ],
+        "projects": [_project_to_json(project) for project in edition.projects],
+        "ai_projects": [_project_to_json(project) for project in edition.ai_projects],
+    }
+
+
+def _project_to_json(project: LobstersProjectCandidate) -> dict:
+    """The README is not stored, like in the GitHub editions."""
+    return {
+        "story": {
+            "id": project.story.id,
+            "title": project.story.title,
+            "url": project.story.url,
+            "discussion_url": project.story.discussion_url,
+            "score": project.story.score,
+            "comments": project.story.comments,
+            "created_at": project.story.created_at.isoformat(),
+        },
+        "repository_url": project.repository_url,
+        "project_url": project.project_url,
+        "description": project.description,
+        "language": project.language,
+        "license_id": project.license_id,
+        "is_fork": project.is_fork,
+        "is_archived": project.is_archived,
+        "has_code": project.has_code,
+        "topics": list(project.topics),
     }
 
 
@@ -84,6 +88,8 @@ def _from_json(data: dict) -> LobstersEdition:
     return LobstersEdition(
         day=date.fromisoformat(data["day"]),
         projects=tuple(_project_from_json(project) for project in data["projects"]),
+        # Editions from before the AI section (13.11.2026) have neither section nor topics
+        ai_projects=tuple(_project_from_json(project) for project in data.get("ai_projects", [])),
     )
 
 
@@ -107,4 +113,5 @@ def _project_from_json(data: dict) -> LobstersProjectCandidate:
         is_fork=data["is_fork"],
         is_archived=data["is_archived"],
         has_code=data["has_code"],
+        topics=tuple(data.get("topics", [])),
     )

@@ -23,6 +23,9 @@ class Project:
     is_fork: bool = False
     is_archived: bool = False
     language: str | None = "Rust"
+    description: str = "A small tool"
+    topics: tuple[str, ...] = ()
+    readme: str = ""
 
     @property
     def is_open_source(self) -> bool:
@@ -34,8 +37,13 @@ def by_points(project: Project) -> tuple[int]:
 
 
 def select(*projects: Project) -> list[str]:
-    chosen = CommunityCurator().select(projects, rank=by_points)
+    """The repository addresses in the main section."""
+    chosen = CommunityCurator().select(projects, rank=by_points).main
     return [project.repository_url for project in chosen]
+
+
+def ai_project(url: str, points: int, **overrides) -> Project:
+    return Project(url, points, description="An LLM agent for your MCP tools", **overrides)
 
 
 def test_community_curator_keeps_an_open_source_project_with_code():
@@ -71,7 +79,7 @@ def test_community_curator_keeps_one_repo_once_with_its_best_ranked_story():
             Project("https://github.com/A/Tool/", 90),
         ],
         rank=by_points,
-    )
+    ).main
 
     assert [project.points for project in chosen] == [90]
 
@@ -97,6 +105,7 @@ def test_repository_key_ignores_case_and_trailing_slash():
 class PastEdition:
     day: date
     projects: tuple[Project, ...]
+    ai_projects: tuple[Project, ...] = ()
 
 
 TODAY = date(2026, 11, 13)
@@ -111,7 +120,7 @@ def test_community_curator_drops_a_repo_under_cooldown():
         [Project("https://github.com/a/old", 90), Project("https://github.com/a/new", 10)],
         rank=by_points,
         cooled_down={repository_key("https://github.com/A/Old")},
-    )
+    ).main
 
     assert [project.repository_url for project in chosen] == ["https://github.com/a/new"]
 
@@ -188,3 +197,50 @@ def test_community_edition_accepts_a_varied_selection():
 def test_community_edition_rejects_a_selection_breaking_its_rules(projects, message):
     with pytest.raises(ValueError, match=message):
         check_community_edition(projects, "HN")
+
+
+def test_community_curator_puts_an_ai_focused_project_into_the_ai_section():
+    selection = CommunityCurator().select(
+        [ai_project("https://github.com/a/agent", 90), Project("https://github.com/b/editor", 10)],
+        rank=by_points,
+    )
+
+    assert [project.repository_url for project in selection.main] == ["https://github.com/b/editor"]
+    assert [project.repository_url for project in selection.ai] == ["https://github.com/a/agent"]
+
+
+def test_community_curator_keeps_a_project_mentioning_ai_once_in_the_main_section():
+    editor = Project("https://github.com/b/editor", 10, description="Video editor with AI captions")
+
+    selection = CommunityCurator().select([editor], rank=by_points)
+
+    assert selection.main == (editor,)
+    assert selection.ai == ()
+
+
+def test_community_curator_applies_diversity_to_each_section_on_its_own():
+    rust = [Project(f"https://github.com/o{n}/tool", 100 - n) for n in range(4)]
+    rust_ai = [ai_project(f"https://github.com/ai{n}/agent", 50 - n) for n in range(4)]
+
+    selection = CommunityCurator().select(rust + rust_ai, rank=by_points)
+
+    assert len(selection.main) == 4
+    assert len(selection.ai) == 4
+
+
+def test_community_curator_applies_the_cooldown_to_the_ai_section_too():
+    selection = CommunityCurator().select(
+        [ai_project("https://github.com/a/agent", 90)],
+        rank=by_points,
+        cooled_down={repository_key("https://github.com/a/agent")},
+    )
+
+    assert selection.ai == ()
+
+
+def test_community_edition_rejects_a_repo_in_both_sections():
+    with pytest.raises(ValueError, match="mehrfach"):
+        check_community_edition(
+            [Project("https://github.com/a/tool", 1)], "HN",
+            ai_projects=[Project("https://github.com/a/tool", 1)],
+        )
