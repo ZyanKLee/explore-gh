@@ -7,6 +7,11 @@ Sprachen fliegen raus.
 
 Das Ergebnis ist eine statische Website mit Archiv und zwei Feeds.
 
+  > [https://zyanklee.github.io/explore-gh/](https://zyanklee.github.io/explore-gh/)
+
+Der Rest dieser Datei beschreibt, wie man die Seite selbst erzeugt und betreibt. Wer nur die
+fertige Seite sehen will, kann den Rest überspringen.
+
 ## Einmalig einrichten
 
 1. **`uv` installieren**, falls noch nicht vorhanden: <https://docs.astral.sh/uv/>
