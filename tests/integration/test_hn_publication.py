@@ -82,3 +82,23 @@ def test_hn_ai_projects_have_their_own_pages_archive_entry_and_feed(tmp_path):
     assert "hn/ai/2026/11/13/" in page("hn/archiv/index.html")
     assert "1 AI-Projekt<" in page("hn/archiv/index.html")
     assert "hn/ai/" in page("hn/index.html")
+
+
+
+def test_hn_entry_explains_its_place(tmp_path):
+    story = HnStory("5", "Tool", "https://github.com/owner/tool", 42, 9,
+                    datetime(2026, 11, 13, tzinfo=UTC))
+    project = HnProjectCandidate(
+        story=story, repository_url="https://github.com/owner/tool", project_url=story.url,
+        description="", language="Rust", license_id="MIT", is_fork=False, is_archived=False,
+        has_code=True, linked_directly=True, reasons=("Die Story verlinkt das Repo direkt.",),
+    )
+    editions = tmp_path / "hn-editions"
+    JsonHnEditionStore(editions).save(HnEdition(day=story.created_at.date(), projects=(project,)))
+
+    build_site(tmp_path / "editions", tmp_path / "output", hn_editions_dir=editions)
+
+    start = (tmp_path / "output/hn/index.html").read_text(encoding="utf-8")
+    assert "Warum Platz 1?" in start
+    assert "42 HN-Punkte" in start
+    assert "Die Story verlinkt das Repo direkt." in start

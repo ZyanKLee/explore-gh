@@ -115,3 +115,16 @@ def test_stats_count_several_projects_in_the_plural(tmp_path):
 
     assert day.main.stats == "2 Open-Source-Projekte"
     assert day.ai.stats == "0 AI-Projekte"
+
+
+def test_entry_shows_the_reasons_of_the_edition(tmp_path):
+    with_reasons = project("a/tool", **HN_STORY) | {"reasons": ["Die Story verlinkt das Repo direkt."]}
+    [day] = load_community_editions(write(tmp_path / "hn", [with_reasons]), HN)
+
+    assert day.main.entries[0].reasons == ["Die Story verlinkt das Repo direkt."]
+
+
+def test_entry_of_an_edition_from_before_the_reasons_has_none(tmp_path):
+    [day] = load_community_editions(write(tmp_path / "hn", [project(**HN_STORY)]), HN)
+
+    assert day.main.entries[0].reasons == []

@@ -88,3 +88,34 @@ def test_hn_edition_from_before_the_ai_section_loads_with_an_empty_one(tmp_path)
 
     assert loaded.ai_projects == ()
     assert loaded.projects[0].topics == ()
+
+
+def test_hn_edition_keeps_the_reasons_and_how_the_repo_was_found(tmp_path):
+    store = JsonHnEditionStore(tmp_path / "editions")
+    project = replace(
+        sample_edition().projects[0],
+        linked_directly=True,
+        reasons=("Die Story verlinkt das Repo direkt.",),
+    )
+    edition = HnEdition(day=sample_edition().day, projects=(project,))
+
+    store.save(edition)
+
+    [loaded] = store.load(edition.day).projects
+    assert loaded.linked_directly is True
+    assert loaded.reasons == ("Die Story verlinkt das Repo direkt.",)
+
+
+def test_hn_edition_from_before_the_reasons_loads_without_them(tmp_path):
+    store = JsonHnEditionStore(tmp_path / "editions")
+    store.save(sample_edition())
+    path = tmp_path / "editions" / f"{sample_edition().day}.json"
+    data = json.loads(path.read_text())
+    for project in data["projects"]:
+        del project["reasons"], project["linked_directly"]
+    path.write_text(json.dumps(data))
+
+    [loaded] = store.load(sample_edition().day).projects
+
+    assert loaded.reasons == ()
+    assert loaded.linked_directly is False

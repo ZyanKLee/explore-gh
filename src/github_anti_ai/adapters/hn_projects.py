@@ -41,6 +41,7 @@ class HnProjectResolver:
     def resolve(self, story: HnStory) -> HnProjectCandidate | None:
         project_url = story.url
         repository_url, metadata = self._inspect_repository(project_url)
+        linked_directly = metadata is not None
         if metadata is None:
             html = self._get_html(project_url)
             if html is None:
@@ -62,6 +63,7 @@ class HnProjectResolver:
             is_archived=bool(metadata.get("archived")),
             has_code=bool(metadata.get("has_code")),
             topics=tuple(str(topic) for topic in topics) if isinstance(topics, list) else (),
+            linked_directly=linked_directly,
             readme=self._readme(metadata.get("readme")),
         )
 

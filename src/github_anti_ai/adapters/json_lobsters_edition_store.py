@@ -81,6 +81,8 @@ def _project_to_json(project: LobstersProjectCandidate) -> dict:
         "is_archived": project.is_archived,
         "has_code": project.has_code,
         "topics": list(project.topics),
+        "linked_directly": project.linked_directly,
+        "reasons": list(project.reasons),
     }
 
 
@@ -114,4 +116,7 @@ def _project_from_json(data: dict) -> LobstersProjectCandidate:
         is_archived=data["is_archived"],
         has_code=data["has_code"],
         topics=tuple(data.get("topics", [])),
+        # Editions from before "Warum Platz …?" (13.11.2026) have neither
+        linked_directly=data.get("linked_directly", False),
+        reasons=tuple(data.get("reasons", [])),
     )

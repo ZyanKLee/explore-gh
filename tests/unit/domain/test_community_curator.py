@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, timedelta
 
 import pytest
@@ -10,6 +10,11 @@ from github_anti_ai.domain.community import (
     recently_shown,
     repository_key,
 )
+
+
+@dataclass(frozen=True)
+class Story:
+    title: str = "Tool"
 
 
 @dataclass(frozen=True)
@@ -26,10 +31,14 @@ class Project:
     description: str = "A small tool"
     topics: tuple[str, ...] = ()
     readme: str | None = None  # None: not read, so no reason to exclude
+    story: Story = Story()
+    project_url: str = "https://tool.example/"
+    linked_directly: bool = True
+    reasons: tuple[str, ...] = field(default=(), compare=False)
 
     @property
     def is_open_source(self) -> bool:
-        return self.license_id == "MIT"
+        return self.license_id in ("MIT", "NOASSERTION")
 
 
 def by_points(project: Project) -> tuple[int]:
@@ -258,3 +267,53 @@ def test_community_curator_keeps_a_project_whose_readme_could_not_be_read():
     assert select(Project("https://github.com/a/tool", 10, readme=None)) == [
         "https://github.com/a/tool"
     ]
+
+
+def reasons(project: Project) -> tuple[str, ...]:
+    selection = CommunityCurator().select([project], rank=by_points)
+    [chosen] = selection.main + selection.ai
+    return chosen.reasons
+
+
+def test_reasons_say_that_the_story_links_the_repo_directly():
+    assert "Die Story verlinkt das Repo direkt." in reasons(Project("https://github.com/a/t", 1))
+
+
+def test_reasons_name_the_website_and_the_words_repo_and_story_share():
+    project = Project(
+        "https://github.com/danvratil/samsung-tv-adspoofer", 1,
+        story=Story("Hijacking Samsung TV Smart Hub Ads"),
+        project_url="https://dvratil.cz/2026/11/hijacking-samsung-tv-smart-hub-ads/",
+        linked_directly=False,
+    )
+
+    assert reasons(project)[0] == (
+        "Gefunden über einen Link auf dvratil.cz. Repo und Story teilen „samsung“."
+    )
+    assert "Die Story verlinkt das Repo direkt." not in reasons(project)
+
+
+def test_reasons_mention_a_license_file_the_forge_cannot_identify():
+    unidentified = Project("https://github.com/a/t", 1, license_id="NOASSERTION")
+
+    assert (
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+        in reasons(unidentified)
+    )
+    assert not any("Lizenz" in reason for reason in reasons(Project("https://github.com/a/t", 1)))
+
+
+def test_reasons_of_an_ai_project_name_its_ai_terms():
+    assert "Beschreibung: AI-Begriffe „llm“, „agent“, „mcp“" in reasons(
+        ai_project("https://github.com/a/agent", 1)
+    )
+
+
+def test_reasons_of_a_main_project_show_a_single_ai_mention_too():
+    editor = Project("https://github.com/b/editor", 1, description="Video editor with AI captions")
+
+    assert "Beschreibung: AI-Begriffe „ai“" in reasons(editor)
+
+
+def test_reasons_of_a_project_without_ai_terms_say_nothing_about_ai():
+    assert not any("AI" in reason for reason in reasons(Project("https://github.com/a/t", 1)))

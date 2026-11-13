@@ -35,5 +35,6 @@ class LobstersProjectResolver:
             is_archived=project.is_archived,
             has_code=project.has_code,
             topics=project.topics,
+            linked_directly=project.linked_directly,
             readme=project.readme,
         )

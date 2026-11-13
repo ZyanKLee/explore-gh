@@ -219,16 +219,26 @@ leerer AI-Sektion und ohne Topics gelesen. Die Sperre gilt für beide Sektionen.
 Welches Repo zu einer Story gehört, entscheidet schon die Datensammlung (siehe
 „Bezug zur Story“ in `datensammlung.md`).
 
-### Geplant
+### „Warum Platz …?“
 
-Damit HN und Lobsters denselben Regeln folgen wie die GitHub-Listen, kommen in dieser
-Reihenfolge in den gemeinsamen Kurator:
+Der Kurator gibt jedem ausgewählten Projekt seine Begründung mit (`reasons`), so wie
+jedes GitHub-Signal seine Begründung trägt. Die Seite zeigt sie aufklappbar unter
+„Warum Platz N?“, daneben die Punkte der Plattform, nach denen sortiert wird.
 
-- **„Warum Platz …?“:** wie das Repo gefunden wurde und welche Signale es hat.
+- **Fundstelle:** „Die Story verlinkt das Repo direkt.“ oder „Gefunden über einen Link
+  auf blog.rust-lang.org. Repo und Story teilen „lang“, „rust“, „rustlang“.“ Ob die
+  Story das Repo direkt verlinkt, hält der Resolver fest (`linked_directly`).
+- **Lizenz:** nur bei einer Lizenzdatei, die die Forge nicht erkennt (`NOASSERTION`).
+- **AI-Begriffe:** die Signale des `AiFocusClassifier`, wie bei GitHub auch in der
+  Hauptliste, wenn sie für die AI-Sektion nicht reichen.
 
-Bewusst nicht vorgesehen: die Abwertung für AI-Mithilfe, weil sie Commits von allen
-Forges bräuchte. Die Plattform-Vorlieben (Linux, Windows, Apple) sind noch nicht
-entschieden.
+Gespeichert werden `reasons` und `linked_directly` mit der Ausgabe. Ausgaben von vor
+dem 13.11.2026 haben keine Begründung, die Seite lässt den Bereich dort weg.
+
+### Bewusst nicht übernommen
+
+Die Abwertung für AI-Mithilfe, weil sie Commits von allen Forges bräuchte. Die
+Plattform-Vorlieben (Linux, Windows, Apple) sind noch nicht entschieden.
 
 ## Unvollständige Sammlung
 

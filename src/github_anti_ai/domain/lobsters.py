@@ -39,12 +39,16 @@ class LobstersProjectCandidate:
     is_archived: bool
     has_code: bool
     topics: tuple[str, ...] = ()
+    linked_directly: bool = False  # the story links the repo itself, not a website
+    # "Warum Platz …?", written by the CommunityCurator; an explanation, not an identity
+    reasons: tuple[str, ...] = field(default=(), compare=False)
     # Only read for the AI section and the exclusions, never stored, like a Snapshot's
     # README. None: it could not be read, "": the repo has none.
     readme: str | None = field(default=None, compare=False, repr=False)
 
     def __post_init__(self):
         object.__setattr__(self, "topics", tuple(self.topics))
+        object.__setattr__(self, "reasons", tuple(self.reasons))
 
     @property
     def is_open_source(self) -> bool:

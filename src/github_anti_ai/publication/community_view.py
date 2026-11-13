@@ -60,6 +60,7 @@ class CommunityEntryView:
     license_id: str | None
     points: str
     comments: str
+    reasons: list[str]  # "Warum Platz …?", empty for editions from before 13.11.2026
 
 
 @dataclass(frozen=True)
@@ -164,6 +165,7 @@ def _entry_view(platform: Platform, project: dict, rank: int) -> CommunityEntryV
         license_id=_shown_license(project["license_id"]),
         points=_number(story[platform.points_key]),
         comments=_number(story["comments"]),
+        reasons=list(project.get("reasons", [])),
     )
 
 

@@ -377,3 +377,13 @@ def test_resolver_marks_a_missing_gitea_readme_md_as_unknown():
     project = resolve_direct("https://codeberg.org/owner/tool", handler)
 
     assert project.readme is None
+
+
+def test_resolver_notes_whether_the_story_links_the_repo_directly():
+    direct = resolve_direct("https://github.com/alice/tool", lambda request: (
+        httpx.Response(404) if request.url.path.endswith("/readme") else github_repo("alice/tool")
+    ))
+    found, _ = blog_with_links("alice/tv-ads", title="Hijacking TV ads")
+
+    assert direct.linked_directly is True
+    assert found.linked_directly is False

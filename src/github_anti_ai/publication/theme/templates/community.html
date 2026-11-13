@@ -32,6 +32,19 @@
         <li><a href="{{ entry.discussion_url }}">{{ view.discussion_label }}</a></li>
       </ul>
     </div>
+    {% if entry.reasons %}
+    <details class="why">
+      <summary>Warum Platz {{ entry.rank }}? <span class="score">{{ entry.points }} {{ view.points_label }}</span></summary>
+      <table>
+        <caption>Wie das Projekt in die Liste kam</caption>
+        <tbody>
+          {% for reason in entry.reasons %}
+          <tr><td>{{ reason }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </details>
+    {% endif %}
   </li>
   {% endfor %}
 </ol>

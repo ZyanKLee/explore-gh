@@ -4,14 +4,16 @@ import re
 from collections import Counter
 from collections.abc import Callable, Collection, Iterable
 from datetime import date
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Generic, Protocol, TypeVar
 from urllib.parse import urlsplit
 
-from github_anti_ai.domain.ai_focus import AiFocusClassifier
+from github_anti_ai.domain.ai_focus import AiFocus, AiFocusClassifier
 from github_anti_ai.domain.edition import COOLDOWN_DAYS, MAX_PER_LANGUAGE, MAX_PER_OWNER
 from github_anti_ai.domain.exclusion import ExclusionPolicy
 from github_anti_ai.domain.model import Section
+from github_anti_ai.domain.opensource import UNRECOGNIZED_LICENSE
+from github_anti_ai.domain.text import quoted
 
 PROJECTS_PER_EDITION = 20
 
@@ -26,12 +28,34 @@ GENERIC_WORDS = frozenset({
     "the", "and", "for", "with", "from", "your", "you", "how", "why", "what", "new",
     "open", "source", "code", "project", "projects", "using", "use",
 })  # fmt: skip
+UNRECOGNIZED_LICENSE_REASON = (
+    "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+)
 WEBSITE_REPO_SUFFIXES = (".github.io", ".gitlab.io", ".codeberg.page")
 _WORD = re.compile(r"[a-z0-9]+")
 
 
+class CommunityStory(Protocol):
+    @property
+    def title(self) -> str: ...
+
+
 class CommunityProject(Protocol):
-    """What the shared rules need to know about an HN or Lobsters project."""
+    """What the shared rules need to know about an HN or Lobsters project.
+
+    The real ones are frozen dataclasses: the curator writes `reasons` with `replace`.
+    """
+
+    @property
+    def story(self) -> CommunityStory: ...
+    @property
+    def project_url(self) -> str: ...
+    @property
+    def license_id(self) -> str | None: ...
+    @property
+    def linked_directly(self) -> bool: ...
+    @property
+    def reasons(self) -> tuple[str, ...]: ...
 
     @property
     def repository_url(self) -> str: ...
@@ -95,9 +119,13 @@ class CommunityCurator:
             if key not in best or rank(candidate) < rank(best[key]):
                 best[key] = candidate
         ranked = sorted(best.values(), key=rank)
-        ai = [project for project in ranked if _is_ai_focused(project)]
-        main = [project for project in ranked if project not in ai]
-        return CommunitySelection(main=_varied(main), ai=_varied(ai))
+        focus = {id(project): _ai_focus(project) for project in ranked}
+        ai = [project for project in ranked if focus[id(project)].section is Section.AI]
+        main = [project for project in ranked if focus[id(project)].section is Section.MAIN]
+        return CommunitySelection(
+            main=tuple(_explained(project, focus[id(project)]) for project in _varied(main)),
+            ai=tuple(_explained(project, focus[id(project)]) for project in _varied(ai)),
+        )
 
 
 def check_community_edition(
@@ -195,14 +223,30 @@ def shared_words(title: str, page_url: str, repository_url: str) -> set[str]:
     return repo_words & story_words
 
 
-def _is_ai_focused(project: CommunityProject) -> bool:
-    focus = AiFocusClassifier().classify_text(
+def _ai_focus(project: CommunityProject) -> AiFocus:
+    return AiFocusClassifier().classify_text(
         name=_repo_name(project.repository_url),
         description=project.description,
         topics=project.topics,
         readme=project.readme or "",
     )
-    return focus.section is Section.AI
+
+
+def _explained(project: Project, focus: AiFocus) -> Project:
+    """The project with its "Warum Platz …?" lines: how it was found, license, AI terms."""
+    if project.linked_directly:
+        found = "Die Story verlinkt das Repo direkt."
+    else:
+        host = (urlsplit(project.project_url).hostname or "").removeprefix("www.")
+        words = shared_words(project.story.title, project.project_url, project.repository_url)
+        found = f"Gefunden über einen Link auf {host}."
+        if words:
+            found += f" Repo und Story teilen {quoted(sorted(words))}."
+    reasons = [found]
+    if project.license_id == UNRECOGNIZED_LICENSE:
+        reasons.append(UNRECOGNIZED_LICENSE_REASON)
+    reasons += [signal.reason for signal in focus.signals]
+    return replace(project, reasons=tuple(reasons))
 
 
 def _eligible(project: CommunityProject) -> bool:
