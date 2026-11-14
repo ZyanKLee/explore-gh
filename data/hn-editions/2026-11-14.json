@@ -1,0 +1,114 @@
+{
+  "format_version": 1,
+  "day": "2026-11-14",
+  "projects": [
+    {
+      "story": {
+        "id": "50474959",
+        "title": "Reverse engineering my Coway air purifier to ditch the cloud",
+        "url": "https://scottjg.com/posts/2026-11-11-reverse-engineering-my-coway-air-purifier-to-ditch-the-cloud/",
+        "points": 745,
+        "comments": 212,
+        "created_at": "2026-11-12T22:03:09+00:00"
+      },
+      "repository_url": "https://github.com/scottjg/coway-local",
+      "project_url": "https://scottjg.com/posts/2026-11-11-reverse-engineering-my-coway-air-purifier-to-ditch-the-cloud/",
+      "description": "Local Home Assistant control and Web Bluetooth provisioning for Coway AP-1022K",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf scottjg.com. Repo und Story teilen „coway“, „scottjg“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50493062",
+        "title": "Ggml v1.0.0",
+        "url": "https://github.com/ggml-org/ggml/releases/tag/v1.0.0",
+        "points": 239,
+        "comments": 38,
+        "created_at": "2026-11-14T02:28:29+00:00"
+      },
+      "repository_url": "https://github.com/ggml-org/ggml",
+      "project_url": "https://github.com/ggml-org/ggml/releases/tag/v1.0.0",
+      "description": "Tensor library for machine learning",
+      "language": "C++",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "machine-learning"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt."
+      ]
+    },
+    {
+      "story": {
+        "id": "50484007",
+        "title": "Lonewolf 0.3 – A standalone XMPP server written in Rust",
+        "url": "https://github.com/lonewolf-im/lonewolf/releases/tag/v0.3.0",
+        "points": 138,
+        "comments": 42,
+        "created_at": "2026-11-13T14:28:40+00:00"
+      },
+      "repository_url": "https://github.com/lonewolf-im/lonewolf",
+      "project_url": "https://github.com/lonewolf-im/lonewolf/releases/tag/v0.3.0",
+      "description": "XMPP with teeth 🐺",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "async-rust",
+        "chat-server",
+        "instant-messaging",
+        "rust",
+        "self-hosted",
+        "xmpp",
+        "xmpp-protocol",
+        "xmpp-server"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt."
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50486914",
+        "title": "DeepSeek Ultrafast",
+        "url": "https://github.com/basetenlabs/deepseek-ultrafast",
+        "points": 50,
+        "comments": 10,
+        "created_at": "2026-11-13T17:39:03+00:00"
+      },
+      "repository_url": "https://github.com/basetenlabs/deepseek-ultrafast",
+      "project_url": "https://github.com/basetenlabs/deepseek-ultrafast",
+      "description": "",
+      "language": "Rust",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "Name: AI-Begriffe „deepseek“",
+        "README: 24-mal AI-Begriffe („deepseek“, „ai“, „openai“, „coding agent“)"
+      ]
+    }
+  ]
+}
