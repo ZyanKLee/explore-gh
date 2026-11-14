@@ -1,0 +1,31 @@
+{
+  "format_version": 1,
+  "day": "2026-11-14",
+  "projects": [
+    {
+      "story": {
+        "id": "kh9fri",
+        "title": "Writing a DSL for high performance parallel programming in OxCaml",
+        "url": "https://blog.janestreet.com/writing-a-dsl-for-high-performance-parallel-programming-in-oxcaml/",
+        "discussion_url": "https://lobste.rs/s/kh9fri",
+        "score": 1,
+        "comments": 0,
+        "created_at": "2026-11-13T20:57:49.133000-06:00"
+      },
+      "repository_url": "https://github.com/janestreet/bonsai",
+      "project_url": "https://blog.janestreet.com/writing-a-dsl-for-high-performance-parallel-programming-in-oxcaml/",
+      "description": "A library for building dynamic webapps, using Js_of_ocaml",
+      "language": "OCaml",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.janestreet.com. Repo und Story teilen „janestreet“."
+      ]
+    }
+  ],
+  "ai_projects": []
+}
