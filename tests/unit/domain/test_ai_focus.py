@@ -1,7 +1,7 @@
 import pytest
 
 from builders import make_snapshot
-from github_anti_ai.domain.ai_focus import AiFocusClassifier
+from github_anti_ai.domain.ai_focus import MIN_README_MENTIONS, AiFocusClassifier
 from github_anti_ai.domain.model import Section
 
 AI_README = (
@@ -205,3 +205,75 @@ def test_an_ai_agent_for_tpm_keys_is_still_ai_focused():
     assert section(
         "alice/tpm-copilot", description="An AI agent that manages your TPM keys"
     ) is Section.AI
+
+
+def test_several_ai_terms_in_the_topics_are_enough_on_their_own():
+    found = classify(
+        description="Model-agnostic quantization and local inference",
+        topics=("llm", "image-generation", "quantization"),
+    )
+
+    assert found.section is Section.AI
+    assert [signal.reason for signal in found.signals] == [
+        "Topics: AI-Begriffe „llm“, „image generation“"
+    ]
+
+
+def test_one_ai_term_in_the_topics_is_still_a_single_place():
+    assert section(topics=("llm", "quantization")) is Section.MAIN
+
+
+@pytest.mark.parametrize(
+    ("repo", "description"),
+    [
+        ("alice/ToolSpace", "The official code of ToolSpace"),
+        ("alice/MagoStudio", "MagoStudio application"),
+        ("alice/Concept-Brittleness", "Concept Brittleness"),
+        ("alice/chat-demo", "Chat Demo"),
+    ],
+)
+def test_a_description_that_only_repeats_the_name_counts_as_no_description(repo, description):
+    empty = dict(description=description, topics=())
+
+    assert section(repo, readme=AI_README * 2, **empty) is Section.AI
+    assert section(repo, readme=AI_README, **empty) is Section.MAIN
+
+
+def test_a_description_that_says_what_the_repo_does_still_counts():
+    described = dict(description="The official code of a PDF reader", topics=())
+
+    assert section("alice/ToolSpace", readme=AI_README * 2, **described) is Section.MAIN
+
+
+def test_a_description_in_another_script_still_counts():
+    described = dict(description="一款以先后关系为核心的待办", topics=())
+
+    assert section(readme=AI_README * 2, **described) is Section.MAIN
+
+
+@pytest.mark.parametrize(
+    "description",
+    [
+        "Run GGUF models with llama.cpp",
+        "A vLLM deployment for Kubernetes",
+        "Chat with a small language model",
+        "Download models from Hugging Face",
+        "Desktop companion for Open WebUI",
+        "A VLM for documents",
+        "Fine-tuned Qwen for translation",
+    ],
+)
+def test_names_of_model_runtimes_and_model_families_are_ai_terms(description):
+    assert section(description=description, topics=("llm",)) is Section.AI
+    assert [signal.reason[:13] for signal in classify(description=description).signals] == [
+        "Beschreibung:"
+    ]
+
+
+def test_the_readme_counts_from_five_ai_terms_on():
+    assert MIN_README_MENTIONS == 5
+    enough = "Works with an LLM. " * MIN_README_MENTIONS
+    too_few = "Works with an LLM. " * (MIN_README_MENTIONS - 1)
+
+    assert section(topics=("llm",), readme=enough) is Section.AI
+    assert section(topics=("llm",), readme=too_few) is Section.MAIN

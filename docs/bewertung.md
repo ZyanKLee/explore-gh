@@ -183,10 +183,23 @@ von vier Stellen** stehen.
 | Beschreibung | die Beschreibung einen AI-Begriff enthält |
 | README | das README mindestens 5 AI-Begriffe enthält |
 
+**Ausnahme, in der die Topics allein genügen:** Stehen dort mindestens 2 verschiedene
+AI-Begriffe, gehört das Repo in die AI-Sektion. Topics vergibt der Besitzer selbst als
+Etikett. Anlass war `huawei-csl/MACaQ` am 15.11.2026: Topics `llm`, `local-ai`,
+`image-generation`, `video-generation`, aber kein AI-Begriff in Name und Beschreibung
+und nur 3 im README, und damit auf Platz 13 der Hauptliste. In den Daten vom 15.11.
+verschiebt die Ausnahme 4 von 1067 Repos der Hauptliste: drei AI-Projekte und einen
+Köder mit erfundenen Topics.
+
 **Zwei Ausnahmen, in denen das README allein genügt:**
 
 - Hat ein Repo weder Beschreibung noch Topics, bleiben ihm nur zwei Stellen. Dann
   reicht ein README mit mindestens 10 AI-Begriffen.
+  Als fehlend gilt auch eine Beschreibung, die nur den Namen wiederholt, etwa „The
+  official code of ToolSpace“ (`dongguanting/ToolSpace` am 15.11.2026: 20 AI-Begriffe
+  im README, Platz 9 der Hauptliste). Füllwörter wie „official“, „code“, „repo“ oder
+  „demo“ zählen dabei nicht. In den Daten vom 15.11. verschiebt das 8 Repos, darunter
+  `deepseek-ai/chat-demo` und drei Forschungs-Repos von `MUSE-AI-Lab`.
 - Ein README mit mindestens 50 AI-Begriffen entscheidet immer, egal was sonst dasteht.
   Anlass war `storytold/craft-anything` am 13.11.2026: 62 AI-Begriffe im README, aber
   keiner in Name, Beschreibung oder Topics, und damit auf Platz 5 der Hauptliste.
@@ -213,6 +226,16 @@ man die Erwähnung in der Begründung sieht.
 `system prompt`, `vibe coding`, `stable diffusion`, `diffusion model`, `comfyui`,
 `midjourney`, `text to image`, `image generation`, `text to video`,
 `video generation`, `text to music`, `music generation`.
+
+**Seit dem 15.11.2026 dazu:** Namen von Laufzeiten, Modellfamilien und Werkzeugen:
+`llama`, `llamaindex`, `vllm`, `litellm`, `gguf`, `vlm`, `language model`,
+`foundation model`, `huggingface`, `hugging face`, `diffusers`, `openrouter`,
+`lm studio`, `open webui`, `gemma`, `mistral`, `qwen`, `sdxl`, `aigc`, `langgraph`,
+`crewai`, `autogen`, `tool calling`, `text generation`. In den Daten vom 15.11.
+wechseln dadurch 30 von 2880 Repos in die AI-Sektion, keines zurück.
+Erwogen und verworfen: das README im Gegenzug erst ab 6 statt 5 AI-Begriffen zu
+zählen. Das hätte 14 Repos in der Hauptliste gehalten, davon 11 mit AI als Thema.
+`gemini` bleibt draußen, weil es auch ein Netzprotokoll bezeichnet.
 
 **`agent` zählt seit dem 13.11.2026 mit.** Vorher galt das Wort als mehrdeutig. In den
 echten Daten nannten es 29 von 519 Repos der Hauptliste, und fast alle waren Werkzeuge

@@ -1,5 +1,6 @@
 """Decides whether a repo exists for the use of AI and therefore belongs to the AI section."""
 
+import re
 from collections.abc import Sequence
 from dataclasses import dataclass
 
@@ -19,7 +20,31 @@ AI_TERMS = TermList(
         "copilot",
         "codex",
         "ollama",
+        "llama",
+        "llamaindex",
+        "vllm",
+        "litellm",
+        "gguf",
+        "vlm",
+        "language model",
+        "foundation model",
+        "huggingface",
+        "hugging face",
+        "diffusers",
+        "openrouter",
+        "lm studio",
+        "open webui",
+        "gemma",
+        "mistral",
+        "qwen",
+        "sdxl",
+        "aigc",
         "langchain",
+        "langgraph",
+        "crewai",
+        "autogen",
+        "tool calling",
+        "text generation",
         "mcp",
         "rag",
         "agentic",
@@ -60,8 +85,15 @@ AI_TERMS = TermList(
 )
 MIN_PLACES = 2
 MIN_README_MENTIONS = 5
+# Topics are the owner's own labels: several different AI terms there decide on their own.
+MIN_TOPIC_TERMS = 2
 # A repo without description and topics has only name and README left to show its purpose.
 MIN_README_MENTIONS_ALONE = 10
+# Words that say nothing about a repo's purpose: "The official code of ToolSpace".
+FILLER_WORDS = frozenset(
+    "a an the this is of for to and official code repo repository implementation "
+    "source project application app demo paper".split()
+)
 # A README that talks about little else than AI decides on its own, whatever the rest says.
 MIN_README_MENTIONS_DOMINANT = 50
 
@@ -99,14 +131,23 @@ class AiFocusClassifier:
             terms = quoted(dict.fromkeys(mentions))
             signals.append(_signal(f"README: {len(mentions)}-mal AI-Begriffe ({terms})"))
 
-        bare = not description.strip() and not topics
+        bare = _says_nothing(description, name) and not topics
         focused = (
             len(signals) >= MIN_PLACES
+            or len(AI_TERMS.distinct(" . ".join(topics))) >= MIN_TOPIC_TERMS
             or len(mentions) >= MIN_README_MENTIONS_DOMINANT
             or (bare and len(mentions) >= MIN_README_MENTIONS_ALONE)
         )
         section = Section.AI if focused else Section.MAIN
         return AiFocus(section=section, signals=tuple(signals))
+
+
+def _says_nothing(description: str, name: str) -> bool:
+    """True for an empty description and for one that only repeats the repo's name."""
+    words = set(re.findall(r"[^\W_]+", description.lower()))
+    name_words = set(re.findall(r"[^\W_]+", name.lower()))
+    name_words.add("".join(re.findall(r"[^\W_]+", name.lower())))
+    return not (words - name_words - FILLER_WORDS)
 
 
 def _signal(reason: str) -> Signal:
