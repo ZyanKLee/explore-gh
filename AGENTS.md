@@ -70,7 +70,8 @@ Awesome-Listen bewusst **nicht** verwenden.
   Vorlieben.
 - **Plattform**: Projekte für Windows −10 Punkte, für macOS oder iOS −10, für Linux +20.
   Nennt ein Projekt auch Linux, entfallen die Abzüge.
-- **Emulatoren für Spielkonsolen** (PS4, PS5, Switch 2, Nintendo, Xbox): −10 Punkte.
+- **Emulatoren und Portierungen für Spielkonsolen** (PlayStation, Nintendo, Xbox,
+  Dreamcast, alle Generationen): −50 Punkte.
 - **Unerwünschte Themen**: Roblox −50 Punkte.
 - **Ausschlüsse**: Forks, archivierte Repos, Spiegel, Repos ohne eigentlichen Code
   (Linksammlungen, Tutorials, Material zur Vorbereitung auf Bewerbungsgespräche,

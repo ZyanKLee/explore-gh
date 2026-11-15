@@ -9,7 +9,28 @@ EMULATOR_TERMS = TermList(
     ["emulator", "emulation", "recompilation", "recompiled", "recompiler", "recomp", "port"]
 )
 CONSOLE_TERMS = TermList(
-    ["ps4", "ps5", "playstation", "switch2", "switch 2", "nintendo", "xbox"]
+    [
+        "ps1",
+        "ps2",
+        "ps3",
+        "ps4",
+        "ps5",
+        "psx",
+        "psp",
+        "ps vita",
+        "psvita",
+        "playstation",
+        "switch2",
+        "switch 2",
+        "nintendo",
+        "n64",
+        "gamecube",
+        "wii",
+        "wii u",
+        "3ds",
+        "xbox",
+        "dreamcast",
+    ]
 )
 
 

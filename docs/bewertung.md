@@ -396,15 +396,18 @@ Ebenfalls eine Vorliebe des Projektinhabers, entschieden am 13.11.2026.
 
 | Art | Regel | Punkte |
 |---|---|---|
-| `console_emulator` | Name, Beschreibung oder Topics nennen einen Emulator **und** eine Spielkonsole | −10 |
+| `console_emulator` | Name, Beschreibung oder Topics nennen einen Emulator **und** eine Spielkonsole | −50 |
 
 - **Emulator:** `emulator`, `emulation`, `recompilation`, `recompiled`, `recompiler`,
-  `recomp`.
-- **Konsole:** `ps4`, `ps5`, `playstation`, `switch2`, `switch 2`, `nintendo`, `xbox`.
+  `recomp`, `port`.
+- **Konsole:** `ps1` bis `ps5`, `psx`, `psp`, `ps vita`, `psvita`, `playstation`,
+  `switch2`, `switch 2`, `nintendo`, `n64`, `gamecube`, `wii`, `wii u`, `3ds`, `xbox`,
+  `dreamcast`. Die älteren Konsolen kamen am 15.11.2026 dazu, nachdem eine
+  PS3-Portierung ohne Abzug durchgegangen war.
 - Beides muss vorkommen. Ein Terminal-Emulator oder eine App für den Xbox-Controller
   bekommt keinen Abzug.
-- **Nicht erfasst:** Portierungen von Konsolenspielen, die sich nur „native port“
-  nennen.
+- **Nicht erfasst:** Portierungen, die keine Konsole nennen, sondern nur den Namen des
+  Spiels.
 
 ## Unerwünschte Themen (`DislikedTopics`)
 

@@ -17,6 +17,13 @@ def signal(repo="alice/tiny-editor", **overrides):
         {"topics": ("emulator", "switch2")},
         {"repo": "alice/nintendo-emulator"},
         {"description": "PS4 emulation on Linux"},
+        {
+            "description": "inFAMOUS 2 (PS3) as a native PC program: static recompilation",
+        },
+        {"topics": ("ps2", "emulator")},
+        {"description": "A PSP emulator for Android"},
+        {"description": "GameCube and Wii emulator"},
+        {"description": "Mario 64 recompiled from the N64 original"},
     ],
 )
 def test_an_emulator_for_a_game_console_is_rated_down(overrides):
