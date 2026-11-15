@@ -2,39 +2,43 @@
   "format_version": 1,
   "day": "2026-11-15",
   "stats": {
-    "assessed": 2874,
-    "excluded": 2137,
-    "ai_focused": 242
+    "assessed": 2880,
+    "excluded": 2188,
+    "ai_focused": 241
   },
   "sections": {
     "main": [
       {
         "rank": 1,
-        "repo": "WarriorRemember/IPTV_Player_2.0",
-        "url": "https://github.com/WarriorRemember/IPTV_Player_2.0",
-        "description": "🎬 A powerful, intuitive IPTV streaming app supporting M3U playlists, EPG, and community lists. Available for Windows, macOS, Linux, Android & TV Boxes. ",
-        "homepage": null,
+        "repo": "YashwanthKamireddi/Skykeep",
+        "url": "https://github.com/YashwanthKamireddi/Skykeep",
+        "description": "iCloud, set free: Apple Notes, Reminders, Calendar, Contacts, iCloud Drive and Photos as native apps on Windows, Linux and Android. Works offline. Open source, Rust.",
+        "homepage": "https://github.com/YashwanthKamireddi/Skykeep/releases/latest",
         "language": "Rust",
         "topics": [
-          "dash",
-          "ip-tv",
-          "iptv",
-          "iptv-channels",
-          "iptv-m3u8",
-          "iptv-player",
-          "iptv-player-application",
-          "iptvtools",
-          "m3u",
-          "mag",
-          "mpegts",
-          "plex",
-          "streaming",
-          "tv",
-          "xtream",
-          "xtreamcode"
+          "apple-notes",
+          "apple-reminders",
+          "cloudkit",
+          "icloud",
+          "icloud-calendar",
+          "icloud-drive",
+          "icloud-notes",
+          "icloud-photos",
+          "iphone",
+          "linux",
+          "linux-desktop",
+          "local-first",
+          "offline-first",
+          "privacy",
+          "rust",
+          "tauri",
+          "windows",
+          "icloud-client",
+          "icloud-linux",
+          "icloud-windows"
         ],
-        "stars": 673,
-        "stars_gained": 673,
+        "stars": 464,
+        "stars_gained": 193,
         "star_history": [
           0,
           0,
@@ -44,6 +48,7 @@
           0,
           0,
           0,
+          1,
           0,
           0,
           0,
@@ -57,37 +62,46 @@
           0,
           0,
           0,
+          33,
+          34,
+          70,
+          30,
+          61,
+          42,
+          31,
+          24,
+          20,
+          5,
+          2,
           0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          673,
-          0
+          111
         ],
-        "created_at": "2026-11-14T19:25:25Z",
-        "pushed_at": "2026-11-15T10:36:10Z",
-        "license": "Apache-2.0",
-        "forks": 12,
-        "active_authors": 1,
-        "score": 79.56030128447954,
+        "created_at": "2026-10-20T16:25:48Z",
+        "pushed_at": "2026-11-15T14:19:07Z",
+        "license": "GPL-3.0",
+        "forks": 27,
+        "active_authors": 4,
+        "score": 70.59605831069797,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 56.560301284479536,
-            "reason": "+673 Sterne in 7 Tagen bei 673 insgesamt"
+            "weight": 37.59605831069796,
+            "reason": "+193 Sterne in 7 Tagen bei 464 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "4 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 14 verschiedenen Personen"
           },
           {
             "kind": "new_project",
             "weight": 3.0,
-            "reason": "Neues Projekt, 0 Tage alt"
+            "reason": "Neues Projekt, 25 Tage alt"
           },
           {
             "kind": "linux",
@@ -98,31 +112,14 @@
       },
       {
         "rank": 2,
-        "repo": "tornadonovicewhirl40/IPTV_Player_2.0",
-        "url": "https://github.com/tornadonovicewhirl40/IPTV_Player_2.0",
-        "description": "🎬 A powerful, intuitive IPTV streaming app supporting M3U playlists, EPG, and community lists. Available for Windows, macOS, Linux, Android & TV Boxes. ",
+        "repo": "bea4dev/shoji-bar-4",
+        "url": "https://github.com/bea4dev/shoji-bar-4",
+        "description": "A Wayland shell with Material Design 3 Expressive, written in Rust",
         "homepage": null,
         "language": "Rust",
-        "topics": [
-          "dash",
-          "ip-tv",
-          "iptv",
-          "iptv-channels",
-          "iptv-m3u8",
-          "iptv-player",
-          "iptv-player-application",
-          "iptvtools",
-          "m3u",
-          "mag",
-          "mpegts",
-          "plex",
-          "streaming",
-          "tv",
-          "xtream",
-          "xtreamcode"
-        ],
-        "stars": 669,
-        "stars_gained": 669,
+        "topics": [],
+        "stars": 223,
+        "stars_gained": 223,
         "star_history": [
           0,
           0,
@@ -153,64 +150,62 @@
           0,
           0,
           0,
+          140,
+          69,
+          9,
+          1,
           0,
-          0,
-          0,
-          0,
-          669,
-          0
+          4
         ],
-        "created_at": "2026-11-14T19:15:43Z",
-        "pushed_at": "2026-11-15T10:32:09Z",
-        "license": "Apache-2.0",
-        "forks": 12,
-        "active_authors": 1,
-        "score": 79.50852235535646,
+        "created_at": "2026-11-10T06:58:11Z",
+        "pushed_at": "2026-11-14T14:40:07Z",
+        "license": "MIT",
+        "forks": 10,
+        "active_authors": 4,
+        "score": 69.28427907914502,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 56.50852235535646,
-            "reason": "+669 Sterne in 7 Tagen bei 669 insgesamt"
+            "weight": 46.96609726096321,
+            "reason": "+223 Sterne in 7 Tagen bei 223 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "4 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 4 verschiedenen Personen"
           },
           {
             "kind": "new_project",
             "weight": 3.0,
-            "reason": "Neues Projekt, 0 Tage alt"
+            "reason": "Neues Projekt, 5 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -10.681818181818182,
+            "reason": "71% der letzten Commits mit AI-Beteiligung (47 von 66)"
           },
           {
             "kind": "linux",
             "weight": 20.0,
-            "reason": "Für Linux („linux“)"
+            "reason": "Für Linux („wayland“)"
           }
         ]
       },
       {
         "rank": 3,
-        "repo": "TurquoiseDetective/IPTV_Player_2.0",
-        "url": "https://github.com/TurquoiseDetective/IPTV_Player_2.0",
-        "description": "🎬 A powerful, intuitive IPTV streaming app supporting M3U playlists, EPG, and community lists. Available for Windows, macOS, Linux, Android & TV Boxes. ",
+        "repo": "artcraft-android/procraft",
+        "url": "https://github.com/artcraft-android/procraft",
+        "description": "An open-source painting app for Android tablets, Windows and Linux: pressure-sensitive brushes, layers, adjustments, animation and 3D painting on its own Rust engine and GPU renderer.",
         "homepage": null,
         "language": "Rust",
-        "topics": [
-          "dash",
-          "ip-tv",
-          "iptv",
-          "iptv-channels",
-          "iptv-m3u8",
-          "iptv-player",
-          "iptv-player-application",
-          "iptvtools",
-          "m3u",
-          "mag",
-          "mpegts",
-          "plex",
-          "streaming",
-          "tv",
-          "xtream",
-          "xtreamcode"
-        ],
-        "stars": 669,
-        "stars_gained": 669,
+        "topics": [],
+        "stars": 787,
+        "stars_gained": 282,
         "star_history": [
           0,
           0,
@@ -227,43 +222,48 @@
           0,
           0,
           0,
+          2,
+          3,
+          25,
+          14,
+          22,
+          44,
+          33,
+          40,
+          91,
+          91,
+          60,
+          43,
+          37,
+          46,
+          53,
+          41,
+          31,
+          19,
           0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          669,
-          0
+          92
         ],
-        "created_at": "2026-11-14T19:25:17Z",
-        "pushed_at": "2026-11-15T10:36:46Z",
+        "created_at": "2026-10-23T21:52:24Z",
+        "pushed_at": "2026-11-13T22:47:57Z",
         "license": "Apache-2.0",
-        "forks": 12,
+        "forks": 69,
         "active_authors": 1,
-        "score": 79.50852235535646,
+        "score": 67.16969830359344,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 56.50852235535646,
-            "reason": "+669 Sterne in 7 Tagen bei 669 insgesamt"
+            "weight": 39.169698303593435,
+            "reason": "+282 Sterne in 7 Tagen bei 787 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 72 verschiedenen Personen"
           },
           {
             "kind": "new_project",
             "weight": 3.0,
-            "reason": "Neues Projekt, 0 Tage alt"
+            "reason": "Neues Projekt, 22 Tage alt"
           },
           {
             "kind": "linux",
@@ -274,31 +274,14 @@
       },
       {
         "rank": 4,
-        "repo": "WattBeetleLearn/IPTV_Player_2.0",
-        "url": "https://github.com/WattBeetleLearn/IPTV_Player_2.0",
-        "description": "🎬 A powerful, intuitive IPTV streaming app supporting M3U playlists, EPG, and community lists. Available for Windows, macOS, Linux, Android & TV Boxes. ",
+        "repo": "xnixy/guesthouse",
+        "url": "https://github.com/xnixy/guesthouse",
+        "description": "GPU virtual machines on Linux",
         "homepage": null,
         "language": "Rust",
-        "topics": [
-          "dash",
-          "ip-tv",
-          "iptv",
-          "iptv-channels",
-          "iptv-m3u8",
-          "iptv-player",
-          "iptv-player-application",
-          "iptvtools",
-          "m3u",
-          "mag",
-          "mpegts",
-          "plex",
-          "streaming",
-          "tv",
-          "xtream",
-          "xtreamcode"
-        ],
-        "stars": 667,
-        "stars_gained": 667,
+        "topics": [],
+        "stars": 104,
+        "stars_gained": 63,
         "star_history": [
           0,
           0,
@@ -324,34 +307,44 @@
           0,
           0,
           0,
+          9,
+          15,
+          10,
+          7,
+          25,
+          17,
+          9,
+          5,
+          2,
           0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          667,
-          0
+          5
         ],
-        "created_at": "2026-11-14T19:25:28Z",
-        "pushed_at": "2026-11-15T10:36:42Z",
-        "license": "Apache-2.0",
-        "forks": 12,
-        "active_authors": 1,
-        "score": 79.48251667833098,
+        "created_at": "2026-11-05T19:57:47Z",
+        "pushed_at": "2026-11-15T05:40:32Z",
+        "license": "GPL-2.0",
+        "forks": 4,
+        "active_authors": 2,
+        "score": 64.99788499812813,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 56.48251667833098,
-            "reason": "+667 Sterne in 7 Tagen bei 667 insgesamt"
+            "weight": 31.997884998128132,
+            "reason": "+63 Sterne in 7 Tagen bei 104 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 9 verschiedenen Personen"
           },
           {
             "kind": "new_project",
             "weight": 3.0,
-            "reason": "Neues Projekt, 0 Tage alt"
+            "reason": "Neues Projekt, 9 Tage alt"
           },
           {
             "kind": "linux",
@@ -362,6 +355,97 @@
       },
       {
         "rank": 5,
+        "repo": "egoist/asuka",
+        "url": "https://github.com/egoist/asuka",
+        "description": "Write an app once in Go, it renders native UI widgets on macOS, Windows, Linux, iOS, Android and the Web",
+        "homepage": "https://asuka.egoist.dev",
+        "language": "Go",
+        "topics": [],
+        "stars": 227,
+        "stars_gained": 206,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          3,
+          8,
+          2,
+          1,
+          2,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          106,
+          86,
+          13
+        ],
+        "created_at": "2026-10-29T17:21:52Z",
+        "pushed_at": "2026-11-15T14:07:03Z",
+        "license": "MIT",
+        "forks": 10,
+        "active_authors": 2,
+        "score": 63.48108418365895,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 45.18108418365895,
+            "reason": "+206 Sterne in 7 Tagen bei 227 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 3 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 16 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -11.700000000000001,
+            "reason": "78% der letzten Commits mit AI-Beteiligung (78 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          }
+        ]
+      },
+      {
+        "rank": 6,
         "repo": "Villagers654/Venture",
         "url": "https://github.com/Villagers654/Venture",
         "description": "A Meta Quest emulator for PC VR. Play the Quest games you own on Windows and Linux.",
@@ -402,10 +486,10 @@
           9,
           3,
           4,
-          15,
+          8,
+          7,
           0,
-          12,
-          20
+          32
         ],
         "created_at": "2026-10-27T19:20:10Z",
         "pushed_at": "2026-11-15T03:24:33Z",
@@ -442,7 +526,152 @@
         ]
       },
       {
-        "rank": 6,
+        "rank": 7,
+        "repo": "google-deepmind/code-verification",
+        "url": "https://github.com/google-deepmind/code-verification",
+        "description": "Verifying Signal's security at the machine-code level",
+        "homepage": "https://google-deepmind.github.io/code-verification/",
+        "language": "Lean",
+        "topics": [
+          "formal-verification",
+          "lean"
+        ],
+        "stars": 246,
+        "stars_gained": 246,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          119,
+          53,
+          27,
+          11,
+          0,
+          35
+        ],
+        "created_at": "2026-10-26T16:27:08Z",
+        "pushed_at": "2026-11-11T15:43:56Z",
+        "license": "NOASSERTION",
+        "forks": 36,
+        "active_authors": 2,
+        "score": 60.818702142067586,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 47.818702142067586,
+            "reason": "+246 Sterne in 7 Tagen bei 246 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 3 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 19 Tage alt"
+          }
+        ]
+      },
+      {
+        "rank": 8,
+        "repo": "Noniv/abyssal-garden",
+        "url": "https://github.com/Noniv/abyssal-garden",
+        "description": "A dreamy underwater world you can swim through in your browser: swaying kelp forests, sunbeams, a sunken ship and manta rays. Everything is generated by code with WebGPU (no images, models or sound files), all in a single 97 KB HTML file.",
+        "homepage": "https://noniv.github.io/abyssal-garden/",
+        "language": "JavaScript",
+        "topics": [],
+        "stars": 744,
+        "stars_gained": 744,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          577,
+          166
+        ],
+        "created_at": "2026-11-12T13:57:34Z",
+        "pushed_at": "2026-11-14T17:41:33Z",
+        "license": "MIT",
+        "forks": 116,
+        "active_authors": 1,
+        "score": 60.43145871091757,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 57.43145871091757,
+            "reason": "+744 Sterne in 7 Tagen bei 744 insgesamt"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 3 Tage alt"
+          }
+        ]
+      },
+      {
+        "rank": 9,
         "repo": "dongguanting/ToolSpace",
         "url": "https://github.com/dongguanting/ToolSpace",
         "description": "The official code of ToolSpace",
@@ -483,10 +712,10 @@
           30,
           29,
           20,
-          38,
-          2,
-          48,
-          38
+          22,
+          15,
+          0,
+          89
         ],
         "created_at": "2026-10-27T03:12:17Z",
         "pushed_at": "2026-11-05T08:41:00Z",
@@ -523,42 +752,33 @@
         ]
       },
       {
-        "rank": 7,
-        "repo": "Noniv/abyssal-garden",
-        "url": "https://github.com/Noniv/abyssal-garden",
-        "description": "A dreamy underwater world you can swim through in your browser: swaying kelp forests, sunbeams, a sunken ship and manta rays. Everything is generated by code with WebGPU (no images, models or sound files), all in a single 97 KB HTML file.",
-        "homepage": "https://noniv.github.io/abyssal-garden/",
-        "language": "JavaScript",
-        "topics": [],
-        "stars": 697,
-        "stars_gained": 697,
+        "rank": 10,
+        "repo": "lordbasex/LordOS",
+        "url": "https://github.com/lordbasex/LordOS",
+        "description": "LordOS — a free, fast and secure GNU/Linux distribution based on Debian, with its own desktop environment: display server and Wayland compositor in C, a React UI engine on QuickJS, and private native apps.",
+        "homepage": "https://lordos.org",
+        "language": "C",
+        "topics": [
+          "c",
+          "debian",
+          "desktop-environment",
+          "ebpf",
+          "firewall",
+          "landlock",
+          "linux",
+          "linux-distribution",
+          "open-source",
+          "privacy",
+          "quickjs",
+          "raspberry-pi-5",
+          "react",
+          "security",
+          "wayland",
+          "wayland-compositor"
+        ],
+        "stars": 512,
+        "stars_gained": 84,
         "star_history": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
           0,
           0,
           0,
@@ -566,38 +786,100 @@
           0,
           0,
           1,
-          577,
-          119
+          2,
+          12,
+          1,
+          3,
+          1,
+          0,
+          1,
+          0,
+          1,
+          22,
+          37,
+          157,
+          46,
+          16,
+          53,
+          18,
+          11,
+          28,
+          9,
+          3,
+          6,
+          9,
+          11,
+          27,
+          10,
+          4,
+          0,
+          23
         ],
-        "created_at": "2026-11-12T13:57:34Z",
-        "pushed_at": "2026-11-14T17:41:33Z",
+        "created_at": "2026-10-18T03:31:03Z",
+        "pushed_at": "2026-11-15T13:56:55Z",
         "license": "MIT",
-        "forks": 106,
-        "active_authors": 1,
-        "score": 59.86465556196019,
+        "forks": 42,
+        "active_authors": 2,
+        "score": 60.0370147882966,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 56.86465556196019,
-            "reason": "+697 Sterne in 7 Tagen bei 697 insgesamt"
+            "weight": 27.037014788296602,
+            "reason": "+84 Sterne in 7 Tagen bei 512 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 28 verschiedenen Personen"
           },
           {
             "kind": "new_project",
             "weight": 3.0,
-            "reason": "Neues Projekt, 2 Tage alt"
+            "reason": "Neues Projekt, 28 Tage alt"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“, „debian“, „wayland“)"
           }
         ]
       },
       {
-        "rank": 8,
-        "repo": "higurashi-ai/Haru",
-        "url": "https://github.com/higurashi-ai/Haru",
-        "description": "Haru: a low-latency, multilingual, full-duplex spoken dialogue model",
-        "homepage": "https://huggingface.co/higurashi-ai/Haru-4B",
-        "language": "Python",
-        "topics": [],
-        "stars": 382,
-        "stars_gained": 382,
+        "rank": 11,
+        "repo": "fzn0x/mixmusic",
+        "url": "https://github.com/fzn0x/mixmusic",
+        "description": "MixMusic is a native desktop player for YouTube Music and Spotify on macOS, Windows and Linux with Community Themes and Plugins. iOS and Android Coming Soon.",
+        "homepage": "https://mixmusic.functionx.dev",
+        "language": "Go",
+        "topics": [
+          "foss",
+          "golang",
+          "high-quality-audio",
+          "material-design",
+          "material-ui",
+          "material3",
+          "music",
+          "music-player",
+          "spotify",
+          "spotify-client",
+          "youtube",
+          "linux",
+          "macos",
+          "windows",
+          "aac",
+          "live-streaming",
+          "nix",
+          "plugin-based",
+          "kiss-principle",
+          "chromecast"
+        ],
+        "stars": 448,
+        "stars_gained": 124,
         "star_history": [
           0,
           0,
@@ -607,65 +889,65 @@
           0,
           0,
           0,
+          20,
+          3,
+          8,
+          13,
+          9,
+          2,
+          1,
+          6,
+          1,
+          2,
+          3,
+          8,
+          21,
+          6,
+          3,
+          69,
+          96,
+          29,
+          11,
+          13,
+          32,
+          34,
+          24,
+          9,
+          5,
           0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          92,
-          10,
-          142,
-          138
+          20
         ],
-        "created_at": "2026-11-12T11:15:42Z",
-        "pushed_at": "2026-11-13T06:21:17Z",
-        "license": "Apache-2.0",
-        "forks": 26,
-        "active_authors": 2,
-        "score": 59.64126725823418,
+        "created_at": "2026-10-18T21:02:40Z",
+        "pushed_at": "2026-11-15T13:51:13Z",
+        "license": "GPL-3.0",
+        "forks": 41,
+        "active_authors": 3,
+        "score": 59.947797952647946,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 51.64126725823418,
-            "reason": "+382 Sterne in 7 Tagen bei 382 insgesamt"
+            "weight": 31.947797952647942,
+            "reason": "+124 Sterne in 7 Tagen bei 448 insgesamt"
           },
           {
             "kind": "team",
             "weight": 5.0,
-            "reason": "2 aktive Autoren in 90 Tagen"
+            "reason": "3 aktive Autoren in 90 Tagen"
           },
           {
             "kind": "new_project",
             "weight": 3.0,
-            "reason": "Neues Projekt, 3 Tage alt"
+            "reason": "Neues Projekt, 27 Tage alt"
           },
           {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "README: 10-mal AI-Begriffe („ai“, „system prompt“)"
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
           }
         ]
       },
       {
-        "rank": 9,
+        "rank": 12,
         "repo": "mxhm11cr/LinuxRunner",
         "url": "https://github.com/mxhm11cr/LinuxRunner",
         "description": "Run ARM64 Linux userspace and desktop applications on iPhone and iPad.",
@@ -683,7 +965,7 @@
           "ipados",
           "linux-userspace"
         ],
-        "stars": 947,
+        "stars": 948,
         "stars_gained": 152,
         "star_history": [
           0,
@@ -713,26 +995,26 @@
           19,
           37,
           34,
-          52,
+          53,
           30,
           9,
           13,
-          35,
-          1,
-          34,
-          30
+          26,
+          6,
+          0,
+          68
         ],
         "created_at": "2026-10-25T20:47:02Z",
         "pushed_at": "2026-11-08T16:35:07Z",
         "license": "NOASSERTION",
         "forks": 59,
         "active_authors": 1,
-        "score": 58.559623019113104,
+        "score": 58.555011471897046,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 30.559623019113104,
-            "reason": "+152 Sterne in 7 Tagen bei 947 insgesamt"
+            "weight": 30.555011471897043,
+            "reason": "+152 Sterne in 7 Tagen bei 948 insgesamt"
           },
           {
             "kind": "engagement",
@@ -752,7 +1034,98 @@
         ]
       },
       {
-        "rank": 10,
+        "rank": 13,
+        "repo": "huawei-csl/MACaQ",
+        "url": "https://github.com/huawei-csl/MACaQ",
+        "description": "SOTA model-agnostic quantization for GGUF, local inference and beyond. Quantize and run text, image, video and audio models with llama.cpp, vLLM, Diffusers and PyTorch.",
+        "homepage": "https://huawei-csl.com/blog/macaq/",
+        "language": "C++",
+        "topics": [
+          "ascend",
+          "audio",
+          "audio-generation",
+          "diffusers",
+          "gguf",
+          "gguf-quantization",
+          "image-generation",
+          "llm",
+          "local-ai",
+          "local-inference",
+          "quantization",
+          "video-generation",
+          "vllm",
+          "llama-cpp"
+        ],
+        "stars": 302,
+        "stars_gained": 302,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          138,
+          60,
+          18,
+          0,
+          84
+        ],
+        "created_at": "2026-11-10T08:52:22Z",
+        "pushed_at": "2026-11-12T09:57:27Z",
+        "license": "Apache-2.0",
+        "forks": 21,
+        "active_authors": 1,
+        "score": 57.60013885914301,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 49.60013885914301,
+            "reason": "+302 Sterne in 7 Tagen bei 302 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 3 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 5 Tage alt"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „image generation“, „llm“, „ai“, „video generation“"
+          }
+        ]
+      },
+      {
+        "rank": 14,
         "repo": "SamiEnazi/infamous2-port",
         "url": "https://github.com/SamiEnazi/infamous2-port",
         "description": "inFAMOUS 2 (PS3) as a native PC program for Windows and Linux: Setup recompiles YOUR copy on your PC (static recompilation, Vulkan). No game files included.",
@@ -767,8 +1140,8 @@
           "windows",
           "linux"
         ],
-        "stars": 160,
-        "stars_gained": 159,
+        "stars": 163,
+        "stars_gained": 162,
         "star_history": [
           0,
           0,
@@ -801,22 +1174,22 @@
           3,
           0,
           5,
-          64,
-          2,
           54,
-          31
+          9,
+          0,
+          91
         ],
         "created_at": "2026-11-09T04:16:59Z",
         "pushed_at": "2026-11-15T06:49:12Z",
         "license": "MIT",
         "forks": 1,
         "active_authors": 1,
-        "score": 57.25904099895561,
+        "score": 57.422419484826335,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 43.95904099895561,
-            "reason": "+159 Sterne in 7 Tagen bei 160 insgesamt"
+            "weight": 44.12241948482634,
+            "reason": "+162 Sterne in 7 Tagen bei 163 insgesamt"
           },
           {
             "kind": "engagement",
@@ -841,7 +1214,7 @@
         ]
       },
       {
-        "rank": 11,
+        "rank": 15,
         "repo": "sums001/OpenInbox",
         "url": "https://github.com/sums001/OpenInbox",
         "description": "Free, unlimited business email on your own domains, running entirely in your free Cloudflare account.",
@@ -855,8 +1228,8 @@
           "mail-server",
           "mailbox"
         ],
-        "stars": 390,
-        "stars_gained": 196,
+        "stars": 391,
+        "stars_gained": 197,
         "star_history": [
           0,
           0,
@@ -889,22 +1262,22 @@
           93,
           29,
           26,
-          25,
+          16,
+          6,
           0,
-          9,
-          14
+          27
         ],
         "created_at": "2026-10-23T08:21:23Z",
         "pushed_at": "2026-11-15T09:38:24Z",
         "license": "MIT",
         "forks": 72,
         "active_authors": 3,
-        "score": 57.17276645385951,
+        "score": 57.2311112662054,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 39.17276645385951,
-            "reason": "+196 Sterne in 7 Tagen bei 390 insgesamt"
+            "weight": 39.2311112662054,
+            "reason": "+197 Sterne in 7 Tagen bei 391 insgesamt"
           },
           {
             "kind": "team",
@@ -929,7 +1302,7 @@
         ]
       },
       {
-        "rank": 12,
+        "rank": 16,
         "repo": "Shahrukhalid/nexonic-download-manager",
         "url": "https://github.com/Shahrukhalid/nexonic-download-manager",
         "description": "Free, open-source download manager for macOS, Windows, Linux and Android. Download every photo and video of an Instagram, TikTok or Facebook profile in one click. Up to 256 connections, resume, scheduler, BitTorrent and browser extensions.",
@@ -993,8 +1366,8 @@
           9,
           5,
           0,
-          3,
-          2
+          0,
+          5
         ],
         "created_at": "2026-10-31T15:06:09Z",
         "pushed_at": "2026-11-14T02:21:30Z",
@@ -1026,15 +1399,15 @@
         ]
       },
       {
-        "rank": 13,
+        "rank": 17,
         "repo": "HybridRobotics/supermimic",
         "url": "https://github.com/HybridRobotics/supermimic",
         "description": "Humanoid whole-body motion tracking with one differentiable world model.",
         "homepage": "https://supermimic.github.io",
         "language": "Python",
         "topics": [],
-        "stars": 1529,
-        "stars_gained": 1529,
+        "stars": 1532,
+        "stars_gained": 1532,
         "star_history": [
           0,
           0,
@@ -1065,24 +1438,24 @@
           0,
           0,
           0,
-          796,
+          797,
           369,
-          203,
-          16,
-          86,
-          59
+          136,
+          55,
+          0,
+          175
         ],
         "created_at": "2026-11-10T10:46:56Z",
         "pushed_at": "2026-11-11T08:06:27Z",
         "license": "Apache-2.0",
-        "forks": 104,
+        "forks": 105,
         "active_authors": 1,
-        "score": 56.68814970824641,
+        "score": 56.705175305931704,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 63.68814970824641,
-            "reason": "+1.529 Sterne in 7 Tagen bei 1.529 insgesamt"
+            "weight": 63.705175305931704,
+            "reason": "+1.532 Sterne in 7 Tagen bei 1.532 insgesamt"
           },
           {
             "kind": "continuity",
@@ -1102,18 +1475,15 @@
         ]
       },
       {
-        "rank": 14,
-        "repo": "google-deepmind/code-verification",
-        "url": "https://github.com/google-deepmind/code-verification",
-        "description": "Verifying Signal's security at the machine-code level",
-        "homepage": "https://google-deepmind.github.io/code-verification/",
-        "language": "Lean",
-        "topics": [
-          "formal-verification",
-          "lean"
-        ],
-        "stars": 246,
-        "stars_gained": 246,
+        "rank": 18,
+        "repo": "sasobhabha/Gester",
+        "url": "https://github.com/sasobhabha/Gester",
+        "description": "",
+        "homepage": null,
+        "language": "Objective-C",
+        "topics": [],
+        "stars": 230,
+        "stars_gained": 186,
         "star_history": [
           0,
           0,
@@ -1142,26 +1512,26 @@
           0,
           0,
           0,
+          44,
+          136,
+          25,
+          9,
+          6,
+          3,
           0,
-          1,
-          119,
-          53,
-          38,
-          0,
-          23,
-          12
+          7
         ],
-        "created_at": "2026-10-26T16:27:08Z",
-        "pushed_at": "2026-11-11T15:43:56Z",
-        "license": "NOASSERTION",
-        "forks": 30,
+        "created_at": "2026-11-08T21:42:47Z",
+        "pushed_at": "2026-11-09T08:18:41Z",
+        "license": "MIT",
+        "forks": 24,
         "active_authors": 2,
-        "score": 55.818702142067586,
+        "score": 56.10429356816112,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 47.818702142067586,
-            "reason": "+246 Sterne in 7 Tagen bei 246 insgesamt"
+            "weight": 43.10429356816112,
+            "reason": "+186 Sterne in 7 Tagen bei 230 insgesamt"
           },
           {
             "kind": "team",
@@ -1169,14 +1539,24 @@
             "reason": "2 aktive Autoren in 90 Tagen"
           },
           {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 4 verschiedenen Personen"
+          },
+          {
             "kind": "new_project",
             "weight": 3.0,
-            "reason": "Neues Projekt, 19 Tage alt"
+            "reason": "Neues Projekt, 6 Tage alt"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 5-mal AI-Begriffe („ai“)"
           }
         ]
       },
       {
-        "rank": 15,
+        "rank": 19,
         "repo": "lolitemaultes/Gridline",
         "url": "https://github.com/lolitemaultes/Gridline",
         "description": "A free, open source music workstation built around the grid.",
@@ -1204,8 +1584,8 @@
           "synthesizer",
           "vst3"
         ],
-        "stars": 234,
-        "stars_gained": 65,
+        "stars": 235,
+        "stars_gained": 66,
         "star_history": [
           0,
           0,
@@ -1238,27 +1618,27 @@
           22,
           16,
           8,
-          6,
+          4,
+          1,
           0,
-          9,
-          4
+          15
         ],
         "created_at": "2026-10-18T22:54:48Z",
-        "pushed_at": "2026-11-14T08:54:53Z",
+        "pushed_at": "2026-11-15T12:04:51Z",
         "license": "GPL-3.0",
         "forks": 12,
         "active_authors": 1,
-        "score": 55.68402591231617,
+        "score": 55.838182162940555,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 27.684025912316173,
-            "reason": "+65 Sterne in 7 Tagen bei 234 insgesamt"
+            "weight": 27.83818216294056,
+            "reason": "+66 Sterne in 7 Tagen bei 235 insgesamt"
           },
           {
             "kind": "engagement",
             "weight": 5.0,
-            "reason": "Issues von 26 verschiedenen Personen"
+            "reason": "Issues von 27 verschiedenen Personen"
           },
           {
             "kind": "new_project",
@@ -1273,15 +1653,15 @@
         ]
       },
       {
-        "rank": 16,
+        "rank": 20,
         "repo": "SeniorMatt/kinoklip",
         "url": "https://github.com/SeniorMatt/kinoklip",
         "description": "Kinoklip — fast, GPU-accelerated non-linear video editor for Linux (Qt 6 + FFmpeg)",
         "homepage": "https://seniormatt.github.io/kinoklip/",
         "language": "C++",
         "topics": [],
-        "stars": 170,
-        "stars_gained": 56,
+        "stars": 171,
+        "stars_gained": 57,
         "star_history": [
           0,
           0,
@@ -1314,22 +1694,22 @@
           7,
           5,
           8,
-          6,
+          5,
+          1,
           0,
-          10,
-          20
+          31
         ],
         "created_at": "2026-11-01T21:10:24Z",
-        "pushed_at": "2026-11-14T05:29:58Z",
+        "pushed_at": "2026-11-14T16:12:59Z",
         "license": "GPL-3.0",
         "forks": 4,
         "active_authors": 1,
-        "score": 55.51550131471215,
+        "score": 55.696296762582996,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 27.515501314712147,
-            "reason": "+56 Sterne in 7 Tagen bei 170 insgesamt"
+            "weight": 27.696296762582996,
+            "reason": "+57 Sterne in 7 Tagen bei 171 insgesamt"
           },
           {
             "kind": "engagement",
@@ -1345,353 +1725,6 @@
             "kind": "linux",
             "weight": 20.0,
             "reason": "Für Linux („linux“)"
-          }
-        ]
-      },
-      {
-        "rank": 17,
-        "repo": "fzn0x/mixmusic",
-        "url": "https://github.com/fzn0x/mixmusic",
-        "description": "MixMusic is a native desktop player for YouTube Music and Spotify on macOS, Windows and Linux with Community Themes and Plugins. iOS and Android Coming Soon.",
-        "homepage": "https://mixmusic.functionx.dev",
-        "language": "Go",
-        "topics": [
-          "foss",
-          "golang",
-          "high-quality-audio",
-          "material-design",
-          "material-ui",
-          "material3",
-          "music",
-          "music-player",
-          "spotify",
-          "spotify-client",
-          "youtube",
-          "linux",
-          "macos",
-          "windows",
-          "aac",
-          "live-streaming",
-          "nix",
-          "plugin-based",
-          "kiss-principle",
-          "chromecast"
-        ],
-        "stars": 447,
-        "stars_gained": 123,
-        "star_history": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          20,
-          3,
-          8,
-          13,
-          9,
-          2,
-          1,
-          6,
-          1,
-          2,
-          3,
-          8,
-          21,
-          6,
-          3,
-          69,
-          96,
-          29,
-          11,
-          13,
-          32,
-          34,
-          24,
-          14,
-          2,
-          10,
-          7
-        ],
-        "created_at": "2026-10-18T21:02:40Z",
-        "pushed_at": "2026-11-13T08:41:21Z",
-        "license": "GPL-3.0",
-        "forks": 39,
-        "active_authors": 1,
-        "score": 54.86194883448769,
-        "signals": [
-          {
-            "kind": "momentum",
-            "weight": 31.86194883448769,
-            "reason": "+123 Sterne in 7 Tagen bei 447 insgesamt"
-          },
-          {
-            "kind": "new_project",
-            "weight": 3.0,
-            "reason": "Neues Projekt, 27 Tage alt"
-          },
-          {
-            "kind": "linux",
-            "weight": 20.0,
-            "reason": "Für Linux („linux“)"
-          }
-        ]
-      },
-      {
-        "rank": 18,
-        "repo": "skild-ai/steel",
-        "url": "https://github.com/skild-ai/steel",
-        "description": "A lightweight, scaleable rigid-body physics solver",
-        "homepage": "https://skild-ai.github.io/steel/",
-        "language": "Python",
-        "topics": [],
-        "stars": 220,
-        "stars_gained": 220,
-        "star_history": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          122,
-          48,
-          14,
-          9,
-          0,
-          8,
-          19
-        ],
-        "created_at": "2026-11-09T08:21:50Z",
-        "pushed_at": "2026-11-13T04:05:27Z",
-        "license": "Apache-2.0",
-        "forks": 11,
-        "active_authors": 2,
-        "score": 54.848453616444125,
-        "signals": [
-          {
-            "kind": "momentum",
-            "weight": 46.848453616444125,
-            "reason": "+220 Sterne in 7 Tagen bei 220 insgesamt"
-          },
-          {
-            "kind": "team",
-            "weight": 5.0,
-            "reason": "2 aktive Autoren in 90 Tagen"
-          },
-          {
-            "kind": "new_project",
-            "weight": 3.0,
-            "reason": "Neues Projekt, 6 Tage alt"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "README: 19-mal AI-Begriffe („ai“, „agent“, „coding agent“)"
-          }
-        ]
-      },
-      {
-        "rank": 19,
-        "repo": "lordbasex/LordOS",
-        "url": "https://github.com/lordbasex/LordOS",
-        "description": "LordOS — a free, fast and secure GNU/Linux distribution based on Debian, with its own desktop environment: display server and Wayland compositor in C, a React UI engine on QuickJS, and private native apps.",
-        "homepage": "https://lordos.org",
-        "language": "C",
-        "topics": [
-          "c",
-          "debian",
-          "desktop-environment",
-          "ebpf",
-          "firewall",
-          "landlock",
-          "linux",
-          "linux-distribution",
-          "open-source",
-          "privacy",
-          "quickjs",
-          "raspberry-pi-5",
-          "react",
-          "security",
-          "wayland",
-          "wayland-compositor"
-        ],
-        "stars": 509,
-        "stars_gained": 81,
-        "star_history": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          1,
-          2,
-          12,
-          1,
-          3,
-          1,
-          0,
-          1,
-          0,
-          1,
-          22,
-          37,
-          157,
-          46,
-          16,
-          53,
-          18,
-          11,
-          28,
-          9,
-          3,
-          6,
-          9,
-          11,
-          27,
-          14,
-          0,
-          13,
-          7
-        ],
-        "created_at": "2026-10-18T03:31:03Z",
-        "pushed_at": "2026-11-12T16:23:04Z",
-        "license": "MIT",
-        "forks": 42,
-        "active_authors": 1,
-        "score": 54.69814019799068,
-        "signals": [
-          {
-            "kind": "momentum",
-            "weight": 26.69814019799068,
-            "reason": "+81 Sterne in 7 Tagen bei 509 insgesamt"
-          },
-          {
-            "kind": "engagement",
-            "weight": 5.0,
-            "reason": "Issues von 21 verschiedenen Personen"
-          },
-          {
-            "kind": "new_project",
-            "weight": 3.0,
-            "reason": "Neues Projekt, 28 Tage alt"
-          },
-          {
-            "kind": "linux",
-            "weight": 20.0,
-            "reason": "Für Linux („linux“, „debian“, „wayland“)"
-          }
-        ]
-      },
-      {
-        "rank": 20,
-        "repo": "Omardigio/VoltaOS",
-        "url": "https://github.com/Omardigio/VoltaOS",
-        "description": "Volta OS: in-car infotainment interface for Linux (Qt 6 / QML, Wayland compositor). Beta.",
-        "homepage": null,
-        "language": "QML",
-        "topics": [
-          "androidauto",
-          "automotive",
-          "car",
-          "infotainment",
-          "infotainmentsystem",
-          "qml",
-          "qt",
-          "tesla",
-          "teslamotors"
-        ],
-        "stars": 203,
-        "stars_gained": 203,
-        "star_history": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          22,
-          49,
-          30,
-          23,
-          0,
-          14,
-          65
-        ],
-        "created_at": "2026-11-09T22:55:40Z",
-        "pushed_at": "2026-11-12T19:18:46Z",
-        "license": "GPL-3.0",
-        "forks": 9,
-        "active_authors": 1,
-        "score": 54.14992075826426,
-        "signals": [
-          {
-            "kind": "momentum",
-            "weight": 46.14992075826426,
-            "reason": "+203 Sterne in 7 Tagen bei 203 insgesamt"
-          },
-          {
-            "kind": "new_project",
-            "weight": 3.0,
-            "reason": "Neues Projekt, 5 Tage alt"
-          },
-          {
-            "kind": "ai_commits",
-            "weight": -15.0,
-            "reason": "100% der letzten Commits mit AI-Beteiligung (16 von 16)"
-          },
-          {
-            "kind": "linux",
-            "weight": 20.0,
-            "reason": "Für Linux („linux“, „wayland“)"
           }
         ]
       }
@@ -1718,8 +1751,8 @@
           "ai-agents",
           "transitions"
         ],
-        "stars": 462,
-        "stars_gained": 462,
+        "stars": 464,
+        "stars_gained": 464,
         "star_history": [
           0,
           0,
@@ -1754,20 +1787,20 @@
           0,
           0,
           248,
-          6,
-          208
+          202,
+          14
         ],
         "created_at": "2026-11-12T23:19:42Z",
         "pushed_at": "2026-11-15T01:23:24Z",
         "license": "MIT",
         "forks": 28,
         "active_authors": 1,
-        "score": 56.292839511122516,
+        "score": 56.33035961109761,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 53.292839511122516,
-            "reason": "+462 Sterne in 7 Tagen bei 462 insgesamt"
+            "weight": 53.33035961109761,
+            "reason": "+464 Sterne in 7 Tagen bei 464 insgesamt"
           },
           {
             "kind": "new_project",
@@ -1833,10 +1866,10 @@
           84,
           69,
           31,
-          23,
-          1,
-          10,
-          8
+          14,
+          9,
+          0,
+          19
         ],
         "created_at": "2026-11-09T12:30:24Z",
         "pushed_at": "2026-11-09T23:13:40Z",
@@ -1869,6 +1902,82 @@
       },
       {
         "rank": 3,
+        "repo": "basetenlabs/deepseek-ultrafast",
+        "url": "https://github.com/basetenlabs/deepseek-ultrafast",
+        "description": "",
+        "homepage": null,
+        "language": "Rust",
+        "topics": [],
+        "stars": 389,
+        "stars_gained": 389,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          57,
+          102,
+          208,
+          22
+        ],
+        "created_at": "2026-10-27T06:10:13Z",
+        "pushed_at": "2026-11-14T05:24:43Z",
+        "license": "NOASSERTION",
+        "forks": 26,
+        "active_authors": 1,
+        "score": 54.798992026514156,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 51.798992026514156,
+            "reason": "+389 Sterne in 7 Tagen bei 389 insgesamt"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 19 Tage alt"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Name: AI-Begriffe „deepseek“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 24-mal AI-Begriffe („deepseek“, „ai“, „openai“, „coding agent“)"
+          }
+        ]
+      },
+      {
+        "rank": 4,
         "repo": "Dodaios/ste80-humanizer",
         "url": "https://github.com/Dodaios/ste80-humanizer",
         "description": "STE80 Humanizer: agent skill that removes AI tells and rewrites text 80% of the way to ASD-STE100 (Simplified Technical English), the method Andrej Karpathy shared.",
@@ -1890,8 +1999,8 @@
           "humanize-ai-text",
           "humanizer"
         ],
-        "stars": 660,
-        "stars_gained": 660,
+        "stars": 665,
+        "stars_gained": 665,
         "star_history": [
           0,
           0,
@@ -1924,22 +2033,22 @@
           180,
           157,
           83,
-          48,
-          3,
-          26,
-          163
+          36,
+          10,
+          0,
+          199
         ],
         "created_at": "2026-11-09T17:18:59Z",
         "pushed_at": "2026-11-14T14:20:14Z",
         "license": "MIT",
-        "forks": 44,
+        "forks": 45,
         "active_authors": 1,
-        "score": 54.72421204417071,
+        "score": 54.789766239395426,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 56.39087871083738,
-            "reason": "+660 Sterne in 7 Tagen bei 660 insgesamt"
+            "weight": 56.45643290606209,
+            "reason": "+665 Sterne in 7 Tagen bei 665 insgesamt"
           },
           {
             "kind": "new_project",
@@ -1974,82 +2083,6 @@
         ]
       },
       {
-        "rank": 4,
-        "repo": "basetenlabs/deepseek-ultrafast",
-        "url": "https://github.com/basetenlabs/deepseek-ultrafast",
-        "description": "",
-        "homepage": null,
-        "language": "Rust",
-        "topics": [],
-        "stars": 383,
-        "stars_gained": 383,
-        "star_history": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          57,
-          103,
-          6,
-          217
-        ],
-        "created_at": "2026-10-27T06:10:13Z",
-        "pushed_at": "2026-11-14T05:24:43Z",
-        "license": "NOASSERTION",
-        "forks": 26,
-        "active_authors": 1,
-        "score": 54.66397547937245,
-        "signals": [
-          {
-            "kind": "momentum",
-            "weight": 51.66397547937245,
-            "reason": "+383 Sterne in 7 Tagen bei 383 insgesamt"
-          },
-          {
-            "kind": "new_project",
-            "weight": 3.0,
-            "reason": "Neues Projekt, 19 Tage alt"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "Name: AI-Begriffe „deepseek“"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "README: 24-mal AI-Begriffe („deepseek“, „ai“, „openai“, „coding agent“)"
-          }
-        ]
-      },
-      {
         "rank": 5,
         "repo": "mromidev/claude-animated-shorts",
         "url": "https://github.com/mromidev/claude-animated-shorts",
@@ -2057,8 +2090,8 @@
         "homepage": null,
         "language": "TypeScript",
         "topics": [],
-        "stars": 3479,
-        "stars_gained": 1005,
+        "stars": 3494,
+        "stars_gained": 1020,
         "star_history": [
           0,
           0,
@@ -2091,22 +2124,22 @@
           189,
           168,
           177,
-          143,
-          11,
-          146,
-          171
+          91,
+          48,
+          0,
+          347
         ],
         "created_at": "2026-11-01T05:50:38Z",
         "pushed_at": "2026-11-01T05:57:14Z",
         "license": "MIT",
-        "forks": 739,
+        "forks": 742,
         "active_authors": 1,
-        "score": 54.157461560819236,
+        "score": 54.341605738669635,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 46.157461560819236,
-            "reason": "+1.005 Sterne in 7 Tagen bei 3.479 insgesamt"
+            "weight": 46.341605738669635,
+            "reason": "+1.020 Sterne in 7 Tagen bei 3.494 insgesamt"
           },
           {
             "kind": "engagement",
@@ -2143,8 +2176,8 @@
         "homepage": "https://0xdaniell.github.io/macbox/",
         "language": "Shell",
         "topics": [],
-        "stars": 100,
-        "stars_gained": 87,
+        "stars": 101,
+        "stars_gained": 88,
         "star_history": [
           0,
           0,
@@ -2180,19 +2213,19 @@
           6,
           18,
           38,
-          10
+          11
         ],
         "created_at": "2026-10-28T22:43:46Z",
         "pushed_at": "2026-11-15T09:44:36Z",
         "license": "NOASSERTION",
         "forks": 9,
         "active_authors": 1,
-        "score": 52.08582377612357,
+        "score": 52.195165121688774,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 37.48582377612357,
-            "reason": "+87 Sterne in 7 Tagen bei 100 insgesamt"
+            "weight": 37.59516512168877,
+            "reason": "+88 Sterne in 7 Tagen bei 101 insgesamt"
           },
           {
             "kind": "new_project",
@@ -2239,8 +2272,8 @@
           "embodied-intelligence",
           "manipulator-robotics"
         ],
-        "stars": 272,
-        "stars_gained": 272,
+        "stars": 273,
+        "stars_gained": 273,
         "star_history": [
           0,
           0,
@@ -2273,27 +2306,27 @@
           4,
           34,
           52,
-          76,
-          1,
-          16,
-          89
+          31,
+          38,
+          0,
+          114
         ],
         "created_at": "2026-11-05T12:55:29Z",
         "pushed_at": "2026-11-10T12:57:16Z",
         "license": "Apache-2.0",
         "forks": 34,
         "active_authors": 1,
-        "score": 51.691378080683975,
+        "score": 51.72325294081512,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 48.691378080683975,
-            "reason": "+272 Sterne in 7 Tagen bei 272 insgesamt"
+            "weight": 48.72325294081512,
+            "reason": "+273 Sterne in 7 Tagen bei 273 insgesamt"
           },
           {
             "kind": "new_project",
             "weight": 3.0,
-            "reason": "Neues Projekt, 9 Tage alt"
+            "reason": "Neues Projekt, 10 Tage alt"
           },
           {
             "kind": "ai_focus",
@@ -2320,8 +2353,8 @@
         "homepage": null,
         "language": "TypeScript",
         "topics": [],
-        "stars": 598,
-        "stars_gained": 234,
+        "stars": 600,
+        "stars_gained": 236,
         "star_history": [
           0,
           0,
@@ -2354,22 +2387,22 @@
           69,
           42,
           37,
-          17,
-          1,
-          30,
-          38
+          13,
+          4,
+          0,
+          71
         ],
         "created_at": "2026-10-27T14:33:24Z",
         "pushed_at": "2026-11-15T04:45:12Z",
         "license": "MIT",
         "forks": 43,
         "active_authors": 3,
-        "score": 51.51262826257961,
+        "score": 51.61114433323667,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 38.51262826257961,
-            "reason": "+234 Sterne in 7 Tagen bei 598 insgesamt"
+            "weight": 38.61114433323667,
+            "reason": "+236 Sterne in 7 Tagen bei 600 insgesamt"
           },
           {
             "kind": "team",
@@ -2409,8 +2442,8 @@
           "chart",
           "data-visualization"
         ],
-        "stars": 323,
-        "stars_gained": 298,
+        "stars": 324,
+        "stars_gained": 299,
         "star_history": [
           0,
           0,
@@ -2445,20 +2478,20 @@
           22,
           10,
           0,
-          7,
-          4
+          0,
+          12
         ],
         "created_at": "2026-11-05T05:25:24Z",
         "pushed_at": "2026-11-12T16:26:25Z",
         "license": "MIT",
         "forks": 47,
         "active_authors": 1,
-        "score": 51.507529800090154,
+        "score": 51.53913226319654,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 48.507529800090154,
-            "reason": "+298 Sterne in 7 Tagen bei 323 insgesamt"
+            "weight": 48.53913226319654,
+            "reason": "+299 Sterne in 7 Tagen bei 324 insgesamt"
           },
           {
             "kind": "new_project",
@@ -2485,8 +2518,8 @@
         "homepage": null,
         "language": "Swift",
         "topics": [],
-        "stars": 210,
-        "stars_gained": 210,
+        "stars": 212,
+        "stars_gained": 212,
         "star_history": [
           0,
           0,
@@ -2522,19 +2555,19 @@
           0,
           0,
           195,
-          15
+          17
         ],
         "created_at": "2026-11-11T17:08:07Z",
         "pushed_at": "2026-11-14T23:18:54Z",
         "license": "MIT",
         "forks": 6,
         "active_authors": 2,
-        "score": 51.44438589467838,
+        "score": 51.52671721857503,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 46.44438589467838,
-            "reason": "+210 Sterne in 7 Tagen bei 210 insgesamt"
+            "weight": 46.52671721857503,
+            "reason": "+212 Sterne in 7 Tagen bei 212 insgesamt"
           },
           {
             "kind": "team",
@@ -2605,10 +2638,10 @@
           240,
           96,
           17,
-          9,
-          0,
           7,
-          1
+          2,
+          0,
+          8
         ],
         "created_at": "2026-11-04T00:55:02Z",
         "pushed_at": "2026-11-04T02:14:22Z",
@@ -2646,14 +2679,105 @@
       },
       {
         "rank": 12,
+        "repo": "Goblinmine/homelab-diagram",
+        "url": "https://github.com/Goblinmine/homelab-diagram",
+        "description": "Renders an r/homelab-style network diagram from a YAML inventory (Python → SVG/PNG). Written with Claude.",
+        "homepage": null,
+        "language": "Python",
+        "topics": [],
+        "stars": 1092,
+        "stars_gained": 930,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          112,
+          50,
+          28,
+          478,
+          221,
+          45,
+          17,
+          0,
+          141
+        ],
+        "created_at": "2026-11-07T12:45:46Z",
+        "pushed_at": "2026-11-14T18:51:16Z",
+        "license": "MIT",
+        "forks": 90,
+        "active_authors": 3,
+        "score": 50.82941372870359,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 57.07941372870359,
+            "reason": "+930 Sterne in 7 Tagen bei 1.092 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "3 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 8 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -11.25,
+            "reason": "75% der letzten Commits mit AI-Beteiligung (3 von 4)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: CLAUDE.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „claude“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 20-mal AI-Begriffe („ai“, „claude“, „anthropic“, „ai agent“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 13,
         "repo": "TensaikunYT/Videohub",
         "url": "https://github.com/TensaikunYT/Videohub",
         "description": "",
         "homepage": "https://www.youtube.com/@tensaikunai",
         "language": "JavaScript",
         "topics": [],
-        "stars": 337,
-        "stars_gained": 337,
+        "stars": 341,
+        "stars_gained": 341,
         "star_history": [
           0,
           0,
@@ -2686,22 +2810,22 @@
           0,
           0,
           0,
-          96,
-          6,
-          80,
-          155
+          88,
+          0,
+          0,
+          253
         ],
         "created_at": "2026-11-11T14:23:18Z",
         "pushed_at": "2026-11-13T18:35:40Z",
         "license": "MIT",
-        "forks": 75,
+        "forks": 76,
         "active_authors": 1,
-        "score": 50.552598017426774,
+        "score": 50.65508757984995,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 50.552598017426774,
-            "reason": "+337 Sterne in 7 Tagen bei 337 insgesamt"
+            "weight": 50.65508757984995,
+            "reason": "+341 Sterne in 7 Tagen bei 341 insgesamt"
           },
           {
             "kind": "new_project",
@@ -2721,7 +2845,7 @@
         ]
       },
       {
-        "rank": 13,
+        "rank": 14,
         "repo": "hyperionaidev/smolmaxxing",
         "url": "https://github.com/hyperionaidev/smolmaxxing",
         "description": "maxxing the ability to run different LLMs on the smallest devices possible",
@@ -2738,8 +2862,8 @@
           "quantization",
           "quantization-algorithms"
         ],
-        "stars": 720,
-        "stars_gained": 720,
+        "stars": 722,
+        "stars_gained": 722,
         "star_history": [
           0,
           0,
@@ -2772,22 +2896,22 @@
           0,
           0,
           1,
-          392,
-          34,
-          227,
-          66
+          245,
+          122,
+          0,
+          354
         ],
         "created_at": "2026-11-04T07:09:41Z",
         "pushed_at": "2026-11-13T15:57:45Z",
         "license": "MIT",
         "forks": 23,
         "active_authors": 1,
-        "score": 50.452772377604965,
+        "score": 50.47686640037237,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 57.14664992862537,
-            "reason": "+720 Sterne in 7 Tagen bei 720 insgesamt"
+            "weight": 57.17074395139278,
+            "reason": "+722 Sterne in 7 Tagen bei 722 insgesamt"
           },
           {
             "kind": "engagement",
@@ -2822,7 +2946,7 @@
         ]
       },
       {
-        "rank": 14,
+        "rank": 15,
         "repo": "relatedb/relate",
         "url": "https://github.com/relatedb/relate",
         "description": "An embedded local, agent-native graph database supporting Cypher 25 written in Rust. Memory or transactional filesystem.",
@@ -2874,13 +2998,13 @@
           3,
           2,
           73,
-          145,
-          1,
-          30,
-          15
+          121,
+          21,
+          0,
+          49
         ],
         "created_at": "2026-11-04T15:55:34Z",
-        "pushed_at": "2026-11-15T12:06:47Z",
+        "pushed_at": "2026-11-15T14:03:17Z",
         "license": "Apache-2.0",
         "forks": 22,
         "active_authors": 5,
@@ -2934,23 +3058,128 @@
         ]
       },
       {
-        "rank": 15,
-        "repo": "pqthangv/AutoInternshipClaude",
-        "url": "https://github.com/pqthangv/AutoInternshipClaude",
-        "description": "Claude skills that find internships, tailor your resume, fill applications and track them",
-        "homepage": null,
-        "language": "Python",
+        "rank": 16,
+        "repo": "JosssphZhou/poki",
+        "url": "https://github.com/JosssphZhou/poki",
+        "description": "Let AI agents operate a real iPhone. Local MCP server and agent, no jailbreak, no extra hardware.",
+        "homepage": "https://poki.bot",
+        "language": "Swift",
         "topics": [
+          "ai-agents",
           "automation",
-          "chrome-extension",
-          "claude",
-          "claude-skills",
-          "internships",
-          "job-search",
-          "resume"
+          "ios",
+          "iphone",
+          "mcp",
+          "model-context-protocol"
         ],
-        "stars": 213,
-        "stars_gained": 210,
+        "stars": 1326,
+        "stars_gained": 700,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          310,
+          131,
+          95,
+          90,
+          192,
+          122,
+          48,
+          37,
+          9,
+          0,
+          292
+        ],
+        "created_at": "2026-11-05T15:04:31Z",
+        "pushed_at": "2026-11-15T12:52:46Z",
+        "license": "AGPL-3.0",
+        "forks": 223,
+        "active_authors": 5,
+        "score": 49.52055870550065,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 49.122599521827176,
+            "reason": "+700 Sterne in 7 Tagen bei 1.326 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "5 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 37 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 9 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -2.6020408163265305,
+            "reason": "17% der letzten Commits mit AI-Beteiligung (17 von 98)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
+          },
+          {
+            "kind": "apple",
+            "weight": -10.0,
+            "reason": "Für macOS oder iOS („iphone“, „ios“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „ai agent“, „mcp“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai agent“, „mcp“, „agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 32-mal AI-Begriffe („agent“, „claude“, „codex“, „chatgpt“ …)"
+          }
+        ]
+      },
+      {
+        "rank": 17,
+        "repo": "klad-app/klad",
+        "url": "https://github.com/klad-app/klad",
+        "description": "A drawing app built for agent/human collaboration",
+        "homepage": "https://klad.studio",
+        "language": "Rust",
+        "topics": [],
+        "stars": 263,
+        "stars_gained": 262,
         "star_history": [
           0,
           0,
@@ -2979,59 +3208,74 @@
           0,
           0,
           1,
-          1,
-          23,
-          122,
-          31,
-          14,
           0,
-          15,
-          5
+          0,
+          4,
+          136,
+          26,
+          4,
+          0,
+          92
         ],
-        "created_at": "2026-10-30T08:35:21Z",
-        "pushed_at": "2026-11-15T11:40:13Z",
-        "license": "MIT",
+        "created_at": "2026-11-04T15:19:25Z",
+        "pushed_at": "2026-11-15T12:58:14Z",
+        "license": "NOASSERTION",
         "forks": 17,
-        "active_authors": 1,
-        "score": 49.280269400419094,
+        "active_authors": 2,
+        "score": 48.87000673062502,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 46.280269400419094,
-            "reason": "+210 Sterne in 7 Tagen bei 213 insgesamt"
+            "weight": 48.320006730625025,
+            "reason": "+262 Sterne in 7 Tagen bei 263 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 3 verschiedenen Personen"
           },
           {
             "kind": "new_project",
             "weight": 3.0,
-            "reason": "Neues Projekt, 16 Tage alt"
+            "reason": "Neues Projekt, 10 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -9.45,
+            "reason": "63% der letzten Commits mit AI-Beteiligung (63 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: CLAUDE.md"
           },
           {
             "kind": "ai_focus",
             "weight": 0,
-            "reason": "Topics: AI-Begriffe „claude“"
+            "reason": "Beschreibung: AI-Begriffe „agent“"
           },
           {
             "kind": "ai_focus",
             "weight": 0,
-            "reason": "Beschreibung: AI-Begriffe „claude“"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "README: 37-mal AI-Begriffe („claude“, „ai“, „anthropic“)"
+            "reason": "README: 31-mal AI-Begriffe („agent“, „coding agent“, „claude“, „codex“ …)"
           }
         ]
       },
       {
-        "rank": 16,
+        "rank": 18,
         "repo": "Zagitta/gpu-unlock",
         "url": "https://github.com/Zagitta/gpu-unlock",
         "description": "Your GeForce runs AI at half speed. This fixes it for 20/30/40 series cards. Up to 2× FP16 / BF16 / TF32 tensor throughput",
         "homepage": null,
         "language": "C",
         "topics": [],
-        "stars": 19642,
-        "stars_gained": 1436,
+        "stars": 19653,
+        "stars_gained": 1444,
         "star_history": [
           0,
           0,
@@ -3046,7 +3290,7 @@
           163,
           399,
           2983,
-          3868,
+          3869,
           2578,
           1430,
           899,
@@ -3056,7 +3300,7 @@
           320,
           660,
           1044,
-          877,
+          878,
           559,
           316,
           280,
@@ -3064,22 +3308,22 @@
           218,
           179,
           193,
-          238,
-          22,
-          243,
-          343
+          152,
+          71,
+          0,
+          631
         ],
         "created_at": "2026-10-18T01:28:31Z",
         "pushed_at": "2026-10-29T02:30:54Z",
         "license": null,
-        "forks": 2035,
+        "forks": 2036,
         "active_authors": 8,
-        "score": 48.24318639259878,
+        "score": 48.29520356711056,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 40.10805125746364,
-            "reason": "+1.436 Sterne in 7 Tagen bei 19.642 insgesamt"
+            "weight": 40.160068431975425,
+            "reason": "+1.444 Sterne in 7 Tagen bei 19.653 insgesamt"
           },
           {
             "kind": "team",
@@ -3119,7 +3363,7 @@
         ]
       },
       {
-        "rank": 17,
+        "rank": 19,
         "repo": "ferhatcore/claude-codex-project-os",
         "url": "https://github.com/ferhatcore/claude-codex-project-os",
         "description": "Project management for Claude Code and Codex with shared task files, developer and QA roles, and human approvals.",
@@ -3135,8 +3379,8 @@
           "workflow",
           "codex"
         ],
-        "stars": 84,
-        "stars_gained": 84,
+        "stars": 85,
+        "stars_gained": 85,
         "star_history": [
           0,
           0,
@@ -3169,22 +3413,22 @@
           0,
           0,
           62,
-          8,
+          5,
+          3,
           0,
-          8,
-          6
+          15
         ],
         "created_at": "2026-11-11T11:15:13Z",
         "pushed_at": "2026-11-13T15:31:13Z",
         "license": "MIT",
         "forks": 7,
         "active_authors": 2,
-        "score": 47.95617395653175,
+        "score": 48.05896674957997,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 38.48558572123763,
-            "reason": "+84 Sterne in 7 Tagen bei 84 insgesamt"
+            "weight": 38.58837851428586,
+            "reason": "+85 Sterne in 7 Tagen bei 85 insgesamt"
           },
           {
             "kind": "team",
@@ -3229,7 +3473,7 @@
         ]
       },
       {
-        "rank": 18,
+        "rank": 20,
         "repo": "molly554/whiteboard-ai-tutor",
         "url": "https://github.com/molly554/whiteboard-ai-tutor",
         "description": "Open-source AI tutor that teaches on a whiteboard. Benchmark of 6 LLMs (Claude, Gemini, DeepSeek): 288 lessons drawn stroke by stroke, blind-reviewed. 白板 AI 导师 / AI 老师讲课评测",
@@ -3250,8 +3494,8 @@
           "math-tutor",
           "whiteboard"
         ],
-        "stars": 170,
-        "stars_gained": 170,
+        "stars": 172,
+        "stars_gained": 172,
         "star_history": [
           0,
           0,
@@ -3284,22 +3528,22 @@
           0,
           0,
           35,
-          37,
-          2,
-          44,
-          52
+          22,
+          13,
+          0,
+          102
         ],
         "created_at": "2026-11-11T11:22:21Z",
         "pushed_at": "2026-11-12T06:30:40Z",
         "license": "MIT",
         "forks": 7,
         "active_authors": 1,
-        "score": 47.60897842756548,
+        "score": 47.71056893815097,
         "signals": [
           {
             "kind": "momentum",
-            "weight": 44.60897842756548,
-            "reason": "+170 Sterne in 7 Tagen bei 170 insgesamt"
+            "weight": 44.71056893815097,
+            "reason": "+172 Sterne in 7 Tagen bei 172 insgesamt"
           },
           {
             "kind": "new_project",
@@ -3325,202 +3569,6 @@
             "kind": "ai_focus",
             "weight": 0,
             "reason": "README: 37-mal AI-Begriffe („ai“, „llm“, „claude“, „deepseek“)"
-          }
-        ]
-      },
-      {
-        "rank": 19,
-        "repo": "ELU-Labs/elu",
-        "url": "https://github.com/ELU-Labs/elu",
-        "description": "A full-screen terminal app that runs coding sessions on the AI command lines you already use, with bots that review and do work, and teammates you can ask.",
-        "homepage": null,
-        "language": "JavaScript",
-        "topics": [
-          "claude-code",
-          "cli",
-          "codex",
-          "coding-agents",
-          "developer-tools",
-          "terminal",
-          "tui"
-        ],
-        "stars": 88,
-        "stars_gained": 88,
-        "star_history": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          1,
-          47,
-          40,
-          0,
-          0
-        ],
-        "created_at": "2026-11-11T18:45:47Z",
-        "pushed_at": "2026-11-14T09:05:12Z",
-        "license": "MIT",
-        "forks": 5,
-        "active_authors": 2,
-        "score": 46.889653443003375,
-        "signals": [
-          {
-            "kind": "momentum",
-            "weight": 38.889653443003375,
-            "reason": "+88 Sterne in 7 Tagen bei 88 insgesamt"
-          },
-          {
-            "kind": "team",
-            "weight": 5.0,
-            "reason": "2 aktive Autoren in 90 Tagen"
-          },
-          {
-            "kind": "new_project",
-            "weight": 3.0,
-            "reason": "Neues Projekt, 3 Tage alt"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "Topics: AI-Begriffe „claude“, „codex“, „coding agent“"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "Beschreibung: AI-Begriffe „ai“"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "README: 40-mal AI-Begriffe („ai“, „claude“, „codex“, „openai“ …)"
-          }
-        ]
-      },
-      {
-        "rank": 20,
-        "repo": "ngocanhnckh/renderlint",
-        "url": "https://github.com/ngocanhnckh/renderlint",
-        "description": "Lint the rendered UI: catches overflowing text, low contrast, overlaps, broken responsive layouts, emoji icons and more in any web framework. Built for AI coding agents.",
-        "homepage": null,
-        "language": "JavaScript",
-        "topics": [
-          "accessibility",
-          "ai-agents",
-          "claude-code",
-          "contrast",
-          "frontend",
-          "linter",
-          "playwright",
-          "responsive-design",
-          "ui",
-          "visual-testing"
-        ],
-        "stars": 523,
-        "stars_gained": 261,
-        "star_history": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          4,
-          5,
-          14,
-          18,
-          7,
-          0,
-          46,
-          38,
-          41,
-          33,
-          8,
-          20,
-          27,
-          54,
-          46,
-          39,
-          29,
-          3,
-          46,
-          44
-        ],
-        "created_at": "2026-10-25T15:54:22Z",
-        "pushed_at": "2026-11-13T01:54:49Z",
-        "license": "MIT",
-        "forks": 56,
-        "active_authors": 1,
-        "score": 46.23828942213527,
-        "signals": [
-          {
-            "kind": "momentum",
-            "weight": 41.23828942213527,
-            "reason": "+261 Sterne in 7 Tagen bei 523 insgesamt"
-          },
-          {
-            "kind": "continuity",
-            "weight": 5.0,
-            "reason": "Commits in 4 verschiedenen Wochen"
-          },
-          {
-            "kind": "new_project",
-            "weight": 3.0,
-            "reason": "Neues Projekt, 20 Tage alt"
-          },
-          {
-            "kind": "ai_files",
-            "weight": -3.0,
-            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "Topics: AI-Begriffe „ai agent“, „claude“"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "Beschreibung: AI-Begriffe „ai“, „coding agent“"
-          },
-          {
-            "kind": "ai_focus",
-            "weight": 0,
-            "reason": "README: 17-mal AI-Begriffe („coding agent“, „claude“, „agent“, „codex“ …)"
           }
         ]
       }
