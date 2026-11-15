@@ -64,3 +64,15 @@ def test_repo_is_found_regardless_of_case():
 def test_repo_without_snapshot_of_the_day_is_reported_as_unknown():
     with pytest.raises(UnknownRepo):
         explain("bob/rustbox")
+
+
+def test_explanation_names_a_copy_found_among_the_snapshots_of_the_day():
+    text = explain(
+        "tornado/IPTV_Player",
+        snapshots=[
+            make_snapshot("tornado/IPTV_Player", description="IPTV streaming app"),
+            make_snapshot("watt/IPTV_Player", description="IPTV streaming app"),
+        ],
+    )
+
+    assert "Ausschluss: Kopie: 2 Repos" in text

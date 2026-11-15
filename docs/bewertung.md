@@ -56,6 +56,28 @@ Begriffe zählen nur als ganze Wörter. Bindestriche und Unterstriche gelten als
 Leerzeichen, Groß- und Kleinschreibung ist egal, ein angehängtes Mehrzahl-s zählt mit.
 Das gilt für alle Begriffslisten in diesem Dokument.
 
+### Kopien (`CopyCheck`)
+
+Dasselbe Projekt, von mehreren Konten als eigenes Repo hochgeladen. Für GitHub sind das
+keine Forks, der Ausschluss `fork` greift also nicht. Anlass war die Ausgabe vom
+15.11.2026: Die Plätze 1 bis 4 der Hauptliste belegte viermal `IPTV_Player_2.0`, von vier
+Konten innerhalb von zehn Minuten angelegt, jedes mit rund 670 Sternen an einem Tag und
+genau 12 Forks.
+
+Anders als die übrigen Ausschlüsse braucht diese Regel alle Repos eines Tages. Sie läuft
+deshalb nach der Bewertung der einzelnen Repos und vergibt die Art `copy`. Ein Repo, das
+schon aus einem anderen Grund ausgeschlossen ist, behält seinen Grund.
+
+- **Kopie** heißt: gleicher Name und gleiche Beschreibung bei verschiedenen Besitzern.
+  Groß- und Kleinschreibung und Leerraum sind egal. Repos ohne Beschreibung und Forks
+  zählen nicht mit.
+- **Fast gleichzeitig angelegt:** Alle Repos der Gruppe werden ausgeschlossen.
+- **Eines ist mindestens 7 Tage älter als das nächste** (`COPY_ORIGINAL_MIN_LEAD`): Es
+  bleibt als mutmaßliches Original, nur die jüngeren werden ausgeschlossen.
+
+**Bekannte Lücke:** Ändert eine Kampagne Name oder Beschreibung je Kopie leicht ab,
+greift die Regel nicht.
+
 ### Köder für Schadsoftware
 
 Hunderte Repos geben sich als Installationspaket bekannter Bezahlsoftware aus („Adobe

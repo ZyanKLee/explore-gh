@@ -67,7 +67,10 @@ Awesome-Listen bewusst **nicht** verwenden.
 - **Unerwünschte Themen**: Roblox −50 Punkte.
 - **Ausschlüsse**: Forks, archivierte Repos, Spiegel, Repos ohne eigentlichen Code
   (Linksammlungen, Tutorials, Material zur Vorbereitung auf Bewerbungsgespräche,
-  Dotfiles, Prompt-Sammlungen), Köder für Schadsoftware und Kryptowährungen.
+  Dotfiles, Prompt-Sammlungen), Köder für Schadsoftware und Kryptowährungen. Dazu
+  Kopien: dasselbe Projekt unter mehreren Besitzern (gleicher Name, gleiche
+  Beschreibung). Sind sie fast gleichzeitig angelegt, fliegen alle raus. Ist eines
+  mindestens 7 Tage älter, bleibt es als Original.
 - **Sprache**: nur Repos mit deutscher oder englischer Beschreibung und README.
 - **Transparenz**: Jede Auf- oder Abwertung wird beim Eintrag begründet, in einem
   aufklappbaren Bereich „Warum Platz …?“. Zuerst war das ein (i) mit Tooltip, der mit
@@ -131,6 +134,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | AI-Thema | `AiFocus` | Repo existiert für den Einsatz von AI und kommt in die AI-Sektion |
 | AI-Mithilfe | `AiAssistance` | Hinweise auf AI-geschriebenen Code, führt nur zur Abwertung |
 | Ausschluss | `Exclusion` | Grund, ein Repo ganz zu entfernen |
+| Kopie | `CopyCheck` | Dasselbe Projekt unter mehreren Besitzern, erkannt an Name und Beschreibung. Braucht alle Repos eines Tages, nicht nur eine Momentaufnahme. |
 | Substanz | `SubstanceCheck` | Hinweise auf echte Arbeit und echtes Interesse: Team, Kontinuität, Issues. Dazu die Gegenprobe zu gekauften Sternen. |
 | Plattform | `PlatformPreference` | Vorliebe des Inhabers: Linux wertet auf, Windows und Apple werten ab |
 | Bewertung | `Assessment` | Sektion, Punktzahl, Signale, ggf. Ausschluss. Die Punktzahl ist die Summe der Signalgewichte. Erzeugt vom `Assessor`. |

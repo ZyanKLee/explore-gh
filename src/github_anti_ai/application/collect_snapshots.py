@@ -16,6 +16,7 @@ from github_anti_ai.application.ports import (
     SnapshotStore,
     SourceUnavailable,
 )
+from github_anti_ai.domain.copies import CopyCheck
 from github_anti_ai.domain.model import Candidate, RepoId, Section, Snapshot
 
 SNAPSHOT_RETENTION_DAYS = 14
@@ -186,7 +187,9 @@ class CollectSnapshots:
         if self._assess is None:
             return set()
         current = {snapshot.repo: snapshot for snapshot in self._snapshot_store.load(today)}
-        assessments = [self._assess(snapshot) for snapshot in current.values()]
+        assessments = CopyCheck().apply(
+            [self._assess(snapshot) for snapshot in current.values()]
+        )
         leaders: list[RepoId] = []
         for section in Section:
             ranked = sorted(

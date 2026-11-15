@@ -11,6 +11,7 @@ from github_anti_ai.application.ports import (
     NothingToPublish,
     SnapshotStore,
 )
+from github_anti_ai.domain.copies import CopyCheck
 from github_anti_ai.domain.edition import COOLDOWN_DAYS, Edition, EditionCurator
 from github_anti_ai.domain.history import DailyRecord
 from github_anti_ai.domain.model import Section
@@ -49,7 +50,7 @@ class PublishEdition:
         if not self._allow_incomplete:
             self._refuse_incomplete_collection(today)
 
-        assessments = [self._assess(snapshot) for snapshot in snapshots]
+        assessments = CopyCheck().apply([self._assess(snapshot) for snapshot in snapshots])
         past_editions = (
             []
             if self._ignore_cooldown

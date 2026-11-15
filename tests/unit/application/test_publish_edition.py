@@ -119,3 +119,16 @@ def test_nothing_is_published_without_snapshots_of_today():
         publish([], editions=store)
 
     assert store.load(TODAY) is None
+
+
+def test_copies_of_one_project_under_several_owners_are_not_published():
+    edition, _ = publish(
+        [
+            make_snapshot("alice/tiny-editor"),
+            make_snapshot("tornado/IPTV_Player", description="IPTV streaming app"),
+            make_snapshot("watt/IPTV_Player", description="IPTV streaming app"),
+        ]
+    )
+
+    assert names(edition) == ["alice/tiny-editor"]
+    assert edition.stats.excluded == 2
