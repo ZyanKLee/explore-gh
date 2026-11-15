@@ -61,3 +61,32 @@ class InMemoryDailyRecordStore:
 
     def days(self):
         return sorted(self.by_day)
+
+
+class FakeReviewer:
+    """Reviews by a table of repo name to Review. Repos not in the table are fine."""
+
+    def __init__(self, reviews=None, unavailable=False, silent=()):
+        from github_anti_ai.domain.review import Review
+
+        self._fine = Review("ok", "Unauffällig.")
+        self._reviews = reviews or {}
+        self._unavailable = unavailable
+        self._silent = set(silent)  # repos the reviewer says nothing about
+        self.rounds = []  # the repo names of each call
+
+    def review(self, snapshots):
+        from github_anti_ai.application.ports import SourceUnavailable
+
+        self.rounds.append([str(s.repo) for s in snapshots])
+        if self._unavailable:
+            raise SourceUnavailable("copilot: nicht erreichbar")
+        return {
+            s.repo: self._reviews.get(str(s.repo), self._fine)
+            for s in snapshots
+            if str(s.repo) not in self._silent
+        }
+
+    @property
+    def asked(self):
+        return [repo for round_ in self.rounds for repo in round_]

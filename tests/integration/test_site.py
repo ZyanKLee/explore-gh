@@ -9,6 +9,7 @@ from github_anti_ai.adapters.json_edition_store import JsonEditionStore
 from github_anti_ai.domain.edition import Edition, EditionStats
 from github_anti_ai.domain.model import Section, Signal
 from github_anti_ai.publication.site import build_site
+from github_anti_ai.publication.view import feed_html, section_view
 from publication_samples import edition_json, entry_json, write_edition
 
 NEW, OLD = "2026-11-12", "2026-11-11"
@@ -30,6 +31,7 @@ def site(tmp_path_factory):
         editions,
         edition_json(
             day=NEW,
+            growth_window_days=14,
             main=[
                 entry_json("alice/tiny-editor", rank=1, homepage="https://tiny-editor.example.org"),
                 entry_json("mallory/xss", rank=2, description='<script>alert("x")</script> & more',
@@ -312,3 +314,15 @@ def test_feeds_of_a_counted_site_carry_no_script(counted_site):
 def test_plausible_script_must_be_loaded_over_https(tmp_path):
     with pytest.raises(ValueError):
         build_site(tmp_path / "editions", tmp_path / "output", plausible_script="javascript:alert(1)")
+
+
+def test_page_names_the_days_the_gain_of_its_edition_was_counted_over(site):
+    assert "Sterne in 14 Tagen</figcaption>" in page(site, "2026/11/12/index.html")
+    assert "Sterne in 7 Tagen</figcaption>" in page(site, "2026/11/11/index.html")
+
+
+def test_feed_names_the_days_the_gain_of_its_edition_was_counted_over():
+    old, new = edition_json(), edition_json(growth_window_days=14)
+
+    assert "+120 in 7 Tagen" in feed_html(section_view(old, "main"))
+    assert "+120 in 14 Tagen" in feed_html(section_view(new, "main"))

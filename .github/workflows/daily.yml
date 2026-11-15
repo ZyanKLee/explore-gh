@@ -5,6 +5,9 @@
 #   - Secret COLLECT_TOKEN: klassischer Personal Access Token ohne Scopes.
 #     Der eingebaute Token erlaubt nur 1000 Anfragen pro Stunde, ein erster Lauf
 #     braucht rund 3000.
+#   - Ein Copilot-Abo des Repo-Besitzers: Die Copilot-CLI liest die Repos der Ausgabe
+#     gegen und rechnet über den eingebauten Token auf dieses Abo ab. Fällt sie aus,
+#     erscheint die Ausgabe ohne Gegenlesen.
 name: Tägliche Ausgabe
 
 on:
@@ -15,6 +18,7 @@ on:
 
 permissions:
   contents: write   # die Ausgabe des Tages wird ins Repo geschrieben
+  copilot-requests: write   # die Copilot-CLI liest die Repos der Ausgabe gegen
 
 # Nie zwei Läufe gleichzeitig: Beide würden dieselbe Ausgabe schreiben wollen.
 concurrency:
@@ -67,12 +71,21 @@ jobs:
           path: data/snapshots
           key: snapshots-${{ steps.day.outputs.day }}-${{ github.run_id }}
 
+      # Scheitert die Installation, erscheint die Ausgabe ohne Gegenlesen.
+      - name: Copilot-CLI installieren
+        continue-on-error: true
+        run: npm install -g @github/copilot
+
       - name: Ausgabe erzeugen
+        env:
+          # der eingebaute Token, nicht COLLECT_TOKEN: Die Copilot-CLI nimmt keine
+          # klassischen Personal Access Tokens an
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           if [ -f "data/editions/${{ steps.day.outputs.day }}.json" ]; then
             echo "Die Ausgabe vom ${{ steps.day.outputs.day }} gibt es schon."
           else
-            uv run github-anti-ai publish --day "${{ steps.day.outputs.day }}"
+            uv run github-anti-ai publish --day "${{ steps.day.outputs.day }}" --review
           fi
 
       - name: Ausgabe und Langzeitdaten ins Repo schreiben

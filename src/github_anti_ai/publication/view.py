@@ -10,6 +10,8 @@ from datetime import date, datetime
 from pathlib import Path
 
 FORMAT_VERSION = 1
+# Editions until 2026-11-15 do not say over how many days they counted the gain.
+FORMER_GROWTH_WINDOW_DAYS = 7
 SECTION_TITLES = {"main": "Trending auf GitHub", "ai": "AI-Projekte auf GitHub"}
 SECTION_PREFIXES = {"main": "", "ai": "ai/"}
 MONTHS = [
@@ -40,6 +42,7 @@ class EntryView:
     topics: tuple[str, ...]
     stars: str
     gained: str
+    gained_days: int  # the days the gain was counted over
     forks: str
     active_authors: int
     age: str
@@ -98,7 +101,10 @@ def section_view(edition: dict, section: str) -> SectionView:
             f"{_number(stats['excluded'])} ausgeschlossen, "
             f"{_number(stats['ai_focused'])} als AI-Thema eingestuft"
         ),
-        entries=[_entry_view(entry, day) for entry in edition["sections"][section]],
+        entries=[
+            _entry_view(entry, day, edition.get("growth_window_days", FORMER_GROWTH_WINDOW_DAYS))
+            for entry in edition["sections"][section]
+        ],
     )
 
 
@@ -113,7 +119,7 @@ def sparkline_points(history: list[int], width: int, height: int) -> str:
     )
 
 
-def _entry_view(entry: dict, day: date) -> EntryView:
+def _entry_view(entry: dict, day: date, gained_days: int) -> EntryView:
     homepage = entry["homepage"] or ""
     return EntryView(
         rank=entry["rank"],
@@ -127,6 +133,7 @@ def _entry_view(entry: dict, day: date) -> EntryView:
         topics=tuple(entry["topics"]),
         stars=_number(entry["stars"]),
         gained=f"+{_number(entry['stars_gained'])}",
+        gained_days=gained_days,
         forks=_number(entry["forks"]),
         active_authors=entry["active_authors"],
         age=_age(datetime.fromisoformat(entry["created_at"]).date(), day),
@@ -175,7 +182,7 @@ def feed_html(view: SectionView) -> str:
         f'<li><a href="{escape(entry.url)}">{escape(entry.repo)}</a>'
         f"{': ' + escape(entry.description) if entry.description else ''}"
         f" ({escape(entry.language or 'ohne Sprache')}, {entry.stars} Sterne,"
-        f" {entry.gained} in 7 Tagen)</li>"
+        f" {entry.gained} in {entry.gained_days} Tagen)</li>"
         for entry in view.entries
     )
     return f"<ol>{items}</ol>"

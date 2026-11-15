@@ -1,7 +1,11 @@
 from datetime import UTC, datetime, timedelta
 
 from builders import make_snapshot
-from github_anti_ai.domain.copies import COPY_ORIGINAL_MIN_LEAD, CopyCheck
+from github_anti_ai.domain.copies import (
+    COPY_ORIGINAL_MIN_LEAD,
+    MIN_COPIED_README_CHARS,
+    CopyCheck,
+)
 from github_anti_ai.domain.model import Assessment, Exclusion, RepoId, Section
 
 CREATED = datetime(2026, 11, 14, 19, 15, tzinfo=UTC)
@@ -58,8 +62,50 @@ def test_same_name_with_another_description_is_no_copy():
     )
 
 
-def test_same_description_with_another_name_is_no_copy():
-    assert not find(copy("alice/IPTV_Player"), copy("bob/tv-streamer"))
+def test_same_description_with_another_name_and_other_topics_is_no_copy():
+    assert not find(
+        copy("alice/IPTV_Player", topics=("iptv",)), copy("bob/tv-streamer", topics=("tv",))
+    )
+
+
+def test_same_description_and_topics_under_another_name_is_a_copy():
+    found = find(
+        copy("alice/IPTV_Player_2.0", topics=("iptv", "m3u")),
+        copy("bob/IPTV_Player2.0", topics=("m3u", "iptv")),
+    )
+
+    assert set(found) == {"alice/IPTV_Player_2.0", "bob/IPTV_Player2.0"}
+    assert found["bob/IPTV_Player2.0"].reason == (
+        "Kopie: 2 Repos mit gleicher Beschreibung und gleichen Topics, "
+        "fast gleichzeitig angelegt"
+    )
+
+
+def test_same_description_without_topics_under_another_name_is_no_copy():
+    assert not find(copy("alice/IPTV_Player", topics=()), copy("bob/tv-streamer", topics=()))
+
+
+LONG_README = "# Player\n\n" + "Plays every stream you point it at. " * 20
+
+
+def test_same_readme_is_a_copy_whatever_name_and_description_say():
+    found = find(
+        copy("alice/player", description="Plays streams", readme=LONG_README),
+        copy("bob/streamer", description="A stream player", readme=LONG_README + "\n\n"),
+    )
+
+    assert set(found) == {"alice/player", "bob/streamer"}
+    assert found["alice/player"].reason == (
+        "Kopie: 2 Repos mit gleichem README, fast gleichzeitig angelegt"
+    )
+
+
+def test_same_short_readme_is_no_copy():
+    assert MIN_COPIED_README_CHARS > 100
+    assert not find(
+        copy("alice/player", description="Plays streams", readme="# Player\n\nTODO"),
+        copy("bob/streamer", description="A stream player", readme="# Player\n\nTODO"),
+    )
 
 
 def test_name_and_description_compare_without_case_and_spacing():

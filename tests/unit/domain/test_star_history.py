@@ -4,10 +4,10 @@ from github_anti_ai.domain.model import GROWTH_WINDOW_DAYS, StarHistory
 
 
 def test_stars_gained_are_those_of_the_growth_window_by_default():
-    history = StarHistory(daily=(100, 1, 2, 3, 4, 5, 6, 7))
+    history = StarHistory(daily=(100,) + tuple(range(1, 15)))
 
-    assert GROWTH_WINDOW_DAYS == 7
-    assert history.gained() == 28
+    assert GROWTH_WINDOW_DAYS == 14
+    assert history.gained() == sum(range(1, 15))
 
 
 def test_stars_gained_can_be_asked_for_any_number_of_recent_days():

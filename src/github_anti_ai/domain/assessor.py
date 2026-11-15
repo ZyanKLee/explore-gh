@@ -7,6 +7,7 @@ from github_anti_ai.domain.disliked_topics import DislikedTopics
 from github_anti_ai.domain.exclusion import ExclusionPolicy
 from github_anti_ai.domain.model import Assessment, Snapshot
 from github_anti_ai.domain.momentum import MomentumCalculator
+from github_anti_ai.domain.owner import OwnerHistory
 from github_anti_ai.domain.platform import PlatformPreference
 from github_anti_ai.domain.substance import SubstanceCheck
 
@@ -17,6 +18,7 @@ class Assessor:
         self._ai_focus = AiFocusClassifier()
         self._momentum = MomentumCalculator()
         self._substance = SubstanceCheck()
+        self._owner = OwnerHistory()
         self._ai_assistance = AiAssistanceDetector()
         self._platform = PlatformPreference()
         self._console_emulator = ConsoleEmulatorCheck()
@@ -29,6 +31,7 @@ class Assessor:
         signals = (
             self._momentum.signal(snapshot),
             *self._substance.signals(snapshot),
+            *self._owner.signals(snapshot),
             *self._ai_assistance.detect(snapshot),
             *self._platform.signals(snapshot),
             *([console_emulator] if console_emulator else []),

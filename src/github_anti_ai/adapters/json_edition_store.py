@@ -7,7 +7,7 @@ from pathlib import Path
 
 from github_anti_ai.application.ports import AlreadyPublished
 from github_anti_ai.domain.edition import Edition, EditionStats, Entry
-from github_anti_ai.domain.model import RepoId, Section, Signal, StarHistory
+from github_anti_ai.domain.model import GROWTH_WINDOW_DAYS, RepoId, Section, Signal, StarHistory
 
 FORMAT_VERSION = 1
 
@@ -50,6 +50,8 @@ def _to_json(edition: Edition) -> dict:
     return {
         "format_version": FORMAT_VERSION,
         "day": edition.day.isoformat(),
+        # the days stars_gained of each entry was counted over
+        "growth_window_days": GROWTH_WINDOW_DAYS,
         "stats": {
             "assessed": edition.stats.assessed,
             "excluded": edition.stats.excluded,

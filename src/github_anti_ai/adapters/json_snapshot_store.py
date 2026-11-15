@@ -90,6 +90,8 @@ def _to_json(snapshot: Snapshot) -> dict:
             for c in snapshot.recent_commits
         ],
         "star_history": list(snapshot.star_history.daily),
+        "owner_created_at": _time(snapshot.owner_created_at),
+        "owner_contributed_to": snapshot.owner_contributed_to,
     }
 
 
@@ -128,4 +130,7 @@ def _from_json(data: dict) -> Snapshot:
             for c in data["recent_commits"]
         ),
         star_history=StarHistory(daily=tuple(data["star_history"])),
+        # missing in files of earlier versions
+        owner_created_at=_parse_time(data.get("owner_created_at")),
+        owner_contributed_to=data.get("owner_contributed_to"),
     )

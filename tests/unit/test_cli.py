@@ -136,3 +136,12 @@ def test_plausible_script_can_be_given_for_the_published_site():
     args = parse_args(["site", "--plausible", "https://stats.example.org/js/pa-test.js"])
 
     assert args.plausible == "https://stats.example.org/js/pa-test.js"
+
+
+def test_review_is_off_unless_asked_for():
+    assert parse_args(["publish"]).review is False
+
+
+@pytest.mark.parametrize("command", ["publish", "daily"])
+def test_review_can_be_asked_for(command):
+    assert parse_args([command, "--review"]).review is True

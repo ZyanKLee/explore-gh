@@ -14,6 +14,7 @@ import httpx
 from github_anti_ai.adapters.clock import SystemClock
 from github_anti_ai.adapters.github_http import make_github_client
 from github_anti_ai.adapters.github_repo_source import GitHubRepoSource
+from github_anti_ai.adapters.copilot_reviewer import CopilotReviewer
 from github_anti_ai.adapters.github_search import GitHubSearchCandidates
 from github_anti_ai.adapters.hn_projects import HnProjectResolver
 from github_anti_ai.adapters.hn_search import HackerNewsSearch
@@ -104,6 +105,11 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
                 action="store_true",
                 help="Ausgabe auch aus einer unvollständigen Sammlung erzeugen",
             )
+            command.add_argument(
+                "--review",
+                action="store_true",
+                help="die Repos der Ausgabe von der Copilot-CLI gegenlesen lassen",
+            )
     return parser.parse_args(argv)
 
 
@@ -189,7 +195,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             complete = not report.failed
             day = report.day  # a run across midnight still belongs to the day it started
         if args.command in ("publish", "daily"):
-            publish(args.data_dir, day, args.ignore_cooldown, args.allow_incomplete)
+            publish(
+                args.data_dir, day, args.ignore_cooldown, args.allow_incomplete, args.review
+            )
     except AlreadyPublished as error:
         print(f"Fehler: Für den {error} gibt es schon eine Ausgabe.", file=sys.stderr)
         return 1
@@ -294,7 +302,11 @@ def collect_lobsters(data_dir: Path, token: str, limit: int | None = None):
 
 
 def publish(
-    data_dir: Path, day: date | None, ignore_cooldown: bool, allow_incomplete: bool = False
+    data_dir: Path,
+    day: date | None,
+    ignore_cooldown: bool,
+    allow_incomplete: bool = False,
+    review: bool = False,
 ) -> Edition:
     use_case = PublishEdition(
         snapshot_store=JsonSnapshotStore(data_dir / "snapshots"),
@@ -305,6 +317,7 @@ def publish(
         clock=SystemClock(),
         ignore_cooldown=ignore_cooldown,
         allow_incomplete=allow_incomplete,
+        reviewer=CopilotReviewer() if review else None,
     )
     edition = use_case.run(day)
     stats = edition.stats
@@ -313,6 +326,10 @@ def publish(
         f"{len(edition.ai)} in der AI-Sektion "
         f"({stats.assessed} geprüft, {stats.excluded} ausgeschlossen)"
     )
+    if review:
+        entries = edition.main + edition.ai
+        read = sum(1 for entry in entries if any(s.kind == "review" for s in entry.signals))
+        print(f"Gegengelesen: {read} von {len(entries)} Einträgen")
     return edition
 
 

@@ -1,5 +1,6 @@
 """Builders for domain objects with sensible defaults, so tests only state what matters."""
 
+import zlib
 from datetime import UTC, date, datetime
 
 from github_anti_ai.domain.model import (
@@ -44,10 +45,16 @@ def make_commit(**overrides) -> Commit:
 
 
 def make_snapshot(repo: str = "alice/tiny-editor", **overrides) -> Snapshot:
+    repo_id = RepoId.parse(repo)
     fields = dict(
-        repo=RepoId.parse(repo),
+        repo=repo_id,
         taken_at=NOW,
-        description="A tiny terminal text editor",
+        # every repo its own text: the same description and topics would make them copies
+        description=(
+            "A tiny terminal text editor"
+            if repo == "alice/tiny-editor"
+            else f"A tiny terminal text editor, build {zlib.crc32(repo.lower().encode())}"
+        ),
         homepage=None,
         topics=("editor", "terminal"),
         primary_language="Rust",

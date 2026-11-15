@@ -17,6 +17,7 @@ Assessor.assess(snapshot) → Assessment
   2. Sektion bestimmen     AiFocusClassifier   MAIN oder AI
   3. Signale sammeln       MomentumCalculator  Aufstieg
                            SubstanceCheck      Arbeit und echtes Interesse
+                           OwnerHistory        Vorgeschichte des Besitzers
                            AiAssistanceDetector  AI-Mithilfe
                            PlatformPreference  Plattform
                            ConsoleEmulatorCheck  Emulatoren für Spielkonsolen
@@ -50,7 +51,8 @@ Geprüft wird in dieser Reihenfolge. Der erste Treffer bestimmt den Grund.
 | `no_readme` | Es gibt kein README. |
 | `language` | Beschreibung und README sind weder deutsch noch englisch (siehe unten). |
 | `crypto` | Name, Beschreibung oder Topics nennen Kryptowährungen: `crypto`, `cryptocurrency`, `bitcoin`, `ethereum`, `solana`, `web3`, `defi`, `nft`, `blockchain`, `memecoin`, `altcoin`, `stablecoin`, `airdrop`, `trading bot`, `smart contract`, `binance`, `hyperliquid`. Nicht `cryptography`, `token` oder `wallet`. |
-| `low_momentum` | Weniger als 50 neue Sterne in 7 Tagen. |
+| `young` | Weniger als 14 Tage Entwicklung auf GitHub (siehe unten). |
+| `low_momentum` | Weniger als 60 neue Sterne in 14 Tagen. |
 
 Begriffe zählen nur als ganze Wörter. Bindestriche und Unterstriche gelten als
 Leerzeichen, Groß- und Kleinschreibung ist egal, ein angehängtes Mehrzahl-s zählt mit.
@@ -68,15 +70,50 @@ Anders als die übrigen Ausschlüsse braucht diese Regel alle Repos eines Tages.
 deshalb nach der Bewertung der einzelnen Repos und vergibt die Art `copy`. Ein Repo, das
 schon aus einem anderen Grund ausgeschlossen ist, behält seinen Grund.
 
-- **Kopie** heißt: gleicher Name und gleiche Beschreibung bei verschiedenen Besitzern.
-  Groß- und Kleinschreibung und Leerraum sind egal. Repos ohne Beschreibung und Forks
-  zählen nicht mit.
+- **Kopie** heißt, bei verschiedenen Besitzern stimmt eines davon überein:
+  - Name und Beschreibung,
+  - Beschreibung und Topics (fängt Kampagnen, die den Namen abwandeln, etwa
+    `IPTV_Player_2.0` und `IPTV_Player2.0`),
+  - das README, wenn es mindestens 500 Zeichen hat (`MIN_COPIED_README_CHARS`).
+
+  Groß- und Kleinschreibung und Leerraum sind egal. Forks zählen nicht mit, ebenso
+  wenig Repos ohne Beschreibung oder ohne Topics beim jeweiligen Vergleich.
 - **Fast gleichzeitig angelegt:** Alle Repos der Gruppe werden ausgeschlossen.
 - **Eines ist mindestens 7 Tage älter als das nächste** (`COPY_ORIGINAL_MIN_LEAD`): Es
   bleibt als mutmaßliches Original, nur die jüngeren werden ausgeschlossen.
 
-**Bekannte Lücke:** Ändert eine Kampagne Name oder Beschreibung je Kopie leicht ab,
+In der Sammlung vom 15.11.2026 fand die Regel vier Kampagnen: 96 Kopien von
+`ai--manus2.0`, 49 des IPTV-Players, 15 von `GitHub-Copilot-app` und 3 eines
+Path-of-Exile-Helfers. Die gleiche Beschreibung allein reicht bewusst nicht: Damit
+wären drei verschiedene Switch-2-Emulatoren als Kopien durchgegangen.
+
+**Bekannte Lücke:** Ändert eine Kampagne Beschreibung und README je Kopie leicht ab,
 greift die Regel nicht.
+
+### Mindestens 14 Tage Entwicklung
+
+Ein Repo wird erst gezeigt, wenn zwischen seinem Anlegen (`created_at`) und dem letzten
+Push (`pushed_at`) mindestens 14 Tage liegen (`MIN_DEVELOPMENT_DAYS`). Beide Zeitpunkte
+vergibt GitHub selbst. Die Daten der Commits zählen nicht, weil Köder sie zurückdatieren.
+
+Die Regel ist die eigentliche Antwort auf Köder-Kampagnen: Jede neue Vorlage rutscht
+durch die Begriffslisten, aber GitHub löscht solche Repos meist nach wenigen Tagen. Was
+nach 14 Tagen noch da ist und weiterentwickelt wird, ist selten ein Köder.
+
+- **Preis:** Kein Projekt erscheint mehr an seinem ersten Tag. Am 15.11.2026 waren 21
+  der besten 40 Repos der Hauptliste zu jung.
+- **Sternfenster:** Der Aufstieg zählt deshalb die Sterne der letzten 14 statt 7 Tage,
+  mit Schwelle 60 statt 50. Sonst wären die Sterne der ersten Tage am 14. Tag schon aus
+  dem Fenster gefallen. Mit beiden Regeln waren am 15.11.2026 in der Hauptliste 235
+  Repos zeigbar (mit dem alten Fenster 130), in der AI-Sektion 131 (75).
+- **Bewusst so entschieden (15.11.2026):** Ein Repo, das fast alle Sterne an den ersten
+  ein, zwei Tagen bekommt und danach kaum noch, fällt unter die Schwelle und erscheint
+  nie. Wer nur am Anfang Aufmerksamkeit bekommt, ist vermutlich weniger interessant,
+  als es zuerst schien. Die Sammlung frischt `pushed_at` nur alle 3 Tage auf, ein Repo
+  wird also erst am 14. bis 17. Tag zeigbar. Ein Fenster von 21 Tagen hätte solche
+  Repos mitgenommen und ist deshalb nicht gewählt worden.
+- **Die Kandidatensuche findet nur Repos, die höchstens 30 Tage alt sind.** Gezeigt
+  werden damit Repos im Alter von 14 bis 30 Tagen.
 
 ### Köder für Schadsoftware
 
@@ -201,7 +238,8 @@ Ein Signal `momentum`:
 Punkte = 20 × log10(Gewinn) × (0,5 + 0,5 × √(Gewinn / Sterne))
 ```
 
-`Gewinn` sind die neuen Sterne der letzten 7 Tage, `Sterne` ist die Gesamtzahl.
+`Gewinn` sind die neuen Sterne der letzten 14 Tage (bis 15.11.2026: 7 Tage), `Sterne`
+ist die Gesamtzahl.
 
 - Der erste Faktor belohnt absolute Aufmerksamkeit, gedämpft durch den Logarithmus.
 - Der zweite belohnt Wachstum im Verhältnis zur Größe. Er liegt zwischen 0,5
@@ -241,6 +279,65 @@ Hinweise auf echte Arbeit und echtes Interesse.
 - **Bekannte Schwäche:** Wir kennen nur die letzten 100 Commits. Bei sehr aktiven
   Repos reichen sie nur wenige Tage zurück. Sind es genau 100, gibt es deshalb kein
   `continuity`-Signal. Abhilfe bringen die geplanten Daten (Zahl der Commits je Woche).
+
+## Vorgeschichte des Besitzers (`OwnerHistory`)
+
+Köder-Kampagnen benutzen Konten, die eigens dafür angelegt wurden. Die vier geprüften
+Konten der Kampagne vom 15.11.2026 waren alle am 14.10.2026 innerhalb von anderthalb
+Stunden entstanden und wirkten an keinem anderen Projekt mit. Die Besitzer echter
+Projekte hatten Konten aus den Jahren 2017 bis 2023.
+
+| Art | Regel | Punkte |
+|---|---|---|
+| `owner_age` | je 30 Tage Alter des Besitzerkontos | +0,25, höchstens +10 (nach gut 3 Jahren) |
+| `owner_contributions` | je anderem Projekt, an dem der Besitzer zuletzt mit Commits oder Pull Requests mitgewirkt hat | +1, höchstens +5 |
+
+- **Follower zählen bewusst nicht.** Nicht jeder Entwickler sammelt Leute um sich.
+- **Kein Abzug, nur Bonus:** Ein neues Konto verliert nichts, ihm fehlt nur der Bonus.
+- **Organisationen** haben ein Alter, aber keine Mitwirkung an anderen Projekten.
+- **Unbekannt** (Momentaufnahmen von vor dem 15.11.2026): kein Signal.
+
+## Gegenlesen (`Reviewer`, `CopilotReviewer`)
+
+Die Regeln oben erkennen bekannte Muster. Jede neue Kampagne rutscht zunächst durch.
+Deshalb liest seit dem 15.11.2026 ein Sprachmodell die Repos gegen, die gezeigt würden.
+Es bestimmt weder Rang noch Sektion, es kann nur herausnehmen. Wann und wie oft es
+gefragt wird, steht in `ausgabe.md`.
+
+| Kategorie | Bedeutung | Folge |
+|---|---|---|
+| `ok` | Ein echtes Softwareprojekt. Gilt auch im Zweifel. | bleibt |
+| `malware` | Köder: gibt sich als bekannte Software, Crack oder Gratis-Version aus und führt zu einem Download statt zu Quellcode. | raus |
+| `piracy` | Umgeht Kopierschutz oder Lizenzprüfungen oder verteilt geschützte Inhalte. Ein Abspielprogramm oder Emulator allein nicht. | raus |
+| `scam` | Betrug, Spam, reine Werbung. | raus |
+| `no_software` | Linksammlung, Kursmaterial, Konfiguration, Prompt-Sammlung, Kopie eines fremden Projekts. | raus |
+| `placeholder` | Ankündigung ohne Code, automatisch erzeugter Inhalt ohne eigene Arbeit. | raus |
+
+- **Geschmack zählt nicht.** Thema, Programmiersprache, Qualität des Codes und der
+  Einsatz von AI sind dem Modell als Ausschlussgrund ausdrücklich untersagt. Sonst
+  entstünde die Interessensblase, die das Projekt vermeiden will.
+- **Was das Modell sieht:** je Repo Name, Beschreibung, Topics, Sprache, Sterne, Forks,
+  Alter von Repo und Besitzerkonto und die ersten 1500 Zeichen des README. 10 Repos je
+  Aufruf, also etwa 4 Aufrufe am Tag.
+- **Technik:** die Copilot-CLI (`copilot -p … -s --no-ask-user`). Sie ist ein Agent, der
+  Werkzeuge benutzen könnte. Hier ist ihr keines erlaubt, sie darf nicht nachfragen und
+  startet in einem leeren Verzeichnis. Welches Modell antwortet, bestimmt die CLI. Mit
+  der Umgebungsvariable `COPILOT_MODEL` lässt es sich festlegen.
+- **Fremde Texte im Prompt:** Ein README kann versuchen, das Modell zu einer Einstufung
+  zu überreden. Der Prompt warnt davor. Gelingt es trotzdem, bleibt das Repo so in der
+  Liste, wie es ohne Gegenlesen dort stünde. Der Text des Modells erscheint nie auf der
+  Seite: Gezeigte Einträge tragen nur den festen Satz „Gegengelesen von Copilot:
+  unauffällig“.
+- **Noch nie gegen die echte CLI gelaufen** (Stand 15.11.2026). Getestet ist der
+  Adapter gegen einen Stellvertreter. Aufruf und Schalter stammen aus der Dokumentation
+  von GitHub.
+
+## Nicht übernommen: Forks nicht mehr als Echo zählen
+
+Die Köder vom 15.11.2026 hatten je genau 12 Forks und entgingen damit dem Abzug „kaum
+Echo“. Die Idee, Forks dort nicht mehr mitzuzählen, hätte in der Sammlung dieses Tages
+185 weitere Repos mit −40 getroffen, darunter klar echte wie `paulirish/chrome-capture`.
+Sie ist deshalb verworfen.
 
 ## AI-Mithilfe (`AiAssistanceDetector`)
 

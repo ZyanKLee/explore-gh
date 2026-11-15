@@ -36,6 +36,16 @@ REPO_FIELDS = (
     """
 fragment RepoFields on Repository {
   nameWithOwner
+  owner {
+    __typename
+    ... on User {
+      createdAt
+      repositoriesContributedTo(
+        includeUserRepositories: false, contributionTypes: [COMMIT, PULL_REQUEST]
+      ) { totalCount }
+    }
+    ... on Organization { createdAt }
+  }
   description
   homepageUrl
   repositoryTopics(first: 20) { nodes { topic { name } } }
@@ -168,6 +178,7 @@ class GitHubRepoSource:
         branch = node.get("defaultBranchRef") or {}
         history = (branch.get("target") or {}).get("history") or {}
         tree = node.get("rootTree") or {}
+        owner = node.get("owner") or {}
         snapshot = Snapshot(
             repo=repo,
             taken_at=now,
@@ -192,6 +203,8 @@ class GitHubRepoSource:
             readme=_readme(node)[:README_MAX_CHARS],
             recent_commits=tuple(_commit(c) for c in history.get("nodes", [])),
             star_history=StarHistory(daily=()),
+            owner_created_at=_timestamp(owner["createdAt"]) if owner.get("createdAt") else None,
+            owner_contributed_to=(owner.get("repositoriesContributedTo") or {}).get("totalCount"),
         )
         if not with_star_history or snapshot.can_never_be_shown:
             return snapshot  # saves a request, the history could not change its fate

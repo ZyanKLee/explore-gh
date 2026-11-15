@@ -75,6 +75,7 @@ Repos und den Sternverlauf mit einer REST-Anfrage pro Repo.
 | `stars`, `forks`, `open_issues` | `stargazerCount`, `forkCount`, `issues(states: OPEN)` | Aufstieg, Größe |
 | `watchers`, `pull_requests`, `recent_issue_authors` | `watchers`, `pullRequests`, Autoren der letzten 100 Issues (verschiedene Personen, ohne Bots) | Gegenprobe zu gekauften Sternen |
 | `is_fork`, `is_archived`, `is_mirror`, `is_template` | gleichnamige Felder | Ausschlüsse |
+| `owner_created_at`, `owner_contributed_to` | `owner { createdAt, repositoriesContributedTo { totalCount } }` (ohne eigene Repos, nur Commits und Pull Requests; bei Organisationen nur das Alter) | Vorgeschichte des Besitzers |
 | `license` | `licenseInfo.spdxId` | Signal |
 | `root_files` | `object(expression: "HEAD:")` | `CLAUDE.md`, `.cursorrules` …, „kein Code“ |
 | `readme` | `object(expression: "HEAD:README.md")` u. a. Varianten, gekürzt auf 20 000 Zeichen | AI-Thema, Krypto, Sprache, „kein Code“ |
@@ -97,7 +98,7 @@ Stattdessen nutzen wir den neuen Endpunkt `GET /repos/{owner}/{repo}/stargazers/
   enthält die neuen Sterne je Tag, beginnend am Sonntag.
 - Wir holen 6 Wochen (`per_page=6`) und bilden daraus `StarHistory`: die neuen Sterne
   der letzten 35 Tage, der letzte Eintrag ist heute. Tage ohne Angabe zählen als 0.
-- `StarHistory.gained()` ist der Gewinn der letzten 7 Tage einschließlich heute.
+- `StarHistory.gained()` ist der Gewinn der letzten 14 Tage einschließlich heute.
   `gained(30)` liefert den Gewinn eines Monats.
 - Der Wert ist immer exakt und gilt für Repos jeden Alters. Eine eigene Historie über
   Wochen brauchen wir nicht. Das ursprünglich geplante Aggregate `RepoHistory`

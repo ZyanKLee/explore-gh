@@ -13,10 +13,32 @@ PublishEdition.run()
   1. Gibt es für heute schon eine Ausgabe?  → AlreadyPublished, nichts tun
   2. Momentaufnahmen von heute laden        → keine: NothingToPublish
   3. Jede Momentaufnahme bewerten           assess(snapshot) → Assessment
-  4. Ausgaben der Sperrfrist laden          EditionStore.since(tag − 30 Tage)
-  5. Auswählen                              EditionCurator.curate(...)
-  6. Speichern                              EditionStore.save(edition)
+  4. Kopien ausschließen                    CopyCheck.apply(...)
+  5. Ausgaben der Sperrfrist laden          EditionStore.since(tag − 30 Tage)
+  6. Gegenlesen (nur mit --review)          Reviewer.review(...), in Runden
+  7. Auswählen                              EditionCurator.curate(...)
+  8. Speichern                              EditionStore.save(edition)
 ```
+
+### Gegenlesen
+
+Ein Sprachmodell liest die Repos gegen, bevor sie erscheinen. Es bekommt **nur die
+Repos, die in der Ausgabe landen würden**, nie die ganze Sammlung:
+
+1. Der Kurator wählt wie immer aus. Das sind höchstens 40 Repos.
+2. Der `Reviewer` liest die davon, die er noch nicht gelesen hat.
+3. Nimmt er eines heraus, rückt beim nächsten Auswählen ein anderes nach. Das wird in
+   der nächsten Runde gelesen. Nach höchstens 5 Runden (`MAX_REVIEW_ROUNDS`) ist Schluss.
+
+- **Herausgenommen** wird ein Repo mit dem Ausschluss `review` und der Begründung des
+  Modells. Der Ausschluss steht in den Langzeitdaten und in `explain`, nicht auf der Seite.
+- **Gelesen und geblieben:** Der Eintrag bekommt ein Signal ohne Punkte, „Gegengelesen
+  von Copilot: unauffällig“. Fehlt es bei einem Eintrag, wurde er nicht gelesen.
+- **Fällt der Reviewer aus**, erscheint die Ausgabe ohne Gegenlesen. Das Protokoll des
+  Laufs nennt den Grund und am Ende „Gegengelesen: 0 von 40 Einträgen“.
+- **Kategorien und ihre Erklärung** stehen in `domain/review.py` (`REVIEW_CATEGORIES`,
+  `REVIEW_GUIDE`), siehe `bewertung.md`.
+- **Die Community-Ausgaben** (HN, Lobsters) werden nicht gegengelesen.
 
 Täglicher Betrieb: zuerst `CollectSnapshots`, dann `PublishEdition`, im selben Lauf.
 `PublishEdition.run(day)` nimmt den Tag der Sammlung entgegen. So findet die Ausgabe
@@ -97,7 +119,9 @@ Tagen gelöscht, das Archiv muss aber für immer lesbar bleiben:
 Bots).
 
 Im JSON steht `star_history` mit den neuen Sternen der letzten 35 Tage (im Beispiel
-unten gekürzt) und `stars_gained` als fertige Summe der letzten 7 Tage.
+unten gekürzt) und `stars_gained` als fertige Summe über das Sternfenster. Wie viele Tage das Fenster
+hatte, sagt `growth_window_days` der Ausgabe: 14, in Ausgaben bis zum 15.11.2026 fehlt
+das Feld und es waren 7.
 
 `EditionStats(assessed, excluded, ai_focused)` hält fest, wie viele Repos an dem Tag
 bewertet, ausgeschlossen und als AI-Thema eingestuft wurden.
@@ -112,6 +136,7 @@ Das Format ist der Vertrag mit `Publication` (Pelican-Reader).
 {
   "format_version": 1,
   "day": "2026-11-12",
+  "growth_window_days": 14,
   "stats": {"assessed": 1834, "excluded": 420, "ai_focused": 212},
   "sections": {
     "main": [
@@ -155,6 +180,10 @@ class EditionStore(Protocol):
     def since(self, day: date) -> list[Edition]: ...   # ab day einschließlich, nach Datum sortiert
 
 Assessor = Callable[[Snapshot], Assessment]
+
+class Reviewer(Protocol):
+    def review(self, snapshots: Sequence[Snapshot]) -> dict[RepoId, Review]: ...
+    # ein Repo darf in der Antwort fehlen, Ausfall: SourceUnavailable
 ```
 
 ## Auswirkungen auf die Datensammlung

@@ -7,7 +7,7 @@ from builders import TODAY, make_edition, make_entry
 from github_anti_ai.adapters.json_edition_store import JsonEditionStore
 from github_anti_ai.application.ports import AlreadyPublished
 from github_anti_ai.domain.edition import Edition, EditionStats
-from github_anti_ai.domain.model import Section, Signal
+from github_anti_ai.domain.model import GROWTH_WINDOW_DAYS, Section, Signal
 
 
 def signalled_edition():
@@ -38,6 +38,7 @@ def test_edition_is_stored_in_the_agreed_format(tmp_path):
     stored = json.loads((tmp_path / "2026-11-12.json").read_text())
     assert stored["format_version"] == 1
     assert stored["day"] == "2026-11-12"
+    assert stored["growth_window_days"] == GROWTH_WINDOW_DAYS
     assert stored["stats"] == {"assessed": 1834, "excluded": 420, "ai_focused": 212}
     first = stored["sections"]["main"][0]
     assert first == {

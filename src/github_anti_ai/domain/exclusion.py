@@ -3,10 +3,13 @@
 import re
 from collections.abc import Sequence
 
-from github_anti_ai.domain.model import Exclusion, Snapshot
+from github_anti_ai.domain.model import GROWTH_WINDOW_DAYS, Exclusion, Snapshot
 from github_anti_ai.domain.text import TermList, number
 
-MIN_STARS_GAINED = 50
+MIN_STARS_GAINED = 60
+# Between the creation of the repo and its last push, both as GitHub recorded them.
+# Dates of commits do not count: lures date them back.
+MIN_DEVELOPMENT_DAYS = 14
 
 COLLECTION_TERMS = TermList(
     [
@@ -131,10 +134,18 @@ class ExclusionPolicy:
         ):
             return exclusion
 
+        developed = (snapshot.pushed_at - snapshot.created_at).days if snapshot.pushed_at else 0
+        if developed < MIN_DEVELOPMENT_DAYS:
+            return Exclusion(
+                f"Erst {developed} Tage Entwicklung auf GitHub, nötig sind {MIN_DEVELOPMENT_DAYS}",
+                "young",
+            )
+
         gained = snapshot.star_history.gained()
         if gained < MIN_STARS_GAINED:
             return Exclusion(
-                f"Nur {number(gained)} neue Sterne in 7 Tagen, nötig sind {MIN_STARS_GAINED}",
+                f"Nur {number(gained)} neue Sterne in {GROWTH_WINDOW_DAYS} Tagen, "
+                f"nötig sind {MIN_STARS_GAINED}",
                 "low_momentum",
             )
         return None

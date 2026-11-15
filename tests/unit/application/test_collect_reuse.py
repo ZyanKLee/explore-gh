@@ -68,6 +68,7 @@ def earlier(repo="alice/tiny-editor", *, taken=1, facts=None, **fields):
     """A snapshot of an earlier day. Its facts may be older than the snapshot."""
     fields.setdefault("stars", 812)
     fields.setdefault("description", "from an earlier day")
+    fields.setdefault("topics", ())  # the same description and topics would make them copies
     return make_snapshot(
         repo, taken_at=days_ago(taken), facts_at=days_ago(taken if facts is None else facts), **fields
     )

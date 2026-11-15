@@ -34,8 +34,14 @@ def judged():
     return [(verdicts[snapshot.repo], assessor.assess(snapshot)) for snapshot in snapshots]
 
 
+def excluded(assessment):
+    """Excluded for what the repo is. Being too young only makes it wait: the examples
+    were collected while young repos were still shown, and most of them are young."""
+    return assessment.exclusion is not None and assessment.exclusion.kind != "young"
+
+
 def scores(judged, verdict):
-    return [a.score for row, a in judged if row["urteil"] == verdict and a.exclusion is None]
+    return [a.score for row, a in judged if row["urteil"] == verdict and not excluded(a)]
 
 
 def test_ai_focus_agrees_with_the_owner_as_often_as_before(judged):
@@ -46,17 +52,17 @@ def test_ai_focus_agrees_with_the_owner_as_often_as_before(judged):
 
 def test_most_slop_is_excluded(judged):
     slop = [a for row, a in judged if row["urteil"] == "slop"]
-    excluded = [a for a in slop if a.exclusion is not None]
+    removed = [a for a in slop if excluded(a)]
 
     assert len(slop) == 18
-    assert len(excluded) >= MIN_SLOP_EXCLUDED
+    assert len(removed) >= MIN_SLOP_EXCLUDED
 
 
 def test_every_lure_for_malware_the_owner_marked_is_excluded_or_far_behind(judged):
     typical_gem = median(scores(judged, "edelstein"))
     for row, a in judged:
         if row["urteil"] == "slop" and any(s.kind in ("no_echo", "fork_farm") for s in a.signals):
-            assert a.exclusion is not None or a.score < typical_gem - 30, a.repo
+            assert excluded(a) or a.score < typical_gem - 30, a.repo
 
 
 def test_no_gem_is_excluded_as_a_lure(judged):

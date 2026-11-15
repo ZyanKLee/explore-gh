@@ -87,7 +87,7 @@ Das HN- und das Lobsters-Archiv nennen je Tag beide Sektionen.
 ## Ein Eintrag auf der Seite
 
 - Rang, Name als Link zum Repo, Beschreibung
-- Programmiersprache, Sterne, Gewinn der letzten 7 Tage („+120 in 7 Tagen“)
+- Programmiersprache, Sterne, Gewinn im Sternfenster („+120 in 14 Tagen“; die Zahl der Tage nennt die Ausgabe selbst)
 - Verlaufskurve der letzten 35 Tage als kleines eingebettetes SVG
 - Lizenz, Forks, aktive Autoren, Alter
 - Link zur Homepage, falls vorhanden
@@ -250,12 +250,16 @@ Drei Workflows in `.github/workflows/`:
    liegen nicht im Repo. Fehlt der Cache, holt der Lauf alles neu (etwa 40 Minuten).
 3. **Sammeln**, bei Fehlern ein zweiter Versuch. Danach wandern die Momentaufnahmen
    zurück in den Cache, auch wenn der Lauf scheitert.
-4. **Ausgabe erzeugen.** Ist die Sammlung unvollständig, bricht der Lauf hier ab: An
+4. **Copilot-CLI installieren** (`npm install -g @github/copilot`). Scheitert das,
+   läuft der Lauf weiter.
+5. **Ausgabe erzeugen**, mit Gegenlesen (`publish --review`, siehe `ausgabe.md`). Der
+   Schritt bekommt den eingebauten Token des Laufs, weil die Copilot-CLI keine
+   klassischen Personal Access Tokens annimmt. Ist die Sammlung unvollständig, bricht der Lauf hier ab: An
    dem Tag gibt es keine Ausgabe, die Seite bleibt, wie sie war. Gibt es die Ausgabe
    des Tages schon, wird der Schritt übersprungen.
-5. **Ausgabe ins Repo schreiben** (`data/editions/`), als Commit von
+6. **Ausgabe ins Repo schreiben** (`data/editions/`), als Commit von
    `github-actions[bot]`. Daraus leitet sich die Sperre ab.
-6. **Der Workflow „Website“ startet**, sobald der Lauf erfolgreich fertig ist, und
+7. **Der Workflow „Website“ startet**, sobald der Lauf erfolgreich fertig ist, und
    baut und veröffentlicht die Seite mit der Adresse von GitHub Pages für die Feeds.
    Was der Lauf ins Repo schreibt, löst von sich aus keinen Workflow aus, deshalb
    hängt „Website“ ausdrücklich an seinem Ende (`workflow_run`). Nur dieser eine
@@ -266,6 +270,10 @@ Drei Workflows in `.github/workflows/`:
 - **Secret `COLLECT_TOKEN`:** ein klassischer Personal Access Token ohne Scopes, unter
   *Settings → Secrets and variables → Actions*. Der eingebaute Token erlaubt nur 1000
   Anfragen pro Stunde, ein erster Lauf braucht rund 3000.
+- **Copilot:** Der Workflow hat die Berechtigung `copilot-requests: write`. Die
+  Copilot-CLI rechnet damit über den eingebauten Token auf das Copilot-Abo des
+  Repo-Besitzers ab. Ein eigenes Secret braucht es nicht. Ohne Abo fällt das Gegenlesen
+  aus, die Ausgabe erscheint trotzdem.
 - **Pages:** unter *Settings → Pages* als Quelle „GitHub Actions“ wählen.
 
 ### Bekannte Grenzen
@@ -273,7 +281,13 @@ Drei Workflows in `.github/workflows/`:
 - GitHub löscht Caches, die 7 Tage nicht benutzt wurden, und hält höchstens 10 GB je
   Repo. Bei täglichem Lauf bleibt der Cache erhalten. Jeder Lauf legt einen neuen an
   (rund 250 MB bei 14 Tagen), alte räumt GitHub selbst ab.
-- Geplante Läufe starten bei hoher Last auf GitHub verspätet.
+- Geplante Läufe starten bei hoher Last auf GitHub verspätet. Am 14. und 15.11.2026
+  waren es rund sieben Stunden.
+- Das Gegenlesen mit dem eingebauten Token ist für Repos von Organisationen
+  dokumentiert. Für ein Repo eines persönlichen Kontos nennt die Dokumentation nur die
+  Abrechnung über das Abo des Besitzers. Ob es dort läuft, zeigt erst ein Lauf. Der
+  Ausweg wäre ein Fine-grained Token mit der Berechtigung „Copilot Requests“ als
+  Secret `COPILOT_GITHUB_TOKEN`.
 - Die Workflows sind noch nie gelaufen. Geprüft ist nur, dass die Dateien gültiges
   YAML sind und dass die Befehle darin lokal funktionieren.
 - Die Versionen der verwendeten Actions sind am 13.11.2026 gegen die jeweils neueste

@@ -97,6 +97,35 @@ def test_snapshot_carries_the_facts_of_the_repository():
     assert snapshot.license == "MIT"
 
 
+def test_snapshot_carries_the_history_of_an_owner_who_is_a_person():
+    owner = {
+        "__typename": "User",
+        "createdAt": "2017-12-20T12:09:44Z",
+        "repositoriesContributedTo": {"totalCount": 12},
+    }
+
+    [snapshot] = fetch(FakeGitHub([node(owner=owner)]))
+
+    assert snapshot.owner_created_at == datetime(2017, 12, 20, 12, 9, 44, tzinfo=UTC)
+    assert snapshot.owner_contributed_to == 12
+
+
+def test_an_organization_has_an_age_but_no_contributions():
+    owner = {"__typename": "Organization", "createdAt": "2023-07-18T11:17:47Z"}
+
+    [snapshot] = fetch(FakeGitHub([node(owner=owner)]))
+
+    assert snapshot.owner_created_at == datetime(2023, 7, 18, 11, 17, 47, tzinfo=UTC)
+    assert snapshot.owner_contributed_to is None
+
+
+def test_snapshot_without_owner_facts_leaves_them_unknown():
+    [snapshot] = fetch(FakeGitHub([node(owner=None)]))
+
+    assert snapshot.owner_created_at is None
+    assert snapshot.owner_contributed_to is None
+
+
 def test_snapshot_carries_cross_checks_for_the_star_count():
     [snapshot] = fetch(FakeGitHub([FULL]))
 
@@ -230,7 +259,7 @@ def test_star_history_lists_the_stars_of_each_day_up_to_today():
     assert daily[-5:] == (36, 59, 77, 127, 15)
     assert daily[-7:-5] == (40, 35)
     assert daily[0] == 54  # 34 days ago: Friday 2026-10-09
-    assert snapshot.star_history.gained() == 40 + 35 + 36 + 59 + 77 + 127 + 15
+    assert snapshot.star_history.gained(7) == 40 + 35 + 36 + 59 + 77 + 127 + 15
 
 
 def test_star_history_is_requested_for_just_the_weeks_needed():

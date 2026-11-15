@@ -16,7 +16,7 @@ class DailyRecord:
     repo: RepoId
     stars: int
     forks: int
-    stars_gained: int  # in the growth window of 7 days
+    stars_gained: int  # in the growth window, 7 days until 2026-11-15, 14 since
     score: float
     section: Section
     exclusion: str | None  # kind of the Exclusion

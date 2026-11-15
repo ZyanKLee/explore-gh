@@ -87,3 +87,29 @@ def test_prune_removes_only_days_before_the_given_day(tmp_path):
     assert store.load(older) == []
     assert store.load(cutoff) != []
     assert (tmp_path / "notes.txt").exists()
+
+
+def test_owner_facts_are_stored(tmp_path):
+    store = JsonSnapshotStore(tmp_path)
+    snapshot = make_snapshot(
+        owner_created_at=datetime(2017, 12, 20, 12, 9, 44, tzinfo=UTC), owner_contributed_to=12
+    )
+
+    store.append(TODAY, [snapshot])
+
+    assert store.load(TODAY) == [snapshot]
+
+
+def test_files_of_earlier_versions_load_without_owner_facts(tmp_path):
+    store = JsonSnapshotStore(tmp_path)
+    store.append(TODAY, [make_snapshot()])
+    path = next(tmp_path.iterdir())
+    lines = [json.loads(line) for line in gzip.open(path, "rt")]
+    for line in lines:
+        del line["owner_created_at"], line["owner_contributed_to"]
+    path.write_bytes(gzip.compress("".join(json.dumps(line) + "\n" for line in lines).encode()))
+
+    [loaded] = store.load(TODAY)
+
+    assert loaded.owner_created_at is None
+    assert loaded.owner_contributed_to is None

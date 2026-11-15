@@ -34,7 +34,7 @@ Eine Zeile je bewertetem Repo und Tag, auch für ausgeschlossene Repos.
 | Feld | Inhalt |
 |---|---|
 | `day`, `repo` | Tag und Repo |
-| `stars`, `forks`, `stars_gained` | Sterne, Forks, Gewinn der letzten 7 Tage |
+| `stars`, `forks`, `stars_gained` | Sterne, Forks, Gewinn im Sternfenster (14 Tage, bis 15.11.2026: 7) |
 | `score`, `section` | Punktzahl und Sektion |
 | `exclusion` | Art des Ausschlusses (`lure`, `language` …) oder nichts |
 | `signals` | Art und Gewicht jedes Signals, ohne den Begründungstext |

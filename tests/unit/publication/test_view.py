@@ -146,3 +146,13 @@ def test_edition_in_an_unknown_format_stops_the_build(tmp_path):
 
     with pytest.raises(ValueError, match="format_version"):
         load_editions(tmp_path)
+
+
+def test_entry_names_the_days_its_gain_was_counted_over():
+    edition = edition_json(growth_window_days=14)
+
+    assert section_view(edition, "main").entries[0].gained_days == 14
+
+
+def test_editions_from_before_the_longer_growth_window_counted_seven_days():
+    assert first_entry().gained_days == 7

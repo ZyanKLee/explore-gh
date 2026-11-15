@@ -8,7 +8,9 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 
-GROWTH_WINDOW_DAYS = 7
+# As long as a repo must be developed before it is shown (MIN_DEVELOPMENT_DAYS): the
+# stars of its first days are still in the window on the day it may appear.
+GROWTH_WINDOW_DAYS = 14
 STAR_HISTORY_DAYS = 35
 COMMIT_LOOKBACK = timedelta(days=90)
 README_MAX_CHARS = 20_000
@@ -125,6 +127,10 @@ class Snapshot:
     # When the facts last came from GitHub. A snapshot carried over from an earlier day
     # is older here than in taken_at. None means: as old as the snapshot.
     facts_at: datetime | None = None
+    # History of the owner. None means unknown: older snapshots, or contributions of an
+    # organization, which has none.
+    owner_created_at: datetime | None = None
+    owner_contributed_to: int | None = None  # other projects the owner worked on lately
 
     def __post_init__(self):
         if self.facts_at is None:

@@ -1,6 +1,8 @@
+from datetime import timedelta
+
 import pytest
 
-from builders import make_commit, make_snapshot, star_history
+from builders import NOW, make_commit, make_snapshot, star_history
 from github_anti_ai.domain.assessor import Assessor
 from github_anti_ai.domain.model import Section
 
@@ -87,3 +89,13 @@ def test_assessor_can_be_plugged_into_the_publishing_use_case():
     assessor = Assessor()
 
     assert assessor.assess(make_snapshot()).repo == make_snapshot().repo
+
+
+def test_history_of_the_owner_raises_the_score():
+    unknown = Assessor().assess(make_snapshot())
+    known = Assessor().assess(
+        make_snapshot(owner_created_at=NOW - timedelta(days=365 * 3), owner_contributed_to=2)
+    )
+
+    assert known.score > unknown.score
+    assert {"owner_age", "owner_contributions"} <= {s.kind for s in known.signals}

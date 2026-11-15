@@ -54,8 +54,15 @@ Awesome-Listen bewusst **nicht** verwenden.
   ohne AI-Slop. Sowohl mehrere Contributors als auch kontinuierliche Arbeit einer
   einzelnen Person zählen positiv.
 - **„Aufstrebend“**: Mischung aus absolutem und relativem Wachstum, z. B. Sternzuwachs
-  der letzten 7 Tage im Verhältnis zur bisherigen Größe, mit Mindestschwelle (etwa 50
-  neue Sterne). Keine Altersgrenze, kleiner Bonus für neue Projekte.
+  der letzten 14 Tage im Verhältnis zur bisherigen Größe, mit Mindestschwelle (60 neue
+  Sterne). Kleiner Bonus für neue Projekte.
+- **Mindestens 14 Tage Entwicklung**: Ein Repo wird erst gezeigt, wenn zwischen seinem
+  Anlegen und dem letzten Push auf GitHub 14 Tage liegen. Das hält Köder-Kampagnen
+  fern, die GitHub meist nach Tagen löscht. Das Sternfenster ist deshalb ebenfalls 14
+  Tage lang, damit die Sterne der ersten Tage nicht verloren gehen.
+- **Vorgeschichte des Besitzers**: Bonus je Monat Kontoalter und je anderem Projekt, an
+  dem der Besitzer mitwirkt. Follower zählen bewusst nicht: Nicht jeder Entwickler
+  sammelt Leute um sich.
 - **Wiederholungen**: Ein gezeigtes Repo ist 30 Tage gesperrt. Die Sperre wird aus den
   gespeicherten Ausgaben abgeleitet.
 - **Vielfalt**: pro Sektion höchstens 4 Repos je Programmiersprache und 2 je Besitzer.
@@ -69,7 +76,8 @@ Awesome-Listen bewusst **nicht** verwenden.
   (Linksammlungen, Tutorials, Material zur Vorbereitung auf Bewerbungsgespräche,
   Dotfiles, Prompt-Sammlungen), Köder für Schadsoftware und Kryptowährungen. Dazu
   Kopien: dasselbe Projekt unter mehreren Besitzern (gleicher Name, gleiche
-  Beschreibung). Sind sie fast gleichzeitig angelegt, fliegen alle raus. Ist eines
+  Beschreibung, gleiche Beschreibung und Topics oder gleiches README). Sind sie fast
+  gleichzeitig angelegt, fliegen alle raus. Ist eines
   mindestens 7 Tage älter, bleibt es als Original.
 - **Sprache**: nur Repos mit deutscher oder englischer Beschreibung und README.
 - **Transparenz**: Jede Auf- oder Abwertung wird beim Eintrag begründet, in einem
@@ -94,7 +102,13 @@ Awesome-Listen bewusst **nicht** verwenden.
      eine Ergebnisdatei.
   2. Pelican rendert nur aus diesen Dateien, ohne API-Zugriffe.
   Die Ergebnisse vergangener Tage werden nie neu berechnet.
-- **Klassifizierung**: vorerst ein Regelsystem, kein LLM.
+- **Klassifizierung**: Rang und Sektion bestimmt ein Regelsystem, kein LLM.
+- **Gegenlesen**: Seit dem 15.11.2026 liest die Copilot-CLI die Repos gegen, die in der
+  Ausgabe landen würden (rund 40 am Tag, nie die ganze Sammlung). Sie kann ein Repo nur
+  herausnehmen: bei Verdacht auf Schadsoftware, Umgehen von Kopierschutz, Betrug, oder
+  wenn es kein eigenes Softwareprojekt ist. Im Zweifel bleibt es. Fällt Copilot aus,
+  erscheint die Ausgabe ohne Gegenlesen. GitHub Models ist seit dem 30.07.2026
+  eingestellt und keine Alternative.
 - **Kein Feedback- oder Personalisierungsmechanismus**, um Interessensblasen zu vermeiden.
 
 ## Domain-Driven Design
@@ -111,7 +125,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
   Forge-Repos auflösen und eigene Lobsters-Ausgaben kuratieren. Getrennt von GitHub
   `Snapshot`s und HN-Ausgaben.
 - **Assessment** (Core): Signale, Ausschlüsse, Sektion, Punktzahl
-- **Curation** (Core): tägliche `Edition` mit Sperre, Vielfaltsregel und Top 20
+- **Curation** (Core): tägliche `Edition` mit Sperre, Vielfaltsregel, Gegenlesen und Top 20
 - **Publication**: Seitenmodell (reine Funktionen) plus dünne Pelican-Anbindung. Kennt
   nur das JSON-Format der Ausgaben.
 
@@ -126,7 +140,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Bezug zur Story | `relates_to_story`, `shared_words` | ein auf einer Website gefundenes Repo teilt Wörter mit Titel, Hostname oder Pfad der Story; das Repo mit den meisten gewinnt |
 | Kandidat | `Candidate` | Repo, das eine Quelle heute gefunden hat, samt Sternzahl, falls die Quelle sie kennt |
 | Momentaufnahme | `Snapshot` | Alles, was zu einem Zeitpunkt über ein Repo gesammelt wurde. `facts_at` sagt, wann die Fakten zuletzt von GitHub kamen. |
-| Sternverlauf | `StarHistory` | Neue Sterne je Tag über 35 Tage. `gained()` ist der Gewinn der letzten 7 Tage. |
+| Sternverlauf | `StarHistory` | Neue Sterne je Tag über 35 Tage. `gained()` ist der Gewinn der letzten 14 Tage. |
 | Commit | `Commit` | Zeitpunkt, Autor, Bot ja/nein, Co-Autoren, erste Zeile der Nachricht |
 | Kandidatenquelle | `CandidateSource` | Liefert Kandidaten für einen Tag |
 | Signal | `Signal` | Beobachtete Tatsache mit Gewicht und Begründung (Text für „Warum Platz …?“ auf der Seite) |
@@ -134,9 +148,11 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | AI-Thema | `AiFocus` | Repo existiert für den Einsatz von AI und kommt in die AI-Sektion |
 | AI-Mithilfe | `AiAssistance` | Hinweise auf AI-geschriebenen Code, führt nur zur Abwertung |
 | Ausschluss | `Exclusion` | Grund, ein Repo ganz zu entfernen |
-| Kopie | `CopyCheck` | Dasselbe Projekt unter mehreren Besitzern, erkannt an Name und Beschreibung. Braucht alle Repos eines Tages, nicht nur eine Momentaufnahme. |
+| Kopie | `CopyCheck` | Dasselbe Projekt unter mehreren Besitzern, erkannt an Name, Beschreibung, Topics oder README. Braucht alle Repos eines Tages, nicht nur eine Momentaufnahme. |
 | Substanz | `SubstanceCheck` | Hinweise auf echte Arbeit und echtes Interesse: Team, Kontinuität, Issues. Dazu die Gegenprobe zu gekauften Sternen. |
+| Vorgeschichte des Besitzers | `OwnerHistory` | Alter des Besitzerkontos und Mitwirkung an anderen Projekten. Wertet auf, fehlt bei Wegwerfkonten. |
 | Plattform | `PlatformPreference` | Vorliebe des Inhabers: Linux wertet auf, Windows und Apple werten ab |
+| Gegenlesen | `Reviewer`, `Review` | Ein Sprachmodell liest die Repos, die gezeigt würden, und ordnet jedes einer Kategorie zu. Alles außer `ok` schließt aus. |
 | Bewertung | `Assessment` | Sektion, Punktzahl, Signale, ggf. Ausschluss. Die Punktzahl ist die Summe der Signalgewichte. Erzeugt vom `Assessor`. |
 | Tageswert | `DailyRecord` | Was von einer Bewertung dauerhaft bleibt: Zahlen, Urteil, Rang. Ohne Texte, Commits und Personen. |
 | Sektion | `Section` | `MAIN` oder `AI` |
@@ -153,7 +169,7 @@ GitHub-Repository bezeichnet.
   selbst: höchstens 20 pro Sektion, Vielfaltsregel, keine Duplikate. Sie trägt die
   Statistik des Tages (`EditionStats`).
 - Ports: `CandidateSource`, `RepoSource`, `SnapshotStore`, `CollectionStatusStore`,
-  `DailyRecordStore`, `EditionStore`, `Clock`.
+  `DailyRecordStore`, `EditionStore`, `Reviewer`, `Clock`.
   Adapter melden Ausfälle als `SourceUnavailable`.
 - `domain/` ist frei von Ein- und Ausgabe. Die aktuelle Zeit kommt nur über `Clock`.
 - Schwellenwerte, Gewichte und Keyword-Listen stehen als benannte Konstanten in der

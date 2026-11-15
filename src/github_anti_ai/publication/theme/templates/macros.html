@@ -37,7 +37,7 @@
         <polygon class="area" points="0,24 {{ entry.sparkline }} 120,24"/>
         <polyline class="line" points="{{ entry.sparkline }}"/>
       </svg>
-      <figcaption><mark>{{ entry.gained }}</mark> Sterne in 7 Tagen</figcaption>
+      <figcaption><mark>{{ entry.gained }}</mark> Sterne in {{ entry.gained_days }} Tagen</figcaption>
     </figure>
     <details class="why">
       <summary>Warum Platz {{ entry.rank }}? <span class="score">{{ entry.score }} Punkte</span></summary>

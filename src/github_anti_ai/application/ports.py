@@ -8,6 +8,7 @@ from typing import Protocol
 from github_anti_ai.domain.edition import Edition
 from github_anti_ai.domain.history import DailyRecord
 from github_anti_ai.domain.model import Assessment, Candidate, RepoId, Snapshot
+from github_anti_ai.domain.review import Review
 
 
 class SourceUnavailable(Exception):
@@ -59,6 +60,15 @@ class RepoSource(Protocol):
         """Repos that do not exist (any more) are simply left out.
 
         Without the star history the snapshots come with an empty one.
+        """
+        ...
+
+
+class Reviewer(Protocol):
+    def review(self, snapshots: Sequence[Snapshot]) -> dict[RepoId, Review]:
+        """What a language model thinks of these repos. A repo may be missing in the answer.
+
+        Raises SourceUnavailable if the model cannot be reached or answers nonsense.
         """
         ...
 

@@ -1,7 +1,13 @@
+from datetime import timedelta
+
 import pytest
 
-from builders import make_snapshot, star_history
-from github_anti_ai.domain.exclusion import MIN_STARS_GAINED, ExclusionPolicy
+from builders import NOW, make_snapshot, star_history
+from github_anti_ai.domain.exclusion import (
+    MIN_DEVELOPMENT_DAYS,
+    MIN_STARS_GAINED,
+    ExclusionPolicy,
+)
 from github_anti_ai.domain.model import StarHistory
 
 ENGLISH = (
@@ -184,9 +190,46 @@ def test_repo_at_the_momentum_threshold_stays():
 
 
 def test_stars_gained_before_the_growth_window_do_not_count_for_the_threshold():
-    burst_ten_days_ago = StarHistory(daily=(0,) * 25 + (500,) + (0,) * 9)
+    burst_before_the_window = StarHistory(daily=(0,) * 20 + (500,) + (0,) * 14)
 
-    assert kind(star_history=burst_ten_days_ago) == "low_momentum"
+    assert kind(star_history=burst_before_the_window) == "low_momentum"
+
+
+def test_stars_of_a_start_two_weeks_ago_still_count_for_the_threshold():
+    # a repo must be developed for 14 days before it is shown: its first stars must not be lost
+    burst_at_the_start_of_the_window = StarHistory(daily=(0,) * 21 + (500,) + (0,) * 13)
+
+    assert kind(star_history=burst_at_the_start_of_the_window) is None
+
+
+def test_low_momentum_names_gain_window_and_threshold():
+    low = ExclusionPolicy().check(make_snapshot(star_history=star_history(59)))
+
+    assert low.reason == "Nur 59 neue Sterne in 14 Tagen, nötig sind 60"
+
+
+def developed_for(days):
+    created_at = NOW - timedelta(days=40)
+    return dict(created_at=created_at, pushed_at=created_at + timedelta(days=days, hours=1))
+
+
+def test_repo_with_too_few_days_of_development_on_github_is_excluded():
+    young = ExclusionPolicy().check(make_snapshot(**developed_for(MIN_DEVELOPMENT_DAYS - 1)))
+
+    assert young.kind == "young"
+    assert young.reason == "Erst 13 Tage Entwicklung auf GitHub, nötig sind 14"
+
+
+def test_repo_with_enough_days_of_development_stays():
+    assert kind(**developed_for(MIN_DEVELOPMENT_DAYS)) is None
+
+
+def test_repo_that_was_never_pushed_to_has_no_days_of_development():
+    assert kind(pushed_at=None) == "young"
+
+
+def test_too_few_days_of_development_are_named_before_low_momentum():
+    assert kind(**developed_for(2), star_history=star_history(0)) == "young"
 
 
 def test_first_matching_rule_gives_the_reason():
