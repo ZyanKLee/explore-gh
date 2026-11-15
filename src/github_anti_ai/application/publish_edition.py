@@ -19,7 +19,7 @@ from github_anti_ai.domain.copies import CopyCheck
 from github_anti_ai.domain.edition import COOLDOWN_DAYS, Edition, EditionCurator
 from github_anti_ai.domain.history import DailyRecord
 from github_anti_ai.domain.model import Assessment, RepoId, Section
-from github_anti_ai.domain.review import reviewed
+from github_anti_ai.domain.review import Review, reviewed
 
 # Each round reviews what moved up for the repos the round before took out.
 MAX_REVIEW_ROUNDS = 5
@@ -68,8 +68,9 @@ class PublishEdition:
             if self._ignore_cooldown
             else self._edition_store.since(today - timedelta(days=COOLDOWN_DAYS))
         )
+        reviews: dict[RepoId, Review] = {}
         if self._reviewer is not None:
-            assessments = self._review(today, assessments, past_editions)
+            assessments, reviews = self._review(today, assessments, past_editions)
         edition = self._curator.curate(today, assessments, past_editions)
 
         ranks = {
@@ -78,7 +79,12 @@ class PublishEdition:
             for place, entry in enumerate(edition.entries(section), start=1)
         }
         records = [
-            DailyRecord.from_assessment(today, assessment, rank=ranks.get(assessment.repo))
+            DailyRecord.from_assessment(
+                today,
+                assessment,
+                rank=ranks.get(assessment.repo),
+                review=reviews[assessment.repo].category if assessment.repo in reviews else None,
+            )
             for assessment in assessments
         ]
         # The records first: an Edition can never be replaced. If they fail, the day stays open.
@@ -88,13 +94,15 @@ class PublishEdition:
 
     def _review(
         self, day: date, assessments: list[Assessment], past_editions: Sequence[Edition]
-    ) -> list[Assessment]:
+    ) -> tuple[list[Assessment], dict[RepoId, Review]]:
         """Lets the reviewer read the repos that would be shown, and only those.
 
         A repo it takes out makes room for the next one, which is read in the next round.
         Without an answer the Edition appears without review: better than no Edition.
         """
         asked: set[RepoId] = set()
+        found: dict[RepoId, Review] = {}
+        moved = removed = 0
         for _ in range(MAX_REVIEW_ROUNDS):
             edition = self._curator.curate(day, assessments, past_editions)
             shown = {entry.repo for section in Section for entry in edition.entries(section)}
@@ -107,10 +115,30 @@ class PublishEdition:
             except SourceUnavailable as error:
                 log.warning("Gegenlesen ausgefallen, die Ausgabe erscheint ohne: %s", error)
                 break
-            assessments = [
-                reviewed(a, reviews[a.repo]) if a.repo in reviews else a for a in assessments
-            ]
-        return assessments
+            found.update(reviews)
+            after = [reviewed(a, reviews[a.repo]) if a.repo in reviews else a for a in assessments]
+            # the reasons of the model stay in the log of the run, not in the data
+            for before, now in zip(assessments, after, strict=True):
+                if now.exclusion is not None and before.exclusion is None:
+                    removed += 1
+                    review = reviews[now.repo]
+                    log.info(
+                        "Copilot: %s herausgenommen (%s): %s",
+                        now.repo, review.category, review.reason,
+                    )
+                elif now.section is not before.section:
+                    moved += 1
+                    log.info(
+                        "Copilot: %s in die AI-Sektion verschoben: %s",
+                        now.repo, reviews[now.repo].reason,
+                    )
+            assessments = after
+        if found:
+            log.info(
+                "Gegenlesen: %d gelesen, %d in die AI-Sektion verschoben, %d herausgenommen",
+                len(found), moved, removed,
+            )
+        return assessments, found
 
     def _refuse_incomplete_collection(self, day: date) -> None:
         status = self._collection_status_store.load(day)

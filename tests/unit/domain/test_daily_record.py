@@ -68,8 +68,19 @@ def test_record_holds_neither_texts_nor_commits_nor_people():
         "score",
         "section",
         "exclusion",
+        "review",
         "signals",
         "rank",
         "language",
         "created_at",
     }
+
+
+def test_record_keeps_the_category_of_the_review_but_not_its_text():
+    kept = DailyRecord.from_assessment(TODAY, make_assessment(), review="ai_focus")
+
+    assert kept.review == "ai_focus"
+
+
+def test_record_of_a_repo_that_was_not_reviewed_has_no_review():
+    assert DailyRecord.from_assessment(TODAY, make_assessment()).review is None

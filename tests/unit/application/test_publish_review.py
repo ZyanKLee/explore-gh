@@ -151,3 +151,33 @@ def test_a_repo_reviewed_as_ai_focused_appears_in_the_ai_section():
     # the place it left is filled, and the repo that moved up was read as well
     assert len(names(edition)) == ENTRIES_PER_SECTION
     assert sorted(reviewer.asked) == sorted([*names(edition), "user3/project3"])
+
+
+def test_the_category_of_each_review_is_kept_in_the_records_of_the_day():
+    reviewer = FakeReviewer(
+        {"user1/project1": MALWARE, "user2/project2": Review("ai_focus", "Ein LLM-Werkzeug.")},
+        silent=["user3/project3"],
+    )
+
+    _, records = publish(repos(4), reviewer)
+
+    assert {str(record.repo): record.review for record in records.load(TODAY)} == {
+        "user0/project0": "ok",
+        "user1/project1": "malware",
+        "user2/project2": "ai_focus",
+        "user3/project3": None,
+    }
+
+
+def test_the_log_names_what_the_review_changed_and_why(caplog):
+    caplog.set_level("INFO")
+    reviewer = FakeReviewer(
+        {"user1/project1": MALWARE, "user2/project2": Review("ai_focus", "Ein LLM-Werkzeug.")}
+    )
+
+    publish(repos(4), reviewer)
+
+    assert "user1/project1 herausgenommen (malware): Das README führt zu einem ZIP" in caplog.text
+    assert "user2/project2 in die AI-Sektion verschoben: Ein LLM-Werkzeug." in caplog.text
+    assert "user0/project0" not in caplog.text
+    assert "4 gelesen, 1 in die AI-Sektion verschoben, 1 herausgenommen" in caplog.text

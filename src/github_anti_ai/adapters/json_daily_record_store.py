@@ -67,7 +67,7 @@ class JsonDailyRecordStore:
 
 
 def _to_json(record: DailyRecord) -> dict:
-    return {
+    data = {
         "v": FORMAT_VERSION,
         "day": record.day.isoformat(),
         "repo": str(record.repo),
@@ -82,6 +82,9 @@ def _to_json(record: DailyRecord) -> dict:
         "language": record.language,
         "created_at": record.created_at.isoformat(),
     }
+    if record.review is not None:  # only then: older files keep their bytes
+        data["review"] = record.review
+    return data
 
 
 def _from_json(data: dict) -> DailyRecord:
@@ -94,6 +97,7 @@ def _from_json(data: dict) -> DailyRecord:
         score=data["score"],
         section=Section(data["section"]),
         exclusion=data["exclusion"],
+        review=data.get("review"),
         signals=tuple((kind, weight) for kind, weight in data["signals"]),
         rank=data["rank"],
         language=data["language"],

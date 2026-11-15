@@ -20,6 +20,7 @@ def record(repo="alice/tiny-editor", day=TODAY, **changes):
         score=37.25,
         section=Section.MAIN,
         exclusion=None,
+        review=None,
         signals=(("momentum", 40.25), ("ai_files", -3.0)),
         rank=3,
         language="Rust",
@@ -33,6 +34,7 @@ RECORDS = [
     record(),
     record("Bob/rustbox", section=Section.AI, rank=None, language=None, signals=()),
     record("mallory/lure", exclusion="lure", rank=None),
+    record("dave/llm-kit", section=Section.AI, review="ai_focus"),
 ]
 
 
@@ -59,6 +61,7 @@ def test_a_day_is_one_compressed_file_with_one_line_per_repo(tmp_path):
     assert [line["repo"] for line in lines(tmp_path)] == [
         "alice/tiny-editor",
         "Bob/rustbox",
+        "dave/llm-kit",
         "mallory/lure",
     ]
 
@@ -121,3 +124,16 @@ def test_file_of_an_unknown_format_is_refused(tmp_path):
 
     with pytest.raises(ValueError, match="2026-11-12"):
         store.load(TODAY)
+
+
+def test_a_record_without_review_is_written_as_before(tmp_path):
+    # files written before the review existed must keep their bytes
+    JsonDailyRecordStore(tmp_path).save(TODAY, [record()])
+
+    assert "review" not in lines(tmp_path)[0]
+
+
+def test_files_written_before_the_review_existed_are_still_read(tmp_path):
+    JsonDailyRecordStore(tmp_path).save(TODAY, [record()])
+
+    assert JsonDailyRecordStore(tmp_path).load(TODAY)[0].review is None

@@ -20,6 +20,7 @@ class DailyRecord:
     score: float
     section: Section
     exclusion: str | None  # kind of the Exclusion
+    review: str | None  # category of the Review, None if the repo was not reviewed
     signals: tuple[tuple[str, float], ...]  # kind and weight, without the reason
     rank: int | None  # place in the Edition, None if the repo was not shown
     language: str | None
@@ -27,7 +28,11 @@ class DailyRecord:
 
     @classmethod
     def from_assessment(
-        cls, day: date, assessment: Assessment, rank: int | None = None
+        cls,
+        day: date,
+        assessment: Assessment,
+        rank: int | None = None,
+        review: str | None = None,
     ) -> DailyRecord:
         snapshot = assessment.snapshot
         return cls(
@@ -39,6 +44,7 @@ class DailyRecord:
             score=assessment.score,
             section=assessment.section,
             exclusion=assessment.exclusion.kind if assessment.exclusion else None,
+            review=review,
             signals=tuple((signal.kind, signal.weight) for signal in assessment.signals),
             rank=rank,
             language=snapshot.primary_language,

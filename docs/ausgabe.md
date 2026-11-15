@@ -30,8 +30,13 @@ Repos, die in der Ausgabe landen würden**, nie die ganze Sammlung:
 3. Nimmt er eines heraus, rückt beim nächsten Auswählen ein anderes nach. Das wird in
    der nächsten Runde gelesen. Nach höchstens 5 Runden (`MAX_REVIEW_ROUNDS`) ist Schluss.
 
-- **Herausgenommen** wird ein Repo mit dem Ausschluss `review` und der Begründung des
-  Modells. Der Ausschluss steht in den Langzeitdaten und in `explain`, nicht auf der Seite.
+- **Herausgenommen** wird ein Repo mit dem Ausschluss `review`. Er steht in den
+  Langzeitdaten, nicht auf der Seite.
+- **Nachvollziehen:** Die Langzeitdaten halten je gelesenem Repo die Kategorie fest
+  (`review`). Die Begründung des Modells steht nur im Protokoll des Laufs, im Schritt
+  „Ausgabe erzeugen“: eine Zeile je herausgenommenem oder verschobenem Repo, dazu die
+  Summe („Gegenlesen: 43 gelesen, 2 in die AI-Sektion verschoben, 1 herausgenommen“).
+  GitHub hebt Protokolle 90 Tage auf.
 - **Verschoben:** Hält der Reviewer ein Repo der Hauptliste für ein AI-Projekt, wechselt
   es in die AI-Sektion und bekommt das Signal „Gegengelesen von Copilot: AI als Thema“.
   In der Hauptliste rückt ein anderes nach, das in der nächsten Runde gelesen wird.

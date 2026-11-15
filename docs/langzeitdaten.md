@@ -37,6 +37,7 @@ Eine Zeile je bewertetem Repo und Tag, auch für ausgeschlossene Repos.
 | `stars`, `forks`, `stars_gained` | Sterne, Forks, Gewinn im Sternfenster (14 Tage, bis 15.11.2026: 7) |
 | `score`, `section` | Punktzahl und Sektion |
 | `exclusion` | Art des Ausschlusses (`lure`, `language` …) oder nichts |
+| `review` | Kategorie des Gegenlesens (`ok`, `ai_focus`, `malware` …) oder nichts, wenn das Repo nicht gelesen wurde. Seit dem 16.11.2026. Die Begründung des Modells steht nur im Protokoll des Laufs. |
 | `signals` | Art und Gewicht jedes Signals, ohne den Begründungstext |
 | `rank` | Platz in der Ausgabe, oder nichts, wenn das Repo nicht gezeigt wurde |
 | `language`, `created_at` | Programmiersprache, Erstelldatum |
