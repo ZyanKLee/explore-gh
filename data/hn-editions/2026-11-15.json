@@ -1,0 +1,245 @@
+{
+  "format_version": 1,
+  "day": "2026-11-15",
+  "projects": [
+    {
+      "story": {
+        "id": "50497892",
+        "title": "PyPI's redesigned project pages with clearer security signals are now live",
+        "url": "https://blog.pypi.org/posts/2026-11-06-ui-updates-complete/",
+        "points": 255,
+        "comments": 110,
+        "created_at": "2026-11-14T15:40:52+00:00"
+      },
+      "repository_url": "https://github.com/pypi/warehouse",
+      "project_url": "https://blog.pypi.org/posts/2026-11-06-ui-updates-complete/",
+      "description": "The Python Package Index",
+      "language": "Python",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "package-registry",
+        "package-repository",
+        "pypi",
+        "pypi-source",
+        "python"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.pypi.org. Repo und Story teilen „pypi“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50499083",
+        "title": "US IRS free online tax filing open source repo (2025)",
+        "url": "https://github.com/IRS-Public/direct-file",
+        "points": 167,
+        "comments": 101,
+        "created_at": "2026-11-14T17:48:20+00:00"
+      },
+      "repository_url": "https://github.com/IRS-Public/direct-file",
+      "project_url": "https://github.com/IRS-Public/direct-file",
+      "description": "Direct File",
+      "language": "JavaScript",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50497137",
+        "title": "Show HN: Fursoy – Out-of-order RV64IMAFDV core in SystemVerilog (Linux 6.6)",
+        "url": "https://github.com/FURSOY/fursoy-cpu",
+        "points": 81,
+        "comments": 26,
+        "created_at": "2026-11-14T14:06:34+00:00"
+      },
+      "repository_url": "https://github.com/FURSOY/fursoy-cpu",
+      "project_url": "https://github.com/FURSOY/fursoy-cpu",
+      "description": "64-bit out-of-order superscalar RISC-V processor (RV64IMAFDV + Zba/Zbb) in SystemVerilog. Boots Linux 6.6.50 + BusyBox under Sv39 virtual memory and meets 500 MHz timing in Nangate 45nm.",
+      "language": "C++",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "linux-kernel",
+        "out-of-order",
+        "riscv",
+        "systemverilog",
+        "verilator"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50504077",
+        "title": "Kiri – The Modern Container Runtime",
+        "url": "https://runkiri.com/",
+        "points": 65,
+        "comments": 31,
+        "created_at": "2026-11-15T04:40:41+00:00"
+      },
+      "repository_url": "https://github.com/libracoder/kiri",
+      "project_url": "https://runkiri.com/",
+      "description": "A small, fast container runtime for macOS, Windows and Linux with free Ngrok alternative",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "containers",
+        "docker",
+        "kubernetes",
+        "linux",
+        "macos",
+        "oci",
+        "windows"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf runkiri.com. Repo und Story teilen „kiri“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50504072",
+        "title": "Show HN: Gawain – Require type hints on all Python variables",
+        "url": "https://github.com/matheuzgomes/gawain",
+        "points": 60,
+        "comments": 41,
+        "created_at": "2026-11-15T04:39:25+00:00"
+      },
+      "repository_url": "https://github.com/matheuzgomes/gawain",
+      "project_url": "https://github.com/matheuzgomes/gawain",
+      "description": "Find every missing type hint in your Python code, in milliseconds.",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "cli",
+        "code-quality",
+        "developer-tools",
+        "linter",
+        "pre-commit",
+        "pyrefly",
+        "python",
+        "python-linter",
+        "rust",
+        "static-analysis",
+        "ty",
+        "type-annotations",
+        "type-checker",
+        "type-hints",
+        "typing"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt."
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50497589",
+        "title": "Show HN: DeepSeek V3 in ~200 lines of pure Jax",
+        "url": "https://github.com/Vaibhaav-Tiwari/deepseek-v3-jax",
+        "points": 246,
+        "comments": 23,
+        "created_at": "2026-11-14T15:04:15+00:00"
+      },
+      "repository_url": "https://github.com/Vaibhaav-Tiwari/deepseek-v3-jax",
+      "project_url": "https://github.com/Vaibhaav-Tiwari/deepseek-v3-jax",
+      "description": "DeepSeek V3 (MLA, DeepSeekMoE, aux-loss-free balancing, MTP) in 190 lines of pure JAX, trained on a MacBook Air. Write-up: vaibhaav.in/writing/deepseek-v3-jax",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Name: AI-Begriffe „deepseek“",
+        "Beschreibung: AI-Begriffe „deepseek“",
+        "README: 19-mal AI-Begriffe („deepseek“, „ai“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50497900",
+        "title": "Formalizing US Tax Code (Using Lean)",
+        "url": "https://lexifina.com/blog/formalizing-the-us-tax-code",
+        "points": 146,
+        "comments": 96,
+        "created_at": "2026-11-14T15:41:20+00:00"
+      },
+      "repository_url": "https://github.com/lexifina/global-law",
+      "project_url": "https://lexifina.com/blog/formalizing-the-us-tax-code",
+      "description": "The world's law in git: any provision, any country, any date, and the law that wrote each word.",
+      "language": "HTML",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "git",
+        "law",
+        "legal-tech",
+        "legislation",
+        "mcp",
+        "open-data"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf lexifina.com. Repo und Story teilen „lexifina“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "Topics: AI-Begriffe „mcp“",
+        "README: 14-mal AI-Begriffe („ai“, „mcp“, „claude“, „codex“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50497147",
+        "title": "Show HN: Agweb – a browser for agents that stays out of your way",
+        "url": "https://github.com/paul-nameless/agweb",
+        "points": 103,
+        "comments": 30,
+        "created_at": "2026-11-14T14:08:12+00:00"
+      },
+      "repository_url": "https://github.com/paul-nameless/agweb",
+      "project_url": "https://github.com/paul-nameless/agweb",
+      "description": " A browser built for agents - no focus stealing, a tiny footprint, all tabs in one view.",
+      "language": "Swift",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Beschreibung: AI-Begriffe „agent“",
+        "README: 20-mal AI-Begriffe („coding agent“, „agent“, „agent skill“, „claude“ …)"
+      ]
+    }
+  ]
+}
