@@ -12,7 +12,8 @@ LINUX_BONUS = 20.0
 
 WINDOWS_TERMS = TermList(["windows", "win32", "win10", "win11", "winui", "wpf"])
 APPLE_TERMS = TermList(
-    unless_in=["mac address"],
+    # "Apple TV-style" describes a look, not the platform a project runs on
+    unless_in=["mac address", "apple tv style", "apple style"],
     terms=[
         "macos",
         "mac",
@@ -26,6 +27,8 @@ APPLE_TERMS = TermList(
         "tvos",
         "visionos",
         "apple silicon",
+        "apple",
+        "icloud",
     ]
 )
 LINUX_TERMS = TermList(

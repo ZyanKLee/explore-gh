@@ -405,9 +405,11 @@ Eine Vorliebe des Projektinhabers, entschieden am 12. und 13.11.2026.
   nichts über das Projekt.
 - **Begriffe:** Windows: `windows`, `win32`, `win10`, `win11`, `winui`, `wpf`. Apple:
   `macos`, `mac`, `osx`, `os x`, `ios`, `ipados`, `iphone`, `ipad`, `watchos`, `tvos`,
-  `visionos`, `apple silicon`. Linux: `linux`, `wayland`, `gnome`, `kde`, `systemd`,
+  `visionos`, `apple silicon`, `apple`, `icloud` (die letzten beiden seit dem
+  15.11.2026). Linux: `linux`, `wayland`, `gnome`, `kde`, `systemd`,
   `ubuntu`, `debian`, `fedora`, `archlinux`, `arch linux`, `nixos`, `hyprland`.
-  „MAC address“ zählt nicht als Mac.
+  „MAC address“ zählt nicht als Mac, „Apple TV-style“ und „Apple style“ nicht als Apple:
+  Sie beschreiben ein Aussehen, etwa bei Startbildschirmen für Android TV.
 - **Die Werte** waren zuerst −3 und +6. Bei Punktzahlen um 60 bis 90 in den oberen
   Rängen fiel das kaum ins Gewicht.
 - **Bekannte Schwäche:** Die Programmiersprache (Swift, PowerShell) zählt nicht als

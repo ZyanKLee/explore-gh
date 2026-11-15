@@ -37,6 +37,8 @@ def test_a_windows_project_is_rated_down():
         {"description": "Notes for iPhone and iPad"},
         {"topics": ("swift", "ipados")},
         {"repo": "alice/mac-cleaner"},
+        {"description": "Sync Apple Notes and Reminders to plain files"},
+        {"description": "An S3-compatible object store backed by iCloud"},
     ],
 )
 def test_a_project_for_macos_or_ios_is_rated_down(overrides):
@@ -113,3 +115,14 @@ def test_the_assessor_includes_the_platform_in_the_score():
     linux = Assessor().assess(make_snapshot(description="A tiny terminal text editor for Linux"))
 
     assert linux.score == pytest.approx(plain.score + LINUX_BONUS)
+
+
+@pytest.mark.parametrize(
+    "description",
+    [
+        "Apple TV-style home screen for Android TV",
+        "Create Apple style drawings of UI components",
+    ],
+)
+def test_a_look_borrowed_from_apple_is_no_apple_project(description):
+    assert weights(description=description) == {}
