@@ -103,11 +103,14 @@ Awesome-Listen bewusst **nicht** verwenden.
      eine Ergebnisdatei.
   2. Pelican rendert nur aus diesen Dateien, ohne API-Zugriffe.
   Die Ergebnisse vergangener Tage werden nie neu berechnet.
-- **Klassifizierung**: Rang und Sektion bestimmt ein Regelsystem, kein LLM.
+- **Klassifizierung**: Rang und Sektion bestimmt ein Regelsystem. Ein LLM darf nur beim
+  Gegenlesen eingreifen.
 - **Gegenlesen**: Seit dem 15.11.2026 liest die Copilot-CLI die Repos gegen, die in der
-  Ausgabe landen würden (rund 40 am Tag, nie die ganze Sammlung). Sie kann ein Repo nur
+  Ausgabe landen würden (rund 40 am Tag, nie die ganze Sammlung). Sie kann ein Repo
   herausnehmen: bei Verdacht auf Schadsoftware, Umgehen von Kopierschutz, Betrug, oder
-  wenn es kein eigenes Softwareprojekt ist. Im Zweifel bleibt es. Fällt Copilot aus,
+  wenn es kein eigenes Softwareprojekt ist. Und sie kann ein Repo mit AI als Thema aus
+  der Hauptliste in die AI-Sektion verschieben, nie umgekehrt. Den Rang bestimmt sie
+  nicht. Im Zweifel bleibt alles, wie die Regeln es sagen. Fällt Copilot aus,
   erscheint die Ausgabe ohne Gegenlesen. GitHub Models ist seit dem 30.07.2026
   eingestellt und keine Alternative.
 - **Kein Feedback- oder Personalisierungsmechanismus**, um Interessensblasen zu vermeiden.
@@ -153,7 +156,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Substanz | `SubstanceCheck` | Hinweise auf echte Arbeit und echtes Interesse: Team, Kontinuität, Issues. Dazu die Gegenprobe zu gekauften Sternen. |
 | Vorgeschichte des Besitzers | `OwnerHistory` | Alter des Besitzerkontos und Mitwirkung an anderen Projekten. Wertet auf, fehlt bei Wegwerfkonten. |
 | Plattform | `PlatformPreference` | Vorliebe des Inhabers: Linux wertet auf, Windows und Apple werten ab |
-| Gegenlesen | `Reviewer`, `Review` | Ein Sprachmodell liest die Repos, die gezeigt würden, und ordnet jedes einer Kategorie zu. Alles außer `ok` schließt aus. |
+| Gegenlesen | `Reviewer`, `Review` | Ein Sprachmodell liest die Repos, die gezeigt würden, und ordnet jedes einer Kategorie zu. `ok` bleibt, `ai_focus` verschiebt in die AI-Sektion, alles andere schließt aus. |
 | Bewertung | `Assessment` | Sektion, Punktzahl, Signale, ggf. Ausschluss. Die Punktzahl ist die Summe der Signalgewichte. Erzeugt vom `Assessor`. |
 | Tageswert | `DailyRecord` | Was von einer Bewertung dauerhaft bleibt: Zahlen, Urteil, Rang. Ohne Texte, Commits und Personen. |
 | Sektion | `Section` | `MAIN` oder `AI` |

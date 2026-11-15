@@ -285,8 +285,8 @@ Drei Workflows in `.github/workflows/`:
   waren es rund sieben Stunden.
 - Das Gegenlesen mit dem eingebauten Token ist für Repos von Organisationen
   dokumentiert. Für ein Repo eines persönlichen Kontos nennt die Dokumentation nur die
-  Abrechnung über das Abo des Besitzers. Ob es dort läuft, zeigt erst ein Lauf. Der
-  Ausweg wäre ein Fine-grained Token mit der Berechtigung „Copilot Requests“ als
+  Abrechnung über das Abo des Besitzers. Der Lauf vom 15.11.2026 hat gezeigt, dass es
+  auch dort läuft. Fiele es einmal aus, wäre der Ausweg ein Fine-grained Token mit der Berechtigung „Copilot Requests“ als
   Secret `COPILOT_GITHUB_TOKEN`.
 - Die Workflows sind noch nie gelaufen. Geprüft ist nur, dass die Dateien gültiges
   YAML sind und dass die Befehle darin lokal funktionieren.

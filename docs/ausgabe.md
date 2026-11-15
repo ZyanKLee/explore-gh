@@ -32,6 +32,9 @@ Repos, die in der Ausgabe landen würden**, nie die ganze Sammlung:
 
 - **Herausgenommen** wird ein Repo mit dem Ausschluss `review` und der Begründung des
   Modells. Der Ausschluss steht in den Langzeitdaten und in `explain`, nicht auf der Seite.
+- **Verschoben:** Hält der Reviewer ein Repo der Hauptliste für ein AI-Projekt, wechselt
+  es in die AI-Sektion und bekommt das Signal „Gegengelesen von Copilot: AI als Thema“.
+  In der Hauptliste rückt ein anderes nach, das in der nächsten Runde gelesen wird.
 - **Gelesen und geblieben:** Der Eintrag bekommt ein Signal ohne Punkte, „Gegengelesen
   von Copilot: unauffällig“. Fehlt es bei einem Eintrag, wurde er nicht gelesen.
 - **Fällt der Reviewer aus**, erscheint die Ausgabe ohne Gegenlesen. Das Protokoll des

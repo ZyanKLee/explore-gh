@@ -137,3 +137,17 @@ def test_without_a_reviewer_nothing_is_reviewed():
 
     assert len(names(edition)) == 3
     assert all(entry.signals == () for entry in edition.entries(Section.MAIN))
+
+
+def test_a_repo_reviewed_as_ai_focused_appears_in_the_ai_section():
+    snapshots = repos(ENTRIES_PER_SECTION + 5)
+    ai_focused = Review("ai_focus", "Ein Verfahren für Sprachmodelle.")
+    reviewer = FakeReviewer({"user3/project3": ai_focused})
+
+    edition, records = publish(snapshots, reviewer)
+
+    assert "user3/project3" not in names(edition)
+    assert [str(entry.repo) for entry in edition.entries(Section.AI)] == ["user3/project3"]
+    # the place it left is filled, and the repo that moved up was read as well
+    assert len(names(edition)) == ENTRIES_PER_SECTION
+    assert sorted(reviewer.asked) == sorted([*names(edition), "user3/project3"])

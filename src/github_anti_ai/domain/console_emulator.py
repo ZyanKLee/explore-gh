@@ -6,7 +6,18 @@ from github_anti_ai.domain.text import TermList, quoted
 CONSOLE_EMULATOR_PENALTY = 50.0
 
 EMULATOR_TERMS = TermList(
-    ["emulator", "emulation", "recompilation", "recompiled", "recompiler", "recomp", "port"]
+    [
+        "emulator",
+        "emulation",
+        "recompilation",
+        "recompiled",
+        "recompiler",
+        "recomp",
+        "port",
+        "ported",
+        "porting",
+        "compatibility layer",
+    ]
 )
 CONSOLE_TERMS = TermList(
     [
@@ -22,6 +33,7 @@ CONSOLE_TERMS = TermList(
         "playstation",
         "switch2",
         "switch 2",
+        "switch game",  # "switch" alone is too often a network switch or a toggle
         "nintendo",
         "n64",
         "gamecube",

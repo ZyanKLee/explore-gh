@@ -24,6 +24,8 @@ def signal(repo="alice/tiny-editor", **overrides):
         {"description": "A PSP emulator for Android"},
         {"description": "GameCube and Wii emulator"},
         {"description": "Mario 64 recompiled from the N64 original"},
+        {"description": "A compatibility layer for porting Switch games to Android"},
+        {"description": "Zelda ported from the Wii to PC"},
     ],
 )
 def test_an_emulator_for_a_game_console_is_rated_down(overrides):
@@ -48,6 +50,8 @@ def test_the_reason_names_emulator_and_console():
         "Emulate macOS on iOS and iPadOS",
         "Companion app for your Xbox controller",
         "A Switch 2 game built with",
+        "Porting a network switch driver to FreeBSD",
+        "A compatibility layer for Windows games on Linux",
     ],
 )
 def test_emulator_or_console_alone_is_no_reason(description):

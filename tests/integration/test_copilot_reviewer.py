@@ -208,3 +208,14 @@ def test_repo_names_are_matched_whatever_their_case():
     found = CopilotReviewer(run=copilot).review([make_snapshot()])
 
     assert RepoId.parse("alice/tiny-editor") in found
+
+
+def test_prompt_says_that_ai_focus_moves_a_repo_and_that_problems_come_first():
+    copilot = FakeCopilot(answer())
+
+    review(copilot, make_snapshot("alice/tiny-editor"))
+
+    [prompt] = copilot.prompts
+    assert '"ai_focus"' in prompt
+    assert "kein Ausschluss" in prompt
+    assert "Trifft auch eine Ausschluss-Kategorie zu, nimm diese" in prompt

@@ -324,12 +324,14 @@ Projekte hatten Konten aus den Jahren 2017 bis 2023.
 
 Die Regeln oben erkennen bekannte Muster. Jede neue Kampagne rutscht zunächst durch.
 Deshalb liest seit dem 15.11.2026 ein Sprachmodell die Repos gegen, die gezeigt würden.
-Es bestimmt weder Rang noch Sektion, es kann nur herausnehmen. Wann und wie oft es
-gefragt wird, steht in `ausgabe.md`.
+Den Rang bestimmt es nicht. Es kann ein Repo herausnehmen oder aus der Hauptliste in
+die AI-Sektion verschieben, nie umgekehrt. Wann und wie oft es gefragt wird, steht in
+`ausgabe.md`.
 
 | Kategorie | Bedeutung | Folge |
 |---|---|---|
 | `ok` | Ein echtes Softwareprojekt. Gilt auch im Zweifel. | bleibt |
+| `ai_focus` | Für den Einsatz von AI gebaut: Sprachmodelle und ihre Technik, Agenten, Chatbots, Generatoren, samt Modellen, Benchmarks und Forschungs-Code. Nicht klassisches maschinelles Lernen, nicht AI als Nebenfunktion. | in die AI-Sektion |
 | `malware` | Köder: gibt sich als bekannte Software, Crack oder Gratis-Version aus und führt zu einem Download statt zu Quellcode. | raus |
 | `piracy` | Umgeht Kopierschutz oder Lizenzprüfungen oder verteilt geschützte Inhalte. Ein Abspielprogramm oder Emulator allein nicht. | raus |
 | `scam` | Betrug, Spam, reine Werbung. | raus |
@@ -339,6 +341,14 @@ gefragt wird, steht in `ausgabe.md`.
 - **Geschmack zählt nicht.** Thema, Programmiersprache, Qualität des Codes und der
   Einsatz von AI sind dem Modell als Ausschlussgrund ausdrücklich untersagt. Sonst
   entstünde die Interessensblase, die das Projekt vermeiden will.
+- **`ai_focus` kam am 15.11.2026 dazu.** Anlass war
+  `Prefrontal-AI/latent-sparse-attention` auf Platz 20 der Hauptliste: Forschungs-Code
+  zu Sprachmodellen mit 29 AI-Begriffen im README, aber keinem in Name, Beschreibung
+  oder Topics. Die Schwelle für das README zu senken hilft nicht: Zwischen 20 und 50
+  Treffern liegen auch ein PDF-Leser, ein Remote-Desktop und ein Terminal-Werkzeug, die
+  AI nur nebenbei nennen. Haupt- und Nebenfunktion kann ein Modell unterscheiden, eine
+  Begriffsliste nicht. Trifft auch eine Ausschluss-Kategorie zu, gilt diese. Steht das
+  Repo schon in der AI-Sektion, zählt `ai_focus` wie `ok`.
 - **Was das Modell sieht:** je Repo Name, Beschreibung, Topics, Sprache, Sterne, Forks,
   Alter von Repo und Besitzerkonto und die ersten 1500 Zeichen des README. 10 Repos je
   Aufruf, also etwa 4 Aufrufe am Tag.
@@ -349,11 +359,10 @@ gefragt wird, steht in `ausgabe.md`.
 - **Fremde Texte im Prompt:** Ein README kann versuchen, das Modell zu einer Einstufung
   zu überreden. Der Prompt warnt davor. Gelingt es trotzdem, bleibt das Repo so in der
   Liste, wie es ohne Gegenlesen dort stünde. Der Text des Modells erscheint nie auf der
-  Seite: Gezeigte Einträge tragen nur den festen Satz „Gegengelesen von Copilot:
-  unauffällig“.
-- **Noch nie gegen die echte CLI gelaufen** (Stand 15.11.2026). Getestet ist der
-  Adapter gegen einen Stellvertreter. Aufruf und Schalter stammen aus der Dokumentation
-  von GitHub.
+  Seite: Gezeigte Einträge tragen nur einen festen Satz, „Gegengelesen von Copilot:
+  unauffällig“ oder „Gegengelesen von Copilot: AI als Thema“.
+- **Erster echter Lauf am 15.11.2026:** Die CLI hat im Workflow mit dem eingebauten
+  Token alle 40 Einträge gelesen und keinen herausgenommen.
 
 ## Nicht übernommen: Forks nicht mehr als Echo zählen
 
@@ -424,9 +433,9 @@ Ebenfalls eine Vorliebe des Projektinhabers, entschieden am 13.11.2026.
 | `console_emulator` | Name, Beschreibung oder Topics nennen einen Emulator **und** eine Spielkonsole | −50 |
 
 - **Emulator:** `emulator`, `emulation`, `recompilation`, `recompiled`, `recompiler`,
-  `recomp`, `port`.
+  `recomp`, `port`, `ported`, `porting`, `compatibility layer`.
 - **Konsole:** `ps1` bis `ps5`, `psx`, `psp`, `ps vita`, `psvita`, `playstation`,
-  `switch2`, `switch 2`, `nintendo`, `n64`, `gamecube`, `wii`, `wii u`, `3ds`, `xbox`,
+  `switch2`, `switch 2`, `switch game`, `nintendo`, `n64`, `gamecube`, `wii`, `wii u`, `3ds`, `xbox`,
   `dreamcast`. Die älteren Konsolen kamen am 15.11.2026 dazu, nachdem eine
   PS3-Portierung ohne Abzug durchgegangen war.
 - Beides muss vorkommen. Ein Terminal-Emulator oder eine App für den Xbox-Controller
