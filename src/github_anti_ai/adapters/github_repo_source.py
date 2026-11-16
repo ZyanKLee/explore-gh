@@ -9,7 +9,7 @@ from datetime import UTC, date, datetime, timedelta
 
 import httpx
 
-from github_anti_ai.adapters.github_http import Sleep, send
+from github_anti_ai.adapters.github_http import GatewayTimeout, Sleep, send
 from github_anti_ai.application.ports import Clock, SourceUnavailable
 from github_anti_ai.domain.model import (
     COMMIT_LOOKBACK,
@@ -107,6 +107,11 @@ class _TooExpensive(SourceUnavailable):
     """GitHub refused the query: "Resource limits for this query exceeded"."""
 
 
+# A group that times out is halved until the repo to blame is found: about 5 timeouts
+# for each such repo in a batch of 20. More than this many means GitHub itself is down.
+MAX_TIMEOUTS_PER_BATCH = 20
+
+
 class GitHubRepoSource:
     def __init__(
         self,
@@ -115,11 +120,14 @@ class GitHubRepoSource:
         sleep: Sleep,
         clock: Clock,
         batch_size: int = 20,
+        max_timeouts_per_batch: int = MAX_TIMEOUTS_PER_BATCH,
     ):
         self._client = client
         self._sleep = sleep
         self._clock = clock
         self._batch_size = batch_size
+        self._max_timeouts_per_batch = max_timeouts_per_batch
+        self._timeouts = 0
 
     def fetch(
         self, repos: Sequence[RepoId], now: datetime, with_star_history: bool = True
@@ -127,6 +135,7 @@ class GitHubRepoSource:
         snapshots = []
         for start in range(0, len(repos), self._batch_size):
             batch = repos[start : start + self._batch_size]
+            self._timeouts = 0
             for node in self._nodes(batch, now):
                 snapshots.append(self._snapshot(node, now, with_star_history))
         return snapshots
@@ -138,8 +147,15 @@ class GitHubRepoSource:
             variables[f"owner{i}"] = repo.owner
             variables[f"name{i}"] = repo.name
         try:
-            data = self._query(_batch_query(len(batch)), variables)
-        except _TooExpensive:
+            # a group that timed out is not asked again as it is, only a single repo is
+            data = self._query(
+                _batch_query(len(batch)), variables, retry_timeouts=len(batch) == 1
+            )
+        except (_TooExpensive, GatewayTimeout) as error:
+            if isinstance(error, GatewayTimeout):
+                self._timeouts += 1
+                if self._timeouts > self._max_timeouts_per_batch:
+                    raise
             if len(batch) == 1:
                 log.warning("%s ist GitHub zu aufwendig und wird ausgelassen", batch[0])
                 return []
@@ -149,13 +165,14 @@ class GitHubRepoSource:
         nodes = (data.get(f"r{i}") for i in range(len(batch)))
         return [node for node in nodes if node is not None]
 
-    def _query(self, query: str, variables: dict) -> dict:
+    def _query(self, query: str, variables: dict, *, retry_timeouts: bool = True) -> dict:
         response = send(
             self._client,
             "POST",
             "/graphql",
             sleep=self._sleep,
             clock=self._clock,
+            retry_timeouts=retry_timeouts,
             json={"query": query, "variables": variables},
         )
         payload = response.json()

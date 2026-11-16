@@ -7,7 +7,7 @@ import httpx
 import pytest
 
 from builders import NOW, FixedClock
-from github_anti_ai.adapters.github_repo_source import GitHubRepoSource
+from github_anti_ai.adapters.github_repo_source import MAX_TIMEOUTS_PER_BATCH, GitHubRepoSource
 from github_anti_ai.application.ports import SourceUnavailable
 from github_anti_ai.domain.model import (
     COMMIT_LOOKBACK,
@@ -390,10 +390,11 @@ RESOURCE_LIMITS = {
 class GitHubWithLimits(FakeGitHub):
     """Refuses every query that asks for more than a few repos, or for a heavy one."""
 
-    def __init__(self, nodes, max_repos=20, heavy=()):
+    def __init__(self, nodes, max_repos=20, heavy=(), refusal=None):
         super().__init__(nodes)
         self.max_repos = max_repos
         self.heavy = {name.lower() for name in heavy}
+        self.refusal = refusal or (lambda: httpx.Response(200, json=RESOURCE_LIMITS))
         self.batch_sizes = []
 
     def __call__(self, request):
@@ -404,10 +405,8 @@ class GitHubWithLimits(FakeGitHub):
                 i = len(names)
                 names.append(f"{variables[f'owner{i}']}/{variables[f'name{i}']}".lower())
             self.batch_sizes.append(len(names))
-            if len(names) > self.max_repos or (self.heavy & set(names) and len(names) > 1):
-                return httpx.Response(200, json=RESOURCE_LIMITS)
-            if self.heavy & set(names):
-                return httpx.Response(200, json=RESOURCE_LIMITS)
+            if len(names) > self.max_repos or self.heavy & set(names):
+                return self.refusal()
         return super().__call__(request)
 
 
@@ -439,3 +438,63 @@ def test_other_graphql_errors_are_not_retried_in_smaller_groups():
         fetch(github, repos=["alice/tiny-editor", "bob/rustbox"])
 
     assert len(github.bodies) == 1
+
+
+# --- GitHub gives up on a query after 10 seconds: HTTP 502 or 504 ------------------------
+
+
+def gateway_timeout(status=502):
+    return lambda: httpx.Response(status)
+
+
+@pytest.mark.parametrize("status", [502, 504])
+def test_a_group_that_times_out_is_split_at_once_and_only_a_single_repo_is_retried(status, caplog):
+    # seen live on 16.11.2026: the same groups of 20 failed in every run
+    names = [f"user{i}/project{i}" for i in range(4)]
+    github = GitHubWithLimits(
+        [node(name_with_owner=n) for n in names], heavy=[names[2]], refusal=gateway_timeout(status)
+    )
+
+    snapshots = fetch(github, repos=names)
+
+    assert [str(s.repo) for s in snapshots] == [names[0], names[1], names[3]]
+    assert github.batch_sizes == [4, 2, 2, 1, 1, 1, 1]
+    assert names[2] in caplog.text
+
+
+def test_when_everything_times_out_the_source_is_unavailable_after_a_bounded_number_of_tries():
+    names = [f"user{i}/project{i}" for i in range(20)]
+    github = GitHubWithLimits(
+        [node(name_with_owner=n) for n in names], max_repos=0, refusal=gateway_timeout()
+    )
+
+    with pytest.raises(SourceUnavailable, match="HTTP 502"):
+        fetch(github, repos=names)
+
+    assert len(github.batch_sizes) <= 3 * MAX_TIMEOUTS_PER_BATCH
+
+
+def test_each_batch_has_its_own_patience_for_timeouts():
+    names = [f"user{i}/project{i}" for i in range(8)]
+    github = GitHubWithLimits(
+        [node(name_with_owner=n) for n in names],
+        heavy=[names[0], names[4]],
+        refusal=gateway_timeout(),
+    )
+
+    snapshots = fetch(github, repos=names, batch_size=4, max_timeouts_per_batch=3)
+
+    assert len(snapshots) == 6
+
+
+def test_other_server_errors_are_retried_with_the_same_group():
+    names = ["alice/tiny-editor", "bob/rustbox"]
+    answer = {"data": {"r0": node(name_with_owner=names[0]), "r1": node(name_with_owner=names[1])}}
+    github = FakeGitHub(
+        graphql_responses=[httpx.Response(500), httpx.Response(200, json=answer)]
+    )
+
+    snapshots = fetch(github, repos=names)
+
+    assert len(snapshots) == 2
+    assert len(github.bodies) == 2

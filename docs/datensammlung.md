@@ -506,6 +506,14 @@ Für die Bewertungsregeln fehlt noch:
   einzelnes Repo, das auch allein zu aufwendig ist, wird ausgelassen und im Protokoll
   genannt. Im zweiten Lauf trat der Fehler nicht auf, die Abhilfe ist also nur durch
   Tests belegt.
+- **HTTP 502 und 504 bei GraphQL:** GitHub bricht eine Abfrage nach 10 Sekunden ab. Am
+  16.11.2026 scheiterten in jedem Lauf dieselben drei Gruppen von 20 Repos, andere
+  liefen durch. Es liegt also an einzelnen Repos, nicht an einer Störung. Seitdem wird
+  auch eine solche Gruppe halbiert, ohne sie vorher unverändert zu wiederholen. Nur ein
+  einzelnes Repo wird dreimal versucht und dann ausgelassen und im Protokoll genannt.
+  Nach mehr als 20 Abbrüchen in einer Gruppe (`MAX_TIMEOUTS_PER_BATCH`) gilt GitHub als
+  gestört und die Gruppe als fehlgeschlagen. Welche Repos es trifft und warum, zeigt
+  erst das Protokoll des nächsten Laufs.
 - Die Test-Fixtures für Suche und GraphQL sind von Hand geschrieben, damit keine Namen
   und E-Mail-Adressen echter Personen im Repo landen. Ihre Form ist gegen echte
   Antworten geprüft. Der Sternverlauf ist eine echte Antwort.

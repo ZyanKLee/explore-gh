@@ -19,6 +19,13 @@ class RequestBudgetExceeded(SourceUnavailable):
     """Emergency brake: a run made far more requests than it ever should."""
 
 
+class GatewayTimeout(SourceUnavailable):
+    """HTTP 502 or 504: GitHub gave up on the request, usually after 10 seconds."""
+
+
+GATEWAY_TIMEOUTS = (502, 504)
+
+
 def make_github_client(
     token: str,
     *,
@@ -48,10 +55,23 @@ def make_github_client(
 
 
 def send(
-    client: httpx.Client, method: str, url: str, *, sleep: Sleep, clock: Clock, **options
+    client: httpx.Client,
+    method: str,
+    url: str,
+    *,
+    sleep: Sleep,
+    clock: Clock,
+    retry_timeouts: bool = True,
+    **options,
 ) -> httpx.Response:
-    """Sends a request, waits out rate limits and retries server errors."""
+    """Sends a request, waits out rate limits and retries server errors.
+
+    Without `retry_timeouts` a gateway timeout is reported at once: the caller has a
+    better answer than asking the same question again.
+    """
+    timed_out = False
     for attempt in range(1, MAX_ATTEMPTS + 1):
+        timed_out = False
         try:
             response = client.request(method, url, **options)
         except httpx.TransportError as error:
@@ -65,11 +85,14 @@ def send(
                 problem, wait = f"{method} {url}: unlesbare Antwort", 2.0**attempt
             elif response.status_code >= 500:
                 wait = 2.0**attempt
+                timed_out = response.status_code in GATEWAY_TIMEOUTS
+                if timed_out and not retry_timeouts:
+                    break
             elif (wait := _rate_limit_wait(response, clock)) is None:
                 raise SourceUnavailable(problem)
         if attempt < MAX_ATTEMPTS:
             sleep(wait)
-    raise SourceUnavailable(problem)
+    raise (GatewayTimeout if timed_out else SourceUnavailable)(problem)
 
 
 def _is_json(response: httpx.Response) -> bool:
