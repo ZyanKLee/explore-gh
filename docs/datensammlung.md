@@ -512,8 +512,10 @@ Für die Bewertungsregeln fehlt noch:
   auch eine solche Gruppe halbiert, ohne sie vorher unverändert zu wiederholen. Nur ein
   einzelnes Repo wird dreimal versucht und dann ausgelassen und im Protokoll genannt.
   Nach mehr als 20 Abbrüchen in einer Gruppe (`MAX_TIMEOUTS_PER_BATCH`) gilt GitHub als
-  gestört und die Gruppe als fehlgeschlagen. Welche Repos es trifft und warum, zeigt
-  erst das Protokoll des nächsten Laufs.
+  gestört und die Gruppe als fehlgeschlagen. Im ersten Lauf danach kamen alle 66 Repos
+  durch, kein einzelnes war zu aufwendig. Ob dabei geteilt wurde, stand nicht im
+  Protokoll. Seitdem meldet jede Teilung eine Zeile („Gruppe von 20 Repos wird
+  geteilt“).
 - Die Test-Fixtures für Suche und GraphQL sind von Hand geschrieben, damit keine Namen
   und E-Mail-Adressen echter Personen im Repo landen. Ihre Form ist gegen echte
   Antworten geprüft. Der Sternverlauf ist eine echte Antwort.

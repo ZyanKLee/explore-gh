@@ -160,6 +160,7 @@ class GitHubRepoSource:
                 log.warning("%s ist GitHub zu aufwendig und wird ausgelassen", batch[0])
                 return []
             # GitHub refuses some groups as a whole, halves of them usually pass
+            log.info("Gruppe von %d Repos wird geteilt: %s", len(batch), error)
             half = len(batch) // 2
             return self._nodes(batch[:half], now) + self._nodes(batch[half:], now)
         nodes = (data.get(f"r{i}") for i in range(len(batch)))

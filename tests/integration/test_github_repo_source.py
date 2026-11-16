@@ -498,3 +498,23 @@ def test_other_server_errors_are_retried_with_the_same_group():
 
     assert len(snapshots) == 2
     assert len(github.bodies) == 2
+
+
+def test_splitting_a_group_is_logged_with_its_size_and_the_reason(caplog):
+    caplog.set_level("INFO")
+    names = [f"user{i}/project{i}" for i in range(4)]
+    github = GitHubWithLimits(
+        [node(name_with_owner=n) for n in names], max_repos=2, refusal=gateway_timeout(504)
+    )
+
+    fetch(github, repos=names)
+
+    assert "Gruppe von 4 Repos wird geteilt: POST /graphql: HTTP 504" in caplog.text
+
+
+def test_a_group_that_passes_is_not_logged_as_split(caplog):
+    caplog.set_level("INFO")
+
+    fetch(FakeGitHub([FULL]))
+
+    assert "geteilt" not in caplog.text
