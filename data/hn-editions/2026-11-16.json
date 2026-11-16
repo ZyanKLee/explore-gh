@@ -1,0 +1,225 @@
+{
+  "format_version": 1,
+  "day": "2026-11-16",
+  "projects": [
+    {
+      "story": {
+        "id": "50509837",
+        "title": "Protomaps: Self-hosting map tiles has gotten cheap and easy",
+        "url": "https://bruceroettgers.eu/blog/protomaps/",
+        "points": 423,
+        "comments": 75,
+        "created_at": "2026-11-15T19:26:22+00:00"
+      },
+      "repository_url": "https://github.com/protomaps/go-pmtiles",
+      "project_url": "https://bruceroettgers.eu/blog/protomaps/",
+      "description": "Single-file executable tool for working with PMTiles archives",
+      "language": "Go",
+      "license_id": "BSD-3-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "caddy",
+        "pmtiles"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf bruceroettgers.eu. Repo und Story teilen „protomaps“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50508715",
+        "title": "Clice v1.0 Released: Welcome to Modern C++",
+        "url": "https://ykiko.me/en/articles/2105384023094834022/",
+        "points": 181,
+        "comments": 93,
+        "created_at": "2026-11-15T17:22:32+00:00"
+      },
+      "repository_url": "https://github.com/clice-io/clice",
+      "project_url": "https://ykiko.me/en/articles/2105384023094834022/",
+      "description": "A next-generation C++ language server for modern C++, focused on high performance and deep code intelligence",
+      "language": "C++",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "c",
+        "cpp",
+        "language-server"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf ykiko.me. Repo und Story teilen „clice“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50506588",
+        "title": "A NES emulator written in Odin",
+        "url": "https://lucypero.com/lucynes.html",
+        "points": 121,
+        "comments": 52,
+        "created_at": "2026-11-15T12:51:47+00:00"
+      },
+      "repository_url": "https://github.com/lucypero/lucynes",
+      "project_url": "https://lucypero.com/lucynes.html",
+      "description": "Accurate NES emulator written in Odin",
+      "language": "Odin",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf lucypero.com. Repo und Story teilen „lucynes“, „lucypero“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50509416",
+        "title": "Eclipse Mosquitto – An open source MQTT broker",
+        "url": "https://github.com/eclipse-mosquitto/mosquitto",
+        "points": 105,
+        "comments": 40,
+        "created_at": "2026-11-15T18:36:40+00:00"
+      },
+      "repository_url": "https://github.com/eclipse-mosquitto/mosquitto",
+      "project_url": "https://github.com/eclipse-mosquitto/mosquitto",
+      "description": "Eclipse Mosquitto - An open source MQTT broker",
+      "language": "C",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "broker",
+        "eclipse-iot",
+        "iot",
+        "messaging",
+        "mosquitto",
+        "mqtt",
+        "mqtt-broker",
+        "mqtt-client",
+        "mqtt-server"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50507206",
+        "title": "The Hypertext Transfer Protocol Status Code 483 (I'm Not a Freezer)",
+        "url": "https://datatracker.ietf.org/doc/draft-banffy-httpbis-not-a-freezer/",
+        "points": 75,
+        "comments": 50,
+        "created_at": "2026-11-15T14:31:52+00:00"
+      },
+      "repository_url": "https://github.com/ietf-tools/datatracker",
+      "project_url": "https://datatracker.ietf.org/doc/draft-banffy-httpbis-not-a-freezer/",
+      "description": "The day-to-day front-end to the IETF database for people who work on IETF standards.",
+      "language": "Python",
+      "license_id": "BSD-3-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "database",
+        "datatracker",
+        "django",
+        "ietf"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf datatracker.ietf.org. Repo und Story teilen „datatracker“, „ietf“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50515616",
+        "title": "It's always DNS, so why are we running our own?",
+        "url": "https://s2.dev/blog/dns-server",
+        "points": 55,
+        "comments": 36,
+        "created_at": "2026-11-16T09:19:38+00:00"
+      },
+      "repository_url": "https://github.com/s2-streamstore/s2",
+      "project_url": "https://s2.dev/blog/dns-server",
+      "description": "Durable Streams API",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "database",
+        "durable",
+        "durable-streams",
+        "real-time",
+        "streaming",
+        "streamstore",
+        "write-ahead-log"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf s2.dev. Repo und Story teilen „s2“."
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50506376",
+        "title": "Understanding Positional Embeddings in Modern LLMs",
+        "url": "https://magazine.sebastianraschka.com/p/understanding-positional-embeddings",
+        "points": 239,
+        "comments": 27,
+        "created_at": "2026-11-15T12:14:06+00:00"
+      },
+      "repository_url": "https://github.com/rasbt/LLMs-from-scratch",
+      "project_url": "https://magazine.sebastianraschka.com/p/understanding-positional-embeddings",
+      "description": "Implement a ChatGPT-like LLM in PyTorch from scratch, step by step",
+      "language": "Jupyter Notebook",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ai",
+        "artificial-intelligence",
+        "attention-mechanism",
+        "deep-learning",
+        "finetuning",
+        "from-scratch",
+        "generative-ai",
+        "gpt",
+        "instruction-tuning",
+        "language-model",
+        "large-language-models",
+        "llm",
+        "machine-learning",
+        "natural-language-processing",
+        "pretraining",
+        "python",
+        "pytorch",
+        "tokenizer",
+        "transformers"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf magazine.sebastianraschka.com. Repo und Story teilen „llms“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "Topics: AI-Begriffe „ai“, „generative ai“, „gpt“, „language model“ …",
+        "Name: AI-Begriffe „llm“",
+        "Beschreibung: AI-Begriffe „chatgpt“, „llm“",
+        "README: 92-mal AI-Begriffe („large language model“, „gpt“, „llm“, „chatgpt“ …)"
+      ]
+    }
+  ]
+}
