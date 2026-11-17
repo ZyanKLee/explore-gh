@@ -1,238 +1,226 @@
-"""Rules shared by the community project lists (HN, Lobsters). See docs/ausgabe.md."""
+"""The community lists: trending open source projects on HN and Lobsters.
 
-import re
-from collections import Counter
-from collections.abc import Callable, Collection, Iterable
-from datetime import date
-from dataclasses import dataclass, replace
-from typing import Generic, Protocol, TypeVar
-from urllib.parse import urlsplit
+Both platforms follow the same rules. They differ only in their Platform.
+See docs/community.md.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterable
+from dataclasses import dataclass, field, replace
+from datetime import date, datetime, timedelta
+from urllib.parse import quote, urlsplit
 
 from github_anti_ai.domain.ai_focus import AiFocus, AiFocusClassifier
-from github_anti_ai.domain.edition import COOLDOWN_DAYS, MAX_PER_LANGUAGE, MAX_PER_OWNER
+from github_anti_ai.domain.curation import check_section, check_unique, in_cooldown, varied
 from github_anti_ai.domain.exclusion import ExclusionPolicy
 from github_anti_ai.domain.model import Section
-from github_anti_ai.domain.opensource import UNRECOGNIZED_LICENSE
+from github_anti_ai.domain.story_relation import shared_words
 from github_anti_ai.domain.text import quoted
 
-PROJECTS_PER_EDITION = 20
+# Which stories the searches ask for
+HN_STORY_WINDOW = timedelta(hours=48)
+HN_MIN_STORY_POINTS = 50
+LOBSTERS_HOTTEST_PAGES = 2
+LOBSTERS_SHOW_WINDOW = timedelta(days=7)
 
-# Bezug zur Story, see docs/datensammlung.md
-MIN_WORD_LENGTH = 3
-# A repo name like `yk` counts in full, although it is shorter than a word.
-MIN_FULL_NAME_LENGTH = 2
-GENERIC_WORDS = frozenset({
-    "www", "blog", "blogs", "news", "docs", "doc", "wiki", "home", "site", "web", "page",
-    "pages", "post", "posts", "com", "org", "net", "dev", "app", "html", "htm",
-    "github", "gitlab", "codeberg", "sourcehut", "gitea", "forgejo",
-    "the", "and", "for", "with", "from", "your", "you", "how", "why", "what", "new",
-    "open", "source", "code", "project", "projects", "using", "use",
-})  # fmt: skip
+OPEN_SOURCE_LICENSES = frozenset(
+    {
+        "0BSD", "AFL-3.0", "AGPL-3.0-only", "AGPL-3.0-or-later", "Apache-2.0",
+        "Artistic-2.0", "BSD-2-Clause", "BSD-3-Clause", "BSL-1.0", "CC0-1.0",
+        "CDDL-1.0", "CERN-OHL-P-2.0", "ECL-2.0", "EPL-1.0", "EPL-2.0",
+        "EUPL-1.2", "GPL-2.0-only", "GPL-2.0-or-later", "GPL-3.0-only",
+        "GPL-3.0-or-later", "ISC", "LGPL-2.1-only", "LGPL-2.1-or-later",
+        "LGPL-3.0-only", "LGPL-3.0-or-later", "MIT", "MPL-2.0", "MS-PL",
+        "OFL-1.1", "OSL-3.0", "PostgreSQL", "Python-2.0", "Unlicense", "WTFPL",
+        "Zlib",
+    }
+)  # fmt: skip
+# What a forge reports for a license file it cannot identify: typically two license
+# files (MIT and Apache) or a modified license text. GitLab's "other" becomes this.
+UNRECOGNIZED_LICENSE = "NOASSERTION"
 UNRECOGNIZED_LICENSE_REASON = (
     "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
 )
-WEBSITE_REPO_SUFFIXES = (".github.io", ".gitlab.io", ".codeberg.page")
-_WORD = re.compile(r"[a-z0-9]+")
 
 
-class CommunityStory(Protocol):
-    @property
-    def title(self) -> str: ...
-
-
-class CommunityProject(Protocol):
-    """What the shared rules need to know about an HN or Lobsters project.
-
-    The real ones are frozen dataclasses: the curator writes `reasons` with `replace`.
-    """
-
-    @property
-    def story(self) -> CommunityStory: ...
-    @property
-    def project_url(self) -> str: ...
-    @property
-    def license_id(self) -> str | None: ...
-    @property
-    def linked_directly(self) -> bool: ...
-    @property
-    def reasons(self) -> tuple[str, ...]: ...
-
-    @property
-    def repository_url(self) -> str: ...
-    @property
-    def is_open_source(self) -> bool: ...
-    @property
-    def has_code(self) -> bool: ...
-    @property
-    def is_fork(self) -> bool: ...
-    @property
-    def is_archived(self) -> bool: ...
-    @property
-    def language(self) -> str | None: ...
-    @property
-    def description(self) -> str: ...
-    @property
-    def topics(self) -> tuple[str, ...]: ...
-    @property
-    def readme(self) -> str | None: ...
-
-
-Project = TypeVar("Project", bound=CommunityProject)
-
-
-class CommunityEdition(Protocol):
-    """A past HN or Lobsters edition, as far as the cooldown looks at it."""
-
-    @property
-    def day(self) -> date: ...
-    @property
-    def projects(self) -> tuple[CommunityProject, ...]: ...
-    @property
-    def ai_projects(self) -> tuple[CommunityProject, ...]: ...
+def is_open_source_license(license_id: str | None) -> bool:
+    """An approved license, or a license file the forge cannot identify."""
+    return license_id in OPEN_SOURCE_LICENSES or license_id == UNRECOGNIZED_LICENSE
 
 
 @dataclass(frozen=True)
-class CommunitySelection(Generic[Project]):
-    """Main section and AI section of one community edition, each in ranking order."""
+class Platform:
+    slug: str  # first part of every address and name of the data directory: hn, lobsters
+    name: str
+    discussion_url_pattern: str  # with {id}
 
-    main: tuple[Project, ...]
-    ai: tuple[Project, ...]
-
-
-class CommunityCurator:
-    def select(
-        self,
-        candidates: Iterable[Project],
-        rank: Callable[[Project], tuple],
-        cooled_down: Collection[str] = frozenset(),
-    ) -> CommunitySelection[Project]:
-        """The projects of one community edition. `rank` sorts the best project first.
-
-        `cooled_down` holds the repository keys under cooldown, see `recently_shown`.
-        AI-focused projects go into the AI section, with the GitHub rule (`AiFocusClassifier`).
-        """
-        best: dict[str, Project] = {}
-        for candidate in candidates:
-            key = repository_key(candidate.repository_url)
-            if not _eligible(candidate) or key in cooled_down:
-                continue
-            if key not in best or rank(candidate) < rank(best[key]):
-                best[key] = candidate
-        ranked = sorted(best.values(), key=rank)
-        focus = {id(project): _ai_focus(project) for project in ranked}
-        ai = [project for project in ranked if focus[id(project)].section is Section.AI]
-        main = [project for project in ranked if focus[id(project)].section is Section.MAIN]
-        return CommunitySelection(
-            main=tuple(_explained(project, focus[id(project)]) for project in _varied(main)),
-            ai=tuple(_explained(project, focus[id(project)]) for project in _varied(ai)),
-        )
+    def discussion_url(self, story_id: str) -> str:
+        return self.discussion_url_pattern.format(id=quote(story_id))
 
 
-def check_community_edition(
-    projects: Iterable[CommunityProject],
-    platform: str,
-    ai_projects: Iterable[CommunityProject] = (),
-) -> None:
-    """The rules every HN or Lobsters edition keeps; `platform` names it in the message."""
-    projects, ai_projects = list(projects), list(ai_projects)
-    keys = [repository_key(project.repository_url) for project in projects + ai_projects]
-    if len(keys) != len(set(keys)):
-        raise ValueError(f"Ein Repo steht mehrfach in der {platform}-Ausgabe")
-    _check_section(projects, platform)
-    _check_section(ai_projects, f"{platform}-AI")
+HN = Platform("hn", "HN", "https://news.ycombinator.com/item?id={id}")
+LOBSTERS = Platform("lobsters", "Lobsters", "https://lobste.rs/s/{id}")
+PLATFORMS = (HN, LOBSTERS)
 
 
-def _check_section(projects: list[CommunityProject], platform: str) -> None:
-    if len(projects) > PROJECTS_PER_EDITION:
-        raise ValueError(f"{platform}-Ausgabe: mehr als {PROJECTS_PER_EDITION} Projekte")
-    languages = Counter(project.language for project in projects)
-    if languages and max(languages.values()) > MAX_PER_LANGUAGE:
-        raise ValueError(
-            f"{platform}-Ausgabe: mehr als {MAX_PER_LANGUAGE} Projekte einer Sprache"
-        )
-    owners = Counter(owner_key(project.repository_url) for project in projects)
-    if owners and max(owners.values()) > MAX_PER_OWNER:
-        raise ValueError(f"{platform}-Ausgabe: mehr als {MAX_PER_OWNER} Repos eines Besitzers")
+@dataclass(frozen=True)
+class Story:
+    id: str
+    title: str
+    url: str  # what the story links: a repo or a website
+    discussion_url: str
+    points: int  # HN points, Lobsters score
+    comments: int
+    created_at: datetime
 
 
-def owner_key(url: str) -> str:
-    """Forge and first part of the path: `github.com/alice` is not `codeberg.org/alice`."""
-    parsed = urlsplit(url)
-    owner = next((part for part in parsed.path.split("/") if part), "")
-    return f"{parsed.hostname or ''}/{owner}".casefold()
+@dataclass(frozen=True)
+class CommunityProject:
+    """A public software project a story links, with what its forge says about it."""
 
+    story: Story
+    repository_url: str
+    project_url: str
+    description: str
+    language: str | None
+    license_id: str | None
+    is_fork: bool
+    is_archived: bool
+    has_code: bool
+    topics: tuple[str, ...] = ()
+    linked_directly: bool = False  # the story links the repo itself, not a website
+    # "Warum Platz …?", written by the CommunityCurator: an explanation, not an identity
+    reasons: tuple[str, ...] = field(default=(), compare=False)
+    # Read for the AI section and the exclusions, never stored, like a Snapshot's README.
+    # None: it could not be read. "": the repo has none.
+    readme: str | None = field(default=None, compare=False, repr=False)
 
-def _varied(ranked: list[Project]) -> tuple[Project, ...]:
-    """In ranking order, skipping a project whose language or owner is already full."""
-    selected: list[Project] = []
-    per_language: Counter[str | None] = Counter()
-    per_owner: Counter[str] = Counter()
-    for project in ranked:
-        owner = owner_key(project.repository_url)
-        if per_language[project.language] == MAX_PER_LANGUAGE or per_owner[owner] == MAX_PER_OWNER:
-            continue
-        per_language[project.language] += 1
-        per_owner[owner] += 1
-        selected.append(project)
-        if len(selected) == PROJECTS_PER_EDITION:
-            break
-    return tuple(selected)
+    def __post_init__(self):
+        object.__setattr__(self, "topics", tuple(self.topics))
+        object.__setattr__(self, "reasons", tuple(self.reasons))
 
+    @property
+    def key(self) -> str:
+        """Two projects with the same key are the same repo."""
+        return repository_key(self.repository_url)
 
-def recently_shown(day: date, past_editions: Iterable[CommunityEdition]) -> set[str]:
-    """Repository keys under cooldown on `day`: shown on day D, blocked through D + 29.
+    @property
+    def owner_key(self) -> str:
+        """Forge and owner: `github.com/alice` is not `codeberg.org/alice`."""
+        parsed = urlsplit(self.repository_url)
+        owner = next((part for part in parsed.path.split("/") if part), "")
+        return f"{parsed.hostname or ''}/{owner}".casefold()
 
-    Whichever section the repo stood in, as with GitHub.
-    """
-    return {
-        repository_key(project.repository_url)
-        for edition in past_editions
-        if 0 <= (day - edition.day).days < COOLDOWN_DAYS
-        for project in edition.projects + edition.ai_projects
-    }
+    @property
+    def name(self) -> str:
+        parts = [part for part in urlsplit(self.repository_url).path.split("/") if part]
+        return parts[-1] if parts else ""
+
+    @property
+    def is_open_source(self) -> bool:
+        return is_open_source_license(self.license_id)
 
 
 def repository_key(url: str) -> str:
-    """Two repository addresses with the same key name the same repo."""
+    """Addresses that differ only in case and a trailing slash name the same repo."""
     return url.rstrip("/").casefold()
 
 
-def relates_to_story(title: str, page_url: str, repository_url: str) -> bool:
-    """Whether a repo found on the story's website shares a word with the story."""
-    return bool(shared_words(title, page_url, repository_url))
+@dataclass(frozen=True)
+class CommunityEdition:
+    """The selection of one day on one platform. Projects are in ranking order."""
+
+    platform: Platform
+    day: date
+    main: tuple[CommunityProject, ...] = ()
+    ai: tuple[CommunityProject, ...] = ()
+
+    def __post_init__(self):
+        object.__setattr__(self, "main", tuple(self.main))
+        object.__setattr__(self, "ai", tuple(self.ai))
+        name = f"{self.platform.name}-Ausgabe vom {self.day}"
+        for section, projects in [("Hauptliste", self.main), ("AI-Sektion", self.ai)]:
+            check_section(
+                projects,
+                language_of=lambda project: project.language,
+                owner_of=lambda project: project.owner_key,
+                name=f"{name}, {section}",
+            )
+        check_unique((project.key for project in self.main + self.ai), name)
+
+    def projects(self, section: Section) -> tuple[CommunityProject, ...]:
+        return self.main if section is Section.MAIN else self.ai
 
 
-def shared_words(title: str, page_url: str, repository_url: str) -> set[str]:
-    """The words a repo found on the story's website has in common with the story.
+class CommunityCurator:
+    def curate(
+        self,
+        platform: Platform,
+        day: date,
+        candidates: Iterable[CommunityProject],
+        past_editions: Iterable[CommunityEdition] = (),
+    ) -> CommunityEdition:
+        """`past_editions` are the platform's own editions; their repos are under cooldown."""
+        blocked = {
+            project.key
+            for edition in past_editions
+            if in_cooldown(edition.day, day)
+            for project in edition.main + edition.ai
+        }
+        best: dict[str, CommunityProject] = {}  # one story per repo: the best ranked one
+        for candidate in candidates:
+            if not _eligible(candidate) or candidate.key in blocked:
+                continue
+            if candidate.key not in best or _rank(candidate) < _rank(best[candidate.key]):
+                best[candidate.key] = candidate
+        ranked = sorted(best.values(), key=_rank)
+        focus = {project.key: _ai_focus(project) for project in ranked}
 
-    The more words, the closer the repo is to the story. A website repo shares none.
-    """
-    parts = [part for part in urlsplit(repository_url).path.split("/") if part]
-    if len(parts) < 2:
-        return set()
-    owner, name = parts[0], parts[-1]
-    if name.casefold().endswith(WEBSITE_REPO_SUFFIXES):
-        return set()
-    page = urlsplit(page_url)
-    host = page.hostname or ""
-    repo_words = _meaningful(_words(owner) | _words(name) | _joined(owner) | _joined(name))
-    full_name = "".join(_WORD.findall(name.casefold()))
-    if len(full_name) >= MIN_FULL_NAME_LENGTH and _ordinary(full_name):
-        repo_words.add(full_name)
-    story_words = _words(title) | _words(host) | _joined(host) | _words(page.path)
-    return repo_words & story_words
+        def section(wanted: Section) -> tuple[CommunityProject, ...]:
+            chosen = varied(
+                (p for p in ranked if focus[p.key].section is wanted),
+                language_of=lambda project: project.language,
+                owner_of=lambda project: project.owner_key,
+            )
+            return tuple(_explained(project, focus[project.key]) for project in chosen)
+
+        return CommunityEdition(platform, day, main=section(Section.MAIN), ai=section(Section.AI))
+
+
+def _rank(project: CommunityProject) -> tuple[int, int, float]:
+    """The platform decides: points, then comments, then the newer story."""
+    story = project.story
+    return -story.points, -story.comments, -story.created_at.timestamp()
+
+
+def _eligible(project: CommunityProject) -> bool:
+    """Open source with code, no fork, not archived, and none of the GitHub text exclusions."""
+    excluded = ExclusionPolicy().check_text(
+        name=project.name,
+        description=project.description,
+        topics=project.topics,
+        readme=project.readme,
+    )
+    return (
+        project.is_open_source
+        and project.has_code
+        and not project.is_fork
+        and not project.is_archived
+        and excluded is None
+    )
 
 
 def _ai_focus(project: CommunityProject) -> AiFocus:
     return AiFocusClassifier().classify_text(
-        name=_repo_name(project.repository_url),
+        name=project.name,
         description=project.description,
         topics=project.topics,
         readme=project.readme or "",
     )
 
 
-def _explained(project: Project, focus: AiFocus) -> Project:
+def _explained(project: CommunityProject, focus: AiFocus) -> CommunityProject:
     """The project with its "Warum Platz …?" lines: how it was found, license, AI terms."""
     if project.linked_directly:
         found = "Die Story verlinkt das Repo direkt."
@@ -247,43 +235,3 @@ def _explained(project: Project, focus: AiFocus) -> Project:
         reasons.append(UNRECOGNIZED_LICENSE_REASON)
     reasons += [signal.reason for signal in focus.signals]
     return replace(project, reasons=tuple(reasons))
-
-
-def _eligible(project: CommunityProject) -> bool:
-    """Open source with code, no fork, not archived, and none of the GitHub exclusions."""
-    excluded = ExclusionPolicy().check_text(
-        name=_repo_name(project.repository_url),
-        description=project.description,
-        topics=project.topics,
-        readme=project.readme,
-    )
-    return (
-        project.is_open_source
-        and project.has_code
-        and not project.is_fork
-        and not project.is_archived
-        and excluded is None
-    )
-
-
-def _repo_name(url: str) -> str:
-    parts = [part for part in urlsplit(url).path.split("/") if part]
-    return parts[-1] if parts else ""
-
-
-def _words(text: str) -> set[str]:
-    """`rust-lang` gives `rust` and `lang`."""
-    return set(_WORD.findall(text.casefold()))
-
-
-def _joined(text: str) -> set[str]:
-    """Each dotted part without separators: `blog.rust-lang.org` gives `rustlang` and more."""
-    return {"".join(_WORD.findall(part)) for part in text.casefold().split(".")}
-
-
-def _meaningful(words: set[str]) -> set[str]:
-    return {word for word in words if len(word) >= MIN_WORD_LENGTH and _ordinary(word)}
-
-
-def _ordinary(word: str) -> bool:
-    return not word.isdigit() and word not in GENERIC_WORDS

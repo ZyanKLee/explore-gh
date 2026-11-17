@@ -1,13 +1,12 @@
 """Collects the snapshots of a day. See docs/datensammlung.md."""
 
-import dataclasses
 import logging
-from collections.abc import Sequence
-from dataclasses import dataclass
+from collections.abc import Iterator, Sequence
+from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 
 from github_anti_ai.application.ports import (
-    Assessor,
+    Assess,
     CandidateSource,
     Clock,
     CollectionStatus,
@@ -20,11 +19,11 @@ from github_anti_ai.domain.copies import CopyCheck
 from github_anti_ai.domain.model import Candidate, RepoId, Section, Snapshot
 
 SNAPSHOT_RETENTION_DAYS = 14
-FETCH_CHUNK_SIZE = 20
+FETCH_CHUNK_SIZE = 20  # saved after each chunk: a crash loses at most this many
 MAX_CONSECUTIVE_FAILURES = 3
 # Facts of this age are fetched again. A repo not seen for longer counts as new.
 REFRESH_AFTER_DAYS = 3
-# So many of the best repos per section always get fresh facts before publishing.
+# So many of the best repos per section get fresh facts before they are published.
 FRESH_LEADERS_PER_SECTION = 60
 
 log = logging.getLogger(__name__)
@@ -34,7 +33,7 @@ log = logging.getLogger(__name__)
 class CollectionReport:
     day: date
     discovered: int
-    collected: int  # candidates with a snapshot of the day, including earlier runs
+    collected: int  # candidates with a snapshot of the day, earlier runs included
     missing: tuple[RepoId, ...]  # do not exist (any more)
     failed: tuple[RepoId, ...]  # could not be fetched, a rerun tries them again
     source_errors: tuple[str, ...]
@@ -44,112 +43,100 @@ class CollectionReport:
     carried_over: int = 0  # in this run: snapshot of an earlier day with today's stars
 
 
+@dataclass
+class _Plan:
+    """What to do with each candidate of the day."""
+
+    new: list[RepoId] = field(default_factory=list)  # facts and star history
+    stale: list[Candidate] = field(default_factory=list)  # facts only
+    reusable: list[Candidate] = field(default_factory=list)  # no request at all
+    done: int = 0  # collected by an earlier run of the day
+
+
 class CollectSnapshots:
     def __init__(
         self,
         candidate_sources: Sequence[CandidateSource],
         repo_source: RepoSource,
         snapshot_store: SnapshotStore,
+        status_store: CollectionStatusStore,
         clock: Clock,
-        assess: Assessor | None = None,
+        assess: Assess | None = None,
         limit: int | None = None,
-        status_store: CollectionStatusStore | None = None,
     ):
+        """Without `assess` the best repos are not refreshed before publishing."""
         self._candidate_sources = candidate_sources
         self._repo_source = repo_source
-        self._snapshot_store = snapshot_store
+        self._snapshots = snapshot_store
+        self._status = status_store
         self._clock = clock
         self._assess = assess
         self._limit = limit
-        self._status_store = status_store
 
     def run(self) -> CollectionReport:
         now = self._clock.now()
         today = now.date()
         candidates, source_errors = self._discover(today)
-
-        done = {snapshot.repo for snapshot in self._snapshot_store.load(today)}
+        collected = {snapshot.repo for snapshot in self._snapshots.load(today)}
         previous = self._previous_snapshots(today)
-        new: list[RepoId] = []
-        stale: list[Candidate] = []
-        reusable: list[Candidate] = []
-        for candidate in candidates:
-            old = previous.get(candidate.repo)
-            if candidate.repo in done:
-                continue
-            if old is None or not old.star_history.daily:
-                new.append(candidate.repo)
-            elif candidate.stars is None or _facts_age(old, today) >= REFRESH_AFTER_DAYS:
-                stale.append(candidate)
-            else:
-                reusable.append(candidate)
+        plan = _plan(candidates, collected, previous, today)
         log.info(
             "%d Kandidaten: %d neu holen, %d auffrischen, %d übernehmen, %d schon da",
-            len(candidates),
-            len(new),
-            len(stale),
-            len(reusable),
-            len(candidates) - len(new) - len(stale) - len(reusable),
-        )
+            len(candidates), len(plan.new), len(plan.stale), len(plan.reusable), plan.done,
+        )  # fmt: skip
 
-        run = _Run(self._repo_source, now)
-        carried = self._carry_over(reusable, previous, now)
-        done |= carried
+        fetcher = _Fetcher(self._repo_source, now)
+        carried = self._carry_over(plan.reusable, previous, now)
+        collected |= carried
 
-        for chunk, snapshots in run.fetch(new, with_star_history=True, label="Neu holen"):
+        for chunk, snapshots in fetcher.fetch(plan.new, with_star_history=True, label="Neu holen"):
             if snapshots is None:
-                run.failed.extend(chunk)
+                fetcher.failed.extend(chunk)
                 continue
-            self._snapshot_store.append(today, snapshots)
-            done |= {snapshot.repo for snapshot in snapshots}
-            run.fetched += len(snapshots)
+            self._snapshots.append(today, snapshots)
+            collected |= {snapshot.repo for snapshot in snapshots}
+            fetcher.fetched += len(snapshots)
 
-        stars_of = {candidate.repo: candidate for candidate in stale}
-        for chunk, snapshots in run.fetch(
-            [c.repo for c in stale], with_star_history=False, label="Auffrischen"
+        stars_of = {candidate.repo: candidate for candidate in plan.stale}
+        for chunk, snapshots in fetcher.fetch(
+            [c.repo for c in plan.stale], with_star_history=False, label="Auffrischen"
         ):
             if snapshots is None:
-                # older facts are better than none
-                fallback = [stars_of[repo] for repo in chunk if stars_of[repo].stars is not None]
-                carried |= self._carry_over(fallback, previous, now)
-                done |= carried
-                run.failed.extend(repo for repo in chunk if stars_of[repo].stars is None)
+                # older facts are better than none, if the source told today's stars
+                known = [stars_of[repo] for repo in chunk if stars_of[repo].stars is not None]
+                carried |= self._carry_over(known, previous, now)
+                collected |= carried
+                fetcher.failed.extend(repo for repo in chunk if stars_of[repo].stars is None)
                 continue
-            continued = [_continue_history(previous[s.repo], s) for s in snapshots]
-            self._snapshot_store.append(today, continued)
-            done |= {snapshot.repo for snapshot in snapshots}
-            run.refreshed += len(snapshots)
+            self._snapshots.append(today, [previous[s.repo].with_facts_of(s) for s in snapshots])
+            collected |= {snapshot.repo for snapshot in snapshots}
+            fetcher.refreshed += len(snapshots)
 
-        refreshed_leaders = self._refresh_leaders(run, today)
+        refreshed_leaders = self._refresh_leaders(fetcher, today)
 
-        collected = sum(1 for candidate in candidates if candidate.repo in done)
         oldest = today - timedelta(days=SNAPSHOT_RETENTION_DAYS)
-        self._snapshot_store.prune(before=oldest)
-        if self._status_store is not None:
-            self._status_store.save(
-                CollectionStatus(
-                    day=today,
-                    discovered=len(candidates),
-                    collected=collected,
-                    failed=len(run.failed),
-                )
-            )
-            self._status_store.prune(before=oldest)
-        return CollectionReport(
+        self._snapshots.prune(before=oldest)
+        report = CollectionReport(
             day=today,
             discovered=len(candidates),
-            collected=collected,
-            missing=tuple(run.missing),
-            failed=tuple(run.failed),
+            collected=sum(1 for candidate in candidates if candidate.repo in collected),
+            missing=tuple(fetcher.missing),
+            failed=tuple(fetcher.failed),
             source_errors=tuple(source_errors),
-            fetch_errors=tuple(run.errors),
-            fetched=run.fetched,
-            refreshed=run.refreshed,
+            fetch_errors=tuple(fetcher.errors),
+            fetched=fetcher.fetched,
+            refreshed=fetcher.refreshed,
             carried_over=len(carried - refreshed_leaders),
         )
+        self._status.save(
+            CollectionStatus(today, report.discovered, report.collected, len(report.failed))
+        )
+        self._status.prune(before=oldest)
+        return report
 
     def _discover(self, today: date) -> tuple[list[Candidate], list[str]]:
-        candidates: dict[RepoId, Candidate] = {}  # keeps the order of discovery
+        """Candidates of all sources, each repo once, in the order of discovery."""
+        candidates: dict[RepoId, Candidate] = {}
         errors = []
         for source in self._candidate_sources:
             remaining = None if self._limit is None else self._limit - len(candidates)
@@ -170,7 +157,7 @@ class CollectSnapshots:
         """The latest snapshot of each repo from the days before today."""
         latest: dict[RepoId, Snapshot] = {}
         for back in range(REFRESH_AFTER_DAYS, 0, -1):  # oldest first, later days win
-            for snapshot in self._snapshot_store.load(today - timedelta(days=back)):
+            for snapshot in self._snapshots.load(today - timedelta(days=back)):
                 latest[snapshot.repo] = snapshot
         return latest
 
@@ -178,18 +165,15 @@ class CollectSnapshots:
         self, candidates: Sequence[Candidate], previous: dict[RepoId, Snapshot], now: datetime
     ) -> set[RepoId]:
         snapshots = [previous[c.repo].carried_over(now, c.stars) for c in candidates]
-        if snapshots:
-            self._snapshot_store.append(now.date(), snapshots)
+        self._snapshots.append(now.date(), snapshots)
         return {snapshot.repo for snapshot in snapshots}
 
-    def _refresh_leaders(self, run: "_Run", today: date) -> set[RepoId]:
-        """Fresh facts for the best repos of each section, so that nothing published is old."""
+    def _refresh_leaders(self, fetcher: "_Fetcher", today: date) -> set[RepoId]:
+        """Fresh facts for the best repos of each section: nothing published is old."""
         if self._assess is None:
             return set()
-        current = {snapshot.repo: snapshot for snapshot in self._snapshot_store.load(today)}
-        assessments = CopyCheck().apply(
-            [self._assess(snapshot) for snapshot in current.values()]
-        )
+        current = {snapshot.repo: snapshot for snapshot in self._snapshots.load(today)}
+        assessments = CopyCheck().apply([self._assess(s) for s in current.values()])
         leaders: list[RepoId] = []
         for section in Section:
             ranked = sorted(
@@ -197,27 +181,46 @@ class CollectSnapshots:
                 key=lambda a: a.score,
                 reverse=True,
             )
-            leaders.extend(
+            leaders += [
                 a.repo
                 for a in ranked[:FRESH_LEADERS_PER_SECTION]
                 if a.snapshot.facts_at.date() < today
-            )
+            ]
 
         refreshed: set[RepoId] = set()
-        for _, snapshots in run.fetch(
+        for _, snapshots in fetcher.fetch(
             leaders, with_star_history=False, label="Die Besten auffrischen", report_missing=False
         ):
             if snapshots is None:
                 continue  # the carried over snapshot stays
-            continued = [_continue_history(current[s.repo], s) for s in snapshots]
-            self._snapshot_store.append(today, continued)
+            self._snapshots.append(today, [current[s.repo].with_facts_of(s) for s in snapshots])
             refreshed |= {snapshot.repo for snapshot in snapshots}
-            run.refreshed += len(snapshots)
+            fetcher.refreshed += len(snapshots)
         return refreshed
 
 
-class _Run:
-    """Fetches in chunks and keeps count of what happened."""
+def _plan(
+    candidates: Sequence[Candidate],
+    collected: set[RepoId],
+    previous: dict[RepoId, Snapshot],
+    today: date,
+) -> _Plan:
+    plan = _Plan()
+    for candidate in candidates:
+        old = previous.get(candidate.repo)
+        if candidate.repo in collected:
+            plan.done += 1
+        elif old is None or not old.star_history.daily:
+            plan.new.append(candidate.repo)
+        elif candidate.stars is None or (today - old.facts_at.date()).days >= REFRESH_AFTER_DAYS:
+            plan.stale.append(candidate)
+        else:
+            plan.reusable.append(candidate)
+    return plan
+
+
+class _Fetcher:
+    """Fetches in chunks, keeps count, and gives up after several failures in a row."""
 
     def __init__(self, repo_source: RepoSource, now: datetime):
         self._repo_source = repo_source
@@ -225,13 +228,18 @@ class _Run:
         self._failures_in_a_row = 0
         self.missing: list[RepoId] = []
         self.failed: list[RepoId] = []
-        self.errors: dict[str, None] = {}
+        self.errors: dict[str, None] = {}  # each message once, in order
         self.fetched = 0
         self.refreshed = 0
 
     def fetch(
-        self, repos: Sequence[RepoId], *, with_star_history: bool, label: str, report_missing=True
-    ):
+        self,
+        repos: Sequence[RepoId],
+        *,
+        with_star_history: bool,
+        label: str,
+        report_missing: bool = True,
+    ) -> Iterator[tuple[Sequence[RepoId], list[Snapshot] | None]]:
         """Yields each chunk with its snapshots, or with None if it could not be fetched."""
         chunks = [repos[i : i + FETCH_CHUNK_SIZE] for i in range(0, len(repos), FETCH_CHUNK_SIZE)]
         for number, chunk in enumerate(chunks, start=1):
@@ -251,26 +259,9 @@ class _Run:
             self._failures_in_a_row = 0
             if report_missing:
                 found = {snapshot.repo for snapshot in snapshots}
-                self.missing.extend(repo for repo in chunk if repo not in found)
+                self.missing += [repo for repo in chunk if repo not in found]
             log.info(
                 "%s %d/%d: %d von %d Repos",
-                label,
-                number,
-                len(chunks),
-                min(number * FETCH_CHUNK_SIZE, len(repos)),
-                len(repos),
-            )
+                label, number, len(chunks), min(number * FETCH_CHUNK_SIZE, len(repos)), len(repos),
+            )  # fmt: skip
             yield chunk, snapshots
-
-
-def _facts_age(snapshot: Snapshot, today: date) -> int:
-    return (today - snapshot.facts_at.date()).days
-
-
-def _continue_history(old: Snapshot, fresh: Snapshot) -> Snapshot:
-    """Fresh facts with our own star history: the old one plus the stars gained since."""
-    days_passed = (fresh.taken_at.date() - old.taken_at.date()).days
-    gained = max(0, fresh.stars - old.stars)
-    return dataclasses.replace(
-        fresh, star_history=old.star_history.continued(days_passed, gained)
-    )

@@ -1,8 +1,8 @@
 # github-anti-ai
 
 Eine persönliche Explore-Seite für Open-Source-Software. Die GitHub-Liste zeigt jeden
-Tag 20 aufstrebende Repos, die überwiegend von Menschen geschrieben wurden. Eine
-getrennte HN- und Lobsters-Listen zeigen trendende OSS-Projekte, auch auf GitLab sowie
+Tag 20 aufstrebende Repos, die überwiegend von Menschen geschrieben wurden. Getrennte
+HN- und Lobsters-Listen zeigen trendende OSS-Projekte, auch auf GitLab sowie
 öffentlichen Gitea-/Forgejo-Instanzen. Repos zum Thema AI stehen in einer eigenen
 GitHub-Sektion.
 Köder für Schadsoftware, Linksammlungen, Kryptowährungen und Repos in fremden Sprachen
@@ -157,10 +157,11 @@ beginnen, sind von Git ausgenommen.
 | `data/lobsters-editions/` | Lobsters-Projektausgaben, eine Datei pro Tag, in Git |
 | `data/history/` | Langzeitdaten: Zahlen und Urteil zu jedem bewerteten Repo, eine Datei pro Tag, in Git |
 | `output/` | die gebaute Website, nicht in Git |
-| `docs/` | Konzepte: Datensammlung, Bewertung, Ausgabe, Veröffentlichung |
+| `docs/` | Konzepte: Datensammlung, Bewertung, Ausgabe, Community-Listen, Langzeitdaten, Veröffentlichung |
 | `AGENTS.md` | Entscheidungen, Glossar und Regeln für die Entwicklung |
 
-Die Regeln der Bewertung und ihre Punktwerte stehen in `docs/bewertung.md`.
+Die Regeln der Bewertung und ihre Punktwerte stehen in `docs/bewertung.md`, die der
+HN- und Lobsters-Listen in `docs/community.md`.
 
 ## Regeln ändern
 

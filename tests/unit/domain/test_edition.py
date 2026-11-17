@@ -1,155 +1,129 @@
-from datetime import UTC, datetime
+from datetime import timedelta
 
 import pytest
+from builders import TODAY, make_assessment, make_edition, make_entry
 
-from builders import TODAY, make_assessment, make_edition, make_entry, star_history
-from github_anti_ai.domain.edition import (
-    ENTRIES_PER_SECTION,
-    MAX_PER_LANGUAGE,
-    MAX_PER_OWNER,
-    Edition,
-    EditionStats,
-    Entry,
-)
-from github_anti_ai.domain.model import RepoId, Section, Signal
+from github_anti_ai.domain.edition import Edition, EditionCurator, EditionStats, Entry
+from github_anti_ai.domain.model import Exclusion, RepoId, Section
 
-LANGUAGES = ["Rust", "Go", "C", "Zig", "Python", "Lua"]
+curator = EditionCurator()
 
 
-def varied_entries(count, prefix="user"):
-    """Entries whose languages never exceed the diversity limit."""
-    return tuple(
-        make_entry(f"{prefix}{i}/project{i}", language=LANGUAGES[i % len(LANGUAGES)])
-        for i in range(count)
-    )
+def names(entries):
+    return [str(entry.repo) for entry in entries]
 
 
-def same_language_entries(count, language, prefix="user"):
-    return tuple(make_entry(f"{prefix}{i}/project{i}", language=language) for i in range(count))
+class TestEdition:
+    def test_refuses_more_than_20_entries_per_section(self):
+        with pytest.raises(ValueError):
+            make_edition(main=[make_entry(f"o{i}/r", language=f"L{i}") for i in range(21)])
+
+    def test_refuses_more_than_4_entries_of_a_language(self):
+        with pytest.raises(ValueError):
+            make_edition(ai=[make_entry(f"o{i}/r") for i in range(5)])
+
+    def test_refuses_more_than_2_repos_of_an_owner(self):
+        with pytest.raises(ValueError):
+            make_edition(main=[make_entry(f"alice/r{i}", language=f"L{i}") for i in range(3)])
+
+    def test_refuses_a_repo_twice_even_across_sections(self):
+        with pytest.raises(ValueError):
+            make_edition(main=["alice/tiny"], ai=["Alice/Tiny"])
+
+    def test_ranks_count_from_1_in_each_section(self):
+        edition = make_edition(main=["a/x", "b/y"], ai=["c/z"])
+
+        assert edition.ranks() == {
+            RepoId.parse("a/x"): 1,
+            RepoId.parse("b/y"): 2,
+            RepoId.parse("c/z"): 1,
+        }
 
 
-def test_entry_takes_over_what_the_page_shows_from_the_assessment():
-    signal = Signal(kind="ai_assistance", weight=-0.2, reason="CLAUDE.md im Hauptverzeichnis")
-    assessment = make_assessment("alice/tiny-editor", score=0.83, gained=120, signals=(signal,))
+class TestEntry:
+    def test_takes_what_the_page_shows_from_the_assessment(self):
+        entry = Entry.from_assessment(make_assessment("alice/tiny", score=42, gained=150))
 
-    entry = Entry.from_assessment(assessment)
-
-    snapshot = assessment.snapshot
-    assert entry.repo == RepoId.parse("alice/tiny-editor")
-    assert entry.score == 0.83
-    assert entry.signals == (signal,)
-    assert entry.description == snapshot.description
-    assert entry.homepage == snapshot.homepage
-    assert entry.primary_language == "Rust"
-    assert entry.topics == snapshot.topics
-    assert entry.stars == snapshot.stars
-    assert entry.star_history == star_history(120)
-    assert entry.created_at == datetime(2026, 10, 20, 12, 0, tzinfo=UTC)
-    assert entry.pushed_at == snapshot.pushed_at
-    assert entry.license == "MIT"
-    assert entry.forks == snapshot.forks
-    assert entry.active_authors == 1
+        assert entry.score == 42
+        assert entry.star_history.gained() == 150
+        assert entry.primary_language == "Rust"
+        assert entry.active_authors == 1
 
 
-def test_edition_keeps_its_entries_in_ranking_order():
-    entries = varied_entries(3)
-
-    edition = Edition(day=TODAY, main=entries, ai=())
-
-    assert edition.entries(Section.MAIN) == entries
-    assert edition.entries(Section.AI) == ()
-
-
-def test_edition_may_hold_the_full_number_of_entries_in_each_section():
-    edition = Edition(
-        day=TODAY,
-        main=varied_entries(ENTRIES_PER_SECTION, prefix="main"),
-        ai=varied_entries(ENTRIES_PER_SECTION, prefix="ai"),
-    )
-
-    assert len(edition.entries(Section.MAIN)) == ENTRIES_PER_SECTION
-    assert len(edition.entries(Section.AI)) == ENTRIES_PER_SECTION
-
-
-@pytest.mark.parametrize("section", ["main", "ai"])
-def test_edition_with_too_many_entries_in_a_section_is_rejected(section):
-    too_many = varied_entries(ENTRIES_PER_SECTION + 1)
-
-    with pytest.raises(ValueError):
-        Edition(day=TODAY, **{section: too_many})
-
-
-def test_edition_with_too_many_entries_of_one_language_is_rejected():
-    with pytest.raises(ValueError):
-        Edition(day=TODAY, main=same_language_entries(MAX_PER_LANGUAGE + 1, "Rust"), ai=())
-
-
-def test_language_limit_applies_to_each_section_separately():
-    edition = Edition(
-        day=TODAY,
-        main=same_language_entries(MAX_PER_LANGUAGE, "Rust", prefix="main"),
-        ai=same_language_entries(MAX_PER_LANGUAGE, "Rust", prefix="ai"),
-    )
-
-    assert len(edition.entries(Section.MAIN)) == MAX_PER_LANGUAGE
-
-
-def test_repos_without_language_count_as_one_group_for_the_language_limit():
-    with pytest.raises(ValueError):
-        Edition(day=TODAY, main=same_language_entries(MAX_PER_LANGUAGE + 1, None), ai=())
-
-
-def test_edition_with_too_many_repos_of_one_owner_in_a_section_is_rejected():
-    same_owner = tuple(
-        make_entry(f"acme/tool{i}", language=LANGUAGES[i]) for i in range(MAX_PER_OWNER + 1)
-    )
-
-    with pytest.raises(ValueError):
-        Edition(day=TODAY, main=same_owner, ai=())
-
-
-def test_owner_limit_ignores_case_and_applies_to_each_section_separately():
-    with pytest.raises(ValueError):
-        Edition(
-            day=TODAY,
-            main=tuple(
-                make_entry(f"{owner}/tool{i}", language=LANGUAGES[i])
-                for i, owner in enumerate(["acme", "ACME", "Acme"][: MAX_PER_OWNER + 1])
-            ),
+class TestEditionCurator:
+    def test_sorts_by_score(self):
+        edition = curator.curate(
+            TODAY,
+            [
+                make_assessment("a/low", score=1, language="Go"),
+                make_assessment("b/high", score=9, language="C"),
+            ],
+            [],
         )
 
-    edition = Edition(
-        day=TODAY,
-        main=tuple(make_entry(f"acme/tool{i}", language=LANGUAGES[i]) for i in range(MAX_PER_OWNER)),
-        ai=tuple(make_entry(f"acme/agent{i}", language=LANGUAGES[i]) for i in range(MAX_PER_OWNER)),
-    )
-    assert len(edition.entries(Section.AI)) == MAX_PER_OWNER
+        assert names(edition.main) == ["b/high", "a/low"]
 
-
-def test_edition_carries_statistics_of_the_day():
-    stats = EditionStats(assessed=1834, excluded=420, ai_focused=212)
-
-    assert Edition(day=TODAY, stats=stats).stats == stats
-    assert Edition(day=TODAY).stats == EditionStats(assessed=0, excluded=0, ai_focused=0)
-
-
-def test_repo_listed_twice_in_a_section_is_rejected():
-    with pytest.raises(ValueError):
-        Edition(day=TODAY, main=(make_entry("alice/tiny-editor"), make_entry("alice/tiny-editor")), ai=())
-
-
-def test_repo_listed_in_both_sections_is_rejected():
-    with pytest.raises(ValueError):
-        Edition(
-            day=TODAY,
-            main=(make_entry("alice/tiny-editor"),),
-            ai=(make_entry("Alice/Tiny-Editor"),),
+    def test_on_a_tie_more_new_stars_then_the_name_win(self):
+        edition = curator.curate(
+            TODAY,
+            [
+                make_assessment("c/x", score=5, gained=100, language="Go"),
+                make_assessment("b/x", score=5, gained=200, language="C"),
+                make_assessment("A/x", score=5, gained=100, language="Zig"),
+            ],
+            [],
         )
 
+        assert names(edition.main) == ["b/x", "A/x", "c/x"]
 
-def test_edition_knows_which_repos_it_shows():
-    edition = make_edition(main=["alice/tiny-editor"], ai=["bob/agent-kit"])
+    def test_separates_the_sections(self):
+        edition = curator.curate(
+            TODAY,
+            [make_assessment("a/main"), make_assessment("b/ai", section=Section.AI)],
+            [],
+        )
 
-    assert edition.shows(RepoId.parse("alice/tiny-editor"))
-    assert edition.shows(RepoId.parse("bob/agent-kit"))
-    assert not edition.shows(RepoId.parse("carol/plotter"))
+        assert names(edition.main) == ["a/main"]
+        assert names(edition.ai) == ["b/ai"]
+
+    def test_leaves_out_excluded_repos(self):
+        edition = curator.curate(
+            TODAY, [make_assessment("a/x", exclusion=Exclusion("Fork", "fork"))], []
+        )
+
+        assert edition.main == ()
+
+    def test_leaves_out_repos_shown_in_the_last_30_days(self):
+        past = [
+            make_edition(TODAY - timedelta(days=29), main=["a/recent"]),
+            make_edition(TODAY - timedelta(days=30), ai=["b/old"]),
+        ]
+        edition = curator.curate(
+            TODAY,
+            [make_assessment("a/recent", language="Go"), make_assessment("b/old", language="C")],
+            past,
+        )
+
+        assert names(edition.main) == ["b/old"]
+
+    def test_keeps_the_variety_rule(self):
+        assessments = [make_assessment(f"o{i}/r", score=10 - i) for i in range(6)]
+
+        assert len(curator.curate(TODAY, assessments, []).main) == 4
+
+    def test_counts_the_repos_of_the_day(self):
+        edition = curator.curate(
+            TODAY,
+            [
+                make_assessment("a/x", language="Go"),
+                make_assessment("b/x", section=Section.AI),
+                make_assessment("c/x", section=Section.AI, exclusion=Exclusion("Fork", "fork")),
+            ],
+            [],
+        )
+
+        assert edition.stats == EditionStats(assessed=3, excluded=1, ai_focused=1)
+
+
+def test_edition_is_the_aggregate_of_entries():
+    assert isinstance(make_edition(main=["a/x"]), Edition)

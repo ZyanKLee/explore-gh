@@ -1,193 +1,124 @@
 # Veröffentlichung (Bounded Context „Publication“)
 
-## Aufgabe
-
-Aus den gespeicherten GitHub-Ausgaben (`data/editions/*.json`), HN-Ausgaben
-(`data/hn-editions/*.json`) und Lobsters-Ausgaben (`data/lobsters-editions/*.json`)
-entsteht eine statische Website mit getrennten Archiven und Feeds. Die Veröffentlichung
-kennt nur diese JSON-Formate. Sie fragt keine API ab, bewertet nichts und wählt nichts aus.
+Aus den gespeicherten Ausgaben (`data/editions/`, `data/hn-editions/`,
+`data/lobsters-editions/`) entsteht eine statische Website mit Archiven und Feeds je
+Liste und Sektion. Die Veröffentlichung kennt nur das JSON-Format dieser Dateien. Sie
+fragt keine API ab, bewertet nichts und wählt nichts aus.
 
 ## Aufbau
 
 ```
-data/editions/*.json ── GitHub-Ausgaben
-data/hn-editions/*.json ── eigenständige HN-Ausgaben
-data/lobsters-editions/*.json ── eigenständige Lobsters-Ausgaben
-   │  load_editions()        lesen, Format prüfen, nach Datum sortieren
+data/editions/*.json            GitHub-Ausgaben
+data/hn-editions/*.json         HN-Ausgaben
+data/lobsters-editions/*.json   Lobsters-Ausgaben
+   │  lesen, Format prüfen, nach Datum sortieren
    ▼
-section_view()               je Ausgabe und Sektion ein fertiges Seitenmodell
-   │                         (Texte, Zahlen, Begründung, Verlaufskurve)  
+Seitenmodell                    je Tag und Sektion fertige Texte und Zahlen
+   │                            (view.py, community_view.py, german.py)
    ▼
-Pelican                      Plugin macht aus jedem Seitenmodell einen Artikel,
-   │                         das Theme rendert, Pelican schreibt Archiv und Feeds
+Pelican-Plugin                  je Tag und Sektion ein Artikel (Tagesseite, Feed-Eintrag),
+   │                            je Liste die neuesten Seiten und das Archiv
    ▼
-output/
+Theme → output/
 ```
 
-Zwei Teile mit klarer Grenze:
-
-- **Seitenmodell** (`src/github_anti_ai/publication/view.py` für GitHub,
-  `community_view.py` für HN und Lobsters): reine Funktionen ohne Pelican. Hier steht
-  alles, was Text und Zahlen betrifft. Schnell und einfach zu testen. HN und Lobsters
-  unterscheiden sich nur in einer `Platform` (Name, Adresse, Bezeichnung der Punkte,
-  Link zur Diskussion).
-| **Pelican-Anbindung** (`src/github_anti_ai/publication/pelican_plugin.py` und
-  `theme/` daneben): so dünn wie möglich. Das Plugin hängt GitHub-Artikel für
-  Hauptliste und AI-Sektion sowie getrennte HN- und Lobsters-Artikel ein, ebenfalls je
-  Hauptliste und AI-Sektion. HN und Lobsters teilen sich die Makros in
-  `theme/templates/community.html` und die Tagesvorlage `community-article.html`. Das Theme
-  setzt nur noch zusammen und denkt sich keine Texte aus. Plugin und Theme liegen im Python-Paket,
-  damit der Bau sie unabhängig vom Arbeitsverzeichnis findet.
-
-Gebaut wird mit `build_site(editions_dir, output_dir)`
-(`src/github_anti_ai/publication/site.py`). Die Funktion ruft Pelican auf.
+- **Seitenmodell:** reine Funktionen ohne Pelican. Hier steht alles, was Text und Zahlen
+  betrifft. HN und Lobsters unterscheiden sich nur in einer `Platform` (Name, Adresse,
+  Bezeichnung der Punkte, Diskussion).
+- **Pelican-Anbindung** (`pelican_plugin.py`, `site.py`, `theme/`): so dünn wie möglich.
+  Das Plugin beschreibt die drei Listen in einer Tabelle (`PageList`) und erzeugt für jede
+  dieselben Seiten. Das Theme setzt nur zusammen und denkt sich keine Texte aus. Plugin
+  und Theme liegen im Python-Paket.
+- Gebaut wird mit `build_site(data_dir, output_dir)`.
 
 ## Seiten
 
 | Adresse | Inhalt |
 |---|---|
 | `/` | Trending auf GitHub, neueste Ausgabe (Hauptliste) |
-| `/ai/` | AI-Projekte auf GitHub, neueste Ausgabe (AI-Sektion) |
-| `/2026/11/12/` | Hauptliste eines Tages |
-| `/ai/2026/11/12/` | AI-Sektion eines Tages |
-| `/archiv/` | GitHub-Archiv: alle Tage, neuester zuerst, je mit Link auf beide Sektionen |
-| `/feed.xml` | Atom-Feed der Hauptliste, ein Eintrag pro Tag |
-| `/ai/feed.xml` | Atom-Feed der AI-Sektion, ein Eintrag pro Tag |
-| `/hn/` | neueste HN-Trendliste |
-| `/hn/2026/11/13/` | HN-Ausgabe eines Tages |
-| `/hn/archiv/` | alle HN-Tage, neuester zuerst |
-| `/hn/feed.xml` | Atom-Feed der HN-Liste |
-| `/hn/ai/` | neueste AI-Projekte auf HN |
-| `/hn/ai/2026/11/13/` | AI-Projekte auf HN an einem Tag |
-| `/hn/ai/feed.xml` | Atom-Feed der AI-Projekte auf HN |
-| `/lobsters/` | neueste Lobsters-Trendliste |
-| `/lobsters/2026/11/13/` | Lobsters-Ausgabe eines Tages |
-| `/lobsters/archiv/` | alle Lobsters-Tage, neuester zuerst |
-| `/lobsters/feed.xml` | Atom-Feed der Lobsters-Liste |
-| `/lobsters/ai/` | neueste AI-Projekte auf Lobsters |
-| `/lobsters/ai/2026/11/13/` | AI-Projekte auf Lobsters an einem Tag |
-| `/lobsters/ai/feed.xml` | Atom-Feed der AI-Projekte auf Lobsters |
+| `/ai/` | AI-Projekte auf GitHub, neueste Ausgabe |
+| `/2026/11/12/`, `/ai/2026/11/12/` | eine Sektion eines Tages |
+| `/archiv/` | alle Tage, neuester zuerst, je mit Link auf beide Sektionen |
+| `/feed.xml`, `/ai/feed.xml` | Atom-Feeds, ein Eintrag je Tag |
+| `/hn/`, `/hn/ai/`, `/hn/2026/11/13/`, `/hn/ai/2026/11/13/`, `/hn/archiv/` | dasselbe für HN |
+| `/hn/feed.xml`, `/hn/ai/feed.xml` | Feeds der HN-Liste |
+| `/lobsters/…` | dasselbe für Lobsters |
 
-Das HN- und das Lobsters-Archiv nennen je Tag beide Sektionen.
+- Die Hauptliste zeigt nie ein Repo der AI-Sektion und umgekehrt, auch in den Feeds.
+- Die Hauptnavigation nennt die drei Plattformen. Alle Seiten einer Plattform markieren
+  sie als aktuelle Seite.
+- Jede Tagesseite verlinkt den Tag davor und danach, die andere Sektion desselben Tages
+  und das Archiv ihrer Plattform.
+- Die Adressen der GitHub-Seiten und -Feeds bleiben, wie sie sind, damit Abos weiterlaufen.
+- Leere Sektion: „Heute nichts gefunden“. Noch keine Ausgabe: „Noch keine Ausgabe“.
 
-- Die Hauptliste zeigt nie ein Repo der AI-Sektion und umgekehrt. Das gilt auch für
-  die Feeds, und genauso für HN und Lobsters.
-- Die Hauptnavigation nennt nur die drei Plattformen: „Trending auf GitHub“, „Trending
-  auf HN“, „Trending auf Lobsters“. Alle Seiten einer Plattform (beide Sektionen,
-  Tagesseiten, Archiv) markieren dort ihre Plattform als aktuelle Seite.
-- Jede Tagesseite verlinkt den Tag davor und danach, die andere Sektion desselben
-  Tages („AI-Projekte dieses Tages“ bzw. „Trending dieses Tages“) und das Archiv ihrer
-  Plattform. Das gilt für GitHub, HN und Lobsters gleichermaßen.
-- Die Adressen der GitHub-Seiten und -Feeds blieben bei der Umbenennung (13.11.2026)
-  unverändert, damit bestehende Abos weiterlaufen.
-- Ist eine Sektion leer, steht dort „Heute nichts gefunden“
-- Gibt es noch keine Ausgabe, entsteht eine Startseite mit dem Hinweis „Noch keine
-  Ausgabe“
+## Ein Eintrag
 
-## Ein Eintrag auf der Seite
+**GitHub:** Rang, Name als Link, Beschreibung; Sprache, Sterne, Forks, aktive Autoren,
+Alter, Lizenz, Homepage; Verlaufskurve der letzten 35 Tage als eingebettetes SVG mit
+„+120 Sterne in 14 Tagen“ (die Zahl der Tage nennt die Ausgabe selbst); aufklappbar
+„Warum Platz 3? 89,2 Punkte“ mit jedem Signal, Gewicht und Summe. Über der Liste die
+Statistik des Tages („1.834 Repos geprüft, 420 ausgeschlossen, 212 als AI-Thema eingestuft“).
 
-- Rang, Name als Link zum Repo, Beschreibung
-- Programmiersprache, Sterne, Gewinn im Sternfenster („+120 in 14 Tagen“; die Zahl der Tage nennt die Ausgabe selbst)
-- Verlaufskurve der letzten 35 Tage als kleines eingebettetes SVG
-- Lizenz, Forks, aktive Autoren, Alter
-- Link zur Homepage, falls vorhanden
-- **Begründung zum Aufklappen:** „Warum Platz 3? 89,2 Punkte“. Darunter jedes Signal
-  mit Gewicht und Text, in der Reihenfolge der Ausgabe, und die Summe. Der Inhalt
-  steht im HTML, nicht in JavaScript.
+**HN, Lobsters:** Rang, Titel der Story als Link zum Repo, Beschreibung; Sprache, Lizenz,
+Punkte, Kommentare, Projektseite, Diskussion; aufklappbar die Begründung (siehe
+`community.md`).
 
-Über der Liste steht die Statistik des Tages: „1.834 Repos geprüft, 420
-ausgeschlossen, 212 als AI-Thema eingestuft“.
-
-## Texte und Zahlen (Seitenmodell)
+## Texte und Zahlen
 
 | Was | Form |
 |---|---|
-| Titel | „Trending auf GitHub vom 12. November 2026“ / „AI-Projekte auf GitHub vom 12. November 2026“ |
+| Titel | „Trending auf GitHub vom 12. November 2026“, „AI-Projekte auf HN vom …“ |
 | Zahlen | deutsch mit Tausenderpunkt: `91.943` |
 | Gewinn | `+120` |
-| Gewichte | eine Nachkommastelle mit Komma und Vorzeichen: `+40,0`, `−3,0`, bei null `0` |
-| Punktzahl | eine Nachkommastelle mit Komma: `37,0` |
+| Gewichte | eine Nachkommastelle, Komma, Vorzeichen: `+40,0`, `−3,0`, bei null `0` |
+| Punktzahl | `37,0` |
 | Alter | „23 Tage alt“, „1 Tag alt“, „heute erstellt“ |
-| Lizenz | Kürzel wie `MIT`. Der GitHub-Platzhalter `NOASSERTION` wird weggelassen. |
+| Lizenz | SPDX-Kürzel. `NOASSERTION` wird weggelassen. |
 
 ## Sicherheit
 
-Beschreibungen, Namen, Topics und Homepage-Adressen stammen von GitHub und damit von
-Fremden.
+Beschreibungen, Namen, Topics und Adressen stammen von Fremden.
 
-- Alles wird beim Rendern maskiert (Autoescape). Ein `<script>` in einer Beschreibung
-  erscheint als Text.
-- Eine Homepage wird nur verlinkt, wenn sie mit `http://` oder `https://` beginnt.
-- Von sich aus lädt die Seite nichts von fremden Servern: keine Schriften, keine
-  Skripte, kein Tracking. Stile und Schrift liegen neben der Seite. JavaScript braucht
-  sie nicht. Einzige Ausnahme ist die Besuchszählung, wenn sie eingeschaltet ist (siehe
-  unten).
+- Alles wird beim Rendern maskiert (Autoescape).
+- Eine Adresse wird nur verlinkt, wenn sie mit `http://` oder `https://` beginnt.
+- Die Seite lädt nichts von fremden Servern: keine Schriften, keine Skripte, kein
+  Tracking. Stile und Schrift liegen neben der Seite. JavaScript braucht sie nicht.
+  Einzige Ausnahme ist die Besuchszählung, wenn sie eingeschaltet ist.
+- Eine Datei mit unbekanntem `format_version` bricht den Bau ab. Eine halb verstandene
+  Ausgabe soll nie erscheinen. Gelesen werden nur Dateien namens `JJJJ-MM-TT.json`.
 
-## Format der Ausgaben prüfen
+## Adresse und Besuchszählung
 
-`load_editions` liest nur Dateien mit dem Namen `JJJJ-MM-TT.json`. Hat eine Datei
-eine unbekannte `format_version`, bricht der Bau mit einer klaren Meldung ab. Eine
-halb verstandene Ausgabe soll nie veröffentlicht werden.
-
-## Kommandozeile
-
-```
-github-anti-ai site [--data-dir data] [--output output] [--site-url https://…]
-github-anti-ai collect-hn [--data-dir data] [--limit N]
-```
-
-`daily` baut die Website nicht. Im Betrieb folgt `site` als eigener Schritt.
+- `site --site-url https://…` nennt die öffentliche Adresse. Die Feeds bekommen damit
+  vollständige Links und dauerhafte Kennungen. Die Seiten selbst behalten relative Links
+  und lassen sich weiter von der Festplatte öffnen.
+- `site --plausible https://…/js/….js` bindet Plausible in jede Seite ein (nur mit
+  `https://`). Ohne die Option bleibt die Seite frei von Skripten; lokale Bauten und die
+  Vorschau zählen nicht. Die Fußzeile sagt, was gilt. Die Feeds enthalten nie ein Skript.
+  Die Adresse des Skripts steht im Workflow, nicht im Code.
 
 ## Gestaltung
 
-Entwurf vom 13.11.2026, als Leinwand in Claude Design:
-<https://claude.ai/artifact/7vnxersetXqxviX1vi1pQa> (privat).
+Entwurf vom 13.11.2026 in Claude Design: <https://claude.ai/artifact/7vnxersetXqxviX1vi1pQa>
+(privat).
 
-- **Farben:** kühler heller Grund, kieferngrüne Tinte, dazu ein einziger Akzent:
-  Textmarker-Gelb für das, was aufsteigt (der Gewinn der Woche und die Fläche unter
-  der Verlaufskurve). Dunkles Schema nach Systemeinstellung.
-- **Schrift:** Atkinson Hyperlegible Next, entworfen für gute Lesbarkeit. Die Datei
-  liegt im Theme (`theme/static/fonts/`, 34 KB), die Seite lädt weiter nichts von
-  fremden Servern.
-- **Favicon:** ein geschliffener Stein, wörtlich ein Fundstück, in Kieferngrün mit
-  gelb glänzender oberer Fläche (`theme/static/favicon.svg`, unter
-  `/theme/favicon.svg`). Er bringt seinen hellen Grund mit und ist deshalb in hellen
-  und dunklen Browser-Tabs gleich gut zu sehen.
-- **Aufbau:** eine Spalte ohne Karten. Große Rangziffer links, Verlaufskurve rechts,
-  auf dem Telefon untereinander.
-- **Begründung:** kein Tooltip mehr, sondern ein aufklappbarer Bereich „Warum Platz
-  3?“ mit einer Tabelle aller Signale und der Summe. Ein Tooltip war mit Tastatur und
-  auf dem Telefon schlecht erreichbar. Der Bereich ist ein `<details>`-Element und
-  braucht kein JavaScript.
-
-### Nachschliff
-
-Am 13.11.2026 gegen die Prüfliste „unslop“ von Damir Sokolovsky geprüft
-(<https://github.com/heydamir/unslop>, CC BY 4.0). Grobe Merkmale generierter Seiten
-fand sie nicht. Nachgebessert wurde:
-
-- **Gewichte:** Nur der Tagestitel und die Rangziffer sind sehr fett (800). Alles
-  andere, was hervorgehoben ist, hat 600. Die Prüfliste will höchstens 600 überall;
-  die beiden Ausnahmen sind bewusst, sie sind das Erkennungsmerkmal der Seite.
-- **Laufweite:** eng nur bei Tagestitel und Rangziffer.
-- **Abstände** auf einem 4-Pixel-Raster.
-- **Rundungen:** Schaltflächen 8 Pixel, nichts unter 4. Eine volle Rundung hat nur
-  noch das Sprach-Etikett.
-- **Kurze Zeilen ohne Punkt am Ende.**
-
-### Barrierefreiheit
-
-- **Kontrast:** Jeder Text erreicht mindestens 6,5:1 gegen seinen Grund, in beiden
-  Farbschemata (gerechnet, WCAG AAA verlangt 7:1 für Fließtext, AA 4,5:1).
-- **Tastatur:** Sprunglink zum Inhalt, deutlich sichtbarer Fokus, alle Bedienelemente
-  mindestens 44 Pixel hoch.
-- **Nicht nur Farbe:** Plus und Minus stehen als Zeichen vor dem Gewicht, die aktuelle
-  Seite ist per `aria-current` und Unterstrich markiert.
-- **Screenreader:** Liste als Liste, Rangziffer versteckt (die Liste zählt selbst),
-  Verlaufskurve mit Beschriftung, Tabelle mit Überschrift.
-- **Rücksicht:** weniger Bewegung, erzwungene Farben (Kontrastmodus) und Druck sind
-  berücksichtigt.
-- **Nicht geprüft:** mit einem echten Screenreader und mit einem Prüfwerkzeug wie axe.
+- **Farben:** kühler heller Grund, kieferngrüne Tinte, ein einziger Akzent: Textmarker-Gelb
+  für das, was aufsteigt. Dunkles Schema nach Systemeinstellung.
+- **Schrift:** Atkinson Hyperlegible Next (34 KB, im Theme).
+- **Favicon:** ein geschliffener Stein in Kieferngrün mit gelber Fläche.
+- **Aufbau:** eine Spalte ohne Karten. Große Rangziffer links, Verlaufskurve rechts, auf
+  dem Telefon untereinander.
+- **Begründung:** ein aufklappbares `<details>`-Element statt eines Tooltips, das mit
+  Tastatur und auf dem Telefon schlecht erreichbar war.
+- **Nachschliff** gegen die Prüfliste „unslop“ (<https://github.com/heydamir/unslop>):
+  sehr fett (800) nur Tagestitel und Rangziffer, Abstände auf einem 4-Pixel-Raster,
+  Rundungen ab 4 Pixel.
+- **Barrierefreiheit:** Kontrast mindestens 6,5:1 in beiden Schemata, Sprunglink zum
+  Inhalt, sichtbarer Fokus, Bedienelemente mindestens 44 Pixel hoch, Plus und Minus als
+  Zeichen, `aria-current` für die aktuelle Seite, Liste als Liste, Kurve mit Beschriftung,
+  Rücksicht auf weniger Bewegung, Kontrastmodus und Druck. Nicht geprüft mit echtem
+  Screenreader.
 
 ## Vorschau (`serve`)
 
@@ -195,124 +126,58 @@ fand sie nicht. Nachgebessert wurde:
 github-anti-ai serve [--data-dir data] [--output output] [--port 8000]
 ```
 
-`src/github_anti_ai/publication/dev_server.py` baut die Seite, liefert sie auf
-`127.0.0.1` aus und baut neu, sobald sich eine Datei in `data/editions/` oder im Theme
-ändert. Geprüft wird zweimal pro Sekunde.
-
-- **Der Browser lädt selbst nach.** Dafür fügt der Server beim Ausliefern ein kleines
-  Skript in die HTML-Seiten ein, das jede Sekunde nach der Version fragt. Die gebauten
-  Dateien in `output/` bleiben ohne Skript.
-- **Schlägt ein Bau fehl**, meldet die Vorschau den Fehler und zeigt weiter die letzte
-  funktionierende Seite.
-- Pelicans eigenes `--autoreload` passt hier nicht: Es überwacht einen Inhaltsordner
-  und eine Einstellungsdatei, beides gibt es bei uns nicht.
-
-## Besuchszählung
-
-Seit dem 13.11.2026 zählt die veröffentlichte Seite ihre Besuche mit Plausible, über
-die eigene Instanz des Projektinhabers.
-
-- `site --plausible https://…/js/….js` bindet das Skript in jede Seite ein. Ohne die
-  Option bleibt die Seite frei von Skripten. Lokale Bauten und die Vorschau zählen
-  deshalb nicht.
-- Die Adresse des Skripts steht in den Workflows (`PLAUSIBLE_SCRIPT`), nicht im Code.
-- Die Fußzeile sagt, was gilt: „Besuche zählt Plausible, ohne Cookies und ohne Angaben
-  zur Person.“ oder „Ohne Tracking, ohne Skripte.“
-- Die Adresse muss mit `https://` beginnen. Die Feeds enthalten nie ein Skript.
-
-## Adresse der Seite
-
-`site --site-url https://…` nennt die öffentliche Adresse. Die Feeds bekommen damit
-vollständige Links und dauerhafte Kennungen, an denen Feed-Leser die Einträge
-unterscheiden. Die Seiten selbst behalten relative Links und lassen sich weiter von
-der Festplatte öffnen. Ohne die Option enthalten die Feeds nur relative Links. Das
-reicht zum Ansehen, nicht zum Abonnieren.
-
-## Offen
-
-- Im Browser geprüft sind Startseite (hell, dunkel, Telefonbreite, aufgeklappte
-  Begründung) der echten Ausgabe vom 13.11.2026, per Screenshot. Die Feeds sind in keinem Feed-Leser ausprobiert.
+Baut die Seite, liefert sie auf `127.0.0.1` aus und baut neu, sobald sich eine Ausgabe
+oder das Theme ändert (zweimal pro Sekunde geprüft). Der Browser lädt von selbst nach:
+Der Server fügt beim Ausliefern ein kleines Skript ein, die Dateien in `output/` bleiben
+ohne. Scheitert ein Bau, zeigt die Vorschau weiter die letzte funktionierende Seite.
 
 ## Betrieb auf GitHub
 
-Drei Workflows in `.github/workflows/`:
-
-| Datei | Wann | Was |
+| Workflow | Wann | Was |
 |---|---|---|
-| `daily.yml` | täglich 02:43 UTC, oder von Hand | GitHub-, HN- und Lobsters-Ausgabe erzeugen, gemeinsam ins Repo schreiben |
-| `site.yml` | nach jedem nicht abgebrochenen täglichen Lauf, bei Änderungen am Theme oder an den Ausgaben, oder von Hand | die Seite bauen und veröffentlichen |
+| `daily.yml` | täglich 02:43 UTC, oder von Hand | GitHub-, HN- und Lobsters-Ausgabe erzeugen und gemeinsam ins Repo schreiben |
+| `site.yml` | nach jedem nicht abgebrochenen täglichen Lauf, bei Änderungen an Theme oder Ausgaben, oder von Hand | Seite bauen und auf GitHub Pages veröffentlichen |
 | `tests.yml` | bei jedem Push und Pull Request | die Tests |
 
 ### Der tägliche Lauf
 
-Ein Job erzeugt nacheinander alle drei Ausgaben. Bis zum 17.11.2026 waren es drei
-getrennte Workflows (GitHub 05:17, HN 06:37, Lobsters 06:52 UTC). Zusammen teilen sie
-sich den Token ohne Absprache über Uhrzeiten, und es gibt einen Commit und einen
-Seitenbau am Tag statt drei.
-
-**Teilweise Ergebnisse werden veröffentlicht.** Scheitert ein Schritt, laufen die
-folgenden trotzdem (`if: !cancelled()`). Was fertig geworden ist, kommt ins Repo und
-auf die Seite. Der Lauf endet dann rot, damit der Fehler auffällt. Nur ein von Hand
-abgebrochener Lauf hört sofort auf.
+Ein Job erzeugt nacheinander alle drei Ausgaben. **Scheitert ein Schritt, laufen die
+folgenden trotzdem** (`if: !cancelled()`); was fertig wurde, kommt ins Repo und auf die
+Seite. Der Lauf endet dann rot, damit der Fehler auffällt.
 
 1. **Tag festlegen** (UTC), bevor gesammelt wird.
-2. **Momentaufnahmen der letzten Tage** aus dem Cache von GitHub Actions holen. Sie
-   liegen nicht im Repo. Fehlt der Cache, holt der Lauf alles neu (etwa 40 Minuten).
-3. **Sammeln**, bei Fehlern ein zweiter Versuch. Danach wandern die Momentaufnahmen
-   zurück in den Cache, auch wenn der Lauf scheitert.
-4. **Copilot-CLI installieren** (`npm install -g @github/copilot`). Scheitert das,
-   läuft der Lauf weiter.
-5. **GitHub-Ausgabe erzeugen**, mit Gegenlesen (`publish --review --allow-incomplete`,
-   siehe `ausgabe.md`). Der Schritt bekommt den eingebauten Token des Laufs, weil die
-   Copilot-CLI keine klassischen Personal Access Tokens annimmt. Ist die Sammlung
-   unvollständig, entsteht die Ausgabe trotzdem, aus dem, was gesammelt ist: Eine
-   Ausgabe mit Lücken ist besser als keine (Entscheidung vom 17.11.2026). Gibt es gar
-   keine Momentaufnahmen des Tages, gibt es keine Ausgabe. Gibt es die Ausgabe des
-   Tages schon, wird der Schritt übersprungen.
-6. **HN-Ausgabe** (`collect-hn`) und **Lobsters-Ausgabe** (`collect-lobsters`), auch
-   wenn GitHub gescheitert ist. Gibt es die Ausgabe des Tages schon, holen sie nichts.
-7. **Ausgaben ins Repo schreiben** (`data/editions/`, `data/history/`,
-   `data/hn-editions/`, `data/lobsters-editions/`) in einem Commit von
-   `github-actions[bot]`. Daraus leiten sich die Sperren ab.
-8. **Der Workflow „Website“ startet**, sobald der Lauf fertig ist, auch nach einem
-   teilweise gescheiterten, nicht aber nach einem abgebrochenen. Er baut und
-   veröffentlicht die Seite mit der Adresse von GitHub Pages für die Feeds.
-   Was der Lauf ins Repo schreibt, löst von sich aus keinen Workflow aus, deshalb
-   hängt „Website“ ausdrücklich an seinem Ende (`workflow_run`). Nur dieser eine
-   Workflow veröffentlicht, so kann kein zweiter mit älterem Stand dazwischenkommen.
+2. **Momentaufnahmen der letzten Tage** aus dem Cache von GitHub Actions holen. Fehlt er,
+   holt der Lauf alles neu (etwa 40 Minuten).
+3. **Sammeln**, bei Fehlern ein zweiter Versuch. Danach wandern die Momentaufnahmen in den
+   Cache, auch nach einem Fehlschlag.
+4. **Copilot-CLI installieren.** Scheitert das, fehlt nur das Gegenlesen.
+5. **GitHub-Ausgabe** mit `publish --review --allow-incomplete`, außer es gibt sie schon.
+   Der Schritt bekommt den eingebauten Token des Laufs, weil die Copilot-CLI keine
+   klassischen Tokens annimmt.
+6. **HN- und Lobsters-Ausgabe** (`collect-hn`, `collect-lobsters`).
+7. **Ins Repo schreiben** (`data/editions/`, `data/history/`, `data/hn-editions/`,
+   `data/lobsters-editions/`) in einem Commit von `github-actions[bot]`.
+8. **„Website“ startet** danach von selbst (`workflow_run`), auch nach einem teilweise
+   gescheiterten Lauf. Nur dieser eine Workflow veröffentlicht.
 
 ### Einmalig einrichten
 
-- **Secret `COLLECT_TOKEN`:** ein klassischer Personal Access Token ohne Scopes, unter
-  *Settings → Secrets and variables → Actions*. Der eingebaute Token erlaubt nur 1000
-  Anfragen pro Stunde, ein erster Lauf braucht rund 3000.
-- **Copilot:** Der Workflow hat die Berechtigung `copilot-requests: write`. Die
-  Copilot-CLI rechnet damit über den eingebauten Token auf das Copilot-Abo des
-  Repo-Besitzers ab. Ein eigenes Secret braucht es nicht. Ohne Abo fällt das Gegenlesen
-  aus, die Ausgabe erscheint trotzdem.
-- **Pages:** unter *Settings → Pages* als Quelle „GitHub Actions“ wählen.
+- **Secret `COLLECT_TOKEN`:** klassischer Personal Access Token ohne Scopes. Der
+  eingebaute Token erlaubt nur 1000 Anfragen pro Stunde, ein erster Lauf braucht rund 3000.
+- **Copilot:** Der Workflow hat die Berechtigung `copilot-requests: write` und rechnet
+  über den eingebauten Token auf das Copilot-Abo des Repo-Besitzers ab. Fiele das aus,
+  wäre der Ausweg ein Fine-grained Token mit „Copilot Requests“ als
+  `COPILOT_GITHUB_TOKEN`.
+- **Pages:** unter *Settings → Pages* als Quelle „GitHub Actions“.
 
 ### Bekannte Grenzen
 
-- GitHub löscht Caches, die 7 Tage nicht benutzt wurden, und hält höchstens 10 GB je
-  Repo. Bei täglichem Lauf bleibt der Cache erhalten. Jeder Lauf legt einen neuen an
-  (rund 250 MB bei 14 Tagen), alte räumt GitHub selbst ab.
-- Geplante Läufe starten bei hoher Last auf GitHub verspätet. Am 14. und 15.11.2026
-  waren es rund sieben Stunden. Deshalb startet der Lauf seit dem 17.11.2026 um
-  02:43 statt 05:17 UTC, in der Hoffnung auf weniger Last. Ob das hilft, ist noch
-  nicht beobachtet.
-- Das Gegenlesen mit dem eingebauten Token ist für Repos von Organisationen
-  dokumentiert. Für ein Repo eines persönlichen Kontos nennt die Dokumentation nur die
-  Abrechnung über das Abo des Besitzers. Der Lauf vom 15.11.2026 hat gezeigt, dass es
-  auch dort läuft. Fiele es einmal aus, wäre der Ausweg ein Fine-grained Token mit der Berechtigung „Copilot Requests“ als
-  Secret `COPILOT_GITHUB_TOKEN`.
-- Die Workflows sind noch nie gelaufen. Geprüft ist nur, dass die Dateien gültiges
-  YAML sind und dass die Befehle darin lokal funktionieren.
-- Die Versionen der verwendeten Actions sind am 13.11.2026 gegen die jeweils neueste
-  Veröffentlichung geprüft und angehoben worden. `astral-sh/setup-uv` hat keinen
-  mitwandernden Hauptversions-Tag mehr und ist deshalb auf eine genaue Version
-  festgelegt (`v10.3.3`). Sie muss von Hand angehoben werden.
+- GitHub löscht Caches nach 7 Tagen ohne Benutzung und hält höchstens 10 GB je Repo.
+- Geplante Läufe starten bei hoher Last verspätet, am 14. und 15.11.2026 um rund sieben
+  Stunden. Deshalb seit dem 17.11.2026 um 02:43 statt 05:17 UTC.
+- `astral-sh/setup-uv` ist auf eine genaue Version festgelegt und muss von Hand angehoben
+  werden.
 
-## Geplant
+## Offen
 
-- Verweis auf die Fundstelle (Hacker News, Lobste.rs), sobald es diese Quellen gibt
+- Die Feeds sind in keinem Feed-Leser ausprobiert.

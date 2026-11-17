@@ -1,4 +1,7 @@
-"""Snapshots as gzipped JSON lines, one file per day: YYYY-MM-DD.jsonl.gz"""
+"""Snapshots as gzipped JSON lines, one file per day: snapshots/YYYY-MM-DD.jsonl.gz
+
+Working data, not in git. Each run appends a gzip member; gzip files may be concatenated.
+"""
 
 import gzip
 import json
@@ -6,6 +9,7 @@ from collections.abc import Sequence
 from datetime import date, datetime
 from pathlib import Path
 
+from github_anti_ai.adapters.files import day_files
 from github_anti_ai.domain.model import Commit, RepoId, Snapshot, StarHistory
 
 SUFFIX = ".jsonl.gz"
@@ -16,30 +20,26 @@ class JsonSnapshotStore:
         self._directory = Path(directory)
 
     def append(self, day: date, snapshots: Sequence[Snapshot]) -> None:
+        if not snapshots:
+            return
         self._directory.mkdir(parents=True, exist_ok=True)
-        lines = "".join(json.dumps(_to_json(s), ensure_ascii=False) + "\n" for s in snapshots)
-        with self._path(day).open("ab") as file:  # gzip files may be concatenated
+        lines = "".join(json.dumps(to_json(s), ensure_ascii=False) + "\n" for s in snapshots)
+        with self._path(day).open("ab") as file:
             file.write(gzip.compress(lines.encode()))
 
     def load(self, day: date) -> list[Snapshot]:
+        """The latest snapshot of each repo of that day."""
         path = self._path(day)
         if not path.exists():
             return []
-        lines = gzip.decompress(path.read_bytes()).decode().splitlines()
         latest: dict[RepoId, Snapshot] = {}
-        for line in lines:
-            snapshot = _from_json(json.loads(line))
+        for line in gzip.decompress(path.read_bytes()).decode().splitlines():
+            snapshot = from_json(json.loads(line))
             latest[snapshot.repo] = snapshot
         return list(latest.values())
 
     def prune(self, before: date) -> None:
-        if not self._directory.exists():
-            return
-        for path in self._directory.glob(f"*{SUFFIX}"):
-            try:
-                day = date.fromisoformat(path.name.removesuffix(SUFFIX))
-            except ValueError:
-                continue
+        for day, path in day_files(self._directory, SUFFIX).items():
             if day < before:
                 path.unlink()
 
@@ -55,7 +55,7 @@ def _parse_time(text: str | None) -> datetime | None:
     return datetime.fromisoformat(text) if text else None
 
 
-def _to_json(snapshot: Snapshot) -> dict:
+def to_json(snapshot: Snapshot) -> dict:
     return {
         "repo": str(snapshot.repo),
         "taken_at": _time(snapshot.taken_at),
@@ -68,14 +68,11 @@ def _to_json(snapshot: Snapshot) -> dict:
         "pushed_at": _time(snapshot.pushed_at),
         "stars": snapshot.stars,
         "forks": snapshot.forks,
-        "open_issues": snapshot.open_issues,
-        "watchers": snapshot.watchers,
         "pull_requests": snapshot.pull_requests,
         "recent_issue_authors": snapshot.recent_issue_authors,
         "is_fork": snapshot.is_fork,
         "is_archived": snapshot.is_archived,
         "is_mirror": snapshot.is_mirror,
-        "is_template": snapshot.is_template,
         "license": snapshot.license,
         "root_files": list(snapshot.root_files),
         "readme": snapshot.readme,
@@ -95,11 +92,13 @@ def _to_json(snapshot: Snapshot) -> dict:
     }
 
 
-def _from_json(data: dict) -> Snapshot:
+def from_json(data: dict) -> Snapshot:
+    """Also reads the files of earlier versions: without facts_at and owner history, and
+    with fields no rule uses any more (open_issues, watchers, is_template)."""
     return Snapshot(
         repo=RepoId.parse(data["repo"]),
         taken_at=_parse_time(data["taken_at"]),
-        facts_at=_parse_time(data.get("facts_at")),  # missing in files of earlier versions
+        facts_at=_parse_time(data.get("facts_at")),
         description=data["description"],
         homepage=data["homepage"],
         topics=tuple(data["topics"]),
@@ -108,14 +107,11 @@ def _from_json(data: dict) -> Snapshot:
         pushed_at=_parse_time(data["pushed_at"]),
         stars=data["stars"],
         forks=data["forks"],
-        open_issues=data["open_issues"],
-        watchers=data["watchers"],
         pull_requests=data["pull_requests"],
         recent_issue_authors=data["recent_issue_authors"],
         is_fork=data["is_fork"],
         is_archived=data["is_archived"],
         is_mirror=data["is_mirror"],
-        is_template=data["is_template"],
         license=data["license"],
         root_files=tuple(data["root_files"]),
         readme=data["readme"],
@@ -129,8 +125,7 @@ def _from_json(data: dict) -> Snapshot:
             )
             for c in data["recent_commits"]
         ),
-        star_history=StarHistory(daily=tuple(data["star_history"])),
-        # missing in files of earlier versions
+        star_history=StarHistory(tuple(data["star_history"])),
         owner_created_at=_parse_time(data.get("owner_created_at")),
         owner_contributed_to=data.get("owner_contributed_to"),
     )

@@ -1,4 +1,7 @@
-"""HTTP access to the GitHub API, shared by all GitHub adapters."""
+"""HTTP access to the GitHub API, shared by all GitHub adapters.
+
+See docs/datensammlung.md, "Fehler und Rate Limits".
+"""
 
 from collections.abc import Callable
 
@@ -11,6 +14,7 @@ USER_AGENT = "github-anti-ai (personal explore page)"
 API_VERSION = "2022-11-28"
 MAX_REQUESTS_PER_RUN = 4000
 MAX_ATTEMPTS = 3
+GATEWAY_TIMEOUTS = (502, 504)
 
 Sleep = Callable[[float], None]
 
@@ -23,15 +27,13 @@ class GatewayTimeout(SourceUnavailable):
     """HTTP 502 or 504: GitHub gave up on the request, usually after 10 seconds."""
 
 
-GATEWAY_TIMEOUTS = (502, 504)
-
-
 def make_github_client(
     token: str,
     *,
     max_requests: int = MAX_REQUESTS_PER_RUN,
     transport: httpx.BaseTransport | None = None,
 ) -> httpx.Client:
+    """A client that counts its requests and refuses more than `max_requests`."""
     sent = 0
 
     def count_request(request: httpx.Request) -> None:
@@ -72,19 +74,20 @@ def send(
     timed_out = False
     for attempt in range(1, MAX_ATTEMPTS + 1):
         timed_out = False
+        backoff = 2.0**attempt
         try:
             response = client.request(method, url, **options)
         except httpx.TransportError as error:
-            problem, wait = f"{method} {url}: {error}", 2.0**attempt
+            problem, wait = f"{method} {url}: {error}", backoff
         else:
             problem = f"{method} {url}: HTTP {response.status_code}"
             if not response.is_error:
                 if _is_json(response):
                     return response
                 # seen live: a 200 whose body ended in the middle
-                problem, wait = f"{method} {url}: unlesbare Antwort", 2.0**attempt
+                problem, wait = f"{method} {url}: unlesbare Antwort", backoff
             elif response.status_code >= 500:
-                wait = 2.0**attempt
+                wait = backoff
                 timed_out = response.status_code in GATEWAY_TIMEOUTS
                 if timed_out and not retry_timeouts:
                     break
@@ -104,6 +107,7 @@ def _is_json(response: httpx.Response) -> bool:
 
 
 def _rate_limit_wait(response: httpx.Response, clock: Clock) -> float | None:
+    """Seconds to wait for a rate limit, None if the response is no rate limit."""
     if response.status_code not in (403, 429):
         return None
     if "retry-after" in response.headers:

@@ -1,10 +1,11 @@
-"""Pelican plugin: turns every edition into two articles, main list and AI section.
+"""Pelican plugin: turns the stored editions into pages and feeds.
 
-This holds for the GitHub editions as well as for the HN and Lobsters editions.
-
-Kept thin on purpose. Texts and numbers come from view.py, the theme only arranges them.
+Every day of every list becomes two articles, main list and AI section, each in a category
+of its own and so with a feed of its own. Each list also gets its newest pages and an archive.
+Kept thin on purpose: texts and numbers come from the page models, the theme only arranges them.
 """
 
+from dataclasses import dataclass
 from datetime import UTC
 
 from pelican import signals
@@ -12,144 +13,142 @@ from pelican.contents import Article
 from pelican.urlwrappers import Category
 from pelican.utils import SafeDatetime
 
-from github_anti_ai.publication.view import (
-    SECTION_TITLES,
-    feed_html,
-    load_editions,
-    long_date,
-    section_view,
-)
 from github_anti_ai.publication.community_view import (
-    HN,
-    LOBSTERS,
-    SECTIONS,
+    PLATFORMS,
     community_feed_html,
     load_community_editions,
     section_heading,
     section_url,
 )
+from github_anti_ai.publication.view import SECTION_TITLES, feed_html, load_github_days
 
-# CATEGORY_FEED_ATOM is "{slug}feed.xml": the main list gets /feed.xml, the AI section /ai/feed.xml
-FEED_SLUGS = {"main": "", "ai": "ai/"}
+SECTIONS = ("main", "ai")
 
 
-def add_editions(generator):
-    settings = generator.settings
-    editions = load_editions(settings["EDITIONS_PATH"])
-    categories = {}
-    for section, title in SECTION_TITLES.items():
-        categories[section] = Category(title, settings)
-        categories[section].slug = FEED_SLUGS[section]
+@dataclass(frozen=True)
+class PageList:
+    """One list of the site: GitHub, HN or Lobsters."""
 
-    days = [
-        {section: section_view(edition, section) for section in SECTION_TITLES}
-        for edition in editions
+    slug: str  # marks the list in the main navigation: github, hn, lobsters
+    name: str  # GitHub, HN, Lobsters
+    days: list  # newest first; each day has .day and .section(name)
+    article_template: str
+    feed_html: object  # view -> HTML for feed readers
+    headings: dict[str, str]  # by section: name of the category and title of the newest page
+    prefixes: dict[str, str]  # by section: start of the addresses, also of the feed
+    article_slug: str  # with {section} and {day}
+
+    @property
+    def archive_url(self) -> str:
+        return f"{self.prefixes['main']}archiv/"
+
+
+def _lists(settings) -> list[PageList]:
+    lists = [
+        PageList(
+            slug="github",
+            name="GitHub",
+            days=list(reversed(load_github_days(settings["EDITIONS_PATH"]))),
+            article_template="article",
+            feed_html=feed_html,
+            headings=SECTION_TITLES,
+            prefixes={"main": "", "ai": "ai/"},  # the addresses of the first days stay
+            article_slug="{section}-{day}",
+        )
     ]
-    for index, views in enumerate(days):
-        older = days[index - 1] if index > 0 else None
-        newer = days[index + 1] if index + 1 < len(days) else None
-        for section, view in views.items():
-            other = views["ai" if section == "main" else "main"]
-            view_day = view.day
-            metadata = {
-                "title": view.title,
-                "date": SafeDatetime(view_day.year, view_day.month, view_day.day, tzinfo=UTC),
-                "category": categories[section],
-                "slug": f"{section}-{view_day.isoformat()}",
-                "url": view.url,
-                "save_as": f"{view.url}index.html",
-                "summary": feed_html(view),
-                "view": view,
-                "nav": {
-                    "older": older[section] if older else None,
-                    "newer": newer[section] if newer else None,
-                    "other": other,
-                },
-            }
-            generator.articles.append(
-                Article(feed_html(view), metadata, settings=settings, context=generator.context)
+    for platform in PLATFORMS:
+        path = settings.get(f"{platform.slug.upper()}_EDITIONS_PATH")
+        lists.append(
+            PageList(
+                slug=platform.slug,
+                name=platform.name,
+                days=list(reversed(load_community_editions(path, platform))) if path else [],
+                article_template="community-article",
+                feed_html=community_feed_html,
+                headings={s: section_heading(platform, s) for s in SECTIONS},
+                prefixes={s: section_url(platform, s) for s in SECTIONS},
+                article_slug=f"{platform.slug}-{{section}}-{{day}}",
             )
-    generator.articles.sort(key=lambda article: article.date, reverse=True)
-
-    newest_first = list(reversed(days))
-    generator.context["edition_days"] = [
-        {"date": long_date(views["main"].day), "main": views["main"], "ai": views["ai"]}
-        for views in newest_first
-    ]
-    generator.context["latest"] = {
-        section: {
-            "view": views[section],
-            "nav": {
-                "older": newest_first[1][section] if len(newest_first) > 1 else None,
-                "newer": None,
-                "other": views["ai" if section == "main" else "main"],
-            },
-        }
-        for views in newest_first[:1]
-        for section in SECTION_TITLES
-    }
-    _add_community_editions(generator, HN, settings.get("HN_EDITIONS_PATH"))
-    _add_community_editions(generator, LOBSTERS, settings.get("LOBSTERS_EDITIONS_PATH"))
+        )
+    return lists
 
 
-def _add_community_editions(generator, platform, editions_path):
-    """Two articles per day, main list and AI section, each with its own feed."""
-    if not editions_path:
-        return
-    categories = {}
-    for section in SECTIONS:
-        categories[section] = Category(section_heading(platform, section), generator.settings)
-        categories[section].slug = section_url(platform, section)  # hn/feed.xml, hn/ai/feed.xml
-    archive_url = f"{platform.slug}/archiv/"
-    days = list(reversed(load_community_editions(editions_path, platform)))  # newest first
-    for index, day in enumerate(days):
-        older = days[index + 1] if index + 1 < len(days) else None
-        newer = days[index - 1] if index > 0 else None
-        for section in SECTIONS:
-            view = day.section(section)
-            generator.articles.append(
-                Article(
-                    community_feed_html(view),
-                    {
-                        "title": view.title,
-                        "date": SafeDatetime(
-                            view.day.year, view.day.month, view.day.day, tzinfo=UTC
-                        ),
-                        "category": categories[section],
-                        "slug": f"{platform.slug}-{section}-{view.day.isoformat()}",
-                        "url": view.url,
-                        "save_as": f"{view.url}index.html",
-                        "template": "community-article",
-                        "community_current": platform.slug,
-                        "community_view": view,
-                        "community_archive_url": archive_url,
-                        "community_nav": _community_nav(older, newer, day, section),
-                        "summary": community_feed_html(view),
-                    },
-                    settings=generator.settings,
-                    context=generator.context,
-                )
-            )
-    if days:
-        generator.context[f"latest_{platform.slug}"] = {
-            section: {
-                "view": days[0].section(section),
-                "nav": _community_nav(days[1] if len(days) > 1 else None, None, days[0], section),
-            }
-            for section in SECTIONS
-        }
-    generator.context[f"{platform.slug}_edition_days"] = days
-    generator.articles.sort(key=lambda article: article.date, reverse=True)
-
-
-def _community_nav(older, newer, day, section):
-    other = "ai" if section == "main" else "main"
+def _nav(days: list, index: int, section: str) -> dict:
+    """The day before, the day after, and the other section of the same day."""
+    day = days[index]
     return {
-        "older": older.section(section) if older else None,
-        "newer": newer.section(section) if newer else None,
-        "other": day.section(other),
+        "older": days[index + 1].section(section) if index + 1 < len(days) else None,
+        "newer": days[index - 1].section(section) if index > 0 else None,
+        "other": day.section("ai" if section == "main" else "main"),
     }
+
+
+def add_articles(generator):
+    settings = generator.settings
+    lists = _lists(settings)
+    for page_list in lists:
+        categories = {}
+        for section in SECTIONS:
+            categories[section] = Category(page_list.headings[section], settings)
+            categories[section].slug = page_list.prefixes[section]  # feed: {slug}feed.xml
+        for index, day in enumerate(page_list.days):
+            for section in SECTIONS:
+                view = day.section(section)
+                html = page_list.feed_html(view)
+                metadata = {
+                    "title": view.title,
+                    "date": SafeDatetime(view.day.year, view.day.month, view.day.day, tzinfo=UTC),
+                    "category": categories[section],
+                    "slug": page_list.article_slug.format(
+                        section=section, day=view.day.isoformat()
+                    ),
+                    "url": view.url,
+                    "save_as": f"{view.url}index.html",
+                    "template": page_list.article_template,
+                    "summary": html,
+                    "current": page_list.slug,
+                    "view": view,
+                    "nav": _nav(page_list.days, index, section),
+                    "archive_url": page_list.archive_url,
+                }
+                generator.articles.append(
+                    Article(html, metadata, settings=settings, context=generator.context)
+                )
+    generator.articles.sort(key=lambda article: article.date, reverse=True)
+    generator.context["page_lists"] = lists
+
+
+def write_list_pages(generator, writer):
+    """The newest edition of each section and the archive, for every list."""
+    for page_list in generator.context["page_lists"]:
+        latest = (
+            {
+                s: {"view": page_list.days[0].section(s), "nav": _nav(page_list.days, 0, s)}
+                for s in SECTIONS
+            }
+            if page_list.days
+            else None
+        )
+        pages = [(page_list.prefixes[s], "latest", page_list.headings[s], s) for s in SECTIONS] + [
+            (page_list.archive_url, "archive", f"{page_list.name}-Archiv", None)
+        ]
+        for url, kind, title, section in pages:
+            writer.write_file(
+                f"{url}index.html",
+                generator.get_template("list-page"),
+                generator.context,
+                relative_urls=generator.settings["RELATIVE_URLS"],
+                template_name="list-page",
+                url=url,
+                page_list=page_list,
+                page_kind=kind,
+                page_title=title,
+                section=section,
+                latest=latest,
+                current=page_list.slug,
+            )
 
 
 def register():
-    signals.article_generator_pretaxonomy.connect(add_editions)
+    signals.article_generator_pretaxonomy.connect(add_articles)
+    signals.article_writer_finalized.connect(write_list_pages)

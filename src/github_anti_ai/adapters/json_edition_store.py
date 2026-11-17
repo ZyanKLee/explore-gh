@@ -1,10 +1,12 @@
-"""Editions as readable JSON, one file per day. The format is the contract with
-Publication (Pelican), see docs/ausgabe.md."""
+"""Editions of the GitHub list as readable JSON, one file per day: editions/YYYY-MM-DD.json
 
-import json
+The format is the contract with Publication. See docs/ausgabe.md, "Speicherformat".
+"""
+
 from datetime import UTC, date, datetime
 from pathlib import Path
 
+from github_anti_ai.adapters.files import day_files, read_json, write_new_json
 from github_anti_ai.application.ports import AlreadyPublished
 from github_anti_ai.domain.edition import Edition, EditionStats, Entry
 from github_anti_ai.domain.model import GROWTH_WINDOW_DAYS, RepoId, Section, Signal, StarHistory
@@ -17,36 +19,25 @@ class JsonEditionStore:
         self._directory = Path(directory)
 
     def save(self, edition: Edition) -> None:
-        self._directory.mkdir(parents=True, exist_ok=True)
-        text = json.dumps(_to_json(edition), indent=2, ensure_ascii=False) + "\n"
-        try:
-            with self._path(edition.day).open("x", encoding="utf-8") as file:
-                file.write(text)
-        except FileExistsError:
-            raise AlreadyPublished(edition.day) from None
+        if not write_new_json(self._path(edition.day), to_json(edition)):
+            raise AlreadyPublished(edition.day)
 
     def load(self, day: date) -> Edition | None:
         path = self._path(day)
-        if not path.exists():
-            return None
-        return _from_json(json.loads(path.read_text(encoding="utf-8")))
+        return from_json(read_json(path)) if path.exists() else None
 
     def since(self, day: date) -> list[Edition]:
-        if not self._directory.exists():
-            return []
-        days = []
-        for path in self._directory.glob("*.json"):
-            try:
-                days.append(date.fromisoformat(path.stem))
-            except ValueError:
-                continue
-        return [self.load(d) for d in sorted(days) if d >= day]
+        return [
+            from_json(read_json(path))
+            for found, path in day_files(self._directory, ".json").items()
+            if found >= day
+        ]
 
     def _path(self, day: date) -> Path:
         return self._directory / f"{day.isoformat()}.json"
 
 
-def _to_json(edition: Edition) -> dict:
+def to_json(edition: Edition) -> dict:
     return {
         "format_version": FORMAT_VERSION,
         "day": edition.day.isoformat(),
@@ -91,7 +82,9 @@ def _entry_to_json(rank: int, entry: Entry) -> dict:
     }
 
 
-def _from_json(data: dict) -> Edition:
+def from_json(data: dict) -> Edition:
+    if data.get("format_version") != FORMAT_VERSION:
+        raise ValueError(f"Ausgabe vom {data.get('day')}: unbekanntes Format")
     sections = data["sections"]
     return Edition(
         day=date.fromisoformat(data["day"]),
@@ -111,7 +104,7 @@ def _entry_from_json(data: dict) -> Entry:
         primary_language=data["language"],
         topics=tuple(data["topics"]),
         stars=data["stars"],
-        star_history=StarHistory(daily=tuple(data["star_history"])),
+        star_history=StarHistory(tuple(data["star_history"])),
         created_at=datetime.fromisoformat(data["created_at"]),
         pushed_at=datetime.fromisoformat(data["pushed_at"]) if data["pushed_at"] else None,
         license=data["license"],

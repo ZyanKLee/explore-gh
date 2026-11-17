@@ -1,110 +1,116 @@
 # Datensammlung (Bounded Context „Acquisition“)
 
-## Aufgabe
+Die Datensammlung findet einmal täglich Kandidaten, holt zu jedem eine Momentaufnahme
+(`Snapshot`) und speichert sie. Sie **bewertet nicht** und **schließt nichts aus**: Auch
+Forks oder chinesische READMEs landen als Momentaufnahme im Speicher. Ob ein Repo taugt,
+entscheidet erst `Assessment`. API-Formate gelangen nie in die Domäne.
 
-Die Datensammlung findet einmal täglich Kandidaten, holt zu jedem eine
-Momentaufnahme (`Snapshot`) und speichert sie. Sie **bewertet nicht** und **schließt
-nichts aus**: Auch Forks, Krypto-Projekte oder chinesische READMEs landen als
-Momentaufnahme im Speicher. Ob ein Repo taugt, entscheidet erst `Assessment`.
-
-**Eine Ausnahme spart Anfragen:** Für Repos, die nie gezeigt werden können (Fork,
-archiviert, Spiegel oder ohne erkannten Code), holt die Sammlung keinen Sternverlauf.
-Sie bekommen trotzdem eine Momentaufnahme, nur mit leerem Verlauf. Die Regel dazu steht
-in der Domäne (`Snapshot.can_never_be_shown`). Das spart etwa 11 % der Anfragen.
+Die Community-Listen (HN, Lobsters) sammeln getrennt, siehe `community.md`.
 
 ## Ablauf
 
 ```
 CollectSnapshots.run()
-  1. Kandidaten finden      alle CandidateSources fragen, Ergebnisse zusammenführen
-  2. Schon Erledigtes       Repos mit Momentaufnahme von heute überspringen
-  3. Einteilen              neu holen / auffrischen / übernehmen
-  4. Übernehmen             ohne Anfragen
-  5. In Gruppen von 20:     RepoSource.fetch(gruppe, jetzt), fragt GitHub je 10 Repos
-                            SnapshotStore.append(heute, momentaufnahmen)
-  6. Die Besten             je Sektion die 60 besten auffrischen
-  7. Aufräumen              SnapshotStore.prune(heute − 14 Tage)
-  → CollectionReport        gefunden, gesammelt, fehlend, fehlgeschlagen, Fehler,
-                            neu geholt, aufgefrischt, übernommen
+  1. Kandidaten finden     alle CandidateSources fragen, jedes Repo einmal
+  2. Schon Erledigtes      Repos mit Momentaufnahme von heute überspringen
+  3. Einteilen             neu holen / auffrischen / übernehmen
+  4. Übernehmen            ohne Anfragen, sofort gespeichert
+  5. Neu holen             in Gruppen von 20, mit Sternverlauf
+  6. Auffrischen           in Gruppen von 20, ohne Sternverlauf
+  7. Die Besten            bewerten, je Sektion 60 auffrischen
+  8. Aufräumen             Momentaufnahmen und Status älter als 14 Tage löschen
+  9. Status speichern      wie der Lauf ausging (für publish)
+  → CollectionReport       gefunden, gesammelt, fehlend, fehlgeschlagen, Fehler,
+                           neu geholt, aufgefrischt, übernommen
 ```
 
-Die Schritte 3, 4 und 6 beschreibt der Abschnitt „Momentaufnahmen weiterverwenden“.
-
-- Kandidaten, die mehrere Quellen liefern, werden nur einmal geholt. `RepoId`
-  vergleicht ohne Rücksicht auf Groß- und Kleinschreibung, wie GitHub selbst.
-- Fällt eine Kandidatenquelle aus, wird das im Bericht vermerkt und die anderen
-  Quellen werden trotzdem verwendet.
+- `RepoId` vergleicht ohne Rücksicht auf Groß- und Kleinschreibung, wie GitHub.
+- Fällt eine Kandidatenquelle aus, steht das im Bericht, die anderen gelten weiter.
 - **Gespeichert wird nach jeder Gruppe.** Ein Abbruch verliert höchstens eine Gruppe.
-- **Ein erneuter Lauf am selben Tag setzt fort:** Er holt nur, was noch fehlt. Wer den
-  Tag neu sammeln will, löscht die Datei des Tages.
-- Schlägt eine Gruppe fehl, wird sie übersprungen und im Bericht als fehlgeschlagen
-  geführt. Nach 3 fehlgeschlagenen Gruppen in Folge hört der Lauf auf. Das bis dahin
-  Gesammelte bleibt erhalten.
-- **Fortschritt:** Suche und Sammlung melden jeden Schritt über `logging`. Die
-  Kommandozeile zeigt die Meldungen an.
-- **Probelauf:** `collect --limit N` begrenzt die Zahl der Kandidaten. Die Quellen
-  hören auf zu suchen, sobald genug gefunden sind.
+- **Ein erneuter Lauf am selben Tag setzt fort** und holt nur, was fehlt. Wer den Tag neu
+  sammeln will, löscht die Datei des Tages.
+- Schlägt eine Gruppe fehl, gilt sie als fehlgeschlagen. Nach 3 Fehlschlägen in Folge
+  fragt der Lauf nicht weiter. Das Gesammelte bleibt.
+- **Probelauf:** `collect --limit N` begrenzt die Zahl der Kandidaten.
+- Jeder Schritt meldet sich über `logging`, die Kommandozeile zeigt es an.
 
-## Kandidatensuche
-
-Erste Quelle: `GitHubSearchCandidates` über die REST Search API.
+## Kandidatensuche (`GitHubSearchCandidates`)
 
 - Eine Suchanfrage pro Erstellungstag der letzten 30 Tage:
-  `created:2026-11-12 stars:>=50 fork:false archived:false`, sortiert nach Sternen,
-  je eine Seite à 100 Ergebnisse. Das sind 30 Suchanfragen pro Lauf.
-- Die Aufteilung nach Tagen umgeht die Grenze von 1000 Ergebnissen pro Suche.
-- Zwischen zwei Suchanfragen liegen 2 Sekunden Pause (Limit: 30 pro Minute).
-- `fork:false archived:false` spart nur Aufwand. Der eigentliche Ausschluss passiert
-  trotzdem in `Assessment`.
+  `created:2026-11-12 stars:>=50 fork:false archived:false`, nach Sternen sortiert, eine
+  Seite à 100 Treffer. Die Aufteilung nach Tagen umgeht die Grenze von 1000 Treffern.
+- Zwischen zwei Suchanfragen 2 Sekunden Pause (30 Suchanfragen pro Minute).
+- Jeder Treffer bringt seine Sternzahl mit. Das macht das Weiterverwenden möglich.
 
-**Diese Quelle allein verfehlt das Ziel.** Sie findet nur neue Repos, die schnell
-Sterne sammeln. Das ist das Profil von Hype-Projekten. Von Hand gebaute Projekte sind
-oft Monate oder Jahre alt, bevor sie entdeckt werden. Siehe „Geplant: weitere
-Kandidatenquellen“.
+**Diese Quelle allein verfehlt einen Teil des Ziels.** Sie findet nur neue Repos, die
+schnell Sterne sammeln. Von Hand gebaute Projekte sind oft älter, bevor sie entdeckt werden.
 
-## Momentaufnahme
+## Momentaufnahme (`GitHubRepoSource`)
 
-`GitHubRepoSource` holt die Fakten mit **einer** GraphQL-Abfrage pro Gruppe von 20
-Repos und den Sternverlauf mit einer REST-Anfrage pro Repo.
+Die Fakten kommen über **eine** GraphQL-Abfrage je 10 Repos, der Sternverlauf über eine
+REST-Anfrage je Repo.
 
 | Feld | Quelle (GraphQL) | Wofür |
 |---|---|---|
-| `description`, `homepage`, `topics` | `description`, `homepageUrl`, `repositoryTopics` | AI-Thema, Krypto, Sprache |
-| `primary_language` | `primaryLanguage` | Vielfaltsregel |
-| `created_at`, `pushed_at` | `createdAt`, `pushedAt` | Bonus für neue Projekte, Aktivität |
-| `stars`, `forks`, `open_issues` | `stargazerCount`, `forkCount`, `issues(states: OPEN)` | Aufstieg, Größe |
-| `watchers`, `pull_requests`, `recent_issue_authors` | `watchers`, `pullRequests`, Autoren der letzten 100 Issues (verschiedene Personen, ohne Bots) | Gegenprobe zu gekauften Sternen |
-| `is_fork`, `is_archived`, `is_mirror`, `is_template` | gleichnamige Felder | Ausschlüsse |
-| `owner_created_at`, `owner_contributed_to` | `owner { createdAt, repositoriesContributedTo { totalCount } }` (ohne eigene Repos, nur Commits und Pull Requests; bei Organisationen nur das Alter) | Vorgeschichte des Besitzers |
-| `license` | `licenseInfo.spdxId` | Signal |
-| `root_files` | `object(expression: "HEAD:")` | `CLAUDE.md`, `.cursorrules` …, „kein Code“ |
-| `readme` | `object(expression: "HEAD:README.md")` u. a. Varianten, gekürzt auf 20 000 Zeichen | AI-Thema, Krypto, Sprache, „kein Code“ |
-| `recent_commits` | Verlauf des Standard-Branches, bis zu 100 Commits der letzten 90 Tage | AI-Mithilfe, Contributors, Kontinuität |
-| `star_history` | REST: `GET /repos/{owner}/{repo}/stargazers/history` | Aufstieg, Verlaufskurve auf der Seite, Sterne auf einen Schlag |
+| `description`, `homepage`, `topics` | `description`, `homepageUrl`, `repositoryTopics` | AI-Thema, Ausschlüsse, Seite |
+| `primary_language` | `primaryLanguage` | „kein Code“, Vielfaltsregel |
+| `created_at`, `pushed_at` | `createdAt`, `pushedAt` | Entwicklungszeit, neues Projekt |
+| `stars`, `forks`, `pull_requests` | `stargazerCount`, `forkCount`, `pullRequests` | Aufstieg, Echo |
+| `recent_issue_authors` | Autoren der letzten 100 Issues, verschiedene Personen, ohne Bots | Engagement, Echo |
+| `is_fork`, `is_archived`, `is_mirror` | gleichnamige Felder | Ausschlüsse |
+| `owner_created_at`, `owner_contributed_to` | `owner { createdAt, repositoriesContributedTo }` (nur Commits und Pull Requests, ohne eigene Repos; Organisationen nur das Alter) | Vorgeschichte des Besitzers |
+| `license` | `licenseInfo.spdxId` | Seite |
+| `root_files` | `object(expression: "HEAD:")` | Anweisungsdateien für Agenten |
+| `readme` | `README.md`, `readme.md`, `README.rst`, `README.txt`, `README`, gekürzt auf 20 000 Zeichen | AI-Thema, Sprache, Köder, Kopien |
+| `recent_commits` | Standard-Branch, bis zu 100 Commits der letzten 90 Tage | AI-Mithilfe, Team, Kontinuität |
+| `star_history` | REST: `GET /repos/{owner}/{repo}/stargazers/history` | Aufstieg, Kurve auf der Seite |
 
-Ein `Commit` enthält Zeitpunkt, Autor (GitHub-Login, sonst Git-Name), ob es ein Bot
-ist (Name endet auf `[bot]`), die `Co-authored-by`-Einträge und die erste Zeile der
-Nachricht.
+Ein `Commit` enthält Zeitpunkt, Autor (GitHub-Login, sonst Git-Name), ob es ein Bot ist
+(Name endet auf `[bot]`), die `Co-authored-by`-Einträge und die erste Zeile der Nachricht.
 
-### Sternverlauf
+**Sternverlauf:** Stargazer-Listen gibt GitHub seit Juli 2026 nur noch an Admins und
+Mitarbeiter heraus. Der Endpunkt `stargazers/history` liefert dagegen Wochen (neueste
+zuerst, `week` ist der Sonntag als Unix-Zeit, `days` die neuen Sterne je Tag ab Sonntag).
+Wir holen 6 Wochen und bilden daraus `StarHistory`: die neuen Sterne der letzten 35 Tage,
+der letzte Eintrag ist heute, Tage ohne Angabe zählen als 0. `gained()` ist der Gewinn der
+letzten 14 Tage einschließlich heute.
 
-Seit Juli 2026 gibt GitHub Stargazer-Listen nur noch an Admins und Mitarbeiter eines
-Repos heraus. Über GraphQL kommt eine leere Liste zurück, über REST ein 404. Deshalb
-fragen wir Stargazer gar nicht mehr ab.
+**Keine Anfrage für Aussichtsloses:** Für ein Repo, das nie gezeigt werden kann (Fork,
+archiviert, Spiegel, ohne erkannten Code, `Snapshot.can_never_be_shown`), holt die
+Sammlung keinen Sternverlauf. Es bekommt trotzdem eine Momentaufnahme.
 
-Stattdessen nutzen wir den neuen Endpunkt `GET /repos/{owner}/{repo}/stargazers/history`:
+## Momentaufnahmen weiterverwenden
 
-- Er liefert Wochen, die neueste zuerst. `week` ist der Sonntag als Unix-Zeit, `days`
-  enthält die neuen Sterne je Tag, beginnend am Sonntag.
-- Wir holen 6 Wochen (`per_page=6`) und bilden daraus `StarHistory`: die neuen Sterne
-  der letzten 35 Tage, der letzte Eintrag ist heute. Tage ohne Angabe zählen als 0.
-- `StarHistory.gained()` ist der Gewinn der letzten 14 Tage einschließlich heute.
-  `gained(30)` liefert den Gewinn eines Monats.
-- Der Wert ist immer exakt und gilt für Repos jeden Alters. Eine eigene Historie über
-  Wochen brauchen wir nicht. Das ursprünglich geplante Aggregate `RepoHistory`
-  entfällt.
-- GitHub garantiert nicht, dass Wochen- und Tagesgrenzen an UTC ausgerichtet sind.
-  Zurzeit sind sie es.
+Ohne Weiterverwendung kostet jeder Lauf rund 3000 Anfragen und 40 Minuten, fast alles für
+den Sternverlauf. Die Suche liefert die heutige Sternzahl gratis. Daraus führen wir den
+Verlauf selbst fort.
+
+Für jeden Kandidaten sucht der Lauf die jüngste Momentaufnahme der letzten 3 Tage:
+
+| Lage | Was geschieht | Anfragen |
+|---|---|---|
+| keine Momentaufnahme in den letzten 3 Tagen, oder eine ohne Sternverlauf | **neu holen:** Fakten und Sternverlauf | 1/10 + 1 |
+| Fakten jünger als 3 Tage | **übernehmen:** Momentaufnahme gilt weiter, mit der Sternzahl von heute | 0 |
+| Fakten 3 Tage alt oder älter, oder die Quelle kennt die Sternzahl nicht | **auffrischen:** Fakten neu, Sternverlauf fortgeführt | 1/10 |
+
+- **Fortgeführter Sternverlauf** (`StarHistory.continued`): Der Verlauf rückt um die
+  vergangenen Tage weiter, der Gewinn seit der letzten Momentaufnahme steht am letzten
+  Tag. Verlorene Sterne zählen als 0. Fehlt ein Repo einen Tag lang, steht der ganze
+  Gewinn am Tag danach; die Summe im Sternfenster stimmt trotzdem.
+- **Auffrischen schlägt fehl:** Kennt die Suche die Sternzahl, wird die ältere
+  Momentaufnahme übernommen. Sonst gilt das Repo als fehlgeschlagen.
+- **Alter der Fakten:** `taken_at` ist der Tag, zu dem die Momentaufnahme gehört,
+  `facts_at` der Zeitpunkt, an dem die Fakten zuletzt von GitHub kamen.
+- **Die Besten vor der Veröffentlichung auffrischen:** Nach dem Übernehmen bewertet der
+  Lauf alle Momentaufnahmen des Tages und frischt je Sektion die 60 besten nicht
+  ausgeschlossenen auf (`FRESH_LEADERS_PER_SECTION`), sofern ihre Fakten nicht von heute
+  sind. 60 je Sektion statt 120 insgesamt, damit keine Sektion leer ausgeht; das
+  Dreifache der Plätze lässt Luft für Sperre und Vielfaltsregel.
+- Verschwundene Repos brauchen keine Regel: Was die Suche nicht mehr findet, bekommt keine
+  Momentaufnahme von heute.
+
+Gemessen am 13.11.2026: Folgetag 8 statt 38 Minuten, 401 Repos neu geholt, 2312
+übernommen, 113 als Beste aufgefrischt.
 
 ## Ports
 
@@ -123,408 +129,102 @@ class SnapshotStore(Protocol):
     def load(self, day: date) -> list[Snapshot]: ...   # je Repo die jüngste
     def prune(self, before: date) -> None: ...
 
+class CollectionStatusStore(Protocol):
+    def save(self, status: CollectionStatus) -> None: ...   # ersetzt den Tag
+    def load(self, day: date) -> CollectionStatus | None: ...
+    def prune(self, before: date) -> None: ...
+
 class Clock(Protocol):
     def now(self) -> datetime: ...   # immer UTC
 ```
 
-Adapter melden Ausfälle als `SourceUnavailable`.
-
 ## Speicherung
 
-- `data/snapshots/YYYY-MM-DD.jsonl.gz`, eine Momentaufnahme pro Zeile
-- `data/snapshots/YYYY-MM-DD.status.json`: wie der Lauf des Tages ausging. `publish`
-  prüft daran, ob die Sammlung vollständig ist (siehe `ausgabe.md`).
-- Aufbewahrung: 14 Tage. Das reicht, um Bewertungsregeln an echten Daten
-  auszuprobieren, ohne die APIs erneut abzufragen.
-- Arbeitsdaten, **nicht** im Git-Repo. Dauerhaft gespeichert werden nur die Ausgaben
-  (`Edition`s).
+- `data/snapshots/JJJJ-MM-TT.jsonl.gz`: eine Momentaufnahme je Zeile. Jeder Lauf hängt
+  einen gzip-Block an. Beim Lesen gilt je Repo die letzte Zeile.
+- `data/snapshots/JJJJ-MM-TT.status.json`: gefunden, gesammelt, fehlgeschlagen. `publish`
+  prüft daran, ob die Sammlung vollständig ist.
+- Aufbewahrung 14 Tage. Arbeitsdaten, **nicht** im Git-Repo. Im Betrieb liegen sie im
+  Cache von GitHub Actions.
+- Dateien älterer Versionen bleiben lesbar: ohne `facts_at` (gilt dann `taken_at`), ohne
+  Vorgeschichte des Besitzers (unbekannt), mit Feldern, die keine Regel mehr braucht
+  (`open_issues`, `watchers`, `is_template`; seit dem 17.11.2026 nicht mehr gesammelt).
 
 ## Fehler und Rate Limits
 
-Gemeinsam für alle GitHub-Adapter:
+Gemeinsam für alle GitHub-Anfragen (`github_http.send`):
 
-- `403`/`429` mit `Retry-After`: so lange warten, dann erneut versuchen.
-- `x-ratelimit-remaining: 0`: bis `x-ratelimit-reset` warten.
-- `5xx` oder eine abgeschnittene, unlesbare Antwort: mit wachsender Pause erneut
-  versuchen, insgesamt höchstens 3 Versuche.
-  Danach `SourceUnavailable`.
+- `403`/`429` mit `Retry-After`: so lange warten, dann erneut. Mit
+  `x-ratelimit-remaining: 0`: bis `x-ratelimit-reset` warten. Ein anderes 403 ist ein
+  Fehler.
+- `5xx`, Verbindungsfehler oder eine abgeschnittene, unlesbare Antwort: mit wachsender
+  Pause erneut, höchstens 3 Versuche. Danach `SourceUnavailable`.
 - GraphQL-Fehler vom Typ `NOT_FOUND` betreffen nur einzelne Repos. Jeder andere
-  GraphQL-Fehler führt zu `SourceUnavailable`, auch wenn Daten mitkommen. Sonst würde
-  ein verweigerter Zugriff wie ein fehlendes Repo aussehen.
-- Warten erfolgt über eine übergebene `sleep`-Funktion, damit Tests nicht warten.
+  GraphQL-Fehler führt zu `SourceUnavailable`, auch wenn Daten mitkommen. Sonst sähe ein
+  verweigerter Zugriff wie ein fehlendes Repo aus.
+- **Zu aufwendige Gruppen:** „Resource limits for this query exceeded“ und HTTP 502/504
+  (GitHub bricht nach 10 Sekunden ab) liegen an einzelnen Repos. Eine solche Gruppe wird
+  sofort halbiert und erneut gefragt, nur ein einzelnes Repo wird bei 502/504 dreimal
+  versucht. Ein Repo, das auch allein scheitert, wird ausgelassen und im Protokoll
+  genannt. Jede Teilung meldet eine Zeile. Nach mehr als 10 Abbrüchen in einer Gruppe
+  (`MAX_TIMEOUTS_PER_BATCH`) gilt GitHub als gestört.
+- **Gruppen von 10** (`BATCH_SIZE`, seit 17.11.2026): Mit 20 scheiterte an manchen
+  Morgen fast jede Gruppe. Gespeichert wird weiter in Gruppen von 20.
+- Gewartet wird über eine übergebene `sleep`-Funktion, damit Tests nicht warten.
+- Anfragen laufen nacheinander, nie parallel.
 
 ## Zugang zu GitHub
 
-- **Token:** ein *klassischer* personal access token **ohne Scopes**, mit
-  Ablaufdatum. Er liest nur öffentliche Daten. Mit ihm ist alles geprüft. Ob auch
-  ein fine-grained Token den Sternverlauf lesen darf, ist nicht geprüft.
+- **Token:** ein *klassischer* personal access token **ohne Scopes**. Er liest nur
+  Öffentliches. Damit ist alles geprüft.
 - **Ablage:** Umgebungsvariable `GITHUB_TOKEN`, sonst eine Zeile `GITHUB_TOKEN=…` in
-  `.env` im Projektverzeichnis. `.env` steht in `.gitignore`. Die Variable hat Vorrang.
-- **HTTP-Client** (`make_github_client`): setzt `Authorization`, einen eindeutigen
-  `User-Agent` (`github-anti-ai`), `Accept` und `X-GitHub-Api-Version`.
-- **Anfragebudget:** Der Client zählt die Anfragen eines Laufs. Ab 4000 Anfragen
-  verweigert er weitere (`RequestBudgetExceeded`, eine Art `SourceUnavailable`). Das
-  ist eine Notbremse für Fehler wie Endlosschleifen.
-- Anfragen laufen nacheinander, nie parallel.
+  `.env` (steht in `.gitignore`). Die Variable hat Vorrang.
+- **Client** (`make_github_client`): setzt `Authorization`, `User-Agent`
+  (`github-anti-ai`), `Accept` und `X-GitHub-Api-Version`. Er zählt die Anfragen eines
+  Laufs und verweigert ab 4000 jede weitere (`RequestBudgetExceeded`), als Notbremse.
+- Der eingebaute Token in GitHub Actions erlaubt nur 1000 Anfragen pro Stunde, deshalb
+  braucht der Betrieb ein eigenes Secret (siehe `veroeffentlichung.md`).
 
-## Budget pro Lauf
+## Budget eines Laufs
 
 | Schritt | Anfragen | Dauer |
 |---|---|---|
-| Suche | 30 | 3 bis 4 Minuten (gemessen: etwa 5 s Antwortzeit plus 2 s Pause) |
-| GraphQL | eine je 10 Kandidaten (bis 16.11.2026: je 20) | etwa 6 s je Gruppe von 20 (gemessen) |
-| Sternverlauf | eine je Kandidat | etwa 0,2 s je Repo (gemessen) |
+| Suche | 30 | 2,5 bis 4 Minuten |
+| Fakten | eine je 10 Kandidaten, die geholt oder aufgefrischt werden | |
+| Sternverlauf | eine je neu geholtem Kandidaten | etwa 0,2 s je Repo |
 
-Gemessen am 12.11.2026: 60 Kandidaten in 35 Sekunden.
-
-**Vollständiger Lauf, Nacht zum 13.11.2026:** 2937 Kandidaten, 2857 Momentaufnahmen,
-38 Minuten (Suche 2,5 Minuten, Momentaufnahmen 35 Minuten), rund 3000 Anfragen.
-Erlaubt sind 5000 REST-Anfragen pro Stunde. 4 von 147 Gruppen schlugen fehl: einmal
-HTTP 502, dreimal „Resource limits for this query exceeded“ (siehe „Offen“).
-
-Der automatische `GITHUB_TOKEN` in GitHub Actions hat nur 1000 Anfragen pro Stunde.
-Für den späteren Betrieb dort brauchen wir einen eigenen Token als Secret.
+Erster Lauf ohne Vorgeschichte: rund 2900 Kandidaten, 3000 Anfragen, 40 Minuten.
+Folgetag: rund 8 Minuten. Erlaubt sind 5000 Anfragen pro Stunde.
 
 ## Konstanten
 
 | Name | Wert | Ort |
 |---|---|---|
-| `GROWTH_WINDOW_DAYS`, `STAR_HISTORY_DAYS` | 7, 35 | Domäne |
-| `COMMIT_LOOKBACK` | 90 Tage | Domäne |
-| `README_MAX_CHARS` | 20 000 | Domäne |
-| `SNAPSHOT_RETENTION_DAYS` | 14 | Anwendung |
-| `FETCH_CHUNK_SIZE`, `MAX_CONSECUTIVE_FAILURES` | 20, 3 | Anwendung |
-| Suchfenster, Mindeststerne, Pause | 30 Tage, 50, 2 s | Adapter (Parameter) |
-
-## Momentaufnahmen weiterverwenden
-
-Umgesetzt am 13.11.2026. Die Tests stehen in
-`tests/unit/domain/test_snapshot_reuse.py`,
-`tests/unit/application/test_collect_reuse.py` und
-`tests/integration/test_reuse_adapters.py`.
-
-### Warum
-
-Ohne Weiterverwendung holt jeder Lauf alle Kandidaten vollständig neu. Gemessen in der
-Nacht zum 13.11.2026: 2937 Kandidaten, rund 3000 Anfragen, 38 Minuten. Fast alle Anfragen entfallen auf den
-Sternverlauf (eine je Repo), die übrigen Fakten kommen gebündelt (eine je 20 Repos).
-
-Die Suche liefert zu jedem Treffer die aktuelle Sternzahl gratis mit. Daraus führen
-wir den Sternverlauf selbst fort und brauchen die teure Anfrage nur noch für Repos, die
-wir zum ersten Mal sehen.
-
-### Regel
-
-Für jeden Kandidaten von heute sucht der Lauf die jüngste Momentaufnahme der letzten
-3 Tage und entscheidet:
-
-| Lage | Was geschieht | Anfragen |
-|---|---|---|
-| Keine Momentaufnahme in den letzten 3 Tagen | **neu holen:** Fakten und Sternverlauf von GitHub | 1/20 + 1 |
-| Fakten jünger als 3 Tage | **übernehmen:** Momentaufnahme gilt weiter, Sternzahl von heute aus der Suche | 0 |
-| Fakten 3 Tage alt oder älter | **auffrischen:** Fakten neu von GitHub, Sternverlauf aus eigenen Daten | 1/20 |
-| Unter den Besten (siehe unten) | **auffrischen**, auch wenn die Fakten jünger sind | 1/20 |
-
-Sonderfälle:
-
-- **Quelle ohne Sternzahl** (künftig Hacker News, Lobste.rs): Übernehmen geht nicht,
-  es wird aufgefrischt.
-- **Momentaufnahme ohne Sternverlauf** (das Repo war beim letzten Mal ein Fork oder
-  ohne Code): neu holen.
-- **Auffrischen schlägt fehl:** Die ältere Momentaufnahme wird übernommen und der
-  Fehler im Bericht vermerkt. Das Repo gilt nicht als fehlgeschlagen.
-
-### Eigener Sternverlauf
-
-`StarHistory.continued(days_passed, gained)` schiebt den Verlauf um die vergangenen
-Tage weiter und trägt den Gewinn am letzten Tag ein. Der Gewinn ist die Sternzahl von
-heute minus die der letzten Momentaufnahme, mindestens 0.
-
-- **Lücken:** Fehlt ein Repo an einem Tag in der Suche, steht für diesen Tag 0 im
-  Verlauf und der ganze Gewinn am Tag danach. Die Summe über 7 Tage, auf die es für
-  den Aufstieg ankommt, stimmt trotzdem.
-- **Verlorene Sterne** zählen als 0, nicht als Abzug.
-- Der Verlauf bleibt 35 Tage lang.
-
-### Alter der Fakten
-
-Eine Momentaufnahme bekommt ein zweites Datum:
-
-- `taken_at`: der Tag, zu dem die Momentaufnahme gehört
-- `facts_at`: wann die Fakten zuletzt von GitHub kamen. Bei einer frisch geholten
-  Momentaufnahme ist das dasselbe.
-
-Dateien aus der Zeit davor haben kein `facts_at`. Beim Lesen gilt dann `taken_at`.
-
-### Verschwundene Repos
-
-Dafür braucht es keine eigene Regel. Kandidat ist nur, was die Quellen heute finden.
-Ein gelöschtes, archiviertes oder privat gestelltes Repo taucht in der Suche nicht mehr
-auf und bekommt keine Momentaufnahme von heute. `publish` und `explain` lesen nur die
-Momentaufnahmen des Tages.
-
-### Die Besten vor der Veröffentlichung auffrischen
-
-Nichts auf der Seite soll älter als ein Tag sein. Nach dem Übernehmen bewertet der Lauf
-deshalb alle Momentaufnahmen von heute und frischt je Sektion die 60 nicht
-ausgeschlossenen Repos mit der höchsten Punktzahl auf, sofern ihre Fakten nicht von
-heute sind.
-
-- **60 je Sektion statt 100 insgesamt:** Sonst könnte die Hauptliste alle Plätze
-  belegen und die AI-Sektion ginge leer aus. 60 ist das Dreifache der 20 Plätze und
-  lässt Luft für Sperre und Vielfaltsregel. Das sind höchstens 6 Anfragen.
-- Die Punktzahl kann sich durch das Auffrischen ändern. Es wird nicht ein zweites Mal
-  nachgefasst.
-- `CollectSnapshots` bekommt dafür die Bewertungsfunktion (`assess`) als Parameter.
-  Ohne sie entfällt der Schritt.
-
-### Ablauf mit Weiterverwendung
-
-```
-CollectSnapshots.run()
-  1. Kandidaten finden      Quellen liefern Candidate(repo, stars)
-  2. Schon Erledigtes       Repos mit Momentaufnahme von heute überspringen
-  3. Einteilen              neu holen / auffrischen / übernehmen
-  4. Übernehmen             ohne Anfragen, sofort gespeichert
-  5. Neu holen              in Gruppen von 20, mit Sternverlauf
-  6. Auffrischen            in Gruppen von 20, ohne Sternverlauf
-  7. Die Besten             bewerten, je Sektion 60 auffrischen
-  8. Aufräumen              SnapshotStore.prune(heute − 14 Tage)
-  → CollectionReport        zusätzlich: fetched, refreshed, carried_over
-```
-
-Ein erneuter Lauf am selben Tag stellt keine Anfragen mehr, wenn alles da ist.
-
-### Änderungen an Ports und Modell
-
-```python
-@dataclass(frozen=True)
-class Candidate:
-    repo: RepoId
-    stars: int | None = None      # None, wenn die Quelle keine Sternzahl kennt
-
-class CandidateSource(Protocol):
-    def discover(self, today, limit=None) -> list[Candidate]: ...
-
-class RepoSource(Protocol):
-    def fetch(self, repos, now, with_star_history=True) -> list[Snapshot]: ...
-```
-
-- `GitHubSearchCandidates` liest `stargazers_count` aus den Suchtreffern.
-- `GitHubRepoSource` lässt mit `with_star_history=False` die Anfrage nach dem
-  Sternverlauf weg.
-- Die Prüfung `checks/request_count.py` zählt weiter die Anfragen eines Laufs ohne
-  Vorgeschichte. Ein zweiter Fall für den Folgetag fehlt noch.
-- Verschwindet ein Repo zwischen dem Übernehmen und dem Auffrischen der Besten, bleibt
-  seine übernommene Momentaufnahme des Tages stehen. Der Speicher kann nichts
-  zurücknehmen.
-
-### Gemessene Wirkung
-
-Zweiter Sammeltag, 13.11.2026, mit den Momentaufnahmen des Vortags:
-
-| | Erster Tag | Folgetag |
-|---|---|---|
-| Kandidaten | 2937 | 2846 |
-| Neu geholt | 2857 | 401 |
-| Übernommen | – | 2312 |
-| Als Beste aufgefrischt | – | 113 |
-| Dauer | 38 Minuten | 8 Minuten |
-
-- Von den 8 Minuten entfallen 2,5 auf die Suche, 4,5 auf das Neuholen und 1 auf das
-  Auffrischen der Besten.
-- **Unter „neu geholt“ sind rund 290 alte Bekannte:** Repos, die nie gezeigt werden
-  können (Fork, archiviert, ohne Code), haben keinen Sternverlauf und werden deshalb
-  jeden Tag neu geholt. Das kostet nur die gebündelte Abfrage, etwa 15 Anfragen.
-  Wirklich neu waren 129 Repos, dazu die 80 am Vortag gescheiterten.
-- 160 Repos des Vortags fand die Suche nicht mehr. Sie haben keine Momentaufnahme vom
-  13.11.
-- Eine Gruppe scheiterte an HTTP 502. Ein zweiter Lauf holte die 20 Repos in knapp 3
-  Minuten nach, fast alles davon Suche. Er fragte für nichts anderes an.
-- Das Auffrischen nach 3 Tagen ist noch nicht gelaufen, dafür fehlen die Tage.
-
-### Neue Konstanten
-
-| Name | Wert | Ort |
-|---|---|---|
-| `REFRESH_AFTER_DAYS` | 3 | Anwendung |
-| `FRESH_LEADERS_PER_SECTION` | 60 | Anwendung |
-
-## Separate Trendlisten
-
-Hacker News und Lobsters haben getrennte Datenflüsse und speisen keine GitHub-Kandidaten ein:
-
-1. `HackerNewsSearch` holt über die Algolia-API (`/search_by_date`) alle Storys der
-  letzten 48 Stunden mit mindestens 50 Punkten (`STORY_WINDOW`, `MIN_STORY_POINTS` in
-  `domain/hn.py`).
-2. `HnProjectResolver` folgt Links von Projekt-Websites zu öffentlichen
-  GitHub-, GitLab- und Gitea-/Forgejo-Repositories. GitHub-Metadaten kommen über die
-  GitHub-API, die anderen bekannten Formate über die jeweilige Forge-API.
-3. `HnEditionCurator` wählt mit dem gemeinsamen `CommunityCurator` aus (siehe
-  „Community-Ausgaben“ in `ausgabe.md`). HN-Punkte bestimmen die Rangfolge; die
-  GitHub-Momentum-Regel wird nicht angewendet.
-4. `JsonHnEditionStore` schreibt eine unveränderliche Tagesausgabe nach
-  `data/hn-editions/`. Pelican liest sie getrennt von `data/editions/`.
-
-Lobsters folgt demselben Projekt- und OSS-Modell, aber mit einer eigenen Story-Quelle
-und Rangfolge:
-
-1. `LobstersSearch` liest die ersten zwei Seiten von „hottest“ (`/hottest.json`,
-  `/page/2.json`) und die Storys mit dem Tag `show` aus den letzten 7 Tagen
-  (`/t/show.json`). Steht eine Story auf mehreren Seiten, zählt sie einmal.
-  `newest` bleibt draußen, weil dort noch nichts bewertet ist (`HOTTEST_PAGES`,
-  `SHOW_WINDOW` in `domain/lobsters.py`).
-2. `LobstersProjectResolver` erhält Lobsters-Story und Diskussionslink, während der
-  gemeinsame Resolver Projektseiten und Forge-APIs prüft.
-3. `LobstersEditionCurator` sortiert nach Lobsters-Score und nutzt denselben
-  `CommunityCurator` wie die HN-Ausgabe.
-4. `JsonLobstersEditionStore` schreibt getrennt nach `data/lobsters-editions/`.
-
-### Zeitraum der Suchen
-
-Gemessen am 13.11.2026 gegen 15 Uhr:
-
-| Quelle | Storys | Alter |
-|---|---|---|
-| HN-Startseite (bis dahin genutzt) | 30, ab 3 Punkten | 1 bis 40 Stunden |
-| HN, 48 Stunden ab 50 Punkten | 107, davon 7 Show HN und 12 direkt auf einer Forge | bis 48 Stunden |
-| Lobsters `hottest` (bis dahin genutzt) | 25 | 2 bis 40 Stunden |
-| Lobsters `hottest` Seite 2 | 25 | 4 bis 69 Stunden |
-| Lobsters `show` | 25, davon 11 direkt auf einer Forge | 15 bis 87 Tage |
-
-Die Startseite zeigte nur, was um 06:37 UTC gerade oben stand. Storys, die tagsüber
-oben standen und vor dem Lauf herausgefallen waren, fehlten, ganz neue mit 3 Punkten
-waren dabei. Die Schwelle von 50 Punkten entspricht den 50 neuen Sternen der
-GitHub-Liste. Das Fenster ist länger als ein Tag, damit keine Story zwischen zwei Läufe
-fällt. Dass sie dann an zwei Tagen gefunden wird, fängt die Sperre ab (siehe
-„Community-Ausgaben“ in `ausgabe.md`). Lobsters bietet keine Suche nach Datum, deshalb
-dort mehr Seiten statt eines Zeitfensters.
-
-### Bezug zur Story (`relates_to_story`)
-
-Verlinkt eine Story direkt ein Repo, gehört dieses Repo zur Story. Verlinkt sie eine
-Website, sucht der Resolver dort Links zu Repos. Blogs verlinken aber oft auch ihr
-Theme, den Arbeitgeber des Autors oder den Code der Website. Am 13.11.2026 waren
-deshalb drei von sieben Lobsters-Einträgen falsch, etwa `bitbrain/jekyll-dash`
-(Blog-Theme) unter einem Artikel über ein Rechenzentrum.
-
-Ein auf einer Website gefundenes Repo zählt deshalb nur, wenn es einen Bezug zur Story
-hat (`shared_words` in `domain/community.py`).
-
-- **Wörter des Repos:** Besitzer (erster Teil des Pfads) und Name (letzter Teil),
-  zerlegt an allem, was kein Buchstabe und keine Ziffer ist, dazu Besitzer und Name
-  ohne Trennzeichen. `rust-lang/rust` ergibt `rust`, `lang`, `rustlang`.
-- **Wörter der Story:** der Titel, der Hostname und der Pfad der Website, genauso
-  zerlegt. `blog.rust-lang.org` ergibt `blog`, `rust`, `lang`, `rustlang`, `org`. Der
-  Pfad findet Projekte, die nur in der Adresse stehen, etwa
-  `moddb.com/mods/openq4/…` für `themuffinator/openQ4`.
-- **Bezug:** mindestens ein gemeinsames Wort. Nicht mit zählen Wörter unter 3 Zeichen,
-  reine Zahlen und allgemeine Wörter wie `blog`, `www`, `com`, `org`, `github`
-  (`GENERIC_WORDS`). Der vollständige Repo-Name zählt ab 2 Zeichen: „Adapting CPython
-  for yk“ findet `ykjit/yk`, ein Teil wie `yk` in `yk-tools` zählt dagegen nicht.
-- **Websites als Repo:** Repos mit dem Namen `….github.io`, `….gitlab.io` oder
-  `….codeberg.page` enthalten den Code einer Website. Auf einer Website gefunden
-  zählen sie nie.
-
-**Welches Repo gewinnt:** Der Resolver betrachtet alle Repo-Links der Seite mit Bezug
-und nimmt das Repo mit den meisten gemeinsamen Wörtern, bei Gleichstand das erste auf
-der Seite. Unter „Announcing the GraphQL over HTTP specification“ gewinnt so
-`graphql/graphql-over-http` (`graphql`, `over`, `http`) gegen `graphql/graphql-spec`
-(`graphql`, `spec`). Links ohne Bezug fragt er gar nicht erst bei der Forge an. Links
-auf Unterseiten eines Repos (`…/tree/main`, `…/-/blob/…`, `…/src/…`) gelten als Link
-auf das Repo, so dass jedes Repo nur einmal angefragt wird.
-
-Am 13.11.2026 entfernt die Regel `bitbrain/jekyll-dash`, `oxidecomputer/omicron` und
-`graphql/graphql.github.io`. Sie kostet auch einen richtigen Fund:
-`raphlinus/vic-2350` unter „JIT bitmap text rendering for microcontrollers“ auf
-`linebender.org`. Lieber ein Projekt zu wenig als eines, das nicht zur Story gehört.
-
-### Topics und README
-
-Für die AI-Sektion holt der Resolver die Topics aus der Repo-Abfrage und für das
-gewählte Repo das README, ein Repo pro Story also eine Anfrage mehr:
-
-- GitHub: `/repos/{owner}/{name}/readme` (roh)
-- GitLab: `readme_url` aus der Projektabfrage, `/-/blob/` durch `/-/raw/` ersetzt
-- Gitea/Forgejo: `/api/v1/repos/{owner}/{name}/raw/README.md`
-
-Das README hat drei Zustände:
-
-- **Text:** gelesen.
-- **Leer (`""`):** Das Repo hat sicher keines. GitHub und GitLab sagen das verlässlich
-  (404 bzw. kein `readme_url`). Das Projekt fällt dann wie bei GitHub heraus („Kein
-  README“).
-- **Unbekannt (`None`):** Die Abfrage ist fehlgeschlagen, oder Gitea kennt kein
-  `README.md` (das README kann anders heißen). Das Projekt bleibt, AI-Regel und
-  Sprachregel haben dann nur Name, Beschreibung und Topics.
-
-### Forge oder nicht
-
-Für einen Link auf einen unbekannten Host fragt der Resolver auf Verdacht die APIs von
-GitLab (`/api/v4/projects/…`) und Gitea/Forgejo (`/api/v1/repos/…`) ab. Antwortet ein
-solcher Host mit einem Fehler oder gar nicht, ist er keine Forge, und der Resolver liest
-die Seite wie jede andere Website. Nur bei GitHub, gitlab.com und codeberg.org
-(`KNOWN_FORGE_HOSTS`) bedeuten 403, 429 und 5xx einen Ausfall (`SourceUnavailable`).
-Vorher hat ein 403 von einer Nachrichtenseite die ganze Story verworfen.
-
-### Lizenz
-
-Ein Projekt gilt als Open Source (`is_open_source_license`), wenn
-
-- seine Lizenz auf der Freigabeliste steht (`OPEN_SOURCE_LICENSES`), oder
-- es eine Lizenzdatei hat, die die Forge nicht erkennt (`NOASSERTION`). GitHub meldet
-  das zum Beispiel bei zwei Lizenzdateien für MIT und Apache oder bei abgewandelten
-  Lizenztexten. GitLab meldet `other`, der Resolver übersetzt das in `NOASSERTION`.
-
-Ohne Lizenzdatei oder mit einer Lizenz außerhalb der Liste (etwa `BUSL-1.1`) bleibt ein
-Projekt draußen. Seit dem 13.11.2026 so entschieden: Vorher fielen echte Projekte wie
-`ykjit/yk` und `ice-wm/icewm` heraus. Die Seite zeigt `NOASSERTION` nicht als
-Lizenznamen, genau wie bei den GitHub-Listen.
-
-Der Resolver kennt GitHub, GitLab und Gitea-/Forgejo-API-Formate; beliebige unbekannte
-Forge-APIs lassen sich nicht automatisch beurteilen.
-
-Reddit bleibt wegen OAuth-, Lösch- und Aufbewahrungsregeln zurückgestellt.
-
-## Geplant: mehr Daten in der Momentaufnahme
-
-Für die Bewertungsregeln fehlt noch:
+| `GROWTH_WINDOW_DAYS`, `STAR_HISTORY_DAYS` | 14, 35 | `domain/model.py` |
+| `COMMIT_LOOKBACK`, `README_MAX_CHARS` | 90 Tage, 20 000 | `domain/model.py` |
+| `SNAPSHOT_RETENTION_DAYS`, `REFRESH_AFTER_DAYS` | 14, 3 | `application/collect_snapshots.py` |
+| `FETCH_CHUNK_SIZE`, `MAX_CONSECUTIVE_FAILURES`, `FRESH_LEADERS_PER_SECTION` | 20, 3, 60 | `application/collect_snapshots.py` |
+| `BATCH_SIZE`, `MAX_TIMEOUTS_PER_BATCH` | 10, 10 | `adapters/github_repo_source.py` |
+| Suchfenster, Mindeststerne, Pause | 30 Tage, 50, 2 s | `adapters/github_search.py` |
+
+## Geplant: mehr Daten
 
 | Daten | Wofür |
 |---|---|
-| Inhalt der Manifeste (`pyproject.toml`, `requirements.txt`, `package.json`, `Cargo.toml`, `go.mod`), gekürzt | AI-Thema über Abhängigkeiten wie `openai`, `langchain` |
-| Agent-Dateien in Unterordnern (`.github/copilot-instructions.md`, `.claude/`, `.cursor/`) | AI-Mithilfe |
-| Hinzugefügte und gelöschte Zeilen je Commit | „50 000 Zeilen in drei Tagen von einer Person“ |
-| Gesamtzahl der Commits, Zahl der Commits im Rückblick | „5000 Sterne bei 3 Commits“, Kontinuität |
+| Manifeste (`pyproject.toml`, `package.json`, `Cargo.toml`, `go.mod` …), gekürzt | AI-Thema über Abhängigkeiten |
+| Agent-Dateien in Unterordnern (`.github/copilot-instructions.md`, `.claude/`) | AI-Mithilfe |
+| Zeilen je Commit | „50 000 Zeilen in drei Tagen von einer Person“ |
+| Zahl aller Commits | „5000 Sterne bei 3 Commits“, Kontinuität über 100 Commits hinaus |
 | Sprachanteile in Bytes | Repos ohne eigentlichen Code |
+
+Weitere Kandidatenquellen, die auch ältere, von Hand gebaute Projekte finden: GH Archive,
+OSS Insight, ecosyste.ms, Paket-Registries (siehe `AGENTS.md`).
 
 ## Offen
 
-- **„Resource limits for this query exceeded“:** GitHub lehnt manche Gruppen von 20
-  Repos als zu aufwendig ab. Im ersten vollständigen Lauf traf das 3 Gruppen. Seit dem
-  13.11.2026 halbiert `GitHubRepoSource` eine abgelehnte Gruppe und fragt erneut. Ein
-  einzelnes Repo, das auch allein zu aufwendig ist, wird ausgelassen und im Protokoll
-  genannt. Im zweiten Lauf trat der Fehler nicht auf, die Abhilfe ist also nur durch
-  Tests belegt.
-- **HTTP 502 und 504 bei GraphQL:** GitHub bricht eine Abfrage nach 10 Sekunden ab. Am
-  16.11.2026 scheiterten in jedem Lauf dieselben drei Gruppen von 20 Repos, andere
-  liefen durch. Es liegt also an einzelnen Repos, nicht an einer Störung. Seitdem wird
-  auch eine solche Gruppe halbiert, ohne sie vorher unverändert zu wiederholen. Nur ein
-  einzelnes Repo wird dreimal versucht und dann ausgelassen und im Protokoll genannt.
-  Nach mehr als 20 Abbrüchen in einer Gruppe (`MAX_TIMEOUTS_PER_BATCH`) gilt GitHub als
-  gestört und die Gruppe als fehlgeschlagen. Im ersten Lauf danach kamen alle 66 Repos
-  durch, kein einzelnes war zu aufwendig. Ob dabei geteilt wurde, stand nicht im
-  Protokoll. Seitdem meldet jede Teilung eine Zeile („Gruppe von 20 Repos wird
-  geteilt“).
-- **Gruppen von 10 statt 20 (seit 17.11.2026):** Am Morgen des 17.11.2026 scheiterte
-  beim Auffrischen fast jede Gruppe von 20 Repos an HTTP 502 oder 504 und musste
-  geteilt werden. Jeder Abbruch kostet rund 10 Sekunden Warten. `GitHubRepoSource`
-  fragt deshalb von sich aus je 10 Repos ab (`BATCH_SIZE`). Das sind doppelt so viele
-  Anfragen, bei 5000 pro Stunde aber kein Engpass. `CollectSnapshots` speichert
-  weiterhin in Gruppen von 20. Mit der Gruppengröße sank auch `MAX_TIMEOUTS_PER_BATCH`
-  von 20 auf 10: Fällt bei einer Gruppe von 10 jede Abfrage aus, sind das 19 Abbrüche.
-  Bei 20 wäre ein Ausfall von GitHub nie erkannt worden, und jedes Repo wäre einzeln
-  ausgelassen worden. Ob es schneller geht, zeigt erst der nächste Lauf.
 - Die Test-Fixtures für Suche und GraphQL sind von Hand geschrieben, damit keine Namen
-  und E-Mail-Adressen echter Personen im Repo landen. Ihre Form ist gegen echte
-  Antworten geprüft. Der Sternverlauf ist eine echte Antwort.
+  echter Personen im Repo landen. Ihre Form ist gegen echte Antworten geprüft, der
+  Sternverlauf ist eine echte Antwort.
+- Eine Prüfung, die die Anfragen eines Laufs gegen ein nachgestelltes GitHub zählt, gab
+  es bis zum Neuaufbau (`checks/request_count.py`). Sie ist entfallen, weil ihre
+  Referenzdaten veraltet waren.

@@ -2,6 +2,7 @@
 
 Campaigns of lures use accounts made for the purpose, a few weeks old and without any
 work elsewhere. Followers do not count: not every developer gathers people around them.
+See docs/bewertung.md, "Vorgeschichte des Besitzers".
 """
 
 from github_anti_ai.domain.model import Signal, Snapshot

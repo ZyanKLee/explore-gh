@@ -1,23 +1,21 @@
-"""Curation: the daily Edition and how it is put together. See docs/ausgabe.md."""
+"""The daily Edition of the GitHub list and how it is put together. See docs/ausgabe.md."""
 
 from __future__ import annotations
 
-from collections import Counter
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from datetime import date, datetime
 
+from github_anti_ai.domain.curation import check_section, check_unique, in_cooldown, varied
 from github_anti_ai.domain.model import Assessment, RepoId, Section, Signal, StarHistory
-
-ENTRIES_PER_SECTION = 20
-MAX_PER_LANGUAGE = 4
-MAX_PER_OWNER = 2
-COOLDOWN_DAYS = 30
 
 
 @dataclass(frozen=True)
 class Entry:
-    """A repo within an Edition, with everything the page shows about it."""
+    """A repo within an Edition, with everything the page shows about it.
+
+    Snapshots are deleted after 14 days, the archive has to stay readable for good.
+    """
 
     repo: RepoId
     score: float
@@ -66,7 +64,7 @@ class EditionStats:
 
 @dataclass(frozen=True)
 class Edition:
-    """The selection of one day. Entries are in ranking order."""
+    """The selection of one day. Entries are in ranking order. Never changed once published."""
 
     day: date
     main: tuple[Entry, ...] = ()
@@ -77,44 +75,41 @@ class Edition:
         object.__setattr__(self, "main", tuple(self.main))
         object.__setattr__(self, "ai", tuple(self.ai))
         for section in Section:
-            _check_section(section, self.entries(section))
-        repos = [entry.repo for entry in self.main + self.ai]
-        if len(set(repos)) != len(repos):
-            raise ValueError("Ein Repo steht mehrfach in der Ausgabe")
+            check_section(
+                self.entries(section),
+                language_of=lambda entry: entry.primary_language,
+                owner_of=lambda entry: entry.repo.owner.lower(),
+                name=f"Sektion {section.value}",
+            )
+        check_unique((entry.repo for entry in self.main + self.ai), f"Ausgabe vom {self.day}")
 
     def entries(self, section: Section) -> tuple[Entry, ...]:
         return self.main if section is Section.MAIN else self.ai
 
-    def shows(self, repo: RepoId) -> bool:
-        return any(entry.repo == repo for entry in self.main + self.ai)
-
-
-def _check_section(section: Section, entries: tuple[Entry, ...]) -> None:
-    if len(entries) > ENTRIES_PER_SECTION:
-        raise ValueError(f"Sektion {section.value}: mehr als {ENTRIES_PER_SECTION} Einträge")
-    languages = Counter(entry.primary_language for entry in entries)
-    if languages and max(languages.values()) > MAX_PER_LANGUAGE:
-        raise ValueError(f"Sektion {section.value}: mehr als {MAX_PER_LANGUAGE} Einträge einer Sprache")
-    owners = Counter(entry.repo.owner.lower() for entry in entries)
-    if owners and max(owners.values()) > MAX_PER_OWNER:
-        raise ValueError(f"Sektion {section.value}: mehr als {MAX_PER_OWNER} Repos eines Besitzers")
+    def ranks(self) -> dict[RepoId, int]:
+        """The place of each repo within its section, starting at 1."""
+        return {
+            entry.repo: place
+            for section in Section
+            for place, entry in enumerate(self.entries(section), start=1)
+        }
 
 
 class EditionCurator:
     def curate(
         self, day: date, assessments: Sequence[Assessment], past_editions: Iterable[Edition]
     ) -> Edition:
-        cooled_down = {
-            entry.repo
+        blocked = {
+            repo
             for edition in past_editions
-            if (day - edition.day).days < COOLDOWN_DAYS
-            for entry in edition.main + edition.ai
+            if in_cooldown(edition.day, day)
+            for repo in edition.ranks()
         }
-        eligible = [a for a in assessments if a.exclusion is None and a.repo not in cooled_down]
+        eligible = [a for a in assessments if a.exclusion is None and a.repo not in blocked]
         return Edition(
             day=day,
-            main=_select([a for a in eligible if a.section is Section.MAIN]),
-            ai=_select([a for a in eligible if a.section is Section.AI]),
+            main=_select(a for a in eligible if a.section is Section.MAIN),
+            ai=_select(a for a in eligible if a.section is Section.AI),
             stats=EditionStats(
                 assessed=len(assessments),
                 excluded=sum(1 for a in assessments if a.exclusion is not None),
@@ -125,22 +120,15 @@ class EditionCurator:
         )
 
 
-def _select(assessments: list[Assessment]) -> tuple[Entry, ...]:
+def _select(assessments: Iterable[Assessment]) -> tuple[Entry, ...]:
+    """Highest score first; on a tie more new stars, then the name. Always the same result."""
     ranked = sorted(
         assessments,
         key=lambda a: (-a.score, -a.snapshot.star_history.gained(), str(a.repo).lower()),
     )
-    selected: list[Entry] = []
-    per_language: Counter[str | None] = Counter()
-    per_owner: Counter[str] = Counter()
-    for assessment in ranked:
-        language = assessment.snapshot.primary_language
-        owner = assessment.repo.owner.lower()
-        if per_language[language] == MAX_PER_LANGUAGE or per_owner[owner] == MAX_PER_OWNER:
-            continue
-        per_language[language] += 1
-        per_owner[owner] += 1
-        selected.append(Entry.from_assessment(assessment))
-        if len(selected) == ENTRIES_PER_SECTION:
-            break
-    return tuple(selected)
+    chosen = varied(
+        ranked,
+        language_of=lambda a: a.snapshot.primary_language,
+        owner_of=lambda a: a.repo.owner.lower(),
+    )
+    return tuple(Entry.from_assessment(a) for a in chosen)

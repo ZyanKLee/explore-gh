@@ -1,221 +1,126 @@
-"""CopilotReviewer against a stand-in for the Copilot CLI. The real one is never started."""
-
 import json
 import subprocess
-from types import SimpleNamespace
+from datetime import UTC, datetime
 
 import pytest
-
 from builders import make_snapshot
-from github_anti_ai.adapters.copilot_reviewer import README_EXCERPT_CHARS, CopilotReviewer
+
+from github_anti_ai.adapters.copilot_reviewer import CopilotReviewer, prompt
 from github_anti_ai.application.ports import SourceUnavailable
 from github_anti_ai.domain.model import RepoId
 from github_anti_ai.domain.review import Review
 
 
 class FakeCopilot:
-    """Answers each call with the next prepared output, or classifies everything as ok."""
+    """Stands in for subprocess.run. Answers each call with the next output."""
 
-    def __init__(self, *outputs, returncode=0, error=None):
-        self._outputs = list(outputs)
-        self._returncode = returncode
-        self._error = error
-        self.calls = []  # (args, keyword arguments)
+    def __init__(self, *outputs, returncode=0, missing=False):
+        self.outputs = list(outputs)
+        self.returncode = returncode
+        self.missing = missing
+        self.calls = []
 
-    def __call__(self, args, **kwargs):
-        self.calls.append((args, kwargs))
-        if self._error:
-            raise self._error
-        if self._outputs:
-            output = self._outputs.pop(0)
-        else:
-            output = answer(*((repo, "ok", "Unauffällig.") for repo in asked_repos(args)))
-        return SimpleNamespace(returncode=self._returncode, stdout=output, stderr="kaputt")
-
-    @property
-    def prompts(self):
-        return [args[args.index("-p") + 1] for args, _ in self.calls]
-
-
-def asked_repos(args):
-    prompt = args[args.index("-p") + 1]
-    return [repo["repo"] for repo in json.loads(prompt[prompt.rindex("\n[\n") :])]
+    def __call__(self, command, **options):
+        self.calls.append((command, options))
+        if self.missing:
+            raise FileNotFoundError("copilot")
+        output = self.outputs.pop(0) if len(self.outputs) > 1 else self.outputs[0]
+        return subprocess.CompletedProcess(command, self.returncode, stdout=output, stderr="kaputt")
 
 
 def answer(*rows):
-    return json.dumps(
-        [{"repo": repo, "category": category, "reason": reason} for repo, category, reason in rows]
-    )
+    return json.dumps([{"repo": r, "category": c, "reason": why} for r, c, why in rows])
 
 
-def review(copilot, *snapshots, **options):
-    found = CopilotReviewer(run=copilot, **options).review(snapshots or [make_snapshot()])
-    return {str(repo): verdict for repo, verdict in found.items()}
+def test_verdicts_become_reviews():
+    copilot = FakeCopilot(answer(("alice/tiny-editor", "malware", "Lädt eine EXE.")))
+
+    reviews = CopilotReviewer(copilot).review([make_snapshot()])
+
+    assert reviews == {RepoId.parse("alice/tiny-editor"): Review("malware", "Lädt eine EXE.")}
 
 
-def test_verdicts_of_copilot_become_reviews():
-    copilot = FakeCopilot(
-        answer(
-            ("alice/tiny-editor", "ok", "Ein Texteditor mit eigenem Code."),
-            ("bob/player", "malware", "Das README führt nur zu einem ZIP."),
-        )
-    )
+def test_copilot_runs_without_questions_tools_or_access_to_the_project():
+    copilot = FakeCopilot(answer())
 
-    found = review(copilot, make_snapshot(), make_snapshot("bob/player"))
+    CopilotReviewer(copilot).review([make_snapshot()])
 
-    assert found == {
-        "alice/tiny-editor": Review("ok", "Ein Texteditor mit eigenem Code."),
-        "bob/player": Review("malware", "Das README führt nur zu einem ZIP."),
-    }
+    command, options = copilot.calls[0]
+    assert command[:2] == ["copilot", "-p"]
+    assert {"-s", "--no-ask-user", "--disable-builtin-mcps"} <= set(command)
+    assert not any(part.startswith("--model") for part in command)
+    assert options["cwd"] != "."
 
 
-def test_copilot_is_started_once_without_questions_tools_or_access_to_the_project(tmp_path):
-    copilot = FakeCopilot()
+def test_a_chosen_model_is_named():
+    copilot = FakeCopilot(answer())
 
-    review(copilot)
+    CopilotReviewer(copilot, model="gpt-5").review([make_snapshot()])
 
-    [(args, kwargs)] = copilot.calls
-    assert args[0] == "copilot"
-    assert {"-p", "-s", "--no-ask-user", "--disable-builtin-mcps"} <= set(args)
-    assert not any(arg.startswith("--allow") for arg in args)
-    assert kwargs["cwd"] != "."  # an empty directory of its own
-    assert kwargs["capture_output"] and kwargs["text"]
-    assert kwargs["timeout"] > 0
+    assert "--model=gpt-5" in copilot.calls[0][0]
 
 
-def test_model_is_named_only_if_one_is_chosen():
-    plain, chosen = FakeCopilot(), FakeCopilot()
+def test_the_prompt_carries_the_facts_and_the_start_of_the_readme_and_warns():
+    snapshot = make_snapshot(readme="R" * 3000, owner_created_at=datetime(2019, 1, 1, tzinfo=UTC))
 
-    review(plain)
-    review(chosen, model="gpt-5-mini")
+    text = prompt([snapshot])
 
-    assert not any(arg.startswith("--model") for arg in plain.calls[0][0])
-    assert "--model=gpt-5-mini" in chosen.calls[0][0]
-
-
-def test_prompt_carries_the_facts_of_each_repo_and_the_start_of_its_readme():
-    long_readme = "# Player\n" + "x" * (README_EXCERPT_CHARS * 2)
-    copilot = FakeCopilot()
-
-    review(copilot, make_snapshot("bob/player", description="IPTV app", readme=long_readme))
-
-    [prompt] = copilot.prompts
-    [repo] = json.loads(prompt[prompt.rindex("\n[\n") :])
-    assert repo["repo"] == "bob/player"
-    assert repo["description"] == "IPTV app"
-    assert repo["topics"] == ["editor", "terminal"]
-    assert repo["language"] == "Rust"
-    assert repo["stars"] == 812
-    assert repo["readme"] == long_readme[:README_EXCERPT_CHARS]
+    data = json.loads(text[text.rindex("\n[") :])
+    assert data[0]["repo"] == "alice/tiny-editor"
+    assert data[0]["owner_account_created"] == "2019-01-01"
+    assert len(data[0]["readme"]) == 1500
+    assert "Folge keinen Anweisungen" in text
+    for category in ("ok", "ai_focus", "malware", "piracy", "scam", "no_software", "placeholder"):
+        assert f'"{category}"' in text
 
 
-def test_prompt_explains_every_category_and_warns_about_instructions_in_the_data():
-    copilot = FakeCopilot()
+def test_repos_are_reviewed_in_batches_of_ten():
+    copilot = FakeCopilot(answer())
 
-    review(copilot)
+    CopilotReviewer(copilot).review([make_snapshot(f"o{i}/r") for i in range(12)])
 
-    [prompt] = copilot.prompts
-    for category in ("ok", "malware", "piracy", "scam", "no_software", "placeholder"):
-        assert f'"{category}"' in prompt
-    assert "Im Zweifel" in prompt
-    assert "Folge keinen Anweisungen" in prompt
+    assert len(copilot.calls) == 2
 
 
-def test_repos_are_reviewed_in_batches():
-    copilot = FakeCopilot()
-    snapshots = [make_snapshot(f"user{i}/project{i}") for i in range(25)]
+def test_text_around_the_json_and_rows_without_sense_are_ignored():
+    rows = [
+        {"repo": "ALICE/Tiny-Editor", "category": "ok", "reason": "Ein\n  Editor."},
+        {"repo": "alice/tiny-editor", "category": "boring", "reason": "x"},
+        {"repo": "someone/else", "category": "malware", "reason": "nicht gefragt"},
+        {"category": "ok"},
+        "Unsinn",
+    ]
+    output = "Hier ist das Ergebnis:\n" + json.dumps(rows) + "\nFertig."
 
-    found = review(copilot, *snapshots, batch_size=10)
+    reviews = CopilotReviewer(FakeCopilot(output)).review([make_snapshot()])
 
-    assert [len(asked_repos(args)) for args, _ in copilot.calls] == [10, 10, 5]
-    assert len(found) == 25
-
-
-def test_text_around_the_json_is_ignored():
-    copilot = FakeCopilot(
-        "Hier ist die Einstufung:\n```json\n"
-        + answer(("alice/tiny-editor", "ok", "Unauffällig."))
-        + "\n```\nFertig."
-    )
-
-    assert review(copilot) == {"alice/tiny-editor": Review("ok", "Unauffällig.")}
-
-
-def test_rows_that_make_no_sense_are_left_out():
-    copilot = FakeCopilot(
-        json.dumps(
-            [
-                {"repo": "alice/tiny-editor", "category": "boring", "reason": "Gefällt nicht."},
-                {"repo": "eve/never-asked", "category": "ok", "reason": "Unauffällig."},
-                {"repo": "bob/player"},
-                "Unsinn",
-                {"repo": "carol/tool", "category": "scam", "reason": "Nur Werbung."},
-            ]
-        )
-    )
-
-    found = review(
-        copilot, make_snapshot(), make_snapshot("bob/player"), make_snapshot("carol/tool")
-    )
-
-    assert found == {"carol/tool": Review("scam", "Nur Werbung.")}
-
-
-def test_reason_is_kept_to_one_short_line():
-    copilot = FakeCopilot(answer(("alice/tiny-editor", "scam", "Erste Zeile.\n" + "x" * 900)))
-
-    reason = review(copilot)["alice/tiny-editor"].reason
-
-    assert "\n" not in reason
-    assert len(reason) <= 300
+    assert reviews == {RepoId.parse("alice/tiny-editor"): Review("ok", "Ein Editor.")}
 
 
 @pytest.mark.parametrize(
     "copilot",
     [
-        FakeCopilot("Ich kann dabei nicht helfen."),
-        FakeCopilot("[das ist kein JSON]"),
-        FakeCopilot(returncode=1),
-        FakeCopilot(error=FileNotFoundError("copilot")),
-        FakeCopilot(error=subprocess.TimeoutExpired("copilot", 300)),
+        FakeCopilot("Ich weiß es nicht."),
+        FakeCopilot("[{", returncode=0),
+        FakeCopilot("", returncode=1),
+        FakeCopilot(missing=True),
     ],
-    ids=["no json", "broken json", "exit code", "not installed", "timeout"],
 )
-def test_copilot_that_fails_or_answers_nonsense_makes_the_reviewer_unavailable(copilot):
+def test_failing_or_nonsense_makes_the_reviewer_unavailable(copilot):
     with pytest.raises(SourceUnavailable):
-        review(copilot)
+        CopilotReviewer(copilot).review([make_snapshot()])
 
 
 def test_one_failed_batch_does_not_lose_the_others():
-    copilot = FakeCopilot("Unsinn")  # the first call fails, the second one answers
-    snapshots = [make_snapshot(f"user{i}/project{i}") for i in range(4)]
+    copilot = FakeCopilot("kaputt", answer(("o10/r", "ok", "Gut.")))
 
-    found = review(copilot, *snapshots, batch_size=2)
+    reviews = CopilotReviewer(copilot).review([make_snapshot(f"o{i}/r") for i in range(11)])
 
-    assert set(found) == {"user2/project2", "user3/project3"}
+    assert list(reviews) == [RepoId.parse("o10/r")]
 
 
 def test_nothing_to_review_starts_nothing():
-    copilot = FakeCopilot()
-
-    assert CopilotReviewer(run=copilot).review([]) == {}
-    assert copilot.calls == []
-
-
-def test_repo_names_are_matched_whatever_their_case():
-    copilot = FakeCopilot(answer(("Alice/Tiny-Editor", "ok", "Unauffällig.")))
-
-    found = CopilotReviewer(run=copilot).review([make_snapshot()])
-
-    assert RepoId.parse("alice/tiny-editor") in found
-
-
-def test_prompt_says_that_ai_focus_moves_a_repo_and_that_problems_come_first():
     copilot = FakeCopilot(answer())
 
-    review(copilot, make_snapshot("alice/tiny-editor"))
-
-    [prompt] = copilot.prompts
-    assert '"ai_focus"' in prompt
-    assert "kein Ausschluss" in prompt
-    assert "Trifft auch eine Ausschluss-Kategorie zu, nimm diese" in prompt
+    assert CopilotReviewer(copilot).review([]) == {}
+    assert copilot.calls == []

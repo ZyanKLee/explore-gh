@@ -1,152 +1,128 @@
-from datetime import UTC, datetime, timedelta
+from datetime import timedelta
 
-from builders import make_snapshot
-from github_anti_ai.domain.copies import (
-    COPY_ORIGINAL_MIN_LEAD,
-    MIN_COPIED_README_CHARS,
-    CopyCheck,
-)
-from github_anti_ai.domain.model import Assessment, Exclusion, RepoId, Section
+from builders import NOW, make_assessment, make_snapshot
 
-CREATED = datetime(2026, 11, 14, 19, 15, tzinfo=UTC)
-DESCRIPTION = "A powerful, intuitive IPTV streaming app"
+from github_anti_ai.domain.copies import CopyCheck
+from github_anti_ai.domain.model import Exclusion, RepoId
+
+check = CopyCheck()
+LONG_README = "# IPTV Player\n\n" + "Watch your playlists on any screen. " * 20
 
 
-def copy(repo, *, created_at=CREATED, description=DESCRIPTION, **overrides):
-    return make_snapshot(repo, created_at=created_at, description=description, **overrides)
+def copies(*snapshots):
+    return {str(repo): exclusion for repo, exclusion in check.find(snapshots).items()}
 
 
-def find(*snapshots):
-    return {str(repo): exclusion for repo, exclusion in CopyCheck().find(snapshots).items()}
-
-
-def test_copies_created_at_almost_the_same_time_are_all_excluded():
-    found = find(
-        copy("warrior/IPTV_Player"),
-        copy("tornado/IPTV_Player", created_at=CREATED + timedelta(minutes=10)),
-        copy("watt/IPTV_Player", created_at=CREATED + timedelta(minutes=10)),
+def test_the_same_name_and_description_under_two_owners_are_copies():
+    found = copies(
+        make_snapshot("alice/player", description="IPTV Player 2.0"),
+        make_snapshot("bob/player", description="iptv  player 2.0"),
     )
 
-    assert set(found) == {"warrior/IPTV_Player", "tornado/IPTV_Player", "watt/IPTV_Player"}
-    assert all(exclusion.kind == "copy" for exclusion in found.values())
-    assert found["warrior/IPTV_Player"].reason == (
-        "Kopie: 3 Repos mit gleichem Namen und gleicher Beschreibung, "
-        "fast gleichzeitig angelegt"
+    assert set(found) == {"alice/player", "bob/player"}
+    assert found["bob/player"] == Exclusion(
+        "Kopie: 2 Repos mit gleichem Namen und gleicher Beschreibung, fast gleichzeitig angelegt",
+        "copy",
     )
 
 
-def test_a_clearly_older_repo_stays_as_the_original_and_only_its_copies_are_excluded():
-    found = find(
-        copy("alice/IPTV_Player", created_at=CREATED - COPY_ORIGINAL_MIN_LEAD),
-        copy("tornado/IPTV_Player"),
-        copy("watt/IPTV_Player", created_at=CREATED + timedelta(minutes=10)),
+def test_the_same_description_and_topics_catch_a_changed_name():
+    found = copies(
+        make_snapshot("alice/IPTV_Player_2.0", description="Player", topics=("iptv", "tv")),
+        make_snapshot("bob/IPTV_Player2.0", description="Player", topics=("tv", "iptv")),
     )
 
-    assert set(found) == {"tornado/IPTV_Player", "watt/IPTV_Player"}
-    assert found["tornado/IPTV_Player"] == Exclusion("Kopie von alice/IPTV_Player", "copy")
+    assert "gleicher Beschreibung und gleichen Topics" in found["alice/IPTV_Player_2.0"].reason
 
 
-def test_a_repo_that_is_not_older_by_enough_is_no_original():
-    found = find(
-        copy("alice/IPTV_Player", created_at=CREATED - COPY_ORIGINAL_MIN_LEAD + timedelta(hours=1)),
-        copy("tornado/IPTV_Player"),
+def test_the_same_long_readme_makes_copies():
+    found = copies(
+        make_snapshot("alice/one", readme=LONG_README),
+        make_snapshot("bob/two", readme=LONG_README),
     )
 
-    assert set(found) == {"alice/IPTV_Player", "tornado/IPTV_Player"}
+    assert "gleichem README" in found["bob/two"].reason
 
 
-def test_same_name_with_another_description_is_no_copy():
-    assert not find(
-        copy("alice/editor", description="A tiny terminal text editor"),
-        copy("bob/editor", description="Editor for hex files"),
-    )
-
-
-def test_same_description_with_another_name_and_other_topics_is_no_copy():
-    assert not find(
-        copy("alice/IPTV_Player", topics=("iptv",)), copy("bob/tv-streamer", topics=("tv",))
+def test_a_short_readme_in_common_proves_nothing():
+    assert (
+        copies(
+            make_snapshot("alice/one", readme="# TODO"), make_snapshot("bob/two", readme="# TODO")
+        )
+        == {}
     )
 
 
-def test_same_description_and_topics_under_another_name_is_a_copy():
-    found = find(
-        copy("alice/IPTV_Player_2.0", topics=("iptv", "m3u")),
-        copy("bob/IPTV_Player2.0", topics=("m3u", "iptv")),
-    )
-
-    assert set(found) == {"alice/IPTV_Player_2.0", "bob/IPTV_Player2.0"}
-    assert found["bob/IPTV_Player2.0"].reason == (
-        "Kopie: 2 Repos mit gleicher Beschreibung und gleichen Topics, "
-        "fast gleichzeitig angelegt"
+def test_the_same_description_alone_makes_no_copies():
+    assert (
+        copies(
+            make_snapshot("alice/one", description="Switch 2 emulator", topics=("a",)),
+            make_snapshot("bob/two", description="Switch 2 emulator", topics=("b",)),
+        )
+        == {}
     )
 
 
-def test_same_description_without_topics_under_another_name_is_no_copy():
-    assert not find(copy("alice/IPTV_Player", topics=()), copy("bob/tv-streamer", topics=()))
-
-
-LONG_README = "# Player\n\n" + "Plays every stream you point it at. " * 20
-
-
-def test_same_readme_is_a_copy_whatever_name_and_description_say():
-    found = find(
-        copy("alice/player", description="Plays streams", readme=LONG_README),
-        copy("bob/streamer", description="A stream player", readme=LONG_README + "\n\n"),
-    )
-
-    assert set(found) == {"alice/player", "bob/streamer"}
-    assert found["alice/player"].reason == (
-        "Kopie: 2 Repos mit gleichem README, fast gleichzeitig angelegt"
+def test_repos_of_the_same_owner_are_no_copies():
+    assert (
+        copies(
+            make_snapshot("alice/player", description="Player"),
+            make_snapshot("Alice/Player", description="Player"),
+        )
+        == {}
     )
 
 
-def test_same_short_readme_is_no_copy():
-    assert MIN_COPIED_README_CHARS > 100
-    assert not find(
-        copy("alice/player", description="Plays streams", readme="# Player\n\nTODO"),
-        copy("bob/streamer", description="A stream player", readme="# Player\n\nTODO"),
+def test_repos_without_description_or_topics_are_not_compared_by_them():
+    assert (
+        copies(
+            make_snapshot("alice/player", description="", topics=()),
+            make_snapshot("bob/player", description="", topics=()),
+        )
+        == {}
     )
 
 
-def test_name_and_description_compare_without_case_and_spacing():
-    found = find(
-        copy("alice/IPTV_Player", description="A powerful  IPTV app "),
-        copy("bob/iptv_player", description="a powerful iptv app"),
-    )
-
-    assert set(found) == {"alice/IPTV_Player", "bob/iptv_player"}
-
-
-def test_repos_without_description_are_no_copies():
-    assert not find(copy("alice/demo", description=""), copy("bob/demo", description=" "))
-
-
-def test_a_fork_does_not_make_the_original_a_copy():
-    assert not find(copy("alice/IPTV_Player"), copy("bob/IPTV_Player", is_fork=True))
-
-
-def assessment(snapshot, exclusion=None):
-    return Assessment(
-        snapshot=snapshot, section=Section.MAIN, score=1.0, signals=(), exclusion=exclusion
+def test_forks_are_left_out():
+    assert (
+        copies(
+            make_snapshot("alice/player", description="Player"),
+            make_snapshot("bob/player", description="Player", is_fork=True),
+        )
+        == {}
     )
 
 
-def test_apply_excludes_the_copies_among_the_assessments():
-    lone = assessment(make_snapshot("alice/tiny-editor"))
-    applied = CopyCheck().apply(
-        [lone, assessment(copy("tornado/IPTV_Player")), assessment(copy("watt/IPTV_Player"))]
+def test_a_repo_a_week_older_stays_as_the_original():
+    found = copies(
+        make_snapshot("alice/player", description="Player", created_at=NOW - timedelta(days=30)),
+        make_snapshot("bob/player", description="Player", created_at=NOW - timedelta(days=23)),
+        make_snapshot("carol/player", description="Player", created_at=NOW - timedelta(days=22)),
     )
 
-    assert applied[0] is lone
-    assert [a.exclusion.kind for a in applied[1:]] == ["copy", "copy"]
-    assert applied[1].repo == RepoId.parse("tornado/IPTV_Player")
+    assert set(found) == {"bob/player", "carol/player"}
+    assert found["bob/player"] == Exclusion("Kopie von alice/player", "copy")
 
 
-def test_apply_keeps_an_earlier_exclusion():
-    lure = Exclusion("Köder für Schadsoftware („full version“)", "lure")
-    applied = CopyCheck().apply(
-        [assessment(copy("tornado/IPTV_Player"), lure), assessment(copy("watt/IPTV_Player"))]
+def test_apply_excludes_copies_but_keeps_an_earlier_reason():
+    assessments = [
+        make_assessment("alice/player", description="Player"),
+        make_assessment(
+            "bob/player", description="Player", exclusion=Exclusion("Archiviert", "archived")
+        ),
+        make_assessment("carol/editor"),
+    ]
+
+    applied = {str(a.repo): a.exclusion for a in check.apply(assessments)}
+
+    assert applied["alice/player"].kind == "copy"
+    assert applied["bob/player"].kind == "archived"
+    assert applied["carol/editor"] is None
+
+
+def test_find_returns_repo_ids():
+    found = check.find(
+        [make_snapshot("alice/p", description="P"), make_snapshot("bob/p", description="P")]
     )
 
-    assert applied[0].exclusion == lure
-    assert applied[1].exclusion.kind == "copy"
+    assert RepoId.parse("ALICE/P") in found

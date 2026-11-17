@@ -1,27 +1,30 @@
-"""Page models of the site: everything about texts and numbers, without Pelican.
+"""Page models of the GitHub list: everything about texts and numbers, without Pelican.
 
-Publication only knows the JSON format of the editions, see docs/ausgabe.md.
+Publication only knows the JSON format of the editions. See docs/veroeffentlichung.md.
 """
 
-import json
-import re
 from dataclasses import dataclass
 from datetime import date, datetime
+from html import escape
 from pathlib import Path
 
-FORMAT_VERSION = 1
+from github_anti_ai.publication.german import (
+    age,
+    decimal,
+    load_edition_files,
+    long_date,
+    number,
+    shown_license,
+    web_url,
+    weight,
+)
+
 # Editions until 2026-11-15 do not say over how many days they counted the gain.
 FORMER_GROWTH_WINDOW_DAYS = 7
 SECTION_TITLES = {"main": "Trending auf GitHub", "ai": "AI-Projekte auf GitHub"}
 SECTION_PREFIXES = {"main": "", "ai": "ai/"}
-MONTHS = [
-    "Januar", "Februar", "März", "April", "Mai", "Juni",
-    "Juli", "August", "September", "Oktober", "November", "Dezember",
-]  # fmt: skip
 SPARKLINE_WIDTH = 120
 SPARKLINE_HEIGHT = 24
-
-_EDITION_FILE = re.compile(r"\d{4}-\d{2}-\d{2}\.json")
 
 
 @dataclass(frozen=True)
@@ -54,34 +57,37 @@ class EntryView:
 @dataclass(frozen=True)
 class SectionView:
     day: date
-    section: str
+    section: str  # "main" or "ai"
     title: str
     url: str
     stats: str
     entries: list[EntryView]
 
 
-def load_editions(directory: Path) -> list[dict]:
-    """All editions of the directory in date order. An unknown format stops the build."""
-    directory = Path(directory)
-    if not directory.exists():
-        return []
-    editions = []
-    for path in sorted(directory.iterdir()):
-        if not _EDITION_FILE.fullmatch(path.name):
-            continue
-        edition = json.loads(path.read_text(encoding="utf-8"))
-        if edition.get("format_version") != FORMAT_VERSION:
-            raise ValueError(
-                f"{path.name}: unbekannte format_version {edition.get('format_version')!r}, "
-                f"erwartet wird {FORMAT_VERSION}"
-            )
-        editions.append(edition)
-    return editions
+@dataclass(frozen=True)
+class GitHubDay:
+    day: date
+    main: SectionView
+    ai: SectionView
+
+    def section(self, name: str) -> SectionView:
+        return self.main if name == "main" else self.ai
+
+    @property
+    def date(self) -> str:
+        return long_date(self.day)
 
 
-def long_date(day: date) -> str:
-    return f"{day.day}. {MONTHS[day.month - 1]} {day.year}"
+def load_github_days(directory: Path) -> list[GitHubDay]:
+    """All days of the GitHub list, oldest first."""
+    return [
+        GitHubDay(
+            day=date.fromisoformat(edition["day"]),
+            main=section_view(edition, "main"),
+            ai=section_view(edition, "ai"),
+        )
+        for edition in load_edition_files(directory, "GitHub-Ausgabe")
+    ]
 
 
 def section_url(day: date, section: str) -> str:
@@ -91,25 +97,23 @@ def section_url(day: date, section: str) -> str:
 def section_view(edition: dict, section: str) -> SectionView:
     day = date.fromisoformat(edition["day"])
     stats = edition["stats"]
+    gained_days = edition.get("growth_window_days", FORMER_GROWTH_WINDOW_DAYS)
     return SectionView(
         day=day,
         section=section,
         title=f"{SECTION_TITLES[section]} vom {long_date(day)}",
         url=section_url(day, section),
         stats=(
-            f"{_number(stats['assessed'])} Repos geprüft, "
-            f"{_number(stats['excluded'])} ausgeschlossen, "
-            f"{_number(stats['ai_focused'])} als AI-Thema eingestuft"
+            f"{number(stats['assessed'])} Repos geprüft, "
+            f"{number(stats['excluded'])} ausgeschlossen, "
+            f"{number(stats['ai_focused'])} als AI-Thema eingestuft"
         ),
-        entries=[
-            _entry_view(entry, day, edition.get("growth_window_days", FORMER_GROWTH_WINDOW_DAYS))
-            for entry in edition["sections"][section]
-        ],
+        entries=[_entry_view(entry, day, gained_days) for entry in edition["sections"][section]],
     )
 
 
 def sparkline_points(history: list[int], width: int, height: int) -> str:
-    """Points of an SVG polyline: one per day, the highest day touches the top."""
+    """Points of an SVG polyline: one per day, the best day touches the top."""
     top = max(history, default=0)
     last = max(len(history) - 1, 1)
     return " ".join(
@@ -119,63 +123,8 @@ def sparkline_points(history: list[int], width: int, height: int) -> str:
     )
 
 
-def _entry_view(entry: dict, day: date, gained_days: int) -> EntryView:
-    homepage = entry["homepage"] or ""
-    return EntryView(
-        rank=entry["rank"],
-        repo=entry["repo"],
-        url=entry["url"],
-        description=entry["description"],
-        # text from GitHub: only real web addresses may become links
-        homepage=homepage if homepage.startswith(("http://", "https://")) else None,
-        language=entry["language"],
-        license=None if entry["license"] == "NOASSERTION" else entry["license"],
-        topics=tuple(entry["topics"]),
-        stars=_number(entry["stars"]),
-        gained=f"+{_number(entry['stars_gained'])}",
-        gained_days=gained_days,
-        forks=_number(entry["forks"]),
-        active_authors=entry["active_authors"],
-        age=_age(datetime.fromisoformat(entry["created_at"]).date(), day),
-        score=_decimal(entry["score"]),
-        signals=tuple(
-            SignalLine(weight=_weight(signal["weight"]), reason=signal["reason"])
-            for signal in entry["signals"]
-        ),
-        sparkline=sparkline_points(entry["star_history"], SPARKLINE_WIDTH, SPARKLINE_HEIGHT),
-    )
-
-
-def _number(value: int) -> str:
-    return f"{value:,}".replace(",", ".")
-
-
-def _decimal(value: float) -> str:
-    text = f"{abs(value):.1f}".replace(".", ",")
-    return f"−{text}" if value < 0 else text
-
-
-def _weight(value: float) -> str:
-    if value == 0:
-        return "0"
-    return f"+{_decimal(value)}" if value > 0 else _decimal(value)
-
-
-def _age(created: date, day: date) -> str:
-    days = (day - created).days
-    if days <= 0:
-        return "heute erstellt"
-    return "1 Tag alt" if days == 1 else f"{days} Tage alt"
-
-
-def _coordinate(value: float) -> str:
-    return f"{value:.1f}".removesuffix(".0")
-
-
 def feed_html(view: SectionView) -> str:
     """The list of a section as plain HTML, for feed readers."""
-    from html import escape
-
     if not view.entries:
         return "<p>Heute nichts gefunden.</p>"
     items = "".join(
@@ -186,3 +135,32 @@ def feed_html(view: SectionView) -> str:
         for entry in view.entries
     )
     return f"<ol>{items}</ol>"
+
+
+def _entry_view(entry: dict, day: date, gained_days: int) -> EntryView:
+    return EntryView(
+        rank=entry["rank"],
+        repo=entry["repo"],
+        url=entry["url"],
+        description=entry["description"],
+        homepage=web_url(entry["homepage"]),
+        language=entry["language"],
+        license=shown_license(entry["license"]),
+        topics=tuple(entry["topics"]),
+        stars=number(entry["stars"]),
+        gained=f"+{number(entry['stars_gained'])}",
+        gained_days=gained_days,
+        forks=number(entry["forks"]),
+        active_authors=entry["active_authors"],
+        age=age(datetime.fromisoformat(entry["created_at"]).date(), day),
+        score=decimal(entry["score"]),
+        signals=tuple(
+            SignalLine(weight=weight(signal["weight"]), reason=signal["reason"])
+            for signal in entry["signals"]
+        ),
+        sparkline=sparkline_points(entry["star_history"], SPARKLINE_WIDTH, SPARKLINE_HEIGHT),
+    )
+
+
+def _coordinate(value: float) -> str:
+    return f"{value:.1f}".removesuffix(".0")

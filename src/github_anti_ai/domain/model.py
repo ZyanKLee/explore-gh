@@ -1,4 +1,4 @@
-"""Shared vocabulary of the domain. Terms are explained in the glossary in AGENTS.md."""
+"""The shared vocabulary of the GitHub list. The glossary in AGENTS.md explains the terms."""
 
 from __future__ import annotations
 
@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 
-# As long as a repo must be developed before it is shown (MIN_DEVELOPMENT_DAYS): the
-# stars of its first days are still in the window on the day it may appear.
+# A repo is shown after 14 days of development at the earliest. The growth window has the
+# same length, so the stars of its first days still count on the day it may appear.
 GROWTH_WINDOW_DAYS = 14
 STAR_HISTORY_DAYS = 35
 COMMIT_LOOKBACK = timedelta(days=90)
@@ -55,7 +55,7 @@ class RepoId:
 
 @dataclass(frozen=True)
 class Candidate:
-    """A repo a CandidateSource found, with the star count if the source knows it."""
+    """A repo a CandidateSource found, with its star count if the source knows it."""
 
     repo: RepoId
     stars: int | None = None
@@ -64,24 +64,25 @@ class Candidate:
 @dataclass(frozen=True)
 class Commit:
     committed_at: datetime
-    author: str
+    author: str  # GitHub login, otherwise the name in git
     is_bot: bool
-    co_authors: tuple[str, ...]
+    co_authors: tuple[str, ...]  # the values of the Co-authored-by lines
     headline: str
 
 
 @dataclass(frozen=True)
 class StarHistory:
-    """Stars gained per day, oldest first. The last entry is the day of the snapshot."""
+    """New stars per day, oldest first. The last entry is the day of the snapshot."""
 
-    daily: tuple[int, ...]  # empty if the history was not collected
+    daily: tuple[int, ...] = ()  # empty if the history was not collected
 
     def __post_init__(self):
+        object.__setattr__(self, "daily", tuple(self.daily))
         if any(stars < 0 for stars in self.daily):
             raise ValueError("Sterne pro Tag können nicht negativ sein")
 
     def gained(self, days: int = GROWTH_WINDOW_DAYS) -> int:
-        """Stars gained on the most recent days, the day of the snapshot included."""
+        """New stars of the most recent days, the day of the snapshot included."""
         return sum(self.daily[-days:])
 
     def continued(self, days_passed: int, gained: int) -> StarHistory:
@@ -94,15 +95,17 @@ class StarHistory:
         if not self.daily:
             return self
         if days_passed == 0:
-            return StarHistory(daily=self.daily[:-1] + (self.daily[-1] + gained,))
+            return StarHistory(self.daily[:-1] + (self.daily[-1] + gained,))
         daily = self.daily + (0,) * (days_passed - 1) + (gained,)
-        return StarHistory(daily=daily[-len(self.daily) :])
+        return StarHistory(daily[-len(self.daily) :])
 
 
 @dataclass(frozen=True)
 class Snapshot:
+    """Everything collected about a repo at one moment."""
+
     repo: RepoId
-    taken_at: datetime
+    taken_at: datetime  # the day the snapshot belongs to
     description: str
     homepage: str | None
     topics: tuple[str, ...]
@@ -111,14 +114,11 @@ class Snapshot:
     pushed_at: datetime | None
     stars: int
     forks: int
-    open_issues: int
-    watchers: int
     pull_requests: int
-    recent_issue_authors: int
+    recent_issue_authors: int  # distinct people among the authors of the last 100 issues
     is_fork: bool
     is_archived: bool
     is_mirror: bool
-    is_template: bool
     license: str | None
     root_files: tuple[str, ...]
     readme: str
@@ -127,24 +127,31 @@ class Snapshot:
     # When the facts last came from GitHub. A snapshot carried over from an earlier day
     # is older here than in taken_at. None means: as old as the snapshot.
     facts_at: datetime | None = None
-    # History of the owner. None means unknown: older snapshots, or contributions of an
-    # organization, which has none.
+    # History of the owner. None means unknown. Organizations have no contributions.
     owner_created_at: datetime | None = None
-    owner_contributed_to: int | None = None  # other projects the owner worked on lately
+    owner_contributed_to: int | None = None
 
     def __post_init__(self):
         if self.facts_at is None:
             object.__setattr__(self, "facts_at", self.taken_at)
 
     def carried_over(self, now: datetime, stars: int) -> Snapshot:
-        """This snapshot as the snapshot of a later day, with the star count of that day."""
+        """This snapshot as the snapshot of a later moment, with the star count of then."""
         days_passed = (now.date() - self.taken_at.date()).days
-        gained = max(0, stars - self.stars)  # people can remove their star again
+        gained = max(0, stars - self.stars)  # people can take their star back
         return dataclasses.replace(
             self,
             taken_at=now,
             stars=stars,
             star_history=self.star_history.continued(days_passed, gained),
+        )
+
+    def with_facts_of(self, fresh: Snapshot) -> Snapshot:
+        """Fresh facts from GitHub with this snapshot's star history, continued."""
+        days_passed = (fresh.taken_at.date() - self.taken_at.date()).days
+        gained = max(0, fresh.stars - self.stars)
+        return dataclasses.replace(
+            fresh, star_history=self.star_history.continued(days_passed, gained)
         )
 
     @property
@@ -158,7 +165,7 @@ class Snapshot:
     @property
     def active_authors(self) -> int:
         """Distinct people (no bots) behind the recent commits."""
-        return len({c.author for c in self.recent_commits if not c.is_bot})
+        return len({commit.author for commit in self.recent_commits if not commit.is_bot})
 
 
 class Section(Enum):
@@ -170,23 +177,27 @@ class Section(Enum):
 class Signal:
     kind: str
     weight: float
-    reason: str
+    reason: str  # the sentence shown under "Warum Platz …?"
 
 
 @dataclass(frozen=True)
 class Exclusion:
     reason: str
-    kind: str = ""
+    kind: str
 
 
 @dataclass(frozen=True)
 class Assessment:
     snapshot: Snapshot
     section: Section
-    score: float
     signals: tuple[Signal, ...]
     exclusion: Exclusion | None = None
 
     @property
     def repo(self) -> RepoId:
         return self.snapshot.repo
+
+    @property
+    def score(self) -> float:
+        """The sum of all signal weights. Nothing else goes into it."""
+        return sum(signal.weight for signal in self.signals)

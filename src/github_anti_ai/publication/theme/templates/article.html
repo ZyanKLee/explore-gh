@@ -1,5 +1,6 @@
-{% set current = "github" %}
+{# One section of one day of the GitHub list #}
+{% set current = article.current %}
 {% extends "base.html" %}
-{% from "macros.html" import section with context %}
+{% from "macros.html" import github_section with context %}
 {% block title %}{{ article.title }} – {{ SITENAME }}{% endblock %}
-{% block content %}{{ section(article.view, article.nav) }}{% endblock %}
+{% block content %}{{ github_section(article.view, article.nav, article.archive_url) }}{% endblock %}

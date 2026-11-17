@@ -1,144 +1,149 @@
 # Ausgabe (Bounded Context „Curation“)
 
-## Aufgabe
+Aus den bewerteten Repos eines Tages entsteht die `Edition` dieses Tages: je Sektion bis
+zu 20 Einträge. Eine veröffentlichte Ausgabe wird nie wieder verändert. Sie ist Archiv,
+Grundlage der Feeds und Quelle der Sperre.
 
-Aus den bewerteten Repos eines Tages entsteht die `Edition` dieses Tages: je Sektion
-bis zu 20 Einträge. Eine veröffentlichte Ausgabe wird nie wieder verändert. Sie ist
-Archiv, Grundlage für den RSS-Feed und Quelle der Sperre.
+Die HN- und Lobsters-Ausgaben folgen denselben Auswahlregeln, siehe `community.md`.
 
 ## Ablauf
 
 ```
-PublishEdition.run()
-  1. Gibt es für heute schon eine Ausgabe?  → AlreadyPublished, nichts tun
-  2. Momentaufnahmen von heute laden        → keine: NothingToPublish
-  3. Jede Momentaufnahme bewerten           assess(snapshot) → Assessment
-  4. Kopien ausschließen                    CopyCheck.apply(...)
-  5. Ausgaben der Sperrfrist laden          EditionStore.since(tag − 30 Tage)
-  6. Gegenlesen (nur mit --review)          Reviewer.review(...), in Runden
-  7. Auswählen                              EditionCurator.curate(...)
-  8. Speichern                              EditionStore.save(edition)
+PublishEdition.run(tag)
+  1. Gibt es die Ausgabe schon?          → AlreadyPublished
+  2. Momentaufnahmen des Tages laden     → keine: NothingToPublish
+  3. Sammlung vollständig?               → sonst IncompleteCollection (siehe unten)
+  4. Jede Momentaufnahme bewerten        Assessor.assess
+  5. Kopien ausschließen                 CopyCheck.apply
+  6. Ausgaben der Sperrfrist laden       EditionStore.since(tag − 30 Tage)
+  7. Gegenlesen (nur mit --review)       Reviewer.review, in Runden
+  8. Auswählen                           EditionCurator.curate
+  9. Tageswerte speichern                DailyRecordStore.save (siehe langzeitdaten.md)
+ 10. Ausgabe speichern                   EditionStore.save
 ```
 
-### Gegenlesen
+- `tag` ist der Tag, an dem die Sammlung begann. So findet die Ausgabe ihre
+  Momentaufnahmen auch, wenn der Lauf über Mitternacht (UTC) geht.
+- **Erst die Tageswerte, dann die Ausgabe:** Scheitert das Speichern der Tageswerte, gibt
+  es noch keine Ausgabe, und der Tag lässt sich wiederholen.
+- Soll eine Ausgabe während der Entwicklung neu entstehen, löscht man ihre Datei von
+  Hand. Einen Schalter zum Überschreiben gibt es bewusst nicht. `EditionStore.save`
+  weigert sich ebenfalls.
+- **`--ignore-cooldown`** (nur für die Entwicklung) lädt keine früheren Ausgaben. Alle
+  anderen Regeln gelten.
 
-Ein Sprachmodell liest die Repos gegen, bevor sie erscheinen. Es bekommt **nur die
-Repos, die in der Ausgabe landen würden**, nie die ganze Sammlung:
+## Auswahlregeln (`EditionCurator`, `domain/curation.py`)
 
-1. Der Kurator wählt wie immer aus. Das sind höchstens 40 Repos.
-2. Der `Reviewer` liest die davon, die er noch nicht gelesen hat.
-3. Nimmt er eines heraus, rückt beim nächsten Auswählen ein anderes nach. Das wird in
-   der nächsten Runde gelesen. Nach höchstens 5 Runden (`MAX_REVIEW_ROUNDS`) ist Schluss.
+Je Sektion, unabhängig voneinander:
 
-- **Herausgenommen** wird ein Repo mit dem Ausschluss `review`. Er steht in den
-  Langzeitdaten, nicht auf der Seite.
-- **Nachvollziehen:** Die Langzeitdaten halten je gelesenem Repo die Kategorie fest
-  (`review`). Die Begründung des Modells steht nur im Protokoll des Laufs, im Schritt
-  „Ausgabe erzeugen“: eine Zeile je herausgenommenem oder verschobenem Repo, dazu die
-  Summe („Gegenlesen: 43 gelesen, 2 in die AI-Sektion verschoben, 1 herausgenommen“).
-  GitHub hebt Protokolle 90 Tage auf.
-- **Verschoben:** Hält der Reviewer ein Repo der Hauptliste für ein AI-Projekt, wechselt
-  es in die AI-Sektion und bekommt das Signal „Gegengelesen von Copilot: AI als Thema“.
-  In der Hauptliste rückt ein anderes nach, das in der nächsten Runde gelesen wird.
-- **Gelesen und geblieben:** Der Eintrag bekommt ein Signal ohne Punkte, „Gegengelesen
-  von Copilot: unauffällig“. Fehlt es bei einem Eintrag, wurde er nicht gelesen.
-- **Fällt der Reviewer aus**, erscheint die Ausgabe ohne Gegenlesen. Das Protokoll des
-  Laufs nennt den Grund und am Ende „Gegengelesen: 0 von 40 Einträgen“.
-- **Kategorien und ihre Erklärung** stehen in `domain/review.py` (`REVIEW_CATEGORIES`,
-  `REVIEW_GUIDE`), siehe `bewertung.md`.
-- **Die Community-Ausgaben** (HN, Lobsters) werden nicht gegengelesen.
+1. Ausgeschlossene Repos fallen weg.
+2. **Sperre:** Ein Repo, das an Tag D in einer Ausgabe stand, egal in welcher Sektion, ist
+   bis einschließlich D + 29 gesperrt und ab D + 30 wieder zulässig. Wird ein Tag neu
+   erzeugt, nachdem es schon spätere Ausgaben gibt, sperren auch deren Repos.
+3. **Rangfolge:** Punktzahl absteigend. Bei Gleichstand gewinnt der höhere Sterngewinn,
+   danach der alphabetisch frühere Name. Gleiche Eingaben geben immer dieselbe Auswahl.
+4. **Vielfalt:** der Reihe nach übernehmen, aber höchstens 4 Repos je Programmiersprache
+   und 2 je Besitzer. Repos ohne erkannte Sprache bilden eine eigene Gruppe.
+5. Schluss nach 20. Gibt es weniger geeignete Repos, wird die Ausgabe kürzer. Sie wird
+   nie aufgefüllt.
 
-Täglicher Betrieb: zuerst `CollectSnapshots`, dann `PublishEdition`, im selben Lauf.
-`PublishEdition.run(day)` nimmt den Tag der Sammlung entgegen. So findet die Ausgabe
-ihre Momentaufnahmen auch dann, wenn der Lauf über Mitternacht (UTC) geht.
-
-Soll eine Ausgabe während der Entwicklung neu entstehen, löscht man ihre Datei von
-Hand. Einen Schalter zum Überschreiben gibt es bewusst nicht.
-
-**Entwicklungsschalter `--ignore-cooldown`:** `PublishEdition(ignore_cooldown=True)`
-lädt keine früheren Ausgaben. Die Sperre greift dann nicht, alle anderen Regeln
-schon. Die Domäne bleibt unverändert.
-
-## Kommandozeile
-
-```
-github-anti-ai collect [--limit N]                   # Momentaufnahmen sammeln
-github-anti-ai publish [--ignore-cooldown] [--allow-incomplete] [--day T]
-                                                     # Ausgabe erzeugen (Standard: heute)
-github-anti-ai daily [--limit N] [--ignore-cooldown] # beides nacheinander
-github-anti-ai explain owner/name [--day T]          # Bewertung eines Repos erklären
-github-anti-ai site [--output output]                # Website bauen (siehe veroeffentlichung.md)
-```
-
-`--day JJJJ-MM-TT` wählt die Sammlung eines anderen Tages. `daily` veröffentlicht
-immer für den Tag, an dem die Sammlung begonnen hat.
-
-Optionen für alle Befehle: `--data-dir` (Standard: `data`). Ein eigenes Verzeichnis
-für Experimente verhindert, dass Testausgaben im versionierten Archiv landen.
-
-## Was „Curation“ von „Assessment“ erwartet
-
-Die Auswahl braucht von der Bewertung (siehe `bewertung.md`) nur diese Form:
-
-```python
-Assessment(snapshot, section, score, signals, exclusion)
-Signal(kind, weight, reason)   # reason ist der Text der Begründung auf der Seite
-Exclusion(reason, kind)
-```
-
-`PublishEdition` nimmt die Funktion `assess` als Parameter entgegen. Die Kommandozeile
-übergibt `Assessor().assess`.
-
-## Auswahlregeln (`EditionCurator`)
-
-Pro Sektion, unabhängig voneinander:
-
-1. Ausgeschlossene Repos (`exclusion` gesetzt) fallen weg.
-2. **Sperre:** Ein Repo, das an Tag D in einer Ausgabe stand, egal in welcher Sektion,
-   ist bis einschließlich D + 29 gesperrt und ab D + 30 wieder zulässig.
-3. **Rangfolge:** Punktzahl absteigend. Bei Gleichstand gewinnt der höhere
-   Sterngewinn, danach der alphabetisch frühere Name. Die Auswahl ist so bei gleichen
-   Eingaben immer gleich.
-4. **Vielfalt:** Der Reihe nach übernehmen. Ein Repo wird übersprungen, wenn seine
-   Programmiersprache schon 4-mal oder sein Besitzer schon 2-mal in der Sektion steht.
-   Repos ohne erkannte Sprache bilden eine eigene Gruppe mit derselben Grenze.
-5. Schluss nach 20 Einträgen. Gibt es weniger geeignete Repos, wird die Ausgabe
-   kürzer. Sie wird nie aufgefüllt.
-
-Eine Mindestpunktzahl gibt es hier nicht. Was zu schwach ist, schließt `Assessment`
-aus.
+Eine Mindestpunktzahl gibt es hier nicht. Was zu schwach ist, schließt die Bewertung aus.
 
 ## Aggregate `Edition`
 
-`Edition(day, main, ai, stats)` prüft beim Erzeugen selbst:
+`Edition(day, main, ai, stats)` prüft beim Erzeugen selbst, auch beim Laden aus dem Archiv:
 
-- höchstens 20 Einträge pro Sektion
-- höchstens 4 Einträge pro Sprache und Sektion (ohne Sprache = eine Gruppe)
-- höchstens 2 Einträge pro Besitzer und Sektion
+- höchstens 20 Einträge je Sektion
+- höchstens 4 je Sprache und 2 je Besitzer und Sektion
 - kein Repo doppelt, auch nicht über Sektionen hinweg
 
-Die Reihenfolge der Einträge ist die Rangfolge.
-
-Ein `Entry` enthält alles, was die Seite anzeigt. Die Momentaufnahmen werden nach 14
-Tagen gelöscht, das Archiv muss aber für immer lesbar bleiben:
-`repo`, `score`, `signals`, `description`, `homepage`, `primary_language`, `topics`,
-`stars`, `star_history`, `created_at`, `pushed_at`, `license`, `forks`,
-`active_authors` (verschiedene Personen hinter den Commits der letzten 90 Tage, ohne
-Bots).
-
-Im JSON steht `star_history` mit den neuen Sternen der letzten 35 Tage (im Beispiel
-unten gekürzt) und `stars_gained` als fertige Summe über das Sternfenster. Wie viele Tage das Fenster
-hatte, sagt `growth_window_days` der Ausgabe: 14, in Ausgaben bis zum 15.11.2026 fehlt
-das Feld und es waren 7.
+Die Reihenfolge der Einträge ist die Rangfolge. Ein `Entry` enthält alles, was die Seite
+zeigt, weil die Momentaufnahmen nach 14 Tagen gelöscht werden: Repo, Punktzahl, Signale,
+Beschreibung, Homepage, Sprache, Topics, Sterne, Sternverlauf, Erstell- und Push-Datum,
+Lizenz, Forks und aktive Autoren (verschiedene Personen hinter den Commits der letzten
+90 Tage, ohne Bots).
 
 `EditionStats(assessed, excluded, ai_focused)` hält fest, wie viele Repos an dem Tag
 bewertet, ausgeschlossen und als AI-Thema eingestuft wurden.
 
+## Gegenlesen (`Reviewer`, `CopilotReviewer`)
+
+Die Regeln erkennen bekannte Muster, jede neue Kampagne rutscht zunächst durch. Deshalb
+liest seit dem 15.11.2026 ein Sprachmodell die Repos gegen, die gezeigt würden. Den Rang
+bestimmt es nicht. Es kann ein Repo herausnehmen oder aus der Hauptliste in die
+AI-Sektion verschieben, nie umgekehrt.
+
+| Kategorie | Bedeutung | Folge |
+|---|---|---|
+| `ok` | Ein echtes Softwareprojekt. Gilt auch im Zweifel. | bleibt |
+| `ai_focus` | Für den Einsatz von AI gebaut: Sprachmodelle und ihre Technik, Agenten, Chatbots, Generatoren, samt Modellen, Benchmarks und Forschungs-Code. Nicht klassisches maschinelles Lernen, nicht AI als Nebenfunktion. | in die AI-Sektion |
+| `malware` | Köder: gibt sich als bekannte Software, Crack oder Gratis-Version aus und führt zu einem Download statt zu Quellcode. | raus |
+| `piracy` | Umgeht Kopierschutz oder Lizenzprüfungen oder verteilt geschützte Inhalte. Ein Abspielprogramm oder Emulator allein nicht. | raus |
+| `scam` | Betrug, Spam, reine Werbung. | raus |
+| `no_software` | Linksammlung, Kursmaterial, Konfiguration, Prompt-Sammlung, Kopie eines fremden Projekts. | raus |
+| `placeholder` | Ankündigung ohne Code, automatisch erzeugter Inhalt ohne eigene Arbeit. | raus |
+
+Die genauen Texte stehen in `domain/review.py` (`REVIEW_CATEGORIES`, `REVIEW_GUIDE`).
+
+**Ablauf in Runden** (höchstens 5, `MAX_REVIEW_ROUNDS`):
+
+1. Der Kurator wählt wie immer aus, höchstens 40 Repos.
+2. Der Reviewer liest die davon, die er noch nicht gelesen hat. Er bekommt **nur diese**,
+   nie die ganze Sammlung.
+3. Nimmt er eines heraus oder verschiebt er eines, rückt ein anderes nach. Das wird in der
+   nächsten Runde gelesen.
+
+**Folgen:**
+
+- **Herausgenommen:** Ausschluss `review`. Er steht in den Langzeitdaten, nicht auf der
+  Seite.
+- **Verschoben:** Das Repo wechselt in die AI-Sektion und bekommt das Signal
+  „Gegengelesen von Copilot: AI als Thema“. Steht es schon in der AI-Sektion, zählt
+  `ai_focus` wie `ok`. Trifft auch eine Ausschluss-Kategorie zu, gilt diese.
+- **Gelesen und geblieben:** Signal ohne Punkte „Gegengelesen von Copilot: unauffällig“.
+  Fehlt es bei einem Eintrag, wurde er nicht gelesen.
+- **Nachvollziehen:** Die Langzeitdaten halten je gelesenem Repo die Kategorie fest. Die
+  Begründung des Modells steht nur im Protokoll des Laufs: eine Zeile je herausgenommenem
+  oder verschobenem Repo und die Summe („Gegenlesen: 43 gelesen, 2 in die AI-Sektion
+  verschoben, 1 herausgenommen“). GitHub hebt Protokolle 90 Tage auf.
+- **Fällt der Reviewer aus**, erscheint die Ausgabe ohne Gegenlesen. Das Protokoll nennt
+  den Grund und am Ende „Gegengelesen: 0 von 40 Einträgen“.
+
+**Regeln für das Modell:**
+
+- **Geschmack zählt nicht.** Thema, Programmiersprache, Qualität des Codes und der
+  Einsatz von AI sind als Ausschlussgrund ausdrücklich untersagt. Sonst entstünde die
+  Interessensblase, die das Projekt vermeiden will.
+- **Was es sieht:** je Repo Name, Beschreibung, Topics, Sprache, Sterne, Forks, Alter von
+  Repo und Besitzerkonto und die ersten 1500 Zeichen des README. 10 Repos je Aufruf.
+- **Fremde Texte im Prompt:** Ein README kann versuchen, das Modell zu überreden. Der
+  Prompt warnt davor. Gelingt es trotzdem, bleibt das Repo, wie die Regeln es sagen. Der
+  Text des Modells erscheint nie auf der Seite, nur die festen Sätze oben.
+- **Technik:** die Copilot-CLI (`copilot -p … -s --no-ask-user --disable-builtin-mcps`).
+  Sie ist ein Agent, bekommt hier aber kein Werkzeug, darf nicht nachfragen und startet
+  in einem leeren Verzeichnis. Das Modell wählt die CLI, über die Umgebungsvariable
+  `COPILOT_MODEL` lässt es sich festlegen. Eine Gruppe, die scheitert, wird übersprungen;
+  scheitern alle, fällt der Reviewer aus.
+- GitHub Models ist seit dem 30.07.2026 eingestellt und keine Alternative.
+
+## Unvollständige Sammlung
+
+Eine Ausgabe wird nie ersetzt, und ihre Repos sind 30 Tage gesperrt. Deshalb soll sie
+nicht aus einer Sammlung mit Lücken entstehen.
+
+- `collect` hält am Ende jedes Laufs fest, wie er ausging (siehe `datensammlung.md`).
+- `publish` lehnt ab (`IncompleteCollection`), wenn es für den Tag keinen Status gibt
+  (der Lauf wurde abgebrochen) oder der Status fehlgeschlagene Repos nennt. Repos, die es
+  nicht mehr gibt, machen eine Sammlung nicht unvollständig.
+- **Bewusst übergehen:** `publish --allow-incomplete`, ebenso `daily`.
+- **Im Betrieb wird übergangen** (seit 17.11.2026): Eine Ausgabe mit Lücken ist besser
+  als ein Tag ohne Inhalt. Der Preis: Ein Repo, das nur wegen eines Fehlers fehlt, kann an
+  dem Tag nicht erscheinen.
+
 ## Speicherformat
 
-Das Format ist der Vertrag mit `Publication` (Pelican-Reader).
-
-`data/editions/YYYY-MM-DD.json`, versioniert im Git-Repo, lesbar eingerückt:
+`data/editions/JJJJ-MM-TT.json`, versioniert, lesbar eingerückt. Das Format ist der
+Vertrag mit der Veröffentlichung.
 
 ```json
 {
@@ -164,9 +169,10 @@ Das Format ist der Vertrag mit `Publication` (Pelican-Reader).
         "license": "MIT",
         "forks": 31,
         "active_authors": 1,
-        "score": 0.83,
+        "score": 25.8,
         "signals": [
-          {"kind": "ai_assistance", "weight": -0.2, "reason": "CLAUDE.md im Hauptverzeichnis"}
+          {"kind": "momentum", "weight": 28.8, "reason": "+120 Sterne in 14 Tagen bei 812 insgesamt"},
+          {"kind": "ai_files", "weight": -3.0, "reason": "Anweisungsdateien für AI-Agenten: CLAUDE.md"}
         ]
       }
     ],
@@ -175,9 +181,10 @@ Das Format ist der Vertrag mit `Publication` (Pelican-Reader).
 }
 ```
 
-`EditionStore.save` weigert sich, eine vorhandene Ausgabe zu überschreiben
-(`AlreadyPublished`). Das ist eine zweite Absicherung zusätzlich zur Prüfung im
-Use Case.
+- `star_history`: die neuen Sterne der letzten 35 Tage (oben gekürzt). `stars_gained`:
+  die Summe über das Sternfenster.
+- `growth_window_days`: wie viele Tage das Sternfenster hatte. In Ausgaben bis zum
+  15.11.2026 fehlt das Feld, es waren 7.
 
 ## Ports
 
@@ -185,115 +192,24 @@ Use Case.
 class EditionStore(Protocol):
     def save(self, edition: Edition) -> None: ...      # AlreadyPublished, falls vorhanden
     def load(self, day: date) -> Edition | None: ...
-    def since(self, day: date) -> list[Edition]: ...   # ab day einschließlich, nach Datum sortiert
-
-Assessor = Callable[[Snapshot], Assessment]
+    def since(self, day: date) -> list[Edition]: ...   # ab day einschließlich, nach Datum
 
 class Reviewer(Protocol):
     def review(self, snapshots: Sequence[Snapshot]) -> dict[RepoId, Review]: ...
-    # ein Repo darf in der Antwort fehlen, Ausfall: SourceUnavailable
+    # ein Repo darf in der Antwort fehlen; Ausfall: SourceUnavailable
+
+Assess = Callable[[Snapshot], Assessment]   # die Kommandozeile übergibt Assessor().assess
 ```
 
-## Auswirkungen auf die Datensammlung
+## Kommandozeile
 
-- Die Sperre wird aus den Ausgaben abgeleitet. Die 14-tägige Aufbewahrung der
-  Momentaufnahmen bleibt deshalb unabhängig von der 30-tägigen Sperre.
-- Ein `Entry` übernimmt die Anzeigedaten aus der Momentaufnahme. Neue Felder braucht
-  die Datensammlung dafür nicht.
-- `RepoId` bekommt eine `url`. Die Seite verlinkt damit, ohne URLs selbst
-  zusammenzubauen.
+```
+github-anti-ai collect [--limit N]
+github-anti-ai publish [--day T] [--review] [--allow-incomplete] [--ignore-cooldown]
+github-anti-ai daily   [--limit N] [--review] [--allow-incomplete] [--ignore-cooldown]
+github-anti-ai explain owner/name [--day T]
+```
 
-## Community-Ausgaben (HN, Lobsters)
-
-HN und Lobsters haben eigene Ausgaben (`HnEdition`, `LobstersEdition`) mit eigenem
-Speicherformat. Die Auswahlregeln sind für beide gleich und stehen deshalb nur einmal
-im Code: im gemeinsamen Kurator `CommunityCurator` (`domain/community.py`). Die
-Kuratoren der Plattformen (`HnEditionCurator`, `LobstersEditionCurator`) geben ihm nur
-ihre Rangfolge mit und verpacken das Ergebnis in ihre Ausgabe.
-
-Auswahlregeln (`CommunityCurator.select`). Wie bei GitHub gibt es zwei Sektionen:
-die Hauptliste (`projects`) und die AI-Sektion (`ai_projects`).
-
-1. Es bleiben nur Open-Source-Projekte (siehe „Lizenz“ in `datensammlung.md`) mit
-   erkanntem Code, ohne Forks und ohne archivierte Repos.
-   **Ausschlüsse:** Dazu kommen die Ausschlüsse der GitHub-Listen, soweit sie nur Texte
-   brauchen (`ExclusionPolicy.check_text`, siehe `bewertung.md`): Sammlungen und
-   Lernmaterial, Köder für Schadsoftware, kein README, weder deutsch noch englisch,
-   Kryptowährungen. Konnte das README nicht gelesen werden, zählt das nicht als „kein
-   README“. Die Schwelle für neue Sterne entfällt, an ihre Stelle treten die Punkte der
-   Plattform.
-2. **Sperre:** Ein Repo, das an Tag D in einer Ausgabe derselben Plattform stand, ist
-   bis einschließlich D + 29 gesperrt, wie bei GitHub (`COOLDOWN_DAYS`,
-   `recently_shown`). Abgeleitet wird das aus den eigenen Ausgaben der letzten 30 Tage.
-   HN und Lobsters sperren sich nicht gegenseitig, und auch nicht gegen die
-   GitHub-Listen.
-3. **Ein Repo nur einmal:** Verlinken mehrere Storys dasselbe Repo, zählt die Story
-   mit dem besseren Rang. Gleich sind Repos, deren Adressen bis auf Groß- und
-   Kleinschreibung und einen Schrägstrich am Ende übereinstimmen.
-4. **AI-Thema:** Projekte, die für den Einsatz von AI gebaut sind, kommen in die
-   AI-Sektion. Entschieden wird mit derselben Regel wie bei GitHub
-   (`AiFocusClassifier.classify_text`, siehe „AI-Thema“ in `bewertung.md`), aus Name,
-   Beschreibung, Topics und README.
-5. **Rangfolge:** von der Plattform vorgegeben.
-   - HN: Punkte, dann Kommentare, dann die neuere Story.
-   - Lobsters: Score, dann Kommentare, dann die neuere Story.
-6. **Vielfalt:** Je Sektion der Reihe nach übernehmen. Ein Projekt wird übersprungen, wenn seine
-   Sprache schon 4-mal oder sein Besitzer schon 2-mal in der Ausgabe steht
-   (`MAX_PER_LANGUAGE`, `MAX_PER_OWNER`, wie bei GitHub). Projekte ohne erkannte Sprache
-   bilden eine eigene Gruppe. Besitzer ist der erste Teil des Pfads zusammen mit der
-   Forge: `github.com/alice` und `codeberg.org/alice` sind zwei Besitzer (`owner_key`).
-7. Schluss nach 20 Projekten je Sektion. Die Ausgabe wird nie aufgefüllt.
-
-`HnEdition` und `LobstersEdition` prüfen beim Erzeugen selbst, dass jede Sektion
-höchstens 20 Projekte enthält und die Vielfaltsregel einhält und dass kein Repo doppelt
-vorkommt, auch nicht über beide Sektionen (`check_community_edition`). Das gilt auch
-beim Laden aus dem Archiv.
-
-Gespeichert werden je Projekt auch die Topics, das README nicht (wie bei GitHub). Eine
-Ausgabe von vor dem 13.11.2026 hat weder `ai_projects` noch `topics`; sie wird mit
-leerer AI-Sektion und ohne Topics gelesen. Die Sperre gilt für beide Sektionen.
-
-Welches Repo zu einer Story gehört, entscheidet schon die Datensammlung (siehe
-„Bezug zur Story“ in `datensammlung.md`).
-
-### „Warum Platz …?“
-
-Der Kurator gibt jedem ausgewählten Projekt seine Begründung mit (`reasons`), so wie
-jedes GitHub-Signal seine Begründung trägt. Die Seite zeigt sie aufklappbar unter
-„Warum Platz N?“, daneben die Punkte der Plattform, nach denen sortiert wird.
-
-- **Fundstelle:** „Die Story verlinkt das Repo direkt.“ oder „Gefunden über einen Link
-  auf blog.rust-lang.org. Repo und Story teilen „lang“, „rust“, „rustlang“.“ Ob die
-  Story das Repo direkt verlinkt, hält der Resolver fest (`linked_directly`).
-- **Lizenz:** nur bei einer Lizenzdatei, die die Forge nicht erkennt (`NOASSERTION`).
-- **AI-Begriffe:** die Signale des `AiFocusClassifier`, wie bei GitHub auch in der
-  Hauptliste, wenn sie für die AI-Sektion nicht reichen.
-
-Gespeichert werden `reasons` und `linked_directly` mit der Ausgabe. Ausgaben von vor
-dem 13.11.2026 haben keine Begründung, die Seite lässt den Bereich dort weg.
-
-### Bewusst nicht übernommen
-
-Die Abwertung für AI-Mithilfe, weil sie Commits von allen Forges bräuchte. Die
-Plattform-Vorlieben (Linux, Windows, Apple) sind noch nicht entschieden.
-
-## Unvollständige Sammlung
-
-Eine Ausgabe wird nie ersetzt, und ihre Repos sind 30 Tage gesperrt. Deshalb darf sie
-nicht aus einer Sammlung mit Lücken entstehen.
-
-- `collect` hält am Ende jedes Laufs fest, wie er ausging:
-  `data/snapshots/JJJJ-MM-TT.status.json` mit der Zahl der gefundenen, gesammelten und
-  fehlgeschlagenen Repos. Ein späterer Lauf desselben Tages überschreibt die Datei.
-- `publish` lehnt ab (`IncompleteCollection`), wenn
-  - es für den Tag keinen Status gibt: Der Lauf wurde abgebrochen, oder die Daten
-    stammen aus der Zeit vor dieser Regel (vor dem 13.11.2026).
-  - der Status fehlgeschlagene Repos nennt.
-- Repos, die es nicht mehr gibt, machen eine Sammlung nicht unvollständig.
-- `daily` erzeugt damit nach einem Lauf mit Fehlern keine Ausgabe.
-- **Bewusst übergehen:** `publish --allow-incomplete` und `daily --allow-incomplete`.
-- **Im Betrieb wird übergangen** (seit 17.11.2026): Der Workflow ruft
-  `publish --allow-incomplete` auf. Eine Ausgabe mit Lücken ist besser als ein Tag
-  ohne Inhalt. Der Preis: Ein Repo, das nur wegen eines Fehlers fehlt, kann an dem Tag
-  nicht erscheinen, und die Ausgabe wird nicht nachträglich ergänzt.
-- Der Status wird wie die Momentaufnahmen nach 14 Tagen gelöscht.
+`daily` sammelt und veröffentlicht für den Tag, an dem die Sammlung begann. Alle Befehle
+kennen `--data-dir` (Standard: `data`). Ein eigenes Verzeichnis für Experimente hält
+Testausgaben aus dem versionierten Archiv fern.

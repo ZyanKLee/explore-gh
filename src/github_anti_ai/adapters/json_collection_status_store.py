@@ -1,9 +1,10 @@
-"""How the collection of a day ended, as a small JSON file next to its snapshots."""
+"""How the collection of a day ended: snapshots/YYYY-MM-DD.status.json"""
 
 import json
 from datetime import date
 from pathlib import Path
 
+from github_anti_ai.adapters.files import day_files, read_json
 from github_anti_ai.application.ports import CollectionStatus
 
 SUFFIX = ".status.json"
@@ -27,7 +28,7 @@ class JsonCollectionStatusStore:
         path = self._path(day)
         if not path.exists():
             return None
-        data = json.loads(path.read_text())
+        data = read_json(path)
         return CollectionStatus(
             day=date.fromisoformat(data["day"]),
             discovered=data["discovered"],
@@ -36,13 +37,7 @@ class JsonCollectionStatusStore:
         )
 
     def prune(self, before: date) -> None:
-        if not self._directory.exists():
-            return
-        for path in self._directory.glob(f"*{SUFFIX}"):
-            try:
-                day = date.fromisoformat(path.name.removesuffix(SUFFIX))
-            except ValueError:
-                continue
+        for day, path in day_files(self._directory, SUFFIX).items():
             if day < before:
                 path.unlink()
 

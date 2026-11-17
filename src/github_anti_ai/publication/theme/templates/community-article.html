@@ -1,5 +1,6 @@
-{% set current = article.community_current %}
+{# One section of one day of a community list (HN, Lobsters) #}
+{% set current = article.current %}
 {% extends "base.html" %}
-{% from "community.html" import community_section with context %}
+{% from "macros.html" import community_section with context %}
 {% block title %}{{ article.title }} – {{ SITENAME }}{% endblock %}
-{% block content %}{{ community_section(article.community_view, article.community_nav, article.community_archive_url) }}{% endblock %}
+{% block content %}{{ community_section(article.view, article.nav, article.archive_url) }}{% endblock %}

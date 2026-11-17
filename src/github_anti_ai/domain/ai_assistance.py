@@ -1,4 +1,7 @@
-"""Traces of code written with AI. They lower the score, they never exclude."""
+"""AI as a tool: traces of code written with AI. They lower the score, they never exclude.
+
+See docs/bewertung.md, "AI-Mithilfe".
+"""
 
 import re
 
@@ -9,7 +12,7 @@ AI_COMMITS_MIN_SHARE = 0.10
 AI_FILES_PENALTY = 3.0
 
 # Names that people carry too ("Devin", "Jules", "Claude") only count in an unambiguous form.
-_AI_NAME = re.compile(
+AI_NAME = re.compile(
     r"""^(
         claude(\ code)?(\ (opus|sonnet|haiku|fable|mythos)\b.*)?
       | (github\ )?copilot(\ .*)?
@@ -27,10 +30,10 @@ _AI_NAME = re.compile(
     )$""",
     re.VERBOSE,
 )
-_AI_EMAIL_DOMAINS = frozenset(
+AI_EMAIL_DOMAINS = frozenset(
     ["anthropic.com", "openai.com", "cursor.com", "aider.chat", "ampcode.com", "all-hands.dev"]
 )
-_AI_ACCOUNTS = frozenset(
+AI_ACCOUNTS = frozenset(
     [
         "claude",
         "claude[bot]",
@@ -68,7 +71,7 @@ _GITHUB_NOREPLY = re.compile(r"^(\d+\+)?(?P<account>.+)@users\.noreply\.github\.
 
 
 class AiAssistanceDetector:
-    def detect(self, snapshot: Snapshot) -> tuple[Signal, ...]:
+    def signals(self, snapshot: Snapshot) -> tuple[Signal, ...]:
         found = [self._commits(snapshot), self._files(snapshot)]
         return tuple(signal for signal in found if signal)
 
@@ -97,6 +100,7 @@ class AiAssistanceDetector:
 
 
 def is_ai_assisted(commit: Commit) -> bool:
+    """An AI tool wrote the commit or is named as its co-author."""
     return _is_ai_account(commit.author) or any(is_ai_tool(c) for c in commit.co_authors)
 
 
@@ -105,12 +109,12 @@ def is_ai_tool(co_author: str) -> bool:
     match = _CO_AUTHOR.match(co_author)
     name = (match["name"] or "").lower()
     email = (match["email"] or "").lower()
-    if _is_ai_account(name) or _AI_NAME.match(name):
+    if _is_ai_account(name) or AI_NAME.match(name):
         return True
     if noreply := _GITHUB_NOREPLY.match(email):
         return _is_ai_account(noreply["account"])
-    return email.rpartition("@")[2] in _AI_EMAIL_DOMAINS
+    return email.rpartition("@")[2] in AI_EMAIL_DOMAINS
 
 
 def _is_ai_account(account: str) -> bool:
-    return account.lower() in _AI_ACCOUNTS
+    return account.lower() in AI_ACCOUNTS

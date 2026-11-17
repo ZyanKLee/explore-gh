@@ -1,4 +1,7 @@
-"""Signs of real work and real interest, and the cross-check against bought stars."""
+"""Signs of real work and real interest, and the cross-check against bought stars.
+
+See docs/bewertung.md, "Substanz".
+"""
 
 from github_anti_ai.domain.model import Signal, Snapshot
 from github_anti_ai.domain.text import number
@@ -41,16 +44,16 @@ class SubstanceCheck:
         )
         if weeks < CONTINUITY_MIN_WEEKS:
             return None
-        points = (
-            LONG_CONTINUITY_POINTS if weeks >= LONG_CONTINUITY_MIN_WEEKS else CONTINUITY_POINTS
-        )
+        points = LONG_CONTINUITY_POINTS if weeks >= LONG_CONTINUITY_MIN_WEEKS else CONTINUITY_POINTS
         return Signal("continuity", points, f"Commits in {weeks} verschiedenen Wochen")
 
     def _engagement(self, snapshot: Snapshot) -> Signal | None:
         people = snapshot.recent_issue_authors
         if people < ENGAGEMENT_MIN_ISSUE_AUTHORS:
             return None
-        return Signal("engagement", ENGAGEMENT_POINTS, f"Issues von {people} verschiedenen Personen")
+        return Signal(
+            "engagement", ENGAGEMENT_POINTS, f"Issues von {people} verschiedenen Personen"
+        )
 
     def _new_project(self, snapshot: Snapshot) -> Signal | None:
         age = (snapshot.taken_at - snapshot.created_at).days

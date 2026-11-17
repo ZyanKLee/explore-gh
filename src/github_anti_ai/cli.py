@@ -1,4 +1,7 @@
-"""Command line entry point and composition root: plugs adapters into the use cases."""
+"""Command line and composition root: plugs the adapters into the use cases.
+
+See README.md for the commands.
+"""
 
 import argparse
 import logging
@@ -12,22 +15,23 @@ from pathlib import Path
 import httpx
 
 from github_anti_ai.adapters.clock import SystemClock
+from github_anti_ai.adapters.copilot_reviewer import CopilotReviewer
 from github_anti_ai.adapters.github_http import make_github_client
 from github_anti_ai.adapters.github_repo_source import GitHubRepoSource
-from github_anti_ai.adapters.copilot_reviewer import CopilotReviewer
 from github_anti_ai.adapters.github_search import GitHubSearchCandidates
-from github_anti_ai.adapters.hn_projects import HnProjectResolver
-from github_anti_ai.adapters.hn_search import HackerNewsSearch
-from github_anti_ai.adapters.json_lobsters_edition_store import JsonLobstersEditionStore
 from github_anti_ai.adapters.json_collection_status_store import JsonCollectionStatusStore
+from github_anti_ai.adapters.json_community_edition_store import JsonCommunityEditionStore
 from github_anti_ai.adapters.json_daily_record_store import JsonDailyRecordStore
 from github_anti_ai.adapters.json_edition_store import JsonEditionStore
-from github_anti_ai.adapters.json_hn_edition_store import JsonHnEditionStore
 from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
-from github_anti_ai.adapters.lobsters_projects import LobstersProjectResolver
-from github_anti_ai.adapters.lobsters_search import LobstersSearch
-from github_anti_ai.application.collect_hn_edition import CollectHnEdition
-from github_anti_ai.application.collect_lobsters_edition import CollectLobstersEdition
+from github_anti_ai.adapters.project_resolver import ProjectResolver
+from github_anti_ai.adapters.story_sources import (
+    HN_API_URL,
+    LOBSTERS_URL,
+    HackerNewsSearch,
+    LobstersSearch,
+)
+from github_anti_ai.application.collect_community_edition import CollectCommunityEdition
 from github_anti_ai.application.collect_snapshots import CollectionReport, CollectSnapshots
 from github_anti_ai.application.explain_assessment import ExplainAssessment, UnknownRepo
 from github_anti_ai.application.ports import (
@@ -36,10 +40,12 @@ from github_anti_ai.application.ports import (
     NothingToPublish,
     SourceUnavailable,
 )
-from github_anti_ai.application.publish_edition import PublishEdition
+from github_anti_ai.application.publish_edition import PublishEdition, reviewed_entries
 from github_anti_ai.domain.assessor import Assessor
-from github_anti_ai.domain.edition import Edition
+from github_anti_ai.domain.community import HN, LOBSTERS, Platform
 from github_anti_ai.domain.model import RepoId
+
+USER_AGENT = "github-anti-ai"
 
 
 class MissingToken(Exception):
@@ -48,76 +54,75 @@ class MissingToken(Exception):
 
 def parse_args(argv: Sequence[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        prog="github-anti-ai", description="Explore-Seite für menschengemachte GitHub-Repos"
+        prog="github-anti-ai", description="Explore-Seite für menschengemachte Open-Source-Projekte"
     )
     commands = parser.add_subparsers(dest="command", required=True)
-    for name, help_text in [
-        ("collect", "Momentaufnahmen sammeln"),
-        ("collect-hn", "HN-Projekte suchen, sammeln und filtern"),
-        ("collect-lobsters", "Lobsters-Projekte suchen, sammeln und filtern"),
-        ("publish", "heutige Ausgabe erzeugen"),
-        ("daily", "sammeln und Ausgabe erzeugen"),
-        ("site", "Website aus den Ausgaben bauen"),
-        ("explain", "Bewertung eines Repos erklären"),
-        ("serve", "Vorschau der Website mit automatischem Neuladen"),
-    ]:
-        command = commands.add_parser(name, help=help_text)
-        command.add_argument("--data-dir", type=Path, default=Path("data"))
-        if name in ("site", "serve"):
-            command.add_argument("--output", type=Path, default=Path("output"))
-        if name == "serve":
-            command.add_argument("--port", type=int, default=8000)
-        if name == "site":
-            command.add_argument(
-                "--site-url",
-                default=None,
-                help="öffentliche Adresse der Seite, für vollständige Links in den Feeds",
-            )
-            command.add_argument(
-                "--plausible",
-                default=None,
-                help="Adresse eines Plausible-Skripts, das die Besuche zählt",
-            )
-        if name == "explain":
-            command.add_argument("repo", help="owner/name")
-        if name in ("publish", "explain"):
-            command.add_argument(
-                "--day",
-                type=date.fromisoformat,
-                default=None,
-                help="Tag der Sammlung als JJJJ-MM-TT (Standard: heute)",
-            )
-        if name in ("collect", "daily", "collect-hn", "collect-lobsters"):
-            command.add_argument(
-                "--limit",
-                type=int,
-                default=None,
-                help="höchstens so viele Kandidaten (für Probeläufe)",
-            )
-        if name in ("publish", "daily"):
-            command.add_argument(
-                "--ignore-cooldown",
-                action="store_true",
-                help="Sperre ignorieren (nur für die Entwicklung)",
-            )
-            command.add_argument(
-                "--allow-incomplete",
-                action="store_true",
-                help="Ausgabe auch aus einer unvollständigen Sammlung erzeugen",
-            )
-            command.add_argument(
-                "--review",
-                action="store_true",
-                help="die Repos der Ausgabe von der Copilot-CLI gegenlesen lassen",
-            )
+
+    def command(name: str, help: str) -> argparse.ArgumentParser:
+        sub = commands.add_parser(name, help=help)
+        sub.add_argument("--data-dir", type=Path, default=Path("data"))
+        return sub
+
+    def limit(sub):
+        sub.add_argument("--limit", type=int, help="höchstens so viele Kandidaten (für Probeläufe)")
+
+    def day(sub):
+        sub.add_argument(
+            "--day",
+            type=date.fromisoformat,
+            help="Tag der Sammlung als JJJJ-MM-TT (Standard: heute)",
+        )
+
+    def publishing(sub):
+        sub.add_argument(
+            "--ignore-cooldown",
+            action="store_true",
+            help="Sperre ignorieren (nur für die Entwicklung)",
+        )
+        sub.add_argument(
+            "--allow-incomplete",
+            action="store_true",
+            help="Ausgabe auch aus einer unvollständigen Sammlung erzeugen",
+        )
+        sub.add_argument(
+            "--review",
+            action="store_true",
+            help="die Repos der Ausgabe von der Copilot-CLI gegenlesen lassen",
+        )
+
+    def output(sub):
+        sub.add_argument("--output", type=Path, default=Path("output"))
+
+    limit(command("collect", "Momentaufnahmen von GitHub sammeln"))
+    publish = command("publish", "Ausgabe des Tages erzeugen")
+    day(publish)
+    publishing(publish)
+    daily = command("daily", "sammeln und Ausgabe erzeugen")
+    limit(daily)
+    publishing(daily)
+    limit(command("collect-hn", "HN-Ausgabe erzeugen"))
+    limit(command("collect-lobsters", "Lobsters-Ausgabe erzeugen"))
+    explain = command("explain", "Bewertung eines Repos erklären")
+    explain.add_argument("repo", help="besitzer/name")
+    day(explain)
+    site = command("site", "Website aus den Ausgaben bauen")
+    output(site)
+    site.add_argument(
+        "--site-url", help="öffentliche Adresse der Seite, für vollständige Links in den Feeds"
+    )
+    site.add_argument("--plausible", help="Adresse eines Plausible-Skripts, das die Besuche zählt")
+    serve = command("serve", "Vorschau der Website, baut bei Änderungen neu")
+    output(serve)
+    serve.add_argument("--port", type=int, default=8000)
     return parser.parse_args(argv)
 
 
-def load_token(environ: Mapping[str, str], dotenv_path: Path) -> str:
+def load_token(environ: Mapping[str, str], dotenv: Path) -> str:
+    """GITHUB_TOKEN from the environment, otherwise from a line GITHUB_TOKEN=… in .env"""
     if environ.get("GITHUB_TOKEN"):
         return environ["GITHUB_TOKEN"].strip()
-    if dotenv_path.exists():
-        for line in dotenv_path.read_text().splitlines():
+    if dotenv.exists():
+        for line in dotenv.read_text().splitlines():
             key, separator, value = line.partition("=")
             value = value.strip().strip("\"'")
             if separator and key.strip() == "GITHUB_TOKEN" and value:
@@ -131,106 +136,110 @@ def main(argv: Sequence[str] | None = None) -> int:
         level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%H:%M:%S", stream=sys.stderr
     )
     logging.getLogger("httpx").setLevel(logging.WARNING)
-    complete = True
-    if args.command == "site":
-        # imported here: only this command needs Pelican
-        from github_anti_ai.publication.site import build_site
-
-        build_site(
-            args.data_dir / "editions",
-            args.output,
-            args.site_url,
-            args.plausible,
-            args.data_dir / "hn-editions",
-            args.data_dir / "lobsters-editions",
-        )
-        print(f"Website gebaut: {args.output}/index.html")
-        return 0
-    if args.command == "serve":
-        from github_anti_ai.publication.dev_server import serve
-        from github_anti_ai.publication.site import THEME, build_site
-
-        logging.getLogger().setLevel(logging.WARNING)  # Pelican is chatty on every rebuild
-        editions = args.data_dir / "editions"
-        serve(
-            build=lambda: build_site(
-                editions,
-                args.output,
-                hn_editions_dir=args.data_dir / "hn-editions",
-                lobsters_editions_dir=args.data_dir / "lobsters-editions",
-            ),
-            watch=[
-                editions,
-                args.data_dir / "hn-editions",
-                args.data_dir / "lobsters-editions",
-                THEME,
-            ],
-            output_dir=args.output,
-            port=args.port,
-        )
-        return 0
     try:
-        if args.command == "explain":
-            print(explain(args.data_dir, args.day, args.repo))
-            return 0
-        if args.command == "collect-hn":
-            edition = collect_hn(
-                args.data_dir,
-                load_token(os.environ, Path(".env")),
-                args.limit,
-            )
-            print(f"HN-Ausgabe {edition.day}: {len(edition.projects)} OSS-Projekte")
-            return 0
-        if args.command == "collect-lobsters":
-            edition = collect_lobsters(
-                args.data_dir,
-                load_token(os.environ, Path(".env")),
-                args.limit,
-            )
-            print(f"Lobsters-Ausgabe {edition.day}: {len(edition.projects)} OSS-Projekte")
-            return 0
-        day = getattr(args, "day", None)
-        if args.command in ("collect", "daily"):
-            report = collect(args.data_dir, load_token(os.environ, Path(".env")), args.limit)
-            complete = not report.failed
-            day = report.day  # a run across midnight still belongs to the day it started
-        if args.command in ("publish", "daily"):
-            publish(
-                args.data_dir, day, args.ignore_cooldown, args.allow_incomplete, args.review
-            )
+        return COMMANDS[args.command](args)
     except AlreadyPublished as error:
-        print(f"Fehler: Für den {error} gibt es schon eine Ausgabe.", file=sys.stderr)
-        return 1
-    except IncompleteCollection as error:
-        print(f"Fehler: {error}", file=sys.stderr)
-        print(
-            "  Mit 'collect' holt ein erneuter Lauf nach, was fehlt. "
-            "Mit --allow-incomplete entsteht die Ausgabe trotzdem.",
-            file=sys.stderr,
-        )
-        return 1
+        _fail(f"Für den {error} gibt es schon eine Ausgabe.")
     except NothingToPublish as error:
-        print(f"Fehler: Für den {error} gibt es keine Momentaufnahmen.", file=sys.stderr)
-        return 1
+        _fail(f"Für den {error} gibt es keine Momentaufnahmen.")
+    except IncompleteCollection as error:
+        _fail(
+            f"{error}\n  Mit 'collect' holt ein erneuter Lauf nach, was fehlt. "
+            "Mit --allow-incomplete entsteht die Ausgabe trotzdem."
+        )
     except (MissingToken, SourceUnavailable, UnknownRepo, ValueError) as error:
-        print(f"Fehler: {error}", file=sys.stderr)
-        return 1
-    return 0 if complete else 1
+        _fail(str(error))
+    return 1
+
+
+def _fail(message: str) -> None:
+    print(f"Fehler: {message}", file=sys.stderr)
+
+
+def _token() -> str:
+    return load_token(os.environ, Path(".env"))
+
+
+def run_collect(args) -> int:
+    report = collect(args.data_dir, _token(), args.limit)
+    return 1 if report.failed else 0
+
+
+def run_publish(args) -> int:
+    publish(args, args.day or SystemClock().now().date())
+    return 0
+
+
+def run_daily(args) -> int:
+    report = collect(args.data_dir, _token(), args.limit)
+    # a run across midnight belongs to the day it began
+    publish(args, report.day)  # refuses an incomplete collection unless allowed
+    return 1 if report.failed else 0
+
+
+def run_collect_hn(args) -> int:
+    return collect_community(args, HN, HackerNewsSearch, HN_API_URL)
+
+
+def run_collect_lobsters(args) -> int:
+    return collect_community(args, LOBSTERS, LobstersSearch, LOBSTERS_URL)
+
+
+def run_explain(args) -> int:
+    use_case = ExplainAssessment(JsonSnapshotStore(args.data_dir / "snapshots"), Assessor().assess)
+    day = args.day or SystemClock().now().date()
+    print(use_case.run(day, RepoId.parse(args.repo)))
+    return 0
+
+
+def run_site(args) -> int:
+    from github_anti_ai.publication.site import build_site  # only these commands need Pelican
+
+    build_site(args.data_dir, args.output, args.site_url, args.plausible)
+    print(f"Website gebaut: {args.output}/index.html")
+    return 0
+
+
+def run_serve(args) -> int:
+    from github_anti_ai.publication.dev_server import serve
+    from github_anti_ai.publication.site import THEME, build_site
+
+    logging.getLogger().setLevel(logging.WARNING)  # Pelican is chatty on every rebuild
+    watched = ["editions", "hn-editions", "lobsters-editions"]
+    serve(
+        build=lambda: build_site(args.data_dir, args.output),
+        watch=[args.data_dir / name for name in watched] + [THEME],
+        output_dir=args.output,
+        port=args.port,
+    )
+    return 0
+
+
+COMMANDS = {
+    "collect": run_collect,
+    "publish": run_publish,
+    "daily": run_daily,
+    "collect-hn": run_collect_hn,
+    "collect-lobsters": run_collect_lobsters,
+    "explain": run_explain,
+    "site": run_site,
+    "serve": run_serve,
+}
 
 
 def collect(data_dir: Path, token: str, limit: int | None) -> CollectionReport:
     clock = SystemClock()
+    snapshots = data_dir / "snapshots"
     with make_github_client(token) as client:
-        use_case = CollectSnapshots(
+        report = CollectSnapshots(
             candidate_sources=[GitHubSearchCandidates(client, sleep=time.sleep, clock=clock)],
             repo_source=GitHubRepoSource(client, sleep=time.sleep, clock=clock),
-            snapshot_store=JsonSnapshotStore(data_dir / "snapshots"),
+            snapshot_store=JsonSnapshotStore(snapshots),
+            status_store=JsonCollectionStatusStore(snapshots),
             clock=clock,
             assess=Assessor().assess,
             limit=limit,
-            status_store=JsonCollectionStatusStore(data_dir / "snapshots"),
-        )
-        report = use_case.run()
+        ).run()
     print(f"{report.day}: {report.discovered} Kandidaten, {report.collected} Momentaufnahmen")
     print(
         f"  {report.fetched} neu geholt, {report.refreshed} aufgefrischt, "
@@ -245,99 +254,53 @@ def collect(data_dir: Path, token: str, limit: int | None) -> CollectionReport:
     return report
 
 
-def collect_hn(data_dir: Path, token: str, limit: int | None = None):
-    clock = SystemClock()
-    with (
-        httpx.Client(
-            base_url="https://hn.algolia.com/api/v1",
-            headers={"User-Agent": "github-anti-ai"},
-            timeout=10,
-            trust_env=False,
-        ) as hn_client,
-        httpx.Client(
-            headers={"User-Agent": "github-anti-ai project resolver"},
-            timeout=10,
-            trust_env=False,
-        ) as project_client,
-        make_github_client(token) as github_client,
-    ):
-        use_case = CollectHnEdition(
-            story_source=HackerNewsSearch(hn_client),
-            project_resolver=HnProjectResolver(
-                project_client, github_client=github_client
-            ),
-            edition_store=JsonHnEditionStore(data_dir / "hn-editions"),
-            clock=clock,
-            limit=limit,
-        )
-        return use_case.run()
-
-
-def collect_lobsters(data_dir: Path, token: str, limit: int | None = None):
-    clock = SystemClock()
-    with (
-        httpx.Client(
-            base_url="https://lobste.rs",
-            headers={"User-Agent": "github-anti-ai"},
-            timeout=10,
-            trust_env=False,
-        ) as lobsters_client,
-        httpx.Client(
-            headers={"User-Agent": "github-anti-ai project resolver"},
-            timeout=10,
-            trust_env=False,
-        ) as project_client,
-        make_github_client(token) as github_client,
-    ):
-        use_case = CollectLobstersEdition(
-            story_source=LobstersSearch(lobsters_client),
-            project_resolver=LobstersProjectResolver(
-                project_client, github_client=github_client
-            ),
-            edition_store=JsonLobstersEditionStore(data_dir / "lobsters-editions"),
-            clock=clock,
-            limit=limit,
-        )
-        return use_case.run()
-
-
-def publish(
-    data_dir: Path,
-    day: date | None,
-    ignore_cooldown: bool,
-    allow_incomplete: bool = False,
-    review: bool = False,
-) -> Edition:
-    use_case = PublishEdition(
+def publish(args, day: date) -> None:
+    data_dir = args.data_dir
+    edition = PublishEdition(
         snapshot_store=JsonSnapshotStore(data_dir / "snapshots"),
+        status_store=JsonCollectionStatusStore(data_dir / "snapshots"),
         edition_store=JsonEditionStore(data_dir / "editions"),
-        collection_status_store=JsonCollectionStatusStore(data_dir / "snapshots"),
         record_store=JsonDailyRecordStore(data_dir / "history"),
         assess=Assessor().assess,
-        clock=SystemClock(),
-        ignore_cooldown=ignore_cooldown,
-        allow_incomplete=allow_incomplete,
-        reviewer=CopilotReviewer() if review else None,
-    )
-    edition = use_case.run(day)
+        reviewer=CopilotReviewer() if args.review else None,
+        ignore_cooldown=args.ignore_cooldown,
+        allow_incomplete=args.allow_incomplete,
+    ).run(day)
     stats = edition.stats
     print(
         f"Ausgabe {edition.day}: {len(edition.main)} in der Hauptliste, "
         f"{len(edition.ai)} in der AI-Sektion "
         f"({stats.assessed} geprüft, {stats.excluded} ausgeschlossen)"
     )
-    if review:
-        entries = edition.main + edition.ai
-        read = sum(1 for entry in entries if any(s.kind == "review" for s in entry.signals))
-        print(f"Gegengelesen: {read} von {len(entries)} Einträgen")
-    return edition
+    if args.review:
+        read, shown = reviewed_entries(edition)
+        print(f"Gegengelesen: {read} von {shown} Einträgen")
 
 
-def explain(data_dir: Path, day: date | None, repo: str) -> str:
-    use_case = ExplainAssessment(
-        snapshot_store=JsonSnapshotStore(data_dir / "snapshots"), assess=Assessor().assess
+def collect_community(args, platform: Platform, search, base_url: str) -> int:
+    def client(**options) -> httpx.Client:
+        return httpx.Client(
+            headers={"User-Agent": USER_AGENT}, timeout=10, trust_env=False, **options
+        )
+
+    with (
+        client(base_url=base_url) as story_client,
+        client() as web_client,
+        make_github_client(_token()) as github_client,
+    ):
+        edition = CollectCommunityEdition(
+            platform=platform,
+            story_source=search(story_client),
+            resolver=ProjectResolver(web_client, github_client=github_client),
+            edition_store=JsonCommunityEditionStore(platform, args.data_dir),
+            clock=SystemClock(),
+            limit=args.limit,
+        ).run()
+    print(
+        f"{platform.name}-Ausgabe {edition.day}: {len(edition.main)} Projekte, "
+        f"{len(edition.ai)} AI-Projekte"
     )
-    return use_case.run(day or SystemClock().now().date(), RepoId.parse(repo))
+    return 0
 
 
 def _names(repos: Sequence, shown: int = 5) -> str:

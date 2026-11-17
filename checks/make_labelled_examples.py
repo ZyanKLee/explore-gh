@@ -1,12 +1,12 @@
-"""Turns the judged repos into a test fixture without names and e-mail addresses of people.
+"""Turns the repos judged by hand into a test fixture without names and e-mail addresses.
 
     uv run python checks/make_labelled_examples.py data-test/snapshots/2026-11-12.jsonl.gz \\
         data-test/urteile.csv
 
 Writes tests/integration/fixtures/labelled/: the snapshots of the judged repos and the
-verdicts (without the notes). Commit authors become "person-1", "person-2" …, co-authors
-who are not AI tools become a placeholder, commit headlines and e-mail addresses in
-READMEs are removed. AI tools and bots stay as they are, the rules need them.
+verdicts (without notes). Commit authors become "person-1", "person-2" …, co-authors who
+are no AI tools become a placeholder, commit headlines and e-mail addresses in READMEs go.
+AI tools and bots stay as they are: the rules need them.
 """
 
 import csv

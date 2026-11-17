@@ -1,6 +1,8 @@
+"""Explains the assessment of one repo on one day, also of one that was not shown."""
+
 from datetime import date
 
-from github_anti_ai.application.ports import Assessor, SnapshotStore
+from github_anti_ai.application.ports import Assess, SnapshotStore
 from github_anti_ai.domain.copies import CopyCheck
 from github_anti_ai.domain.model import RepoId, Section
 
@@ -13,28 +15,25 @@ class UnknownRepo(Exception):
 
 
 class ExplainAssessment:
-    def __init__(self, snapshot_store: SnapshotStore, assess: Assessor):
-        self._snapshot_store = snapshot_store
+    def __init__(self, snapshot_store: SnapshotStore, assess: Assess):
+        self._snapshots = snapshot_store
         self._assess = assess
 
     def run(self, day: date, repo: RepoId) -> str:
-        """Section, score, exclusion and every signal of a repo as plain text."""
-        snapshots = self._snapshot_store.load(day)
-        for snapshot in snapshots:
-            if snapshot.repo == repo:
-                break
-        else:
+        """Section, score, exclusion and every signal as plain text."""
+        snapshots = self._snapshots.load(day)
+        snapshot = next((s for s in snapshots if s.repo == repo), None)
+        if snapshot is None:
             raise UnknownRepo(day, repo)
 
         assessment = self._assess(snapshot)
-        # a copy shows only among the other repos of the day
-        found = assessment.exclusion or CopyCheck().find(snapshots).get(snapshot.repo)
-        exclusion = found.reason if found else "keiner"
+        # a copy only shows among the other repos of the day
+        exclusion = assessment.exclusion or CopyCheck().find(snapshots).get(snapshot.repo)
         lines = [
             str(snapshot.repo),
             f"Sektion: {SECTION_NAMES[assessment.section]}",
             f"Punktzahl: {assessment.score:.1f}",
-            f"Ausschluss: {exclusion}",
+            f"Ausschluss: {exclusion.reason if exclusion else 'keiner'}",
             "Signale:",
         ]
         lines += [f"  {signal.weight:+6.1f}  {signal.reason}" for signal in assessment.signals]
