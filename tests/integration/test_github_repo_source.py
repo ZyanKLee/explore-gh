@@ -322,6 +322,17 @@ def test_repos_are_fetched_in_batches():
     assert batch_sizes == [20, 20, 5]
 
 
+def test_repos_are_fetched_in_batches_of_ten_by_default():
+    # Groups of 20 often timed out on busy mornings and had to be split anyway.
+    names = [f"user{i}/project{i}" for i in range(25)]
+    fake = FakeGitHub([node(name_with_owner=n) for n in names])
+
+    fetch(fake, repos=names)
+
+    batch_sizes = [sum(1 for key in body["variables"] if key.startswith("owner")) for body in fake.bodies]
+    assert batch_sizes == [10, 10, 5]
+
+
 def test_repo_that_does_not_exist_is_left_out():
     snapshots = fetch(FakeGitHub([FULL]), repos=["alice/tiny-editor", "gone/deleted-repo"])
 

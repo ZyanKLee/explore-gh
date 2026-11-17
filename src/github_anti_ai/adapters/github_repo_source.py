@@ -107,9 +107,15 @@ class _TooExpensive(SourceUnavailable):
     """GitHub refused the query: "Resource limits for this query exceeded"."""
 
 
-# A group that times out is halved until the repo to blame is found: about 5 timeouts
-# for each such repo in a batch of 20. More than this many means GitHub itself is down.
-MAX_TIMEOUTS_PER_BATCH = 20
+# Repos per GraphQL query. With 20, GitHub often gave up after 10 seconds on busy
+# mornings (HTTP 502/504) and the group had to be split anyway, costing a wasted
+# timeout each time (17.11.2026).
+BATCH_SIZE = 10
+
+# A group that times out is halved until the repo to blame is found: about 4 timeouts
+# for each such repo in a batch of 10. More than this many means GitHub itself is down.
+# Must stay below 2 * BATCH_SIZE - 1, the timeouts of a batch in which every query fails.
+MAX_TIMEOUTS_PER_BATCH = 10
 
 
 class GitHubRepoSource:
@@ -119,7 +125,7 @@ class GitHubRepoSource:
         *,
         sleep: Sleep,
         clock: Clock,
-        batch_size: int = 20,
+        batch_size: int = BATCH_SIZE,
         max_timeouts_per_batch: int = MAX_TIMEOUTS_PER_BATCH,
     ):
         self._client = client

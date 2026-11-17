@@ -20,7 +20,7 @@ CollectSnapshots.run()
   2. Schon Erledigtes       Repos mit Momentaufnahme von heute überspringen
   3. Einteilen              neu holen / auffrischen / übernehmen
   4. Übernehmen             ohne Anfragen
-  5. In Gruppen von 20:     RepoSource.fetch(gruppe, jetzt)
+  5. In Gruppen von 20:     RepoSource.fetch(gruppe, jetzt), fragt GitHub je 10 Repos
                             SnapshotStore.append(heute, momentaufnahmen)
   6. Die Besten             je Sektion die 60 besten auffrischen
   7. Aufräumen              SnapshotStore.prune(heute − 14 Tage)
@@ -172,7 +172,7 @@ Gemeinsam für alle GitHub-Adapter:
 | Schritt | Anfragen | Dauer |
 |---|---|---|
 | Suche | 30 | 3 bis 4 Minuten (gemessen: etwa 5 s Antwortzeit plus 2 s Pause) |
-| GraphQL | eine je 20 Kandidaten | etwa 6 s je Gruppe (gemessen) |
+| GraphQL | eine je 10 Kandidaten (bis 16.11.2026: je 20) | etwa 6 s je Gruppe von 20 (gemessen) |
 | Sternverlauf | eine je Kandidat | etwa 0,2 s je Repo (gemessen) |
 
 Gemessen am 12.11.2026: 60 Kandidaten in 35 Sekunden.
@@ -516,6 +516,15 @@ Für die Bewertungsregeln fehlt noch:
   durch, kein einzelnes war zu aufwendig. Ob dabei geteilt wurde, stand nicht im
   Protokoll. Seitdem meldet jede Teilung eine Zeile („Gruppe von 20 Repos wird
   geteilt“).
+- **Gruppen von 10 statt 20 (seit 17.11.2026):** Am Morgen des 17.11.2026 scheiterte
+  beim Auffrischen fast jede Gruppe von 20 Repos an HTTP 502 oder 504 und musste
+  geteilt werden. Jeder Abbruch kostet rund 10 Sekunden Warten. `GitHubRepoSource`
+  fragt deshalb von sich aus je 10 Repos ab (`BATCH_SIZE`). Das sind doppelt so viele
+  Anfragen, bei 5000 pro Stunde aber kein Engpass. `CollectSnapshots` speichert
+  weiterhin in Gruppen von 20. Mit der Gruppengröße sank auch `MAX_TIMEOUTS_PER_BATCH`
+  von 20 auf 10: Fällt bei einer Gruppe von 10 jede Abfrage aus, sind das 19 Abbrüche.
+  Bei 20 wäre ein Ausfall von GitHub nie erkannt worden, und jedes Repo wäre einzeln
+  ausgelassen worden. Ob es schneller geht, zeigt erst der nächste Lauf.
 - Die Test-Fixtures für Suche und GraphQL sind von Hand geschrieben, damit keine Namen
   und E-Mail-Adressen echter Personen im Repo landen. Ihre Form ist gegen echte
   Antworten geprüft. Der Sternverlauf ist eine echte Antwort.
