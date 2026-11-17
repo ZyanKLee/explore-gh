@@ -1,4 +1,4 @@
-# Prüft bei jeder Änderung, ob die Tests bestehen.
+# Prüft bei jeder Änderung, ob die Tests bestehen und der Code einheitlich aussieht.
 name: Tests
 
 on:
@@ -8,6 +8,11 @@ on:
 
 permissions:
   contents: read
+
+env:
+  # Genaue Version, damit eine neue Ruff-Regel nicht unangekündigt den Lauf rot macht.
+  # Von Hand anheben, dann einmal "uvx ruff@… format" und "check --fix" laufen lassen.
+  RUFF: ruff@0.14.0
 
 jobs:
   tests:
@@ -20,3 +25,9 @@ jobs:
           enable-cache: true
       - run: uv sync --locked
       - run: uv run pytest
+      # Auch wenn Tests scheitern: Stilfehler sollen im selben Lauf auffallen.
+      - name: Stil prüfen
+        if: ${{ !cancelled() }}
+        run: |
+          uvx "$RUFF" check src tests checks
+          uvx "$RUFF" format --check src tests checks
