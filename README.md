@@ -177,16 +177,18 @@ berechnet.
 
 ## Automatischer Betrieb auf GitHub
 
-Getrennte Workflows sammeln die GitHub-Ausgabe um 05:17 UTC, HN um 06:37 UTC und
-Lobsters um 06:52 UTC. Sie schreiben ihre Ergebnisse ins Repo und lösen den
-Website-Workflow aus. Dafür braucht das Repo zweierlei:
+Ein Workflow erzeugt um 02:43 UTC (03:43 Uhr deutscher Winterzeit) nacheinander die GitHub-, die HN- und die
+Lobsters-Ausgabe. Er schreibt sie gemeinsam ins Repo und löst den Website-Workflow
+aus. Dafür braucht das Repo zweierlei:
 
 1. **Secret `COLLECT_TOKEN`:** unter *Settings → Secrets and variables → Actions* einen
    klassischen Personal Access Token ohne Scopes eintragen.
 2. **Pages:** unter *Settings → Pages* als Quelle „GitHub Actions“ wählen.
 
-Von Hand starten: im Reiter *Actions* „Tägliche Ausgabe“, „HN-Ausgabe“ oder
-„Lobsters-Ausgabe“ wählen und *Run workflow* drücken. „Website“ baut die Seite neu.
+Von Hand starten: im Reiter *Actions* „Tägliche Ausgaben“ wählen und *Run workflow*
+drücken. Ausgaben, die es für den Tag schon gibt, bleiben, wie sie sind. „Website“
+baut die Seite neu.
 
-Scheitert das Sammeln, gibt es an dem Tag keine Ausgabe. Die Seite bleibt, wie sie
-war, und GitHub schickt eine Mail über den gescheiterten Lauf.
+Scheitert ein Teil, laufen die anderen weiter. Was fertig wird, erscheint auf der
+Seite. Fehlen beim Sammeln für GitHub einzelne Repos, erscheint die Ausgabe trotzdem,
+nur mit Lücken. GitHub schickt eine Mail über den gescheiterten Lauf.

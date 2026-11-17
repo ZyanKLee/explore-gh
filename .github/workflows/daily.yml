@@ -1,5 +1,9 @@
-# Der tägliche Lauf: sammeln, Ausgabe erzeugen, ins Repo schreiben.
-# Ist er erfolgreich fertig, startet der Workflow "Website" und veröffentlicht die Seite.
+# Der tägliche Lauf: die drei Ausgaben (GitHub, HN, Lobsters) nacheinander erzeugen
+# und gemeinsam ins Repo schreiben. Ist er fertig, startet der Workflow "Website" und
+# veröffentlicht die Seite.
+#
+# Scheitert ein Teil, laufen die anderen trotzdem. Was fertig geworden ist, kommt ins
+# Repo und auf die Seite. Der Lauf endet dann rot, damit der Fehler auffällt.
 #
 # Braucht im Repo:
 #   - Secret COLLECT_TOKEN: klassischer Personal Access Token ohne Scopes.
@@ -8,27 +12,29 @@
 #   - Ein Copilot-Abo des Repo-Besitzers: Die Copilot-CLI liest die Repos der Ausgabe
 #     gegen und rechnet über den eingebauten Token auf dieses Abo ab. Fällt sie aus,
 #     erscheint die Ausgabe ohne Gegenlesen.
-name: Tägliche Ausgabe
+name: Tägliche Ausgaben
 
 on:
   schedule:
-    # 05:17 UTC. Krumme Minute, weil zur vollen Stunde viele Läufe gleichzeitig starten.
-    - cron: "17 5 * * *"
+    # 02:43 UTC (03:43 Uhr deutscher Winterzeit, 04:43 Uhr Sommerzeit). Krumme Minute,
+    # weil zur vollen Stunde viele Läufe gleichzeitig starten. Früh am Morgen, weil
+    # geplante Läufe um 05:17 UTC oft Stunden zu spät starteten.
+    - cron: "43 2 * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write   # die Ausgabe des Tages wird ins Repo geschrieben
+  contents: write   # die Ausgaben des Tages werden ins Repo geschrieben
   copilot-requests: write   # die Copilot-CLI liest die Repos der Ausgabe gegen
 
-# Nie zwei Läufe gleichzeitig: Beide würden dieselbe Ausgabe schreiben wollen.
+# Nie zwei Läufe gleichzeitig: Beide würden dieselben Ausgaben schreiben wollen.
 concurrency:
   group: daily
   cancel-in-progress: false
 
 jobs:
-  edition:
+  editions:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v7
 
@@ -55,7 +61,9 @@ jobs:
           restore-keys: |
             snapshots-
 
-      - name: Sammeln
+      # --- GitHub ---
+
+      - name: GitHub sammeln
         env:
           GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
         run: |
@@ -71,12 +79,20 @@ jobs:
           path: data/snapshots
           key: snapshots-${{ steps.day.outputs.day }}-${{ github.run_id }}
 
+      # "!cancelled()" heißt hier und weiter unten: auch dann laufen, wenn ein Schritt
+      # davor gescheitert ist. Nur ein abgebrochener Lauf hört wirklich auf.
+
       # Scheitert die Installation, erscheint die Ausgabe ohne Gegenlesen.
       - name: Copilot-CLI installieren
+        if: ${{ !cancelled() }}
         continue-on-error: true
         run: npm install -g @github/copilot
 
-      - name: Ausgabe erzeugen
+      # --allow-incomplete: Die Ausgabe entsteht auch, wenn beim Sammeln Repos fehlen.
+      # Eine Ausgabe mit Lücken ist besser als keine. Ganz ohne Momentaufnahmen des
+      # Tages gibt es keine Ausgabe.
+      - name: GitHub-Ausgabe erzeugen
+        if: ${{ !cancelled() }}
         env:
           # der eingebaute Token, nicht COLLECT_TOKEN: Die Copilot-CLI nimmt keine
           # klassischen Personal Access Tokens an
@@ -85,19 +101,38 @@ jobs:
           if [ -f "data/editions/${{ steps.day.outputs.day }}.json" ]; then
             echo "Die Ausgabe vom ${{ steps.day.outputs.day }} gibt es schon."
           else
-            uv run github-anti-ai publish --day "${{ steps.day.outputs.day }}" --review
+            uv run github-anti-ai publish --day "${{ steps.day.outputs.day }}" --review --allow-incomplete
           fi
 
-      - name: Ausgabe und Langzeitdaten ins Repo schreiben
+      # --- HN ---
+
+      - name: HN-Projekte suchen, sammeln und filtern
+        if: ${{ !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
+        run: uv run github-anti-ai collect-hn
+
+      # --- Lobsters ---
+
+      - name: Lobsters-Projekte suchen, sammeln und filtern
+        if: ${{ !cancelled() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
+        run: uv run github-anti-ai collect-lobsters
+
+      # --- Gemeinsam ins Repo ---
+
+      - name: Ausgaben und Langzeitdaten ins Repo schreiben
+        if: ${{ !cancelled() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p data/history
-          git add data/editions data/history
+          git add data/editions data/history data/hn-editions data/lobsters-editions
           if git diff --cached --quiet; then
             echo "Nichts Neues."
           else
-            git commit -m "Ausgabe vom ${{ steps.day.outputs.day }}"
+            git commit -m "Ausgaben vom ${{ steps.day.outputs.day }}"
             # falls während des Laufs jemand etwas ins Repo geschrieben hat
             git pull --rebase
             git push

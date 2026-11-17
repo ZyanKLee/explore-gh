@@ -292,4 +292,8 @@ nicht aus einer Sammlung mit Lücken entstehen.
 - Repos, die es nicht mehr gibt, machen eine Sammlung nicht unvollständig.
 - `daily` erzeugt damit nach einem Lauf mit Fehlern keine Ausgabe.
 - **Bewusst übergehen:** `publish --allow-incomplete` und `daily --allow-incomplete`.
+- **Im Betrieb wird übergangen** (seit 17.11.2026): Der Workflow ruft
+  `publish --allow-incomplete` auf. Eine Ausgabe mit Lücken ist besser als ein Tag
+  ohne Inhalt. Der Preis: Ein Repo, das nur wegen eines Fehlers fehlt, kann an dem Tag
+  nicht erscheinen, und die Ausgabe wird nicht nachträglich ergänzt.
 - Der Status wird wie die Momentaufnahmen nach 14 Tagen gelöscht.

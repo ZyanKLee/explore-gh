@@ -239,11 +239,21 @@ Drei Workflows in `.github/workflows/`:
 
 | Datei | Wann | Was |
 |---|---|---|
-| `daily.yml` | täglich 05:17 UTC, oder von Hand | sammeln, Ausgabe erzeugen, ins Repo schreiben |
-| `site.yml` | nach jedem erfolgreichen täglichen Lauf, bei Änderungen am Theme oder an den Ausgaben, oder von Hand | die Seite bauen und veröffentlichen |
+| `daily.yml` | täglich 02:43 UTC, oder von Hand | GitHub-, HN- und Lobsters-Ausgabe erzeugen, gemeinsam ins Repo schreiben |
+| `site.yml` | nach jedem nicht abgebrochenen täglichen Lauf, bei Änderungen am Theme oder an den Ausgaben, oder von Hand | die Seite bauen und veröffentlichen |
 | `tests.yml` | bei jedem Push und Pull Request | die Tests |
 
 ### Der tägliche Lauf
+
+Ein Job erzeugt nacheinander alle drei Ausgaben. Bis zum 17.11.2026 waren es drei
+getrennte Workflows (GitHub 05:17, HN 06:37, Lobsters 06:52 UTC). Zusammen teilen sie
+sich den Token ohne Absprache über Uhrzeiten, und es gibt einen Commit und einen
+Seitenbau am Tag statt drei.
+
+**Teilweise Ergebnisse werden veröffentlicht.** Scheitert ein Schritt, laufen die
+folgenden trotzdem (`if: !cancelled()`). Was fertig geworden ist, kommt ins Repo und
+auf die Seite. Der Lauf endet dann rot, damit der Fehler auffällt. Nur ein von Hand
+abgebrochener Lauf hört sofort auf.
 
 1. **Tag festlegen** (UTC), bevor gesammelt wird.
 2. **Momentaufnahmen der letzten Tage** aus dem Cache von GitHub Actions holen. Sie
@@ -252,15 +262,21 @@ Drei Workflows in `.github/workflows/`:
    zurück in den Cache, auch wenn der Lauf scheitert.
 4. **Copilot-CLI installieren** (`npm install -g @github/copilot`). Scheitert das,
    läuft der Lauf weiter.
-5. **Ausgabe erzeugen**, mit Gegenlesen (`publish --review`, siehe `ausgabe.md`). Der
-   Schritt bekommt den eingebauten Token des Laufs, weil die Copilot-CLI keine
-   klassischen Personal Access Tokens annimmt. Ist die Sammlung unvollständig, bricht der Lauf hier ab: An
-   dem Tag gibt es keine Ausgabe, die Seite bleibt, wie sie war. Gibt es die Ausgabe
-   des Tages schon, wird der Schritt übersprungen.
-6. **Ausgabe ins Repo schreiben** (`data/editions/`), als Commit von
-   `github-actions[bot]`. Daraus leitet sich die Sperre ab.
-7. **Der Workflow „Website“ startet**, sobald der Lauf erfolgreich fertig ist, und
-   baut und veröffentlicht die Seite mit der Adresse von GitHub Pages für die Feeds.
+5. **GitHub-Ausgabe erzeugen**, mit Gegenlesen (`publish --review --allow-incomplete`,
+   siehe `ausgabe.md`). Der Schritt bekommt den eingebauten Token des Laufs, weil die
+   Copilot-CLI keine klassischen Personal Access Tokens annimmt. Ist die Sammlung
+   unvollständig, entsteht die Ausgabe trotzdem, aus dem, was gesammelt ist: Eine
+   Ausgabe mit Lücken ist besser als keine (Entscheidung vom 17.11.2026). Gibt es gar
+   keine Momentaufnahmen des Tages, gibt es keine Ausgabe. Gibt es die Ausgabe des
+   Tages schon, wird der Schritt übersprungen.
+6. **HN-Ausgabe** (`collect-hn`) und **Lobsters-Ausgabe** (`collect-lobsters`), auch
+   wenn GitHub gescheitert ist. Gibt es die Ausgabe des Tages schon, holen sie nichts.
+7. **Ausgaben ins Repo schreiben** (`data/editions/`, `data/history/`,
+   `data/hn-editions/`, `data/lobsters-editions/`) in einem Commit von
+   `github-actions[bot]`. Daraus leiten sich die Sperren ab.
+8. **Der Workflow „Website“ startet**, sobald der Lauf fertig ist, auch nach einem
+   teilweise gescheiterten, nicht aber nach einem abgebrochenen. Er baut und
+   veröffentlicht die Seite mit der Adresse von GitHub Pages für die Feeds.
    Was der Lauf ins Repo schreibt, löst von sich aus keinen Workflow aus, deshalb
    hängt „Website“ ausdrücklich an seinem Ende (`workflow_run`). Nur dieser eine
    Workflow veröffentlicht, so kann kein zweiter mit älterem Stand dazwischenkommen.
@@ -282,7 +298,9 @@ Drei Workflows in `.github/workflows/`:
   Repo. Bei täglichem Lauf bleibt der Cache erhalten. Jeder Lauf legt einen neuen an
   (rund 250 MB bei 14 Tagen), alte räumt GitHub selbst ab.
 - Geplante Läufe starten bei hoher Last auf GitHub verspätet. Am 14. und 15.11.2026
-  waren es rund sieben Stunden.
+  waren es rund sieben Stunden. Deshalb startet der Lauf seit dem 17.11.2026 um
+  02:43 statt 05:17 UTC, in der Hoffnung auf weniger Last. Ob das hilft, ist noch
+  nicht beobachtet.
 - Das Gegenlesen mit dem eingebauten Token ist für Repos von Organisationen
   dokumentiert. Für ein Repo eines persönlichen Kontos nennt die Dokumentation nur die
   Abrechnung über das Abo des Besitzers. Der Lauf vom 15.11.2026 hat gezeigt, dass es

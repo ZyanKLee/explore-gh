@@ -1,7 +1,6 @@
 # Baut die Seite und veröffentlicht sie auf GitHub Pages. Läuft
-#   - nach jedem erfolgreichen täglichen Lauf,
-#   - nach jeder erfolgreichen HN-Ausgabe,
-#   - nach jeder erfolgreichen Lobsters-Ausgabe,
+#   - nach jedem täglichen Lauf, auch einem teilweise gescheiterten: Was er an
+#     Ausgaben geschafft hat, soll auf die Seite,
 #   - wenn sich das Aussehen oder eine Ausgabe ändert,
 #   - von Hand.
 #
@@ -12,7 +11,7 @@ on:
   # Was der tägliche Lauf ins Repo schreibt, löst keinen "push" aus. Deshalb hängt
   # dieser Workflow ausdrücklich an seinem Ende.
   workflow_run:
-    workflows: ["Tägliche Ausgabe", "HN-Ausgabe", "Lobsters-Ausgabe"]
+    workflows: ["Tägliche Ausgaben"]
     types: [completed]
   push:
     branches: [main]
@@ -39,8 +38,9 @@ concurrency:
 
 jobs:
   build:
-    # Nach einem gescheiterten täglichen Lauf gibt es nichts Neues zu zeigen.
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    # Nach einem abgebrochenen Lauf nicht. Nach einem gescheiterten schon: Er kann
+    # einen Teil der Ausgaben geschrieben haben.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
