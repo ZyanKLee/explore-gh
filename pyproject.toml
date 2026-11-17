@@ -27,7 +27,7 @@ pythonpath = ["tests"]
 addopts = "-m 'not live'"
 markers = ["live: greift live auf APIs zu und braucht einen Token"]
 
-# Stil: uvx ruff format && uvx ruff check --fix
+# Stil: uvx ruff@0.14.0 format && uvx ruff@0.14.0 check --fix (Version wie in tests.yml)
 [tool.ruff]
 line-length = 100
 
