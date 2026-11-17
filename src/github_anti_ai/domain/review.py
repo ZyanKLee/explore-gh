@@ -1,8 +1,9 @@
 """Review: a language model reads the repos that would be shown, as a last check.
 
-The rules stay the judge of rank. The review can take a repo out or move it from the main
-list to the AI section, and it says why. It exists because every new campaign of lures,
-and every AI project that avoids the usual words, gets past the lists of terms.
+The rules stay the judge of rank. The review can take a repo out, or move it from the
+main list to the AI section, never back. It exists because every new campaign of lures,
+and every AI project that avoids the usual words, gets past the term lists.
+See docs/ausgabe.md, "Gegenlesen".
 """
 
 import dataclasses
@@ -11,10 +12,9 @@ from dataclasses import dataclass
 from github_anti_ai.domain.model import Assessment, Exclusion, Section, Signal
 
 REVIEWER_NAME = "Copilot"
-
 AI_FOCUS_CATEGORY = "ai_focus"
 
-# What the review can find. The label is the reason on the page, None means: stays.
+# What the review can find. The label is the reason of the exclusion, None means: stays.
 REVIEW_CATEGORIES: dict[str, str | None] = {
     "ok": None,
     AI_FOCUS_CATEGORY: None,
@@ -25,8 +25,7 @@ REVIEW_CATEGORIES: dict[str, str | None] = {
     "placeholder": "Hülle ohne erkennbare Arbeit",
 }
 
-# What the reviewer is told about each category. In German: the reasons it writes
-# appear on the page.
+# What the reviewer is told about each category.
 REVIEW_GUIDE: dict[str, str] = {
     "ok": "Ein echtes Softwareprojekt. Das ist der Normalfall und gilt auch im Zweifel.",
     AI_FOCUS_CATEGORY: (
@@ -63,7 +62,7 @@ REVIEW_GUIDE: dict[str, str] = {
 @dataclass(frozen=True)
 class Review:
     category: str
-    reason: str  # one sentence, shown on the page
+    reason: str  # one sentence of the model. Only the log of the run shows it.
 
     def __post_init__(self):
         if self.category not in REVIEW_CATEGORIES:
@@ -71,12 +70,13 @@ class Review:
 
 
 def reviewed(assessment: Assessment, review: Review) -> Assessment:
-    """The assessment after the review: excluded with the reason, moved to the AI
-    section with the reason, or marked as read."""
+    """The assessment after the review: excluded, moved to the AI section, or marked as read.
+
+    The page only ever shows a fixed sentence, never the model's own words.
+    """
     if assessment.exclusion is not None:
         return assessment
     if review.category == AI_FOCUS_CATEGORY and assessment.section is Section.MAIN:
-        # a fixed sentence: the model's own words never appear on the page
         signal = Signal("review", 0, f"Gegengelesen von {REVIEWER_NAME}: AI als Thema")
         return dataclasses.replace(
             assessment, section=Section.AI, signals=assessment.signals + (signal,)

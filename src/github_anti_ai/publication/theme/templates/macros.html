@@ -1,4 +1,6 @@
-{% macro section(view, nav) %}
+{# Parts every list shares. Texts and numbers come from the page models. #}
+
+{% macro edition_header(view, nav, archive_url) %}
 <header class="edition">
   <h1>{{ view.title }}</h1>
   <p class="stats">{{ view.stats }}</p>
@@ -7,10 +9,15 @@
       {% if nav.older %}<li><a rel="prev" href="{{ SITEURL }}/{{ nav.older.url }}">Tag davor</a></li>{% endif %}
       {% if nav.other %}<li><a href="{{ SITEURL }}/{{ nav.other.url }}">{{ "AI-Projekte" if view.section == "main" else "Trending" }} dieses Tages</a></li>{% endif %}
       {% if nav.newer %}<li><a rel="next" href="{{ SITEURL }}/{{ nav.newer.url }}">Tag danach</a></li>{% endif %}
-      <li><a href="{{ SITEURL }}/archiv/">Archiv</a></li>
+      <li><a href="{{ SITEURL }}/{{ archive_url }}">Archiv</a></li>
     </ul>
   </nav>
 </header>
+{% endmacro %}
+
+{# One section of one day of the GitHub list #}
+{% macro github_section(view, nav, archive_url) %}
+{{ edition_header(view, nav, archive_url) }}
 {% if not view.entries %}
 <p class="empty">Heute nichts gefunden</p>
 {% else %}
@@ -59,5 +66,54 @@
   </li>
   {% endfor %}
 </ol>
+{% endif %}
+{% endmacro %}
+
+{# One section of one day of a community list (HN, Lobsters) #}
+{% macro community_section(view, nav, archive_url) %}
+{{ edition_header(view, nav, archive_url) }}
+{% if not view.entries %}
+<p class="empty">Heute nichts gefunden</p>
+{% else %}
+<ol class="entries" role="list">
+  {% for entry in view.entries %}
+  <li class="entry">
+    <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
+    <div class="body">
+      <h2><a href="{{ entry.repository_url }}">{{ entry.title }}</a></h2>
+      {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
+      <ul class="facts" role="list">
+        {% if entry.language %}<li>{{ entry.language }}</li>{% endif %}
+        {% if entry.license_id %}<li>Lizenz {{ entry.license_id }}</li>{% endif %}
+        <li>{{ entry.points }} {{ view.points_label }}</li>
+        <li>{{ entry.comments }} Kommentare</li>
+        {% if entry.project_url %}<li><a href="{{ entry.project_url }}">Projektseite</a></li>{% endif %}
+        <li><a href="{{ entry.discussion_url }}">{{ view.discussion_label }}</a></li>
+      </ul>
+    </div>
+    {% if entry.reasons %}
+    <details class="why">
+      <summary>Warum Platz {{ entry.rank }}? <span class="score">{{ entry.points }} {{ view.points_label }}</span></summary>
+      <table>
+        <caption>Wie das Projekt in die Liste kam</caption>
+        <tbody>
+          {% for reason in entry.reasons %}
+          <tr><td>{{ reason }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </details>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ol>
+{% endif %}
+{% endmacro %}
+
+{% macro section(page_list, view, nav) %}
+{% if page_list.slug == "github" %}
+{{ github_section(view, nav, page_list.archive_url) }}
+{% else %}
+{{ community_section(view, nav, page_list.archive_url) }}
 {% endif %}
 {% endmacro %}

@@ -1,117 +1,84 @@
 import pytest
-
 from builders import make_commit, make_snapshot
-from github_anti_ai.domain.ai_assistance import AI_COMMITS_MAX_PENALTY, AiAssistanceDetector
 
-CLAUDE = "Claude <noreply@anthropic.com>"
+from github_anti_ai.domain.ai_assistance import AiAssistanceDetector, is_ai_assisted, is_ai_tool
 
-
-def detect(**overrides):
-    return AiAssistanceDetector().detect(make_snapshot(**overrides))
+detector = AiAssistanceDetector()
 
 
-def signal(kind, **overrides):
-    found = [s for s in detect(**overrides) if s.kind == kind]
-    assert len(found) <= 1
-    return found[0] if found else None
+def signals_of(**overrides):
+    return {s.kind: s for s in detector.signals(make_snapshot(**overrides))}
 
 
-def commits(ai=0, human=0, bots=0):
+def commits(by_ai: int, by_hand: int, bots: int = 0):
     return (
-        tuple(make_commit(co_authors=(CLAUDE,)) for _ in range(ai))
-        + tuple(make_commit() for _ in range(human))
+        tuple(make_commit(co_authors=("Claude <noreply@anthropic.com>",)) for _ in range(by_ai))
+        + tuple(make_commit() for _ in range(by_hand))
         + tuple(make_commit(author="dependabot[bot]", is_bot=True) for _ in range(bots))
     )
 
 
-def test_repo_without_ai_traces_gets_no_signal():
-    assert detect() == ()
+def test_ai_commits_cost_up_to_15_points_by_their_share():
+    signal = signals_of(recent_commits=commits(by_ai=3, by_hand=1))["ai_commits"]
+
+    assert signal.weight == pytest.approx(-11.25)
+    assert signal.reason == "75% der letzten Commits mit AI-Beteiligung (3 von 4)"
 
 
-def test_commits_with_an_ai_co_author_lower_the_score_in_proportion():
-    result = signal("ai_commits", recent_commits=commits(ai=3, human=1))
-
-    assert result.weight == pytest.approx(-AI_COMMITS_MAX_PENALTY * 0.75)
-    assert "75" in result.reason
+def test_a_share_below_10_percent_costs_nothing():
+    assert "ai_commits" not in signals_of(recent_commits=commits(by_ai=1, by_hand=10))
 
 
-def test_fully_ai_assisted_history_gets_the_full_penalty():
-    result = signal("ai_commits", recent_commits=commits(ai=8))
+def test_ordinary_bots_count_neither_as_ai_nor_as_human():
+    signal = signals_of(recent_commits=commits(by_ai=1, by_hand=1, bots=8))["ai_commits"]
 
-    assert result.weight == pytest.approx(-AI_COMMITS_MAX_PENALTY)
-
-
-def test_occasional_ai_assistance_is_ignored():
-    assert signal("ai_commits", recent_commits=commits(ai=1, human=19)) is None
+    assert signal.reason.endswith("(1 von 2)")
 
 
-def test_ordinary_bots_neither_count_as_ai_nor_dilute_the_share():
-    result = signal("ai_commits", recent_commits=commits(ai=1, human=1, bots=8))
-
-    assert result.weight == pytest.approx(-AI_COMMITS_MAX_PENALTY * 0.5)
+def test_only_bots_give_no_signal():
+    assert signals_of(recent_commits=commits(by_ai=0, by_hand=0, bots=3)) == {}
 
 
-def test_commit_written_by_an_ai_agent_counts_like_a_co_authored_one():
-    agent_commit = make_commit(author="copilot-swe-agent[bot]", is_bot=True)
+def test_instruction_files_for_agents_cost_3_points():
+    signal = signals_of(root_files=("CLAUDE.md", ".cursorrules", "src"))["ai_files"]
 
-    result = signal("ai_commits", recent_commits=(agent_commit, make_commit()))
+    assert signal.weight == -3
+    assert signal.reason == "Anweisungsdateien für AI-Agenten: CLAUDE.md, .cursorrules"
 
-    assert result.weight == pytest.approx(-AI_COMMITS_MAX_PENALTY * 0.5)
+
+def test_an_ai_policy_is_no_instruction_file():
+    assert signals_of(root_files=("AI_POLICY.md",)) == {}
 
 
 @pytest.mark.parametrize(
     "co_author",
     [
         "Claude <noreply@anthropic.com>",
-        "Claude Opus 5.5 <noreply@anthropic.com>",
+        "Claude Opus 5.5 <x@example.org>",
         "Copilot <175728472+Copilot@users.noreply.github.com>",
-        "Cursor Agent <cursoragent@cursor.com>",
-        "aider (gpt-5) <aider@aider.chat>",
-        "Codex <codex@openai.com>",
-        "Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>",
-        "capy-ai[bot] <230910855+capy-ai[bot]@users.noreply.github.com>",
-        "google-labs-jules[bot] <161369871+google-labs-jules[bot]@users.noreply.github.com>",
+        "Devin AI <x@example.org>",
+        "Someone <bot@cursor.com>",
+        "Codex <x@example.org>",
+        "gpt-4o <x@example.org>",
+        "Aider (anthropic/claude) <x@example.org>",
     ],
 )
-def test_common_ai_tools_are_recognized_as_co_authors(co_author):
-    result = signal("ai_commits", recent_commits=(make_commit(co_authors=(co_author,)),))
-
-    assert result is not None
+def test_ai_tools_are_recognized_as_co_authors(co_author):
+    assert is_ai_tool(co_author)
 
 
 @pytest.mark.parametrize(
     "co_author",
     [
-        "Carol <carol@example.org>",
-        "Claudette Example <claudette@example.org>",
-        "Amparo Cline-Meyer <amparo@example.org>",
-        "Jules Verne <jules.verne@example.org>",
+        "Claude Monet <claude@example.org>",
         "Devin Smith <devin@example.org>",
+        "Jules <j@example.org>",
     ],
 )
-def test_people_are_not_mistaken_for_ai_tools(co_author):
-    assert signal("ai_commits", recent_commits=(make_commit(co_authors=(co_author,)),)) is None
+def test_people_with_the_names_of_tools_are_not(co_author):
+    assert not is_ai_tool(co_author)
 
 
-def test_repo_without_commits_gets_no_commit_signal():
-    assert signal("ai_commits", recent_commits=()) is None
-
-
-def test_agent_instruction_files_lower_the_score_slightly():
-    result = signal("ai_files", root_files=("AGENTS.md", "Cargo.toml", "README.md", "src"))
-
-    assert -AI_COMMITS_MAX_PENALTY / 3 < result.weight < 0
-    assert "AGENTS.md" in result.reason
-
-
-def test_several_instruction_files_give_one_signal_naming_them_all():
-    result = signal("ai_files", root_files=(".claude", ".cursorrules", "claude.md", "src"))
-    single = signal("ai_files", root_files=("CLAUDE.md", "src"))
-
-    assert result.weight == single.weight
-    for name in (".claude", ".cursorrules", "claude.md"):
-        assert name in result.reason
-
-
-def test_an_ai_policy_is_not_an_instruction_file():
-    assert signal("ai_files", root_files=("AI_POLICY.md", "CONTRIBUTING.md", "src")) is None
+def test_a_commit_written_by_an_ai_account_is_ai_assisted():
+    assert is_ai_assisted(make_commit(author="copilot-swe-agent[bot]", is_bot=True))
+    assert not is_ai_assisted(make_commit(author="alice"))

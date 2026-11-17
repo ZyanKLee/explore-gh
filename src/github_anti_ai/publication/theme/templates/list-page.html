@@ -1,0 +1,39 @@
+{# The newest edition of a section, or the archive of a list. Written by the plugin. #}
+{% extends "base.html" %}
+{% from "macros.html" import section as edition_section with context %}
+{% block title %}{{ page_title }} – {{ SITENAME }}{% endblock %}
+{% block content %}
+{% set github = page_list.slug == "github" %}
+{% if page_kind == "latest" and latest %}
+{{ edition_section(page_list, latest[section].view, latest[section].nav) }}
+{% elif page_kind == "latest" %}
+{% if not github %}<header class="edition"><h1>{{ page_title }}</h1></header>
+{% endif %}
+<p class="empty">Noch keine Ausgabe</p>
+{% else %}
+<header class="edition">
+  <h1>{{ page_title }}</h1>
+  {% if github and page_list.days %}<p class="stats">Alle Tage, der neueste zuerst</p>{% endif %}
+</header>
+{% if not page_list.days %}
+<p class="empty">Noch keine Ausgabe</p>
+{% else %}
+<ul class="archive" role="list">
+  {% for day in page_list.days %}
+  <li>
+    {% if github %}
+    <span class="date">{{ day.date }}</span>
+    {% set main_count, ai_count = day.main.entries|length, day.ai.entries|length %}
+    <a href="{{ SITEURL }}/{{ day.main.url }}">{{ main_count }} {{ "Repo" if main_count == 1 else "Repos" }}</a>
+    <a href="{{ SITEURL }}/{{ day.ai.url }}">{{ ai_count }} {{ "AI-Repo" if ai_count == 1 else "AI-Repos" }}</a>
+    {% else %}
+    <span class="date">{{ day.main.title }}</span>
+    <a href="{{ SITEURL }}/{{ day.main.url }}">{{ day.main.stats }}</a>
+    <a href="{{ SITEURL }}/{{ day.ai.url }}">{{ day.ai.stats }}</a>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+{% endblock %}

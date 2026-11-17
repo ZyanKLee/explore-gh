@@ -1,8 +1,10 @@
 """Builders for domain objects with sensible defaults, so tests only state what matters."""
 
 import zlib
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 
+from github_anti_ai.domain.community import HN, CommunityProject, Platform, Story
+from github_anti_ai.domain.edition import Edition, Entry
 from github_anti_ai.domain.model import (
     Assessment,
     Commit,
@@ -13,10 +15,16 @@ from github_anti_ai.domain.model import (
     Snapshot,
     StarHistory,
 )
-from github_anti_ai.domain.edition import Edition, Entry
 
 NOW = datetime(2026, 11, 12, 6, 0, tzinfo=UTC)
-TODAY = date(2026, 11, 12)
+TODAY = NOW.date()
+
+ENGLISH_README = (
+    "# tiny-editor\n\nA tiny terminal text editor. It is written in Rust and has syntax "
+    "highlighting for the files you edit most. You can open more than one file at a time, "
+    "and the editor will remember where you were. All keys can be changed in the "
+    "configuration file, which is read when the editor starts.\n"
+)
 
 
 class FixedClock:
@@ -28,8 +36,8 @@ class FixedClock:
 
 
 def star_history(gained: int, days: int = 35) -> StarHistory:
-    """A history in which all stars of the growth window were gained today."""
-    return StarHistory(daily=(0,) * (days - 1) + (gained,))
+    """A history in which all stars of the growth window came today."""
+    return StarHistory((0,) * (days - 1) + (gained,))
 
 
 def make_commit(**overrides) -> Commit:
@@ -45,9 +53,9 @@ def make_commit(**overrides) -> Commit:
 
 
 def make_snapshot(repo: str = "alice/tiny-editor", **overrides) -> Snapshot:
-    repo_id = RepoId.parse(repo)
+    """A repo that passes every rule: in the main list, not excluded."""
     fields = dict(
-        repo=repo_id,
+        repo=RepoId.parse(repo),
         taken_at=NOW,
         # every repo its own text: the same description and topics would make them copies
         description=(
@@ -58,21 +66,18 @@ def make_snapshot(repo: str = "alice/tiny-editor", **overrides) -> Snapshot:
         homepage=None,
         topics=("editor", "terminal"),
         primary_language="Rust",
-        created_at=datetime(2026, 10, 20, 12, 0, tzinfo=UTC),
-        pushed_at=datetime(2026, 11, 10, 19, 2, 11, tzinfo=UTC),
+        created_at=NOW - timedelta(days=23),
+        pushed_at=NOW - timedelta(days=1),
         stars=812,
         forks=31,
-        open_issues=12,
-        watchers=9,
         pull_requests=27,
         recent_issue_authors=14,
         is_fork=False,
         is_archived=False,
         is_mirror=False,
-        is_template=False,
         license="MIT",
         root_files=("Cargo.toml", "README.md", "src"),
-        readme="# tiny-editor\n\nA tiny terminal text editor.\n",
+        readme=ENGLISH_README,
         recent_commits=(make_commit(),),
         star_history=star_history(120),
     )
@@ -87,19 +92,17 @@ def make_assessment(
     score: float = 1.0,
     language: str | None = "Rust",
     gained: int = 120,
-    signals: tuple[Signal, ...] = (),
     exclusion: Exclusion | None = None,
+    **snapshot_overrides,
 ) -> Assessment:
+    """An assessment with a single signal that carries the whole score."""
     snapshot = make_snapshot(
-        repo,
-        primary_language=language,
-        star_history=star_history(gained),
+        repo, primary_language=language, star_history=star_history(gained), **snapshot_overrides
     )
     return Assessment(
         snapshot=snapshot,
         section=section,
-        score=score,
-        signals=signals,
+        signals=(Signal("momentum", score, f"{score} Punkte"),),
         exclusion=exclusion,
     )
 
@@ -109,9 +112,45 @@ def make_entry(repo: str = "alice/tiny-editor", **assessment_options) -> Entry:
 
 
 def make_edition(day: date = TODAY, main=(), ai=()) -> Edition:
-    """main and ai are repo names or Entries."""
+    """main and ai hold repo names or Entries."""
 
     def entries(items):
         return tuple(make_entry(i) if isinstance(i, str) else i for i in items)
 
     return Edition(day=day, main=entries(main), ai=entries(ai))
+
+
+def make_story(id: str = "1", platform: Platform = HN, **overrides) -> Story:
+    fields = dict(
+        id=id,
+        title="Tiny Editor: a terminal text editor",
+        url="https://github.com/alice/tiny-editor",
+        discussion_url=platform.discussion_url(id),
+        points=120,
+        comments=30,
+        created_at=NOW - timedelta(hours=5),
+    )
+    fields.update(overrides)
+    return Story(**fields)
+
+
+def make_project(
+    repository_url: str = "https://github.com/alice/tiny-editor", **overrides
+) -> CommunityProject:
+    """An open source project that passes every rule of the community lists."""
+    fields = dict(
+        story=make_story(),
+        repository_url=repository_url,
+        project_url=repository_url,
+        description="A tiny terminal text editor",
+        language="Rust",
+        license_id="MIT",
+        is_fork=False,
+        is_archived=False,
+        has_code=True,
+        topics=("editor",),
+        linked_directly=True,
+        readme=ENGLISH_README,
+    )
+    fields.update(overrides)
+    return CommunityProject(**fields)

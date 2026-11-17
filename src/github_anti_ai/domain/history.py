@@ -16,7 +16,7 @@ class DailyRecord:
     repo: RepoId
     stars: int
     forks: int
-    stars_gained: int  # in the growth window, 7 days until 2026-11-15, 14 since
+    stars_gained: int  # in the growth window: 7 days until 2026-11-15, 14 since
     score: float
     section: Section
     exclusion: str | None  # kind of the Exclusion
@@ -28,11 +28,7 @@ class DailyRecord:
 
     @classmethod
     def from_assessment(
-        cls,
-        day: date,
-        assessment: Assessment,
-        rank: int | None = None,
-        review: str | None = None,
+        cls, day: date, assessment: Assessment, rank: int | None = None, review: str | None = None
     ) -> DailyRecord:
         snapshot = assessment.snapshot
         return cls(

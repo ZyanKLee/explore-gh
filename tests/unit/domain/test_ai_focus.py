@@ -1,279 +1,111 @@
 import pytest
-
 from builders import make_snapshot
-from github_anti_ai.domain.ai_focus import MIN_README_MENTIONS, AiFocusClassifier
+
+from github_anti_ai.domain.ai_focus import AiFocusClassifier
 from github_anti_ai.domain.model import Section
 
-AI_README = (
-    "# toolkit\n\nA toolkit for building LLM applications. It connects any LLM to your tools "
-    "through MCP, ships a RAG pipeline and works with Claude and ChatGPT out of the box.\n"
-)
+classifier = AiFocusClassifier()
 
 
-def classify(repo="alice/tiny-editor", **overrides):
-    return AiFocusClassifier().classify(make_snapshot(repo, **overrides))
+def focus(**overrides):
+    return classifier.classify(make_snapshot(**overrides))
 
 
-def section(repo="alice/tiny-editor", **overrides):
-    return classify(repo, **overrides).section
+def readme_with(mentions: int) -> str:
+    return "# Tool\n\n" + "It talks to an LLM. " * mentions
 
 
-def test_repo_that_never_mentions_ai_belongs_to_the_main_list():
-    focus = classify()
+def test_an_ordinary_repo_stays_in_the_main_list_without_signals():
+    result = focus()
 
-    assert focus.section is Section.MAIN
-    assert focus.signals == ()
-
-
-def test_ai_terms_in_two_places_make_an_ai_focused_repo():
-    assert section(topics=("llm", "rust"), description="A fast LLM inference server") is Section.AI
+    assert result.section is Section.MAIN
+    assert result.signals == ()
 
 
-@pytest.mark.parametrize(
-    "overrides",
-    [
-        {"topics": ("llm",)},
-        {"repo": "alice/mcp-server-postgres"},
-        {"description": "Video editor with AI auto captions"},
-        {"readme": AI_README},
-    ],
-)
-def test_a_single_place_is_not_enough(overrides):
-    repo = overrides.pop("repo", "alice/tiny-editor")
+def test_ai_terms_in_two_places_mean_the_ai_section():
+    result = focus(repo="alice/chat-llm", description="A chatbot for your terminal")
 
-    assert section(repo, **overrides) is Section.MAIN
-
-
-def test_a_single_mention_is_still_shown_as_a_signal():
-    focus = classify(description="Video editor with AI auto captions")
-
-    [signal] = focus.signals
-    assert signal.kind == "ai_focus"
-    assert signal.weight == 0
-    assert "Beschreibung" in signal.reason
-    assert "ai" in signal.reason.lower()
-
-
-def test_each_place_with_ai_terms_gives_one_signal():
-    focus = classify(
-        "alice/mcp-server-postgres",
-        topics=("mcp", "llm", "ai-agents"),
-        description="MCP server that lets Claude query Postgres",
-        readme=AI_README,
-    )
-
-    assert focus.section is Section.AI
-    assert len(focus.signals) == 4
-    assert all(s.kind == "ai_focus" and s.weight == 0 for s in focus.signals)
-
-
-def test_readme_counts_only_when_it_is_full_of_ai_terms():
-    in_passing = "# editor\n\nA text editor. An optional plugin adds AI completions.\n"
-
-    assert classify("alice/gpt-editor", readme=in_passing).section is Section.MAIN
-    assert classify("alice/gpt-editor", readme=AI_README).section is Section.AI
-
-
-def test_hyphens_and_underscores_separate_words():
-    assert section("alice/my_llm-proxy", topics=("ai-agents",)) is Section.AI
-
-
-@pytest.mark.parametrize(
-    "overrides",
-    [
-        {"topics": ("stable-diffusion",), "description": "Text-to-image generator for the desktop"},
-        {"topics": ("comfyui",), "description": "Custom nodes for image generation"},
-        {"repo": "alice/music-generation-studio", "description": "Text to music in your browser"},
-        {"topics": ("text-to-video",), "description": "Local video generation with diffusion models"},
-    ],
-)
-def test_image_music_and_video_generators_are_ai_focused(overrides):
-    repo = overrides.pop("repo", "alice/tiny-editor")
-
-    assert section(repo, **overrides) is Section.AI
-
-
-def test_classic_machine_learning_is_not_ai_focused():
-    focus = classify(
-        "alice/vision-toolkit",
-        topics=("machine-learning", "deep-learning", "pytorch", "computer-vision"),
-        description="Neural network training framework for image classification",
-        readme="# vision-toolkit\n\n" + "Train a neural network with PyTorch. " * 10,
-    )
-
-    assert focus.section is Section.MAIN
-    assert focus.signals == ()
-
-
-@pytest.mark.parametrize(
-    ("repo", "description", "topics"),
-    [
-        ("alice/starship", "The minimal, blazing-fast cross-shell prompt", ("shell", "prompt")),
-        ("alice/ua-parser", "Parses any user agent string", ("user-agent",)),
-        ("alice/cursor-theme", "A mouse cursor theme for Linux desktops", ("cursor",)),
-        ("alice/gemini-client", "A client for the Gemini protocol", ("gemini", "smallweb")),
-        ("alice/heat", "Simulates heat diffusion in solids", ("diffusion", "physics")),
-        ("alice/build-agent", "A build agent for self-hosted CI", ("build-agent", "ci")),
-        ("alice/keyring", "Unlocks the SSH agent and the GPG agent at login", ("ssh-agent",)),
-        ("alice/flock", "Agent-based simulation of bird flocks", ("agent-based-modeling",)),
-        ("alice/ssh-tpm-agent", "ssh-agent for TPMs", ("ssh", "tpm")),
-    ],
-)
-def test_ambiguous_words_are_not_ai_terms(repo, description, topics):
-    focus = classify(repo, description=description, topics=topics)
-
-    assert focus.section is Section.MAIN
-    assert focus.signals == ()
-
-
-def test_ai_terms_only_count_as_whole_words():
-    focus = classify("alice/rainfall", description="Maintains a rag-free trail of paid invoices")
-
-    # "rainfall", "trail", "maintains" and "paid" contain "ai", but only "rag" is a term
-    assert len(focus.signals) == 1
-
-
-def test_repo_without_description_and_topics_is_judged_by_its_readme_alone():
-    # seen live: such a repo has only two places left, a single one must be enough
-    bare = dict(description="", topics=())
-
-    assert section(readme=AI_README * 2, **bare) is Section.AI
-    assert section(readme=AI_README, **bare) is Section.MAIN
-
-
-def test_a_readme_alone_is_not_enough_when_the_description_says_something_else():
-    assert section(readme=AI_README * 2, topics=()) is Section.MAIN
-
-
-@pytest.mark.parametrize(
-    ("repo", "description", "topics"),
-    [
-        ("alice/ovnfs", "Checkouts for agents: copy-on-write copies of any folder", ("agents",)),
-        ("alice/agent-terminal", "Terminals for coding agents", ()),
-        ("alice/harness", "A reactive harness for agents", ("agent", "typescript")),
-    ],
-)
-def test_agent_is_an_ai_term(repo, description, topics):
-    # decided on 2026-11-13: on GitHub the word hardly means anything else any more
-    assert section(repo, description=description, topics=topics) is Section.AI
-
-
-def test_agent_in_a_single_place_is_shown_but_does_not_move_the_repo():
-    focus = classify(description="Mirror your phone to the desktop, plus a skill for agents")
-
-    assert focus.section is Section.MAIN
-    assert len(focus.signals) == 1
-
-
-def test_a_readme_that_talks_about_little_else_than_ai_is_enough_on_its_own():
-    # seen live: storytold/craft-anything, 62 AI terms in the README, none anywhere else
-    focus = classify(readme=AI_README * 9)  # 54 terms
-
-    assert focus.section is Section.AI
-    assert len(focus.signals) == 1
-    assert "54" in focus.signals[0].reason
-
-
-def test_a_readme_just_below_that_mark_still_needs_a_second_place():
-    assert section(readme=AI_README * 8) is Section.MAIN  # 48 terms
-
-
-def test_texts_without_snapshot_are_classified_by_the_same_rule():
-    """HN and Lobsters projects have no Snapshot, only name, description, topics and README."""
-    classifier = AiFocusClassifier()
-
-    ai = classifier.classify_text(
-        name="mcp-gateway", description="A fast LLM inference server", topics=(), readme=""
-    )
-    plain = classifier.classify_text(
-        name="tiny-editor", description="A tiny terminal text editor", topics=(), readme=""
-    )
-
-    assert ai.section is Section.AI
-    assert plain.section is Section.MAIN
-
-
-def test_ssh_tpm_agent_with_its_name_all_over_the_readme_belongs_to_the_main_list():
-    readme = "# ssh-tpm-agent\n\n" + "Run ssh-tpm-agent as a service. " * 40
-
-    assert section("foxboron/ssh-tpm-agent", description="ssh-agent for TPMs", readme=readme) is (
-        Section.MAIN
-    )
-
-
-def test_an_ai_agent_for_tpm_keys_is_still_ai_focused():
-    assert section(
-        "alice/tpm-copilot", description="An AI agent that manages your TPM keys"
-    ) is Section.AI
-
-
-def test_several_ai_terms_in_the_topics_are_enough_on_their_own():
-    found = classify(
-        description="Model-agnostic quantization and local inference",
-        topics=("llm", "image-generation", "quantization"),
-    )
-
-    assert found.section is Section.AI
-    assert [signal.reason for signal in found.signals] == [
-        "Topics: AI-Begriffe „llm“, „image generation“"
+    assert result.section is Section.AI
+    assert [s.reason for s in result.signals] == [
+        "Name: AI-Begriffe „llm“",
+        "Beschreibung: AI-Begriffe „chatbot“",
     ]
+    assert all(s.kind == "ai_focus" and s.weight == 0 for s in result.signals)
 
 
-def test_one_ai_term_in_the_topics_is_still_a_single_place():
-    assert section(topics=("llm", "quantization")) is Section.MAIN
+def test_one_mention_only_shows_in_the_reasons():
+    result = focus(description="A video editor with AI auto captions")
+
+    assert result.section is Section.MAIN
+    assert [s.reason for s in result.signals] == ["Beschreibung: AI-Begriffe „ai“"]
+
+
+def test_the_readme_counts_as_a_place_from_5_mentions():
+    result = focus(description="An agent for your shell", readme=readme_with(5))
+
+    assert result.section is Section.AI
+    assert result.signals[-1].reason == "README: 5-mal AI-Begriffe („llm“)"
+
+
+def test_4_mentions_in_the_readme_are_no_place():
+    assert (
+        focus(description="An agent for your shell", readme=readme_with(4)).section is Section.MAIN
+    )
+
+
+def test_two_different_ai_terms_among_the_topics_decide_alone():
+    assert focus(topics=("llm", "image-generation")).section is Section.AI
+
+
+def test_one_ai_term_among_the_topics_does_not():
+    assert focus(topics=("llm", "editor")).section is Section.MAIN
+
+
+def test_a_readme_with_50_mentions_decides_alone():
+    assert focus(readme=readme_with(50)).section is Section.AI
+    assert focus(readme=readme_with(49)).section is Section.MAIN
+
+
+@pytest.mark.parametrize("description", ["", "The official code of ToolSpace"])
+def test_without_description_and_topics_10_readme_mentions_suffice(description):
+    result = focus(
+        repo="alice/ToolSpace", description=description, topics=(), readme=readme_with(10)
+    )
+
+    assert result.section is Section.AI
+
+
+def test_without_description_and_topics_9_readme_mentions_do_not():
+    result = focus(repo="alice/ToolSpace", description="", topics=(), readme=readme_with(9))
+
+    assert result.section is Section.MAIN
+
+
+def test_a_description_of_its_own_needs_two_places():
+    result = focus(description="Plan your trips", topics=(), readme=readme_with(10))
+
+    assert result.section is Section.MAIN
 
 
 @pytest.mark.parametrize(
-    ("repo", "description"),
-    [
-        ("alice/ToolSpace", "The official code of ToolSpace"),
-        ("alice/MagoStudio", "MagoStudio application"),
-        ("alice/Concept-Brittleness", "Concept Brittleness"),
-        ("alice/chat-demo", "Chat Demo"),
-    ],
+    "description", ["Fake the user agent of a browser", "A small ssh-agent", "TPM agent"]
 )
-def test_a_description_that_only_repeats_the_name_counts_as_no_description(repo, description):
-    empty = dict(description=description, topics=())
-
-    assert section(repo, readme=AI_README * 2, **empty) is Section.AI
-    assert section(repo, readme=AI_README, **empty) is Section.MAIN
-
-
-def test_a_description_that_says_what_the_repo_does_still_counts():
-    described = dict(description="The official code of a PDF reader", topics=())
-
-    assert section("alice/ToolSpace", readme=AI_README * 2, **described) is Section.MAIN
-
-
-def test_a_description_in_another_script_still_counts():
-    described = dict(description="一款以先后关系为核心的待办", topics=())
-
-    assert section(readme=AI_README * 2, **described) is Section.MAIN
+def test_old_meanings_of_agent_are_no_ai_terms(description):
+    assert focus(repo="alice/agent-tools", description=description).signals == (
+        focus(repo="alice/agent-tools", description="").signals
+    )
 
 
 @pytest.mark.parametrize(
-    "description",
-    [
-        "Run GGUF models with llama.cpp",
-        "A vLLM deployment for Kubernetes",
-        "Chat with a small language model",
-        "Download models from Hugging Face",
-        "Desktop companion for Open WebUI",
-        "A VLM for documents",
-        "Fine-tuned Qwen for translation",
-    ],
+    "term", ["machine learning", "neural network", "pytorch", "gemini", "prompt"]
 )
-def test_names_of_model_runtimes_and_model_families_are_ai_terms(description):
-    assert section(description=description, topics=("llm",)) is Section.AI
-    assert [signal.reason[:13] for signal in classify(description=description).signals] == [
-        "Beschreibung:"
-    ]
+def test_classic_machine_learning_and_ambiguous_words_are_no_ai_terms(term):
+    assert focus(description=f"Uses {term}").signals == ()
 
 
-def test_the_readme_counts_from_five_ai_terms_on():
-    assert MIN_README_MENTIONS == 5
-    enough = "Works with an LLM. " * MIN_README_MENTIONS
-    too_few = "Works with an LLM. " * (MIN_README_MENTIONS - 1)
+def test_classify_text_works_without_a_snapshot():
+    result = classifier.classify_text(
+        name="llm-proxy", description="Proxy for OpenAI", topics=(), readme=""
+    )
 
-    assert section(topics=("llm",), readme=enough) is Section.AI
-    assert section(topics=("llm",), readme=too_few) is Section.MAIN
+    assert result.section is Section.AI

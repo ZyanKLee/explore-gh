@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Protocol
 
+from github_anti_ai.domain.community import CommunityEdition, CommunityProject, Story
 from github_anti_ai.domain.edition import Edition
 from github_anti_ai.domain.history import DailyRecord
 from github_anti_ai.domain.model import Assessment, Candidate, RepoId, Snapshot
@@ -16,7 +17,7 @@ class SourceUnavailable(Exception):
 
 
 class AlreadyPublished(Exception):
-    """There is already an Edition for this day. Editions are never replaced."""
+    """There is an Edition for this day already. Editions are never replaced."""
 
 
 class NothingToPublish(Exception):
@@ -24,7 +25,7 @@ class NothingToPublish(Exception):
 
 
 class IncompleteCollection(Exception):
-    """The collection of the day has holes. An Edition built from it could not be replaced."""
+    """The collection of the day has holes. An Edition from it could never be replaced."""
 
 
 @dataclass(frozen=True)
@@ -41,8 +42,13 @@ class CollectionStatus:
         return self.failed == 0
 
 
+Assess = Callable[[Snapshot], Assessment]
+
+
 class Clock(Protocol):
-    def now(self) -> datetime: ...
+    def now(self) -> datetime:
+        """Always UTC."""
+        ...
 
 
 class CandidateSource(Protocol):
@@ -57,7 +63,7 @@ class RepoSource(Protocol):
     def fetch(
         self, repos: Sequence[RepoId], now: datetime, with_star_history: bool = True
     ) -> list[Snapshot]:
-        """Repos that do not exist (any more) are simply left out.
+        """Repos that do not exist (any more) are left out.
 
         Without the star history the snapshots come with an empty one.
         """
@@ -115,4 +121,23 @@ class EditionStore(Protocol):
         ...
 
 
-Assessor = Callable[[Snapshot], Assessment]
+class StorySource(Protocol):
+    def discover(self, now: datetime, limit: int | None = None) -> list[Story]: ...
+
+
+class ProjectResolver(Protocol):
+    def resolve(self, story: Story) -> CommunityProject | None:
+        """The public repo the story is about, or None if there is none."""
+        ...
+
+
+class CommunityEditionStore(Protocol):
+    """The editions of one platform."""
+
+    def save(self, edition: CommunityEdition) -> None:
+        """Raises AlreadyPublished if there is an edition for that day."""
+        ...
+
+    def load(self, day: date) -> CommunityEdition | None: ...
+
+    def since(self, day: date) -> list[CommunityEdition]: ...

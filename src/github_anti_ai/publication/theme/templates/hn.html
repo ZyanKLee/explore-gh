@@ -1,5 +1,0 @@
-{% set current = "hn" %}
-{% extends "base.html" %}
-{% from "community.html" import community_latest with context %}
-{% block title %}Trending auf HN – {{ SITENAME }}{% endblock %}
-{% block content %}{{ community_latest(latest_hn, "main", "Trending auf HN", "hn/archiv/") }}{% endblock %}

@@ -111,9 +111,7 @@ class _Handler(SimpleHTTPRequestHandler):
         pass  # one line per request would bury the build messages
 
 
-def make_server(
-    output_dir: Path, port: int, version: Callable[[], int]
-) -> ThreadingHTTPServer:
+def make_server(output_dir: Path, port: int, version: Callable[[], int]) -> ThreadingHTTPServer:
     handler = type("Handler", (_Handler,), {"version_of_site": staticmethod(version)})
     return ThreadingHTTPServer((HOST, port), partial(handler, directory=str(output_dir)))
 

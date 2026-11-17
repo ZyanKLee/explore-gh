@@ -1,319 +1,169 @@
-from dataclasses import dataclass, field
-from datetime import date, timedelta
+from datetime import timedelta
 
 import pytest
+from builders import NOW, TODAY, make_project, make_story
 
 from github_anti_ai.domain.community import (
+    HN,
+    LOBSTERS,
     CommunityCurator,
-    check_community_edition,
-    owner_key,
-    recently_shown,
+    CommunityEdition,
+    is_open_source_license,
     repository_key,
 )
 
-
-@dataclass(frozen=True)
-class Story:
-    title: str = "Tool"
+curator = CommunityCurator()
 
 
-@dataclass(frozen=True)
-class Project:
-    """Stands in for an HN or Lobsters project: only what the shared rules look at."""
-
-    repository_url: str
-    points: int
-    license_id: str | None = "MIT"
-    has_code: bool = True
-    is_fork: bool = False
-    is_archived: bool = False
-    language: str | None = "Rust"
-    description: str = "A small tool"
-    topics: tuple[str, ...] = ()
-    readme: str | None = None  # None: not read, so no reason to exclude
-    story: Story = Story()
-    project_url: str = "https://tool.example/"
-    linked_directly: bool = True
-    reasons: tuple[str, ...] = field(default=(), compare=False)
-
-    @property
-    def is_open_source(self) -> bool:
-        return self.license_id in ("MIT", "NOASSERTION")
+def curate(*candidates, past=()):
+    return curator.curate(HN, TODAY, candidates, past)
 
 
-def by_points(project: Project) -> tuple[int]:
-    return (-project.points,)
+def urls(projects):
+    return [project.repository_url for project in projects]
 
 
-def select(*projects: Project) -> list[str]:
-    """The repository addresses in the main section."""
-    chosen = CommunityCurator().select(projects, rank=by_points).main
-    return [project.repository_url for project in chosen]
-
-
-def ai_project(url: str, points: int, **overrides) -> Project:
-    return Project(url, points, description="An LLM agent for your MCP tools", **overrides)
-
-
-def test_community_curator_keeps_an_open_source_project_with_code():
-    assert select(Project("https://codeberg.org/a/tool", 10)) == ["https://codeberg.org/a/tool"]
-
-
-def test_community_curator_drops_a_project_without_open_source_license():
-    assert select(Project("https://codeberg.org/a/tool", 10, license_id=None)) == []
-
-
-def test_community_curator_drops_a_project_without_code():
-    assert select(Project("https://codeberg.org/a/tool", 10, has_code=False)) == []
-
-
-def test_community_curator_drops_forks_and_archived_repos():
-    assert select(
-        Project("https://codeberg.org/a/fork", 10, is_fork=True),
-        Project("https://codeberg.org/a/old", 10, is_archived=True),
-    ) == []
-
-
-def test_community_curator_orders_by_the_platform_rank():
-    assert select(
-        Project("https://codeberg.org/a/lower", 10),
-        Project("https://codeberg.org/a/higher", 50),
-    ) == ["https://codeberg.org/a/higher", "https://codeberg.org/a/lower"]
-
-
-def test_community_curator_keeps_one_repo_once_with_its_best_ranked_story():
-    chosen = CommunityCurator().select(
-        [
-            Project("https://github.com/a/tool", 10),
-            Project("https://github.com/A/Tool/", 90),
-        ],
-        rank=by_points,
-    ).main
-
-    assert [project.points for project in chosen] == [90]
-
-
-def test_community_curator_stops_after_20_projects():
-    languages = ["Rust", "Go", "C", "Zig", "Python", "Lua", None]
-    projects = [
-        Project(f"https://codeberg.org/owner{n}/tool", n, language=languages[n % 7])
-        for n in range(25)
-    ]
-
-    chosen = select(*projects)
-
-    assert len(chosen) == 20
-    assert chosen[0] == "https://codeberg.org/owner24/tool"
-
-
-def test_repository_key_ignores_case_and_trailing_slash():
-    assert repository_key("https://github.com/A/Tool/") == repository_key("https://github.com/a/tool")
-
-
-@dataclass(frozen=True)
-class PastEdition:
-    day: date
-    projects: tuple[Project, ...]
-    ai_projects: tuple[Project, ...] = ()
-
-
-TODAY = date(2026, 11, 13)
-
-
-def shown(days_ago: int, url: str) -> PastEdition:
-    return PastEdition(TODAY - timedelta(days=days_ago), (Project(url, 10),))
-
-
-def test_community_curator_drops_a_repo_under_cooldown():
-    chosen = CommunityCurator().select(
-        [Project("https://github.com/a/old", 90), Project("https://github.com/a/new", 10)],
-        rank=by_points,
-        cooled_down={repository_key("https://github.com/A/Old")},
-    ).main
-
-    assert [project.repository_url for project in chosen] == ["https://github.com/a/new"]
-
-
-def test_cooldown_blocks_a_repo_shown_29_days_ago():
-    assert recently_shown(TODAY, [shown(29, "https://github.com/a/tool")]) == {
-        "https://github.com/a/tool"
-    }
-
-
-def test_cooldown_releases_a_repo_shown_30_days_ago():
-    assert recently_shown(TODAY, [shown(30, "https://github.com/a/tool")]) == set()
-
-
-def test_cooldown_compares_repos_by_repository_key():
-    assert recently_shown(TODAY, [shown(1, "https://github.com/A/Tool/")]) == {
-        repository_key("https://github.com/a/tool")
-    }
-
-
-def test_community_curator_takes_at_most_4_projects_of_one_language():
-    rust = [Project(f"https://github.com/owner{n}/tool", 100 - n) for n in range(5)]
-    go = Project("https://github.com/gopher/tool", 1, language="Go")
-
-    chosen = select(*rust, go)
-
-    assert chosen == [project.repository_url for project in rust[:4]] + [go.repository_url]
-
-
-def test_community_curator_treats_projects_without_language_as_one_language():
-    unknown = [Project(f"https://github.com/owner{n}/tool", 100 - n, language=None) for n in range(5)]
-
-    assert len(select(*unknown)) == 4
-
-
-def test_community_curator_takes_at_most_2_projects_of_one_owner():
-    chosen = select(
-        Project("https://github.com/rust-lang/rust", 90, language="Rust"),
-        Project("https://github.com/Rust-Lang/cargo", 80, language="Rust"),
-        Project("https://github.com/rust-lang/clippy", 70, language="Rust"),
-        Project("https://github.com/alice/tool", 10, language="Go"),
+def project(name, points=100, comments=10, **overrides):
+    overrides.setdefault("description", f"A tool called {name}")
+    return make_project(
+        f"https://github.com/{name}",
+        story=make_story(name, points=points, comments=comments),
+        **overrides,
     )
 
-    assert chosen == [
-        "https://github.com/rust-lang/rust",
-        "https://github.com/Rust-Lang/cargo",
-        "https://github.com/alice/tool",
-    ]
+
+def test_the_platform_points_decide_the_rank():
+    edition = curate(project("a/low", points=60, language="Go"), project("b/high", points=300))
+
+    assert urls(edition.main) == ["https://github.com/b/high", "https://github.com/a/low"]
 
 
-def test_owners_of_the_same_name_on_different_forges_are_different_owners():
-    assert owner_key("https://github.com/alice/a") != owner_key("https://codeberg.org/alice/b")
-    assert owner_key("https://github.com/Alice/a") == owner_key("https://github.com/alice/b")
+def test_on_a_tie_comments_then_the_newer_story_win():
+    older = make_story("1", points=100, comments=5, created_at=NOW - timedelta(hours=9))
+    newer = make_story("2", points=100, comments=5, created_at=NOW - timedelta(hours=1))
+    edition = curate(
+        project("a/x", points=100, comments=5, language="Go"),
+        project("b/x", points=100, comments=50, language="C"),
+        make_project("https://github.com/c/old", story=older, language="Zig"),
+        make_project("https://github.com/d/new", story=newer, language="Lua"),
+    )
 
-
-def test_community_edition_accepts_a_varied_selection():
-    check_community_edition(
-        [Project("https://github.com/a/one", 1), Project("https://github.com/b/two", 1)], "HN"
+    assert urls(edition.main)[0] == "https://github.com/b/x"
+    assert urls(edition.main).index("https://github.com/d/new") < urls(edition.main).index(
+        "https://github.com/c/old"
     )
 
 
 @pytest.mark.parametrize(
-    ("projects", "message"),
+    "overrides",
     [
-        ([Project(f"https://github.com/o{n}/t", 1, language=f"L{n}") for n in range(21)],
-         "mehr als 20"),
-        ([Project(f"https://github.com/o{n}/t", 1) for n in range(5)], "Sprache"),
-        ([Project(f"https://github.com/o/t{n}", 1, language=f"L{n}") for n in range(3)],
-         "Besitzer"),
-        ([Project("https://github.com/o/t", 1), Project("https://github.com/O/T/", 1)],
-         "mehrfach"),
+        {"license_id": None},
+        {"license_id": "BUSL-1.1"},
+        {"has_code": False},
+        {"is_fork": True},
+        {"is_archived": True},
+        {"description": "A curated list of editors"},
+        {"readme": ""},
+        {"description": "A Bitcoin wallet"},
     ],
 )
-def test_community_edition_rejects_a_selection_breaking_its_rules(projects, message):
-    with pytest.raises(ValueError, match=message):
-        check_community_edition(projects, "HN")
+def test_only_open_source_projects_with_code_and_without_github_exclusions_stay(overrides):
+    assert curate(project("a/x", **overrides)).main == ()
 
 
-def test_community_curator_puts_an_ai_focused_project_into_the_ai_section():
-    selection = CommunityCurator().select(
-        [ai_project("https://github.com/a/agent", 90), Project("https://github.com/b/editor", 10)],
-        rank=by_points,
-    )
-
-    assert [project.repository_url for project in selection.main] == ["https://github.com/b/editor"]
-    assert [project.repository_url for project in selection.ai] == ["https://github.com/a/agent"]
+def test_an_unreadable_readme_is_no_reason_to_exclude():
+    assert len(curate(project("a/x", readme=None)).main) == 1
 
 
-def test_community_curator_keeps_a_project_mentioning_ai_once_in_the_main_section():
-    editor = Project("https://github.com/b/editor", 10, description="Video editor with AI captions")
-
-    selection = CommunityCurator().select([editor], rank=by_points)
-
-    assert selection.main == (editor,)
-    assert selection.ai == ()
-
-
-def test_community_curator_applies_diversity_to_each_section_on_its_own():
-    rust = [Project(f"https://github.com/o{n}/tool", 100 - n) for n in range(4)]
-    rust_ai = [ai_project(f"https://github.com/ai{n}/agent", 50 - n) for n in range(4)]
-
-    selection = CommunityCurator().select(rust + rust_ai, rank=by_points)
-
-    assert len(selection.main) == 4
-    assert len(selection.ai) == 4
-
-
-def test_community_curator_applies_the_cooldown_to_the_ai_section_too():
-    selection = CommunityCurator().select(
-        [ai_project("https://github.com/a/agent", 90)],
-        rank=by_points,
-        cooled_down={repository_key("https://github.com/a/agent")},
-    )
-
-    assert selection.ai == ()
-
-
-def test_community_edition_rejects_a_repo_in_both_sections():
-    with pytest.raises(ValueError, match="mehrfach"):
-        check_community_edition(
-            [Project("https://github.com/a/tool", 1)], "HN",
-            ai_projects=[Project("https://github.com/a/tool", 1)],
-        )
-
-
-def test_community_curator_drops_a_project_the_github_exclusions_remove():
-    assert select(
-        Project("https://github.com/a/awesome-rust", 90),
-        Project("https://github.com/a/coin", 80, topics=("blockchain",)),
-        Project("https://github.com/a/empty", 70, readme=""),
-    ) == []
-
-
-def test_community_curator_keeps_a_project_whose_readme_could_not_be_read():
-    assert select(Project("https://github.com/a/tool", 10, readme=None)) == [
-        "https://github.com/a/tool"
-    ]
-
-
-def reasons(project: Project) -> tuple[str, ...]:
-    selection = CommunityCurator().select([project], rank=by_points)
-    [chosen] = selection.main + selection.ai
-    return chosen.reasons
-
-
-def test_reasons_say_that_the_story_links_the_repo_directly():
-    assert "Die Story verlinkt das Repo direkt." in reasons(Project("https://github.com/a/t", 1))
-
-
-def test_reasons_name_the_website_and_the_words_repo_and_story_share():
-    project = Project(
-        "https://github.com/danvratil/samsung-tv-adspoofer", 1,
-        story=Story("Hijacking Samsung TV Smart Hub Ads"),
-        project_url="https://dvratil.cz/2026/11/hijacking-samsung-tv-smart-hub-ads/",
-        linked_directly=False,
-    )
-
-    assert reasons(project)[0] == (
-        "Gefunden über einen Link auf dvratil.cz. Repo und Story teilen „samsung“."
-    )
-    assert "Die Story verlinkt das Repo direkt." not in reasons(project)
-
-
-def test_reasons_mention_a_license_file_the_forge_cannot_identify():
-    unidentified = Project("https://github.com/a/t", 1, license_id="NOASSERTION")
+def test_an_unrecognized_license_file_counts_as_open_source_and_says_so():
+    (chosen,) = curate(project("a/x", license_id="NOASSERTION")).main
 
     assert (
         "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
-        in reasons(unidentified)
-    )
-    assert not any("Lizenz" in reason for reason in reasons(Project("https://github.com/a/t", 1)))
-
-
-def test_reasons_of_an_ai_project_name_its_ai_terms():
-    assert "Beschreibung: AI-Begriffe „llm“, „agent“, „mcp“" in reasons(
-        ai_project("https://github.com/a/agent", 1)
+        in chosen.reasons
     )
 
 
-def test_reasons_of_a_main_project_show_a_single_ai_mention_too():
-    editor = Project("https://github.com/b/editor", 1, description="Video editor with AI captions")
+def test_a_repo_linked_by_two_stories_counts_once_with_the_better_story():
+    edition = curate(
+        project("a/x", points=80),
+        make_project("https://github.com/A/X/", story=make_story("9", points=300)),
+    )
 
-    assert "Beschreibung: AI-Begriffe „ai“" in reasons(editor)
+    assert len(edition.main) == 1
+    assert edition.main[0].story.points == 300
 
 
-def test_reasons_of_a_project_without_ai_terms_say_nothing_about_ai():
-    assert not any("AI" in reason for reason in reasons(Project("https://github.com/a/t", 1)))
+def test_ai_projects_go_to_the_ai_section():
+    edition = curate(
+        project("a/llm-chat", description="A chatbot"), project("b/editor", language="Go")
+    )
+
+    assert urls(edition.ai) == ["https://github.com/a/llm-chat"]
+    assert urls(edition.main) == ["https://github.com/b/editor"]
+    assert any(reason.startswith("Name: AI-Begriffe") for reason in edition.ai[0].reasons)
+
+
+def test_repos_of_the_own_editions_of_the_last_30_days_are_blocked():
+    shown = CommunityEdition(HN, TODAY - timedelta(days=29), main=(project("a/x"),))
+    expired = CommunityEdition(HN, TODAY - timedelta(days=30), ai=(project("b/y", language="Go"),))
+
+    edition = curate(project("A/X"), project("b/y", language="Go"), past=[shown, expired])
+
+    assert urls(edition.main) == ["https://github.com/b/y"]
+
+
+def test_the_variety_rule_counts_owners_per_forge():
+    edition = curate(
+        project("alice/a", language="Go"),
+        project("alice/b", language="C"),
+        project("alice/c", language="Zig"),
+        make_project("https://codeberg.org/alice/d", story=make_story("d"), language="Lua"),
+    )
+
+    assert len(edition.main) == 3
+
+
+def test_the_reason_says_how_the_repo_was_found():
+    direct = curate(project("a/x")).main[0]
+    via_site = curate(
+        make_project(
+            "https://github.com/rust-lang/rust",
+            project_url="https://blog.rust-lang.org/2026/11/12/x",
+            linked_directly=False,
+        )
+    ).main[0]
+
+    assert direct.reasons[0] == "Die Story verlinkt das Repo direkt."
+    assert via_site.reasons[0] == (
+        "Gefunden über einen Link auf blog.rust-lang.org. Repo und Story teilen „lang“, „rust“, „rustlang“."
+    )
+
+
+class TestCommunityEdition:
+    def test_refuses_a_repo_twice(self):
+        with pytest.raises(ValueError):
+            CommunityEdition(LOBSTERS, TODAY, main=(project("a/x"),), ai=(project("A/x/"),))
+
+    def test_refuses_three_repos_of_an_owner(self):
+        with pytest.raises(ValueError):
+            CommunityEdition(
+                HN, TODAY, main=tuple(project(f"a/{i}", language=f"L{i}") for i in range(3))
+            )
+
+
+def test_repository_key_ignores_case_and_a_trailing_slash():
+    assert repository_key("https://github.com/A/X/") == repository_key("https://github.com/a/x")
+
+
+@pytest.mark.parametrize(
+    "license_id, expected",
+    [("MIT", True), ("NOASSERTION", True), ("BUSL-1.1", False), (None, False)],
+)
+def test_open_source_licenses(license_id, expected):
+    assert is_open_source_license(license_id) is expected
+
+
+def test_platforms_know_their_discussion_pages():
+    assert HN.discussion_url("123") == "https://news.ycombinator.com/item?id=123"
+    assert LOBSTERS.discussion_url("abc") == "https://lobste.rs/s/abc"

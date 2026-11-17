@@ -7,26 +7,27 @@ from pelican import Pelican
 from pelican.settings import read_settings
 
 THEME = Path(__file__).with_name("theme")
+SITE_NAME = "Fundstücke"
 
 
 def build_site(
-    editions_dir: Path,
+    data_dir: Path,
     output_dir: Path,
     site_url: str | None = None,
     plausible_script: str | None = None,
-    hn_editions_dir: Path | None = None,
-    lobsters_editions_dir: Path | None = None,
 ) -> None:
-    """site_url is the public address of the site. The feeds need it for full links.
+    """Reads data_dir/editions, data_dir/hn-editions and data_dir/lobsters-editions.
 
-    The pages keep relative links either way, so they also work from the local disk.
+    site_url is the public address of the site: the feeds need it for full links. The
+    pages keep relative links either way, so they also work from the local disk.
 
     plausible_script is the address of a Plausible script that counts visits. Without it
     the pages contain no script at all and load nothing from other servers.
     """
     if plausible_script is not None and not plausible_script.startswith("https://"):
         raise ValueError("Das Plausible-Skript muss eine https-Adresse sein")
-    # Pelican wants a content directory. Ours stays empty: the plugin supplies the articles.
+    data_dir = Path(data_dir)
+    # Pelican wants a content directory. Ours stays empty: the plugin brings the articles.
     with tempfile.TemporaryDirectory() as no_content:
         settings = read_settings(
             override={
@@ -34,32 +35,23 @@ def build_site(
                 "OUTPUT_PATH": str(output_dir),
                 "THEME": str(THEME),
                 "PLUGINS": ["github_anti_ai.publication.pelican_plugin"],
-                "EDITIONS_PATH": str(editions_dir),
-                "HN_EDITIONS_PATH": str(hn_editions_dir) if hn_editions_dir else None,
-                "LOBSTERS_EDITIONS_PATH": (
-                    str(lobsters_editions_dir) if lobsters_editions_dir else None
-                ),
-                "SITENAME": "Fundstücke",
+                "EDITIONS_PATH": str(data_dir / "editions"),
+                "HN_EDITIONS_PATH": str(data_dir / "hn-editions"),
+                "LOBSTERS_EDITIONS_PATH": str(data_dir / "lobsters-editions"),
+                "SITENAME": SITE_NAME,
                 "PLAUSIBLE_SCRIPT": plausible_script,
                 "SITEURL": (site_url or "").rstrip("/"),
                 "RELATIVE_URLS": True,
                 "TIMEZONE": "UTC",
                 "DEFAULT_LANG": "de",
-                # text from GitHub must never be interpreted as HTML
-                "JINJA_ENVIRONMENT": {"autoescape": True, "trim_blocks": True, "lstrip_blocks": True},
-                "DIRECT_TEMPLATES": [
-                    "index", "ai", "archiv",
-                    "hn", "hn_ai", "hn_archiv",
-                    "lobsters", "lobsters_ai", "lobsters_archiv",
-                ],
-                "AI_SAVE_AS": "ai/index.html",
-                "ARCHIV_SAVE_AS": "archiv/index.html",
-                "HN_SAVE_AS": "hn/index.html",
-                "HN_ARCHIV_SAVE_AS": "hn/archiv/index.html",
-                "HN_AI_SAVE_AS": "hn/ai/index.html",
-                "LOBSTERS_SAVE_AS": "lobsters/index.html",
-                "LOBSTERS_ARCHIV_SAVE_AS": "lobsters/archiv/index.html",
-                "LOBSTERS_AI_SAVE_AS": "lobsters/ai/index.html",
+                # text from strangers must never be read as HTML
+                "JINJA_ENVIRONMENT": {
+                    "autoescape": True,
+                    "trim_blocks": True,
+                    "lstrip_blocks": True,
+                },
+                # the plugin writes the newest pages and archives of each list itself
+                "DIRECT_TEMPLATES": [],
                 "CATEGORY_FEED_ATOM": "{slug}feed.xml",
                 "FEED_ALL_ATOM": None,
                 "AUTHOR_FEED_ATOM": None,

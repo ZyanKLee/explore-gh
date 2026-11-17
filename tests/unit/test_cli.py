@@ -2,146 +2,91 @@ from pathlib import Path
 
 import pytest
 
-from github_anti_ai.cli import MissingToken, load_token, parse_args
+from github_anti_ai.cli import MissingToken, load_token, main, parse_args
 
 
-def test_publish_respects_the_cooldown_by_default():
-    assert parse_args(["publish"]).ignore_cooldown is False
-
-
-@pytest.mark.parametrize("command", ["publish", "daily"])
-def test_cooldown_can_be_ignored_from_the_command_line(command):
-    assert parse_args([command, "--ignore-cooldown"]).ignore_cooldown is True
-
-
-def test_collect_has_no_cooldown_flag():
-    with pytest.raises(SystemExit):
-        parse_args(["collect", "--ignore-cooldown"])
-
-
-def test_collection_is_unlimited_by_default():
-    assert parse_args(["collect"]).limit is None
-
-
-@pytest.mark.parametrize("command", ["collect", "daily"])
-def test_number_of_candidates_can_be_limited_for_trial_runs(command):
-    assert parse_args([command, "--limit", "40"]).limit == 40
-
-
-def test_assessment_of_a_repo_can_be_explained():
-    args = parse_args(["explain", "alice/tiny-editor"])
-
-    assert args.command == "explain"
-    assert args.repo == "alice/tiny-editor"
-
-
-def test_site_is_built_into_the_output_directory_by_default():
-    args = parse_args(["site"])
-
-    assert args.command == "site"
-    assert args.output == Path("output")
-    assert args.data_dir == Path("data")
-
-
-def test_output_directory_of_the_site_can_be_chosen():
-    assert parse_args(["site", "--output", "/tmp/site"]).output == Path("/tmp/site")
-
-
-def test_data_directory_defaults_to_data():
+def test_the_data_directory_is_data_unless_chosen():
     assert parse_args(["collect"]).data_dir == Path("data")
+    assert parse_args(["collect", "--data-dir", "data-test"]).data_dir == Path("data-test")
 
 
-def test_data_directory_can_be_chosen_for_experiments():
-    assert parse_args(["publish", "--data-dir", "/tmp/try"]).data_dir == Path("/tmp/try")
-
-
-def test_token_is_taken_from_the_environment(tmp_path):
-    (tmp_path / ".env").write_text("GITHUB_TOKEN=from_file\n")
-
-    assert load_token({"GITHUB_TOKEN": "from_env"}, tmp_path / ".env") == "from_env"
-
-
-def test_token_is_read_from_env_file_otherwise(tmp_path):
-    (tmp_path / ".env").write_text("# GitHub\nOTHER=1\nGITHUB_TOKEN = from_file \n")
-
-    assert load_token({}, tmp_path / ".env") == "from_file"
-
-
-def test_missing_token_is_reported_without_revealing_anything(tmp_path):
-    with pytest.raises(MissingToken) as error:
-        load_token({}, tmp_path / ".env")
-
-    assert "GITHUB_TOKEN" in str(error.value)
-
-
-def test_token_in_env_file_may_be_quoted(tmp_path):
-    (tmp_path / ".env").write_text('GITHUB_TOKEN="from_file"\n')
-
-    assert load_token({}, tmp_path / ".env") == "from_file"
-
-
-def test_publish_refuses_an_incomplete_collection_by_default():
-    assert parse_args(["publish"]).allow_incomplete is False
+def test_collection_is_unlimited_unless_limited_for_trial_runs():
+    assert parse_args(["collect"]).limit is None
+    assert parse_args(["daily", "--limit", "60"]).limit == 60
 
 
 @pytest.mark.parametrize("command", ["publish", "daily"])
-def test_incomplete_collection_can_be_allowed_from_the_command_line(command):
-    assert parse_args([command, "--allow-incomplete"]).allow_incomplete is True
+def test_cooldown_completeness_and_review_are_on_off_and_off_by_default(command):
+    args = parse_args([command])
+
+    assert (args.ignore_cooldown, args.allow_incomplete, args.review) == (False, False, False)
+    args = parse_args([command, "--ignore-cooldown", "--allow-incomplete", "--review"])
+    assert (args.ignore_cooldown, args.allow_incomplete, args.review) == (True, True, True)
 
 
-def test_site_has_no_address_by_default():
-    assert parse_args(["site"]).site_url is None
+def test_publish_and_explain_take_a_day():
+    assert str(parse_args(["publish", "--day", "2026-11-13"]).day) == "2026-11-13"
+    assert parse_args(["explain", "a/x"]).day is None
 
 
-def test_address_of_the_site_can_be_given_for_the_feeds():
-    args = parse_args(["site", "--site-url", "https://example.org/fundstuecke/"])
-
-    assert args.site_url == "https://example.org/fundstuecke/"
-
-
-def test_preview_is_served_on_port_8000_by_default():
-    args = parse_args(["serve"])
-
-    assert args.command == "serve"
-    assert args.port == 8000
-    assert args.output == Path("output")
-    assert args.data_dir == Path("data")
+def test_site_options():
+    args = parse_args(["site"])
+    assert (args.output, args.site_url, args.plausible) == (Path("output"), None, None)
+    args = parse_args(
+        ["site", "--output", "_site", "--site-url", "https://x/", "--plausible", "https://p/s.js"]
+    )
+    assert (args.output, args.site_url, args.plausible) == (
+        Path("_site"),
+        "https://x/",
+        "https://p/s.js",
+    )
 
 
-def test_port_of_the_preview_can_be_chosen():
+def test_the_preview_runs_on_port_8000_unless_chosen():
+    assert parse_args(["serve"]).port == 8000
     assert parse_args(["serve", "--port", "8080"]).port == 8080
 
 
-def test_hn_collection_has_its_own_command_and_data_directory():
-    args = parse_args(["collect-hn", "--limit", "20"])
-
-    assert args.command == "collect-hn"
-    assert args.data_dir == Path("data")
-    assert args.limit == 20
+@pytest.mark.parametrize("command", ["collect-hn", "collect-lobsters"])
+def test_the_community_lists_have_their_own_commands(command):
+    assert parse_args([command, "--limit", "5"]).limit == 5
 
 
-def test_lobsters_collection_has_its_own_command_and_data_directory():
-    args = parse_args(["collect-lobsters", "--limit", "20"])
+class TestToken:
+    def test_the_environment_comes_first(self, tmp_path):
+        (tmp_path / ".env").write_text("GITHUB_TOKEN=from-file\n")
 
-    assert args.command == "collect-lobsters"
-    assert args.data_dir == Path("data")
-    assert args.limit == 20
+        assert load_token({"GITHUB_TOKEN": " from-env "}, tmp_path / ".env") == "from-env"
 
+    @pytest.mark.parametrize(
+        "line", ["GITHUB_TOKEN=abc", 'GITHUB_TOKEN="abc"', "GITHUB_TOKEN = 'abc' "]
+    )
+    def test_otherwise_the_env_file_also_quoted(self, tmp_path, line):
+        (tmp_path / ".env").write_text(f"OTHER=1\n{line}\n")
 
-def test_site_counts_no_visits_by_default():
-    assert parse_args(["site"]).plausible is None
+        assert load_token({}, tmp_path / ".env") == "abc"
 
-
-def test_plausible_script_can_be_given_for_the_published_site():
-    args = parse_args(["site", "--plausible", "https://stats.example.org/js/pa-test.js"])
-
-    assert args.plausible == "https://stats.example.org/js/pa-test.js"
-
-
-def test_review_is_off_unless_asked_for():
-    assert parse_args(["publish"]).review is False
+    def test_a_missing_token_is_reported(self, tmp_path):
+        with pytest.raises(MissingToken, match="GITHUB_TOKEN fehlt"):
+            load_token({}, tmp_path / ".env")
 
 
-@pytest.mark.parametrize("command", ["publish", "daily"])
-def test_review_can_be_asked_for(command):
-    assert parse_args([command, "--review"]).review is True
+def test_explain_reports_a_repo_without_snapshot(tmp_path, capsys):
+    code = main(["explain", "a/x", "--data-dir", str(tmp_path), "--day", "2026-11-12"])
+
+    assert code == 1
+    assert "Keine Momentaufnahme von a/x am 2026-11-12" in capsys.readouterr().err
+
+
+def test_publish_without_snapshots_says_so(tmp_path, capsys):
+    code = main(["publish", "--data-dir", str(tmp_path), "--day", "2026-11-12"])
+
+    assert code == 1
+    assert "keine Momentaufnahmen" in capsys.readouterr().err
+
+
+def test_site_builds_into_the_output_directory(tmp_path, capsys):
+    code = main(["site", "--data-dir", str(tmp_path / "data"), "--output", str(tmp_path / "out")])
+
+    assert code == 0
+    assert (tmp_path / "out" / "index.html").exists()

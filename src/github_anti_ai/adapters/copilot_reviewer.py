@@ -1,8 +1,8 @@
 """Reviewer: the GitHub Copilot CLI reads the repos that would be shown.
 
-The CLI is an agent that can run tools. Here it gets none: no tool is allowed, it may not
-ask, and it starts in an empty directory. It only answers a prompt with JSON.
-See docs/bewertung.md, "Gegenlesen".
+The CLI is an agent that could run tools. Here it gets none: no tool is allowed, it may
+not ask, and it starts in an empty directory. It only answers a prompt with JSON.
+See docs/ausgabe.md, "Gegenlesen".
 """
 
 import json
@@ -54,11 +54,13 @@ class CopilotReviewer:
         model: str | None = None,
         batch_size: int = BATCH_SIZE,
     ):
+        """`model` overrides the CLI's choice. Without it the CLI decides, or COPILOT_MODEL."""
         self._run = run
         self._model = model
         self._batch_size = batch_size
 
     def review(self, snapshots: Sequence[Snapshot]) -> dict[RepoId, Review]:
+        """A batch that fails is skipped. Only if every batch fails, the review is unavailable."""
         found: dict[RepoId, Review] = {}
         failures: list[str] = []
         batches = [
@@ -67,7 +69,7 @@ class CopilotReviewer:
         ]
         for batch in batches:
             try:
-                found.update(self._review_batch(batch))
+                found |= self._review_batch(batch)
             except SourceUnavailable as error:
                 log.warning("Gegenlesen von %d Repos gescheitert: %s", len(batch), error)
                 failures.append(str(error))
@@ -78,7 +80,7 @@ class CopilotReviewer:
     def _review_batch(self, batch: Sequence[Snapshot]) -> dict[RepoId, Review]:
         asked = {snapshot.repo for snapshot in batch}
         found: dict[RepoId, Review] = {}
-        for row in _rows(self._ask(_prompt(batch))):
+        for row in _rows(self._ask(prompt(batch))):
             try:
                 repo = RepoId.parse(row["repo"])
                 review = Review(row["category"], _one_line(row["reason"]))
@@ -88,8 +90,8 @@ class CopilotReviewer:
                 found[repo] = review
         return found
 
-    def _ask(self, prompt: str) -> str:
-        command = ["copilot", "-p", prompt, "-s", "--no-ask-user", "--disable-builtin-mcps"]
+    def _ask(self, text: str) -> str:
+        command = ["copilot", "-p", text, "-s", "--no-ask-user", "--disable-builtin-mcps"]
         if self._model:
             command.append(f"--model={self._model}")
         try:
@@ -110,7 +112,7 @@ class CopilotReviewer:
         return result.stdout
 
 
-def _prompt(batch: Sequence[Snapshot]) -> str:
+def prompt(batch: Sequence[Snapshot]) -> str:
     categories = "\n".join(f'- "{category}": {text}' for category, text in REVIEW_GUIDE.items())
     repos = [
         {

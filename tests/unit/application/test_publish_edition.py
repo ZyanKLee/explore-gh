@@ -1,134 +1,171 @@
+import logging
 from datetime import timedelta
 
 import pytest
-
-from builders import NOW, TODAY, FixedClock, make_edition, make_snapshot
+from builders import TODAY, make_edition, make_snapshot, star_history
 from fakes import (
-    InMemoryCollectionStatusStore,
+    FakeReviewer,
     InMemoryDailyRecordStore,
     InMemoryEditionStore,
     InMemorySnapshotStore,
+    InMemoryStatusStore,
 )
-from github_anti_ai.application.ports import AlreadyPublished, CollectionStatus, NothingToPublish
-from github_anti_ai.application.publish_edition import PublishEdition
-from github_anti_ai.domain.model import Assessment, Section
+
+from github_anti_ai.application.ports import (
+    AlreadyPublished,
+    CollectionStatus,
+    IncompleteCollection,
+    NothingToPublish,
+)
+from github_anti_ai.application.publish_edition import PublishEdition, reviewed_entries
+from github_anti_ai.domain.assessor import Assessor
+from github_anti_ai.domain.model import Section
+
+COMPLETE = CollectionStatus(TODAY, discovered=3, collected=3, failed=0)
 
 
-def assess_all_as(section=Section.MAIN, scores=None):
-    """Stands in for the Assessment context until it exists."""
-    scores = scores or {}
+class World:
+    def __init__(self, *snapshots, editions=(), status=COMPLETE):
+        self.snapshots = InMemorySnapshotStore({TODAY: list(snapshots)})
+        self.status = InMemoryStatusStore([status] if status else [])
+        self.editions = InMemoryEditionStore(editions)
+        self.records = InMemoryDailyRecordStore()
 
-    def assess(snapshot):
-        return Assessment(
-            snapshot=snapshot,
-            section=section,
-            score=scores.get(str(snapshot.repo), 0.5),
-            signals=(),
-            exclusion=None,
-        )
-
-    return assess
-
-
-def publish(snapshots, editions=None, assess=None, ignore_cooldown=False, day=None):
-    snapshot_store = InMemorySnapshotStore({day or TODAY: snapshots})
-    edition_store = editions if editions is not None else InMemoryEditionStore()
-    use_case = PublishEdition(
-        snapshot_store=snapshot_store,
-        edition_store=edition_store,
-        collection_status_store=InMemoryCollectionStatusStore(
-            [CollectionStatus(day=day or TODAY, discovered=1, collected=1, failed=0)]
-        ),
-        record_store=InMemoryDailyRecordStore(),
-        assess=assess or assess_all_as(),
-        clock=FixedClock(NOW),
-        ignore_cooldown=ignore_cooldown,
-    )
-    return use_case.run(day), edition_store
+    def publish(self, **options):
+        return PublishEdition(
+            snapshot_store=self.snapshots,
+            status_store=self.status,
+            edition_store=self.editions,
+            record_store=self.records,
+            assess=Assessor().assess,
+            **options,
+        ).run(TODAY)
 
 
-def names(edition, section=Section.MAIN):
-    return [str(e.repo) for e in edition.entries(section)]
+def repo(name, gained=120, **overrides):
+    """A repo that passes every rule. More new stars give a higher score."""
+    return make_snapshot(name, star_history=star_history(gained), **overrides)
 
 
-def test_todays_snapshots_are_assessed_and_published_as_todays_edition():
-    edition, store = publish(
-        [make_snapshot("alice/tiny-editor"), make_snapshot("bob/rustbox")],
-        assess=assess_all_as(scores={"alice/tiny-editor": 0.4, "bob/rustbox": 0.9}),
-    )
-
-    assert edition.day == TODAY
-    assert names(edition) == ["bob/rustbox", "alice/tiny-editor"]
-    assert store.load(TODAY) == edition
+def names(entries):
+    return [str(entry.repo) for entry in entries]
 
 
-def test_edition_can_be_published_for_the_day_the_snapshots_were_collected():
-    # a daily run that passes midnight must not look for snapshots of the new day
-    yesterday = TODAY - timedelta(days=1)
-
-    edition, store = publish([make_snapshot("alice/tiny-editor")], day=yesterday)
-
-    assert edition.day == yesterday
-    assert store.load(yesterday) == edition
-    assert store.load(TODAY) is None
-
-
-def test_assessment_decides_the_section():
-    edition, _ = publish([make_snapshot("bob/agent-kit")], assess=assess_all_as(Section.AI))
-
-    assert names(edition, Section.AI) == ["bob/agent-kit"]
-
-
-def test_repos_of_recent_editions_are_held_back():
-    recent = make_edition(day=TODAY - timedelta(days=10), main=["alice/tiny-editor"])
-
-    edition, _ = publish(
-        [make_snapshot("alice/tiny-editor"), make_snapshot("bob/rustbox")],
-        editions=InMemoryEditionStore([recent]),
+def test_publishes_the_best_repos_of_both_sections():
+    world = World(
+        repo("a/editor", gained=100, primary_language="Go"),
+        repo("b/editor", gained=900),
+        repo("c/llm-chat", description="A chatbot"),
     )
 
-    assert names(edition) == ["bob/rustbox"]
+    edition = world.publish()
+
+    assert names(edition.main) == ["b/editor", "a/editor"]
+    assert names(edition.ai) == ["c/llm-chat"]
+    assert world.editions.load(TODAY) == edition
+    assert edition.stats.assessed == 3
 
 
-def test_cooldown_can_be_ignored_during_development():
-    recent = make_edition(day=TODAY - timedelta(days=10), main=["alice/tiny-editor"])
+def test_excludes_copies_among_the_repos_of_the_day():
+    world = World(repo("a/player", description="Player"), repo("b/player", description="Player"))
 
-    edition, _ = publish(
-        [make_snapshot("alice/tiny-editor"), make_snapshot("bob/rustbox")],
-        editions=InMemoryEditionStore([recent]),
-        ignore_cooldown=True,
-    )
-
-    assert set(names(edition)) == {"alice/tiny-editor", "bob/rustbox"}
+    assert world.publish().main == ()
 
 
-def test_published_edition_is_never_replaced():
-    published = make_edition(day=TODAY, main=["carol/plotter"])
-    store = InMemoryEditionStore([published])
+def test_refuses_a_day_that_is_published():
+    world = World(repo("a/x"), editions=[make_edition(TODAY)])
 
     with pytest.raises(AlreadyPublished):
-        publish([make_snapshot("alice/tiny-editor")], editions=store)
-
-    assert store.load(TODAY) == published
+        world.publish()
 
 
-def test_nothing_is_published_without_snapshots_of_today():
-    store = InMemoryEditionStore()
-
+def test_refuses_a_day_without_snapshots():
     with pytest.raises(NothingToPublish):
-        publish([], editions=store)
-
-    assert store.load(TODAY) is None
+        World().publish()
 
 
-def test_copies_of_one_project_under_several_owners_are_not_published():
-    edition, _ = publish(
-        [
-            make_snapshot("alice/tiny-editor"),
-            make_snapshot("tornado/IPTV_Player", description="IPTV streaming app"),
-            make_snapshot("watt/IPTV_Player", description="IPTV streaming app"),
-        ]
-    )
+@pytest.mark.parametrize("status", [None, CollectionStatus(TODAY, 3, 2, failed=1)])
+def test_refuses_an_incomplete_collection(status):
+    world = World(repo("a/x"), status=status)
 
-    assert names(edition) == ["alice/tiny-editor"]
-    assert edition.stats.excluded == 2
+    with pytest.raises(IncompleteCollection):
+        world.publish()
+    assert world.records.days() == []
+
+
+def test_publishes_an_incomplete_collection_when_allowed():
+    world = World(repo("a/x"), status=None)
+
+    assert names(world.publish(allow_incomplete=True).main) == ["a/x"]
+
+
+def test_repos_of_the_last_30_days_are_blocked():
+    world = World(repo("a/x"), editions=[make_edition(TODAY - timedelta(days=3), main=["a/x"])])
+
+    assert world.publish().main == ()
+
+
+def test_ignore_cooldown_lets_them_back_in():
+    world = World(repo("a/x"), editions=[make_edition(TODAY - timedelta(days=3), main=["a/x"])])
+
+    assert names(world.publish(ignore_cooldown=True).main) == ["a/x"]
+
+
+def test_keeps_a_daily_record_of_every_assessed_repo():
+    world = World(repo("a/x"), repo("b/fork", is_fork=True))
+
+    world.publish()
+
+    records = {str(r.repo): r for r in world.records.load(TODAY)}
+    assert records["a/x"].rank == 1
+    assert records["b/fork"].rank is None
+    assert records["b/fork"].exclusion == "fork"
+
+
+class TestReview:
+    def test_reads_only_the_repos_that_would_be_shown(self):
+        world = World(repo("a/x"), repo("b/fork", is_fork=True))
+        reviewer = FakeReviewer()
+
+        edition = world.publish(reviewer=reviewer)
+
+        assert reviewer.asked == ["a/x"]
+        assert edition.main[0].signals[-1].reason == "Gegengelesen von Copilot: unauffällig"
+        assert reviewed_entries(edition) == (1, 1)
+
+    def test_a_repo_taken_out_makes_room_for_the_next_which_is_read_too(self, caplog):
+        snapshots = [repo(f"o{i}/r", gained=1000 - i, primary_language=f"L{i}") for i in range(21)]
+        world = World(*snapshots)
+        reviewer = FakeReviewer({"o0/r": "malware"})
+
+        with caplog.at_level(logging.INFO):
+            edition = world.publish(reviewer=reviewer)
+
+        assert "o0/r" not in names(edition.main)
+        assert names(edition.main)[-1] == "o20/r"
+        assert reviewer.rounds[1] == ["o20/r"]
+        assert "Copilot: o0/r herausgenommen (malware): Begründung des Modells." in caplog.text
+        records = {str(r.repo): r for r in world.records.load(TODAY)}
+        assert (records["o0/r"].exclusion, records["o0/r"].review) == ("review", "malware")
+
+    def test_ai_focus_moves_a_repo_to_the_ai_section(self):
+        world = World(repo("a/x"))
+
+        edition = world.publish(reviewer=FakeReviewer({"a/x": "ai_focus"}))
+
+        assert names(edition.ai) == ["a/x"]
+        assert world.records.load(TODAY)[0].section is Section.AI
+
+    def test_without_an_answer_the_edition_appears_unreviewed(self):
+        edition = World(repo("a/x")).publish(reviewer=FakeReviewer(unavailable=True))
+
+        assert names(edition.main) == ["a/x"]
+        assert reviewed_entries(edition) == (0, 1)
+
+    def test_a_repo_the_reviewer_says_nothing_about_stays_unread(self):
+        world = World(repo("a/x"))
+
+        edition = world.publish(reviewer=FakeReviewer(silent=["a/x"]))
+
+        assert names(edition.main) == ["a/x"]
+        assert world.records.load(TODAY)[0].review is None

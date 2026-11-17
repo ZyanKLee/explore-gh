@@ -1,5 +1,0 @@
-{% set current = "lobsters" %}
-{% extends "base.html" %}
-{% from "community.html" import community_archive with context %}
-{% block title %}Lobsters-Archiv – {{ SITENAME }}{% endblock %}
-{% block content %}{{ community_archive(lobsters_edition_days, "Lobsters-Archiv") }}{% endblock %}

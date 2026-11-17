@@ -1,45 +1,38 @@
-"""Page models for the community project lists (HN, Lobsters), each with an AI section.
+"""Page models of the community lists (HN, Lobsters), each with an AI section.
 
-Both platforms store the same edition format; they differ only in the names below.
+Both platforms store the same format; they differ only in the names below.
 """
 
-import json
-import re
-from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
 from html import escape
 from pathlib import Path
 from urllib.parse import quote, urlsplit
 
-FORMAT_VERSION = 1
-_EDITION_FILE = re.compile(r"\d{4}-\d{2}-\d{2}\.json")
-_MONTHS = [
-    "Januar", "Februar", "März", "April", "Mai", "Juni",
-    "Juli", "August", "September", "Oktober", "November", "Dezember",
-]  # fmt: skip
+from github_anti_ai.publication.german import (
+    load_edition_files,
+    long_date,
+    number,
+    shown_license,
+)
 
 
 @dataclass(frozen=True)
 class Platform:
     slug: str  # first part of every address: hn/, lobsters/
     name: str
-    points_key: str  # what the story calls its points in the stored edition
-    discussion_url: Callable[[dict], str]
+    points_key: str  # what the stored story calls its points
+    discussion_pattern: str  # if the story does not name its discussion page
+
+    def discussion_url(self, story: dict) -> str:
+        return _web_url(story.get("discussion_url")) or self.discussion_pattern.format(
+            id=quote(story["id"])
+        )
 
 
-def _hn_discussion(story: dict) -> str:
-    return f"https://news.ycombinator.com/item?id={quote(story['id'])}"
-
-
-def _lobsters_discussion(story: dict) -> str:
-    return _safe_url(story.get("discussion_url")) or f"https://lobste.rs/s/{quote(story['id'])}"
-
-
-HN = Platform(slug="hn", name="HN", points_key="points", discussion_url=_hn_discussion)
-LOBSTERS = Platform(
-    slug="lobsters", name="Lobsters", points_key="score", discussion_url=_lobsters_discussion
-)
+HN = Platform("hn", "HN", "points", "https://news.ycombinator.com/item?id={id}")
+LOBSTERS = Platform("lobsters", "Lobsters", "score", "https://lobste.rs/s/{id}")
+PLATFORMS = (HN, LOBSTERS)
 
 # section: (key in the stored edition, start of the heading, what the stats count: one, more)
 SECTIONS = {
@@ -60,7 +53,7 @@ class CommunityEntryView:
     license_id: str | None
     points: str
     comments: str
-    reasons: list[str]  # "Warum Platz …?", empty for editions from before 13.11.2026
+    reasons: list[str]  # "Warum Platz …?", empty for editions before 2026-11-13
 
 
 @dataclass(frozen=True)
@@ -99,16 +92,8 @@ def section_heading(platform: Platform, section: str) -> str:
 
 def load_community_editions(directory: Path, platform: Platform) -> list[CommunityDay]:
     """All days of a platform, oldest first."""
-    directory = Path(directory)
-    if not directory.exists():
-        return []
     days = []
-    for path in sorted(directory.iterdir()):
-        if not _EDITION_FILE.fullmatch(path.name):
-            continue
-        data = json.loads(path.read_text(encoding="utf-8"))
-        if data.get("format_version") != FORMAT_VERSION:
-            raise ValueError(f"{path.name}: unbekannte {platform.name}-Ausgabeversion")
+    for data in load_edition_files(directory, f"{platform.name}-Ausgabe"):
         day = date.fromisoformat(data["day"])
         days.append(
             CommunityDay(
@@ -134,21 +119,18 @@ def community_feed_html(view: CommunityEditionView) -> str:
 
 def _edition_view(platform: Platform, section: str, day: date, data: dict) -> CommunityEditionView:
     key, _, (one, more) = SECTIONS[section]
-    # Editions from before the AI section (13.11.2026) have no "ai_projects"
-    projects = data.get(key, [])
+    projects = data.get(key, [])  # editions before 2026-11-13 have no AI section
     heading = section_heading(platform, section)
     return CommunityEditionView(
         day=day,
         section=section,
         heading=heading,
-        title=f"{heading} vom {_long_date(day)}",
+        title=f"{heading} vom {long_date(day)}",
         url=f"{section_url(platform, section)}{day:%Y/%m/%d}/",
         stats=f"{len(projects)} {one if len(projects) == 1 else more}",
         points_label=f"{platform.name}-Punkte",
         discussion_label=f"Diskussion auf {platform.name}",
-        entries=[
-            _entry_view(platform, project, rank) for rank, project in enumerate(projects, 1)
-        ],
+        entries=[_entry_view(platform, project, rank) for rank, project in enumerate(projects, 1)],
     )
 
 
@@ -157,33 +139,20 @@ def _entry_view(platform: Platform, project: dict, rank: int) -> CommunityEntryV
     return CommunityEntryView(
         rank=rank,
         title=story["title"],
-        repository_url=_safe_url(project["repository_url"]),
-        project_url=_safe_url(project["project_url"]),
+        repository_url=_web_url(project["repository_url"]),
+        project_url=_web_url(project["project_url"]),
         discussion_url=platform.discussion_url(story),
         description=project["description"],
         language=project["language"],
-        license_id=_shown_license(project["license_id"]),
-        points=_number(story[platform.points_key]),
-        comments=_number(story["comments"]),
+        license_id=shown_license(project["license_id"]),
+        points=number(story[platform.points_key]),
+        comments=number(story["comments"]),
         reasons=list(project.get("reasons", [])),
     )
 
 
-def _shown_license(license_id: str | None) -> str | None:
-    """GitHub's placeholder for an unidentified license file is not a license name."""
-    return None if license_id == "NOASSERTION" else license_id
-
-
-def _safe_url(value: str | None) -> str | None:
+def _web_url(value) -> str | None:
     if not isinstance(value, str):
         return None
     parsed = urlsplit(value)
     return value if parsed.scheme in {"http", "https"} and parsed.hostname else None
-
-
-def _number(value: int) -> str:
-    return f"{value:,}".replace(",", ".")
-
-
-def _long_date(day: date) -> str:
-    return f"{day.day}. {_MONTHS[day.month - 1]} {day.year}"

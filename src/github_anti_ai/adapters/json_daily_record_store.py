@@ -1,7 +1,8 @@
-"""Long-term data as gzipped JSON lines, one file per day: YYYY-MM-DD.jsonl.gz
+"""Long-term data as gzipped JSON lines, one file per day: history/YYYY-MM-DD.jsonl.gz
 
 Every line names its day and its format, so that tools can read a whole directory at once.
 The same records always give the same bytes: the files live in git.
+See docs/langzeitdaten.md.
 """
 
 import gzip
@@ -10,6 +11,7 @@ from collections.abc import Sequence
 from datetime import date, datetime
 from pathlib import Path
 
+from github_anti_ai.adapters.files import day_files
 from github_anti_ai.domain.history import DailyRecord
 from github_anti_ai.domain.model import RepoId, Section
 
@@ -51,16 +53,7 @@ class JsonDailyRecordStore:
         return records
 
     def days(self) -> list[date]:
-        """The days that have records, in order."""
-        if not self._directory.exists():
-            return []
-        found = []
-        for path in self._directory.glob(f"*{SUFFIX}"):
-            try:
-                found.append(date.fromisoformat(path.name.removesuffix(SUFFIX)))
-            except ValueError:
-                continue
-        return sorted(found)
+        return list(day_files(self._directory, SUFFIX))
 
     def _path(self, day: date) -> Path:
         return self._directory / f"{day.isoformat()}{SUFFIX}"

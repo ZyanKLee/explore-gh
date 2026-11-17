@@ -123,13 +123,13 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 
 - **Acquisition**: Kandidaten finden, APIs abfragen, Ergebnisse in `Snapshot`s übersetzen.
   API-Formate gelangen nie in die Domäne.
-- **HN Trending**: HN-Storys finden, Projekt-Websites zu öffentlichen Forge-Repos
-  auflösen und eigene HN-Ausgaben kuratieren. Getrennt von GitHub `Snapshot`s.
-- **Lobsters Trending**: Lobsters-Storys finden, Projekt-Websites zu öffentlichen
-  Forge-Repos auflösen und eigene Lobsters-Ausgaben kuratieren. Getrennt von GitHub
-  `Snapshot`s und HN-Ausgaben.
+- **Community Trending**: Storys einer Plattform (HN, Lobsters) finden, ihre Links zu
+  öffentlichen Forge-Repos auflösen und eigene Ausgaben je Plattform kuratieren. Beide
+  Plattformen folgen denselben Regeln und unterscheiden sich nur in ihrer `Platform`.
+  Getrennt von den GitHub-`Snapshot`s.
 - **Assessment** (Core): Signale, Ausschlüsse, Sektion, Punktzahl
-- **Curation** (Core): tägliche `Edition` mit Sperre, Vielfaltsregel, Gegenlesen und Top 20
+- **Curation** (Core): tägliche `Edition` mit Sperre, Vielfaltsregel, Gegenlesen und Top 20.
+  Sperre und Vielfaltsregel gelten ebenso für die Community-Ausgaben (`domain/curation.py`).
 - **Publication**: Seitenmodell (reine Funktionen) plus dünne Pelican-Anbindung. Kennt
   nur das JSON-Format der Ausgaben.
 
@@ -138,9 +138,11 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Begriff | Code | Bedeutung |
 |---|---|---|
 | Repo | `Repo`, `RepoId` | GitHub-Repository als Kandidat, Identität `owner/name` |
-| HN-Projekt | `HnProjectCandidate` | öffentliches, auf HN verlinktes Softwareprojekt samt Forge- und HN-Fakten |
-| Lobsters-Projekt | `LobstersProjectCandidate` | öffentliches, auf Lobsters verlinktes Softwareprojekt samt Forge- und Lobsters-Fakten |
-| Community-Kurator | `CommunityCurator` | gemeinsame Auswahlregeln der HN- und Lobsters-Ausgaben, die Rangfolge gibt die Plattform vor |
+| Plattform (Community) | `Platform`, `HN`, `LOBSTERS` | Eine Community-Seite mit eigener Liste: Kürzel für Adressen und Ordner, Name, Adresse der Diskussion |
+| Story | `Story` | Beitrag auf einer Plattform: Titel, Link, Punkte, Kommentare, Diskussion |
+| Community-Projekt | `CommunityProject` | öffentliches, von einer Story verlinktes Softwareprojekt samt Forge-Fakten |
+| Community-Ausgabe | `CommunityEdition` | Auswahl eines Tages auf einer Plattform, je Sektion bis zu 20 Projekte |
+| Community-Kurator | `CommunityCurator` | Auswahlregeln der HN- und Lobsters-Ausgaben, die Rangfolge geben die Punkte der Plattform vor |
 | Bezug zur Story | `relates_to_story`, `shared_words` | ein auf einer Website gefundenes Repo teilt Wörter mit Titel, Hostname oder Pfad der Story; das Repo mit den meisten gewinnt |
 | Kandidat | `Candidate` | Repo, das eine Quelle heute gefunden hat, samt Sternzahl, falls die Quelle sie kennt |
 | Momentaufnahme | `Snapshot` | Alles, was zu einem Zeitpunkt über ein Repo gesammelt wurde. `facts_at` sagt, wann die Fakten zuletzt von GitHub kamen. |
@@ -155,25 +157,26 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Kopie | `CopyCheck` | Dasselbe Projekt unter mehreren Besitzern, erkannt an Name, Beschreibung, Topics oder README. Braucht alle Repos eines Tages, nicht nur eine Momentaufnahme. |
 | Substanz | `SubstanceCheck` | Hinweise auf echte Arbeit und echtes Interesse: Team, Kontinuität, Issues. Dazu die Gegenprobe zu gekauften Sternen. |
 | Vorgeschichte des Besitzers | `OwnerHistory` | Alter des Besitzerkontos und Mitwirkung an anderen Projekten. Wertet auf, fehlt bei Wegwerfkonten. |
-| Plattform | `PlatformPreference` | Vorliebe des Inhabers: Linux wertet auf, Windows und Apple werten ab |
+| Plattform (Betriebssystem) | `PlatformPreference` | Vorliebe des Inhabers: Linux wertet auf, Windows und Apple werten ab |
 | Gegenlesen | `Reviewer`, `Review` | Ein Sprachmodell liest die Repos, die gezeigt würden, und ordnet jedes einer Kategorie zu. `ok` bleibt, `ai_focus` verschiebt in die AI-Sektion, alles andere schließt aus. |
 | Bewertung | `Assessment` | Sektion, Punktzahl, Signale, ggf. Ausschluss. Die Punktzahl ist die Summe der Signalgewichte. Erzeugt vom `Assessor`. |
 | Tageswert | `DailyRecord` | Was von einer Bewertung dauerhaft bleibt: Zahlen, Urteil, Rang. Ohne Texte, Commits und Personen. |
 | Sektion | `Section` | `MAIN` oder `AI` |
 | Ausgabe | `Edition` | Auswahl eines Tages, je Sektion bis zu 20 `Entry`s. Unveränderlich nach Veröffentlichung. |
-| Sperre | `Cooldown` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert. HN und Lobsters sperren je aus ihren eigenen Ausgaben (`recently_shown`). |
-| Vielfaltsregel | `MAX_PER_LANGUAGE`, `MAX_PER_OWNER` | Pro Sektion höchstens 4 Einträge je Programmiersprache und 2 je Besitzer, ebenso in den HN- und Lobsters-Ausgaben |
+| Sperre | `in_cooldown`, `COOLDOWN_DAYS` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert. HN und Lobsters sperren je aus ihren eigenen Ausgaben. |
+| Vielfaltsregel | `varied`, `MAX_PER_LANGUAGE`, `MAX_PER_OWNER` | Pro Sektion höchstens 4 Einträge je Programmiersprache und 2 je Besitzer, ebenso in den HN- und Lobsters-Ausgaben |
 
 Persistenz-Abstraktionen heißen `…Store`, nicht „Repository“, weil „Repo“ schon das
 GitHub-Repository bezeichnet.
 
 ### Projektspezifische Regeln
 
-- Aggregate: `Edition`. Sie prüft ihre Invarianten
-  selbst: höchstens 20 pro Sektion, Vielfaltsregel, keine Duplikate. Sie trägt die
+- Aggregate: `Edition` und `CommunityEdition`. Sie prüfen ihre Invarianten selbst:
+  höchstens 20 pro Sektion, Vielfaltsregel, keine Duplikate. Die `Edition` trägt die
   Statistik des Tages (`EditionStats`).
 - Ports: `CandidateSource`, `RepoSource`, `SnapshotStore`, `CollectionStatusStore`,
-  `DailyRecordStore`, `EditionStore`, `Reviewer`, `Clock`.
+  `DailyRecordStore`, `EditionStore`, `Reviewer`, `Clock`, dazu für die Community-Listen
+  `StorySource`, `ProjectResolver`, `CommunityEditionStore`.
   Adapter melden Ausfälle als `SourceUnavailable`.
 - `domain/` ist frei von Ein- und Ausgabe. Die aktuelle Zeit kommt nur über `Clock`.
 - Schwellenwerte, Gewichte und Keyword-Listen stehen als benannte Konstanten in der
@@ -187,13 +190,14 @@ src/github_anti_ai/{domain,application,adapters,publication}/
                        # publication/ enthält auch Pelican-Plugin und theme/
 docs/                  # Konzepte mit Stand und Geplantem: datensammlung.md (Acquisition),
                        # bewertung.md (Assessment), ausgabe.md (Curation),
-                       # veroeffentlichung.md (Publication), langzeitdaten.md
+                       # community.md (Community Trending), veroeffentlichung.md
+                       # (Publication), langzeitdaten.md
 data/                  # editions/ (versioniert), snapshots/ (Arbeitsdaten, 14 Tage),
                        # history/ (versioniert), hn-editions/ und lobsters-editions/ (versioniert)
-tests/unit/            # Domäne und Use Cases
-tests/integration/     # Adapter gegen aufgezeichnete Antworten in fixtures/, dazu die
-                       # Regeln gegen die Beispielsammlung (fixtures/labelled/)
-checks/                # Hilfsskripte: Anfragen zählen, Beispielsammlung erzeugen
+tests/unit/            # Domäne, Use Cases, Seitenmodell, Kommandozeile
+tests/integration/     # Adapter gegen nachgestellte Antworten (fixtures/), Dateiformate,
+                       # Website, dazu die Regeln gegen die Beispielsammlung (fixtures/labelled/)
+checks/                # Hilfsskript: Beispielsammlung erzeugen
 ```
 
 ## Test-Driven Development

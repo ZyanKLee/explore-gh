@@ -1,86 +1,41 @@
-"""A DailyRecord is what stays of an Assessment for good: numbers and verdict, no texts."""
-
-from dataclasses import fields
-from datetime import UTC, datetime
+import dataclasses
 
 from builders import TODAY, make_assessment
+
 from github_anti_ai.domain.history import DailyRecord
-from github_anti_ai.domain.model import Exclusion, RepoId, Section, Signal
-
-SIGNALS = (
-    Signal(kind="momentum", weight=40.0, reason="+120 Sterne in 7 Tagen bei 812 insgesamt"),
-    Signal(kind="ai_files", weight=-3.0, reason="Anweisungsdateien für AI-Agenten: AGENTS.md"),
-)
+from github_anti_ai.domain.model import Exclusion, Section, Signal
 
 
-def record(rank=None, **options):
-    return DailyRecord.from_assessment(TODAY, make_assessment(**options), rank=rank)
+def test_a_daily_record_keeps_numbers_and_verdict():
+    assessment = dataclasses.replace(
+        make_assessment(
+            "alice/tiny", section=Section.AI, gained=150, exclusion=Exclusion("x", "lure")
+        ),
+        signals=(Signal("momentum", 40, "…"), Signal("ai_files", -3, "…")),
+    )
+
+    record = DailyRecord.from_assessment(TODAY, assessment, rank=3, review="ok")
+
+    assert record.day == TODAY
+    assert str(record.repo) == "alice/tiny"
+    assert (record.stars, record.forks, record.stars_gained) == (812, 31, 150)
+    assert record.score == 37
+    assert record.section is Section.AI
+    assert record.exclusion == "lure"
+    assert record.review == "ok"
+    assert record.signals == (("momentum", 40), ("ai_files", -3))
+    assert record.rank == 3
+    assert record.language == "Rust"
 
 
-def test_record_keeps_the_numbers_of_the_day():
-    kept = record(gained=120)
+def test_a_daily_record_holds_no_texts_and_no_people():
+    fields = {field.name for field in dataclasses.fields(DailyRecord)}
 
-    assert kept.day == TODAY
-    assert kept.repo == RepoId.parse("alice/tiny-editor")
-    assert (kept.stars, kept.forks, kept.stars_gained) == (812, 31, 120)
-
-
-def test_record_keeps_the_verdict_of_the_assessment():
-    kept = record(section=Section.AI, score=37.0, signals=SIGNALS)
-
-    assert kept.section is Section.AI
-    assert kept.score == 37.0
-    assert kept.exclusion is None
+    assert fields == {
+        "day", "repo", "stars", "forks", "stars_gained", "score", "section", "exclusion",
+        "review", "signals", "rank", "language", "created_at",
+    }  # fmt: skip
 
 
-def test_record_keeps_kind_and_weight_of_each_signal_but_not_its_text():
-    assert record(signals=SIGNALS).signals == (("momentum", 40.0), ("ai_files", -3.0))
-
-
-def test_record_of_an_excluded_repo_names_the_kind_of_exclusion():
-    assert record(exclusion=Exclusion("Fork", "fork")).exclusion == "fork"
-
-
-def test_record_keeps_what_identifies_the_kind_of_project():
-    kept = record(language="Rust")
-
-    assert kept.language == "Rust"
-    assert kept.created_at == datetime(2026, 10, 20, 12, 0, tzinfo=UTC)
-
-
-def test_record_of_a_repo_that_was_not_shown_has_no_rank():
-    assert record().rank is None
-
-
-def test_record_of_a_shown_repo_knows_its_rank():
-    assert record(rank=3).rank == 3
-
-
-def test_record_holds_neither_texts_nor_commits_nor_people():
-    # The long-term data must stay small and free of names and addresses. The description
-    # was in at first and made up 60 % of the file.
-    assert {field.name for field in fields(DailyRecord)} == {
-        "day",
-        "repo",
-        "stars",
-        "forks",
-        "stars_gained",
-        "score",
-        "section",
-        "exclusion",
-        "review",
-        "signals",
-        "rank",
-        "language",
-        "created_at",
-    }
-
-
-def test_record_keeps_the_category_of_the_review_but_not_its_text():
-    kept = DailyRecord.from_assessment(TODAY, make_assessment(), review="ai_focus")
-
-    assert kept.review == "ai_focus"
-
-
-def test_record_of_a_repo_that_was_not_reviewed_has_no_review():
-    assert DailyRecord.from_assessment(TODAY, make_assessment()).review is None
+def test_a_repo_not_shown_has_no_rank():
+    assert DailyRecord.from_assessment(TODAY, make_assessment()).rank is None

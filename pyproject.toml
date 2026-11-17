@@ -26,3 +26,11 @@ testpaths = ["tests"]
 pythonpath = ["tests"]
 addopts = "-m 'not live'"
 markers = ["live: greift live auf APIs zu und braucht einen Token"]
+
+# Stil: uvx ruff format && uvx ruff check --fix
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]

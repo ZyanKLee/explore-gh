@@ -1,6 +1,7 @@
-"""Copies: one project uploaded under several owners. Seen live as a campaign of lures.
+"""Copies: one project uploaded under several owners. Seen live as campaigns of lures.
 
 Unlike the other exclusions this one needs all repos of a day, not a single Snapshot.
+See docs/bewertung.md, "Kopien".
 """
 
 import dataclasses
@@ -56,21 +57,9 @@ class CopyCheck:
                 if (key := key_of(snapshot)) is not None:
                     groups[key].append(snapshot)
             for group in groups.values():
-                for repo, exclusion in self._copies(group, shared).items():
+                for repo, exclusion in _copies(group, shared).items():
                     found.setdefault(repo, exclusion)
         return found
-
-    def _copies(self, group: list[Snapshot], shared: str) -> dict[RepoId, Exclusion]:
-        if len({snapshot.repo.owner.casefold() for snapshot in group}) < 2:
-            return {}
-        oldest, second, *_ = sorted(group, key=lambda snapshot: snapshot.created_at)
-        if second.created_at - oldest.created_at >= COPY_ORIGINAL_MIN_LEAD:
-            exclusion = Exclusion(f"Kopie von {oldest.repo}", "copy")
-            return {s.repo: exclusion for s in group if s is not oldest}
-        exclusion = Exclusion(
-            f"Kopie: {len(group)} Repos mit {shared}, fast gleichzeitig angelegt", "copy"
-        )
-        return {s.repo: exclusion for s in group}
 
     def apply(self, assessments: Sequence[Assessment]) -> list[Assessment]:
         """The assessments with the copies excluded. An earlier exclusion keeps its reason."""
@@ -81,3 +70,16 @@ class CopyCheck:
             else assessment
             for assessment in assessments
         ]
+
+
+def _copies(group: list[Snapshot], shared: str) -> dict[RepoId, Exclusion]:
+    if len({snapshot.repo.owner.casefold() for snapshot in group}) < 2:
+        return {}
+    oldest, second, *_ = sorted(group, key=lambda snapshot: snapshot.created_at)
+    if second.created_at - oldest.created_at >= COPY_ORIGINAL_MIN_LEAD:
+        exclusion = Exclusion(f"Kopie von {oldest.repo}", "copy")
+        return {s.repo: exclusion for s in group if s is not oldest}
+    exclusion = Exclusion(
+        f"Kopie: {len(group)} Repos mit {shared}, fast gleichzeitig angelegt", "copy"
+    )
+    return {s.repo: exclusion for s in group}
