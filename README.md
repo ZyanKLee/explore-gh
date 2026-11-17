@@ -173,6 +173,20 @@ zusammenpasst:
 uv run pytest
 ```
 
+Was die Änderung bewirkt, zeigt ein Vergleich mit dem letzten Commit. Er bewertet die
+gespeicherten Momentaufnahmen mit beiden Ständen und listet jeden Unterschied: Repos, die
+neu in die Ausgabe kommen oder herausfallen, Wechsel der Sektion, neue Ausschlüsse und
+geänderte Punktzahlen samt den Signalen dahinter. Er fragt keine API ab und schreibt nichts.
+
+```
+uv run python checks/compare_rules.py                  # gegen den letzten Commit
+uv run python checks/compare_rules.py --against main   # gegen einen anderen Stand
+uv run python checks/compare_rules.py --day 2026-11-15 --show 30
+```
+
+Vor einem Commit prüft `uvx ruff@0.14.0 format` und `uvx ruff@0.14.0 check --fix`, dass
+der Code einheitlich aussieht. Der Test-Workflow prüft dasselbe.
+
 Eine Regeländerung wirkt nur auf künftige Ausgaben. Vergangene Tage werden nie neu
 berechnet.
 

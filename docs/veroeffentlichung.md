@@ -137,7 +137,7 @@ ohne. Scheitert ein Bau, zeigt die Vorschau weiter die letzte funktionierende Se
 |---|---|---|
 | `daily.yml` | täglich 02:43 UTC, oder von Hand | GitHub-, HN- und Lobsters-Ausgabe erzeugen und gemeinsam ins Repo schreiben |
 | `site.yml` | nach jedem nicht abgebrochenen täglichen Lauf, bei Änderungen an Theme oder Ausgaben, oder von Hand | Seite bauen und auf GitHub Pages veröffentlichen |
-| `tests.yml` | bei jedem Push und Pull Request | die Tests |
+| `tests.yml` | bei jedem Push und Pull Request | die Tests und der Stil (ruff, Version fest im Workflow) |
 
 ### Der tägliche Lauf
 

@@ -197,7 +197,7 @@ data/                  # editions/ (versioniert), snapshots/ (Arbeitsdaten, 14 T
 tests/unit/            # Domäne, Use Cases, Seitenmodell, Kommandozeile
 tests/integration/     # Adapter gegen nachgestellte Antworten (fixtures/), Dateiformate,
                        # Website, dazu die Regeln gegen die Beispielsammlung (fixtures/labelled/)
-checks/                # Hilfsskript: Beispielsammlung erzeugen
+checks/                # Hilfsskripte: Regeländerungen vergleichen, Beispielsammlung erzeugen
 ```
 
 ## Test-Driven Development
@@ -209,3 +209,6 @@ checks/                # Hilfsskript: Beispielsammlung erzeugen
 - Die Testsuite greift nie live auf APIs zu. Live-Tests nur mit `@pytest.mark.live`.
 - Jede Bewertungsregel wird in beide Richtungen getestet (greift / greift nicht),
   einschließlich ihrer Begründung.
+- Was eine Regeländerung an echten Daten bewirkt, zeigt `checks/compare_rules.py`. Die
+  Zahlen gehören in die Begründung der Änderung in `docs/bewertung.md`.
+- Stil: `ruff`, Regeln in `pyproject.toml`, Version in `tests.yml`. Zeilen bis 100 Zeichen.
