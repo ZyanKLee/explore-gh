@@ -300,6 +300,24 @@ Zeigt für ein Repo aus der Sammlung eines Tages (Standard: heute) Sektion, Punk
 Ausschluss und jedes Signal mit Gewicht und Begründung, auch wenn es nicht gezeigt wurde.
 Eine Kopie erkennt der Befehl unter den übrigen Repos desselben Tages.
 
+## Regeländerungen vergleichen
+
+```
+uv run python checks/compare_rules.py [--against REF] [--day JJJJ-MM-TT] [--show N]
+```
+
+Bewertet die gespeicherten Momentaufnahmen (14 Tage) mit dem Arbeitsstand und mit einem
+anderen git-Stand (Standard: der letzte Commit) und listet je Tag:
+
+- Repos, die neu in die Ausgabe kommen, herausfallen oder den Platz wechseln (ohne Sperre
+  und Gegenlesen),
+- Wechsel der Sektion, neue, aufgehobene und geänderte Ausschlüsse,
+- geänderte Punktzahlen, die größten zuerst, mit den Signalen, die sich geändert haben.
+
+So entstehen Angaben wie „in den Daten vom 15.11. verschiebt das 8 Repos“. Jeder Stand
+liest die Momentaufnahmen mit seinem eigenen Code. Ein Stand von vor dem 17.11.2026 kann
+die danach geschriebenen Momentaufnahmen nicht lesen.
+
 ## Beispielsammlung
 
 Am 12.11.2026 hat der Projektinhaber 102 Repos von Hand beurteilt: AI-Thema ja oder nein
