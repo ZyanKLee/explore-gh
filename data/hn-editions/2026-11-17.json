@@ -1,0 +1,408 @@
+{
+  "format_version": 1,
+  "day": "2026-11-17",
+  "projects": [
+    {
+      "story": {
+        "id": "50519744",
+        "title": "Jiff 1.0: A datetime library for Rust",
+        "url": "https://burntsushi.net/jiff/",
+        "points": 369,
+        "comments": 81,
+        "created_at": "2026-11-16T16:53:39+00:00"
+      },
+      "repository_url": "https://github.com/BurntSushi/jiff",
+      "project_url": "https://burntsushi.net/jiff/",
+      "description": "A datetime library for Rust that encourages you to jump into the pit of success.",
+      "language": "Rust",
+      "license_id": "Unlicense",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "calendar",
+        "civil",
+        "date",
+        "date-time",
+        "datetime",
+        "duration",
+        "iana",
+        "iso8601",
+        "jiff",
+        "local",
+        "rfc2822",
+        "rust",
+        "strftime",
+        "strptime",
+        "temporal",
+        "time",
+        "timezone",
+        "tzdb",
+        "utc",
+        "zone"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf burntsushi.net. Repo und Story teilen „burntsushi“, „jiff“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50515151",
+        "title": "Squircles",
+        "url": "https://linebender.org/wiki/curves/squircle/",
+        "points": 179,
+        "comments": 46,
+        "created_at": "2026-11-16T07:55:10+00:00"
+      },
+      "repository_url": "https://github.com/phamfoo/figma-squircle",
+      "project_url": "https://linebender.org/wiki/curves/squircle/",
+      "description": "Figma-flavored squircles for everyone",
+      "language": "TypeScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "figma",
+        "react",
+        "squircle"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf linebender.org. Repo und Story teilen „squircle“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50523291",
+        "title": "My Quest to push native Three.js quality match AAA Game Engines",
+        "url": "https://ben3d.ca/blog/building-the-aaa-lighting-pipeline-in-threejs",
+        "points": 133,
+        "comments": 55,
+        "created_at": "2026-11-16T21:07:43+00:00"
+      },
+      "repository_url": "https://github.com/mrdoob/three.js",
+      "project_url": "https://ben3d.ca/blog/building-the-aaa-lighting-pipeline-in-threejs",
+      "description": "JavaScript 3D Library.",
+      "language": "JavaScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "3d",
+        "augmented-reality",
+        "canvas",
+        "html5",
+        "javascript",
+        "svg",
+        "virtual-reality",
+        "webaudio",
+        "webgl",
+        "webgl2",
+        "webgpu",
+        "webxr"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf ben3d.ca. Repo und Story teilen „three“, „threejs“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50519345",
+        "title": "Jolt – Clojure that speaks C",
+        "url": "https://jolt-lang.net/",
+        "points": 106,
+        "comments": 36,
+        "created_at": "2026-11-16T16:23:01+00:00"
+      },
+      "repository_url": "https://github.com/jolt-lang/jolt",
+      "project_url": "https://jolt-lang.net/",
+      "description": "A Clojure compiler implemented on top of Chez Scheme",
+      "language": "Scheme",
+      "license_id": "EPL-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "chez",
+        "chez-scheme",
+        "clojure",
+        "functional-programming",
+        "language",
+        "lisp",
+        "native",
+        "programming-language"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf jolt-lang.net. Repo und Story teilen „jolt“, „joltlang“, „lang“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50512231",
+        "title": "Mini.nvim Is Now on Tangled",
+        "url": "https://tangled.org/nvim-mini.org/mini.nvim",
+        "points": 85,
+        "comments": 29,
+        "created_at": "2026-11-15T23:55:41+00:00"
+      },
+      "repository_url": "https://github.com/nvim-mini/mini.nvim",
+      "project_url": "https://tangled.org/nvim-mini.org/mini.nvim",
+      "description": "Library of 45+ independent Lua modules improving Neovim experience with minimal effort",
+      "language": "Lua",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "lua",
+        "mini-nvim",
+        "neovim",
+        "neovim-plugin"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf tangled.org. Repo und Story teilen „mini“, „nvim“.",
+        "README: 6-mal AI-Begriffe („ai“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50521870",
+        "title": "How to Intercept HTTP/3 Traffic: QUIC and Qpack",
+        "url": "https://interceptsuite.com/blog/intercept-http3-traffic-quic-qpack-explained/",
+        "points": 70,
+        "comments": 9,
+        "created_at": "2026-11-16T19:29:17+00:00"
+      },
+      "repository_url": "https://github.com/InterceptSuite/Extension",
+      "project_url": "https://interceptsuite.com/blog/intercept-http3-traffic-quic-qpack-explained/",
+      "description": "InterceptSuite Extensions",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf interceptsuite.com. Repo und Story teilen „interceptsuite“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50512218",
+        "title": "Parcel: A desktop mail client for Linux, built with Zig",
+        "url": "https://tangled.org/rockorager.dev/parcel",
+        "points": 66,
+        "comments": 19,
+        "created_at": "2026-11-15T23:54:39+00:00"
+      },
+      "repository_url": "https://github.com/rockorager/siv",
+      "project_url": "https://tangled.org/rockorager.dev/parcel",
+      "description": "A high-performance GUI toolkit for Linux and Wayland, written in Zig with a stable C ABI",
+      "language": "HTML",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "gui",
+        "linux",
+        "toolkit",
+        "wayland",
+        "zig"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf tangled.org. Repo und Story teilen „rockorager“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50518068",
+        "title": "A 512 KiB binary message teaching chess without a shared language",
+        "url": "https://artemlegotin.com/golden-board/",
+        "points": 60,
+        "comments": 15,
+        "created_at": "2026-11-16T14:38:54+00:00"
+      },
+      "repository_url": "https://github.com/arlegotin/golden-board",
+      "project_url": "https://artemlegotin.com/golden-board/",
+      "description": "A self-explaining binary message teaching chess to an unknown recipient without shared language, culture, or prior knowledge of the game.",
+      "language": "Python",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "chess",
+        "information-theory",
+        "interstellar-communication",
+        "python",
+        "self-describing-data",
+        "seti",
+        "universal-language"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf artemlegotin.com. Repo und Story teilen „board“, „golden“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "README: 6-mal AI-Begriffe („ai“, „llm“, „chatgpt“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50525052",
+        "title": "Show HN: Sutra-OS – A self-hosted ontology platform",
+        "url": "https://github.com/0nelight/sutra-os",
+        "points": 53,
+        "comments": 26,
+        "created_at": "2026-11-16T23:25:41+00:00"
+      },
+      "repository_url": "https://github.com/0nelight/sutra-os",
+      "project_url": "https://github.com/0nelight/sutra-os",
+      "description": "Scarce Units, Typed, Related, Actionable.  An open-source, self-hosted ontology platform.",
+      "language": "Clojure",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "README: 14-mal AI-Begriffe („ai agent“, „agent“, „ai“, „llm“ …)"
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50523459",
+        "title": "OpenCode Browse",
+        "url": "https://opencode.ai/product/browse",
+        "points": 224,
+        "comments": 117,
+        "created_at": "2026-11-16T21:20:37+00:00"
+      },
+      "repository_url": "https://github.com/anomalyco/opencode",
+      "project_url": "https://opencode.ai/product/browse",
+      "description": "The open source coding agent.",
+      "language": "TypeScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf opencode.ai. Repo und Story teilen „opencode“.",
+        "Beschreibung: AI-Begriffe „coding agent“",
+        "README: 18-mal AI-Begriffe („ai“, „coding agent“, „agent“, „subagent“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50517815",
+        "title": "The Active Directory Era Is Finally Over",
+        "url": "https://infisical.com/blog/active-directory-machine-identity",
+        "points": 122,
+        "comments": 78,
+        "created_at": "2026-11-16T14:15:31+00:00"
+      },
+      "repository_url": "https://github.com/Infisical/infisical",
+      "project_url": "https://infisical.com/blog/active-directory-machine-identity",
+      "description": "Infisical is the open-source platform for securing secrets, certificates, access, and AI Agents.",
+      "language": "TypeScript",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "acme",
+        "agents",
+        "ai-agents",
+        "certificate-management",
+        "devsecops",
+        "environment-variables",
+        "kubernetes",
+        "open-source",
+        "pam",
+        "pki",
+        "postgres",
+        "private-ca",
+        "privileged-access-management",
+        "secret-management",
+        "secret-manager",
+        "secrets",
+        "secrets-management",
+        "security",
+        "security-tools",
+        "vault"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf infisical.com. Repo und Story teilen „infisical“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "Topics: AI-Begriffe „agent“, „ai agent“",
+        "Beschreibung: AI-Begriffe „ai agent“",
+        "README: 30-mal AI-Begriffe („ai agent“, „agent“, „llm“, „claude“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50526152",
+        "title": "Running coding agents without handing them my credentials",
+        "url": "https://blog.antonio.cx/running-agents-with-lend",
+        "points": 99,
+        "comments": 55,
+        "created_at": "2026-11-17T01:18:56+00:00"
+      },
+      "repository_url": "https://github.com/antoniomika/lend",
+      "project_url": "https://blog.antonio.cx/running-agents-with-lend",
+      "description": "Approve remote requests for local commands and SSH keys",
+      "language": "Go",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.antonio.cx. Repo und Story teilen „lend“.",
+        "README: 107-mal AI-Begriffe („coding agent“, „mcp“, „agent“, „claude“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50517803",
+        "title": "Show HN: Coral – Open-source gateway where agents write their own tools",
+        "url": "https://github.com/withcoral/coral",
+        "points": 52,
+        "comments": 24,
+        "created_at": "2026-11-16T14:14:51+00:00"
+      },
+      "repository_url": "https://github.com/withcoral/coral",
+      "project_url": "https://github.com/withcoral/coral",
+      "description": "Execution rails for agents. Equip your AI to work with sensitive enterprise systems. Give agents precise permissions and custom tools that work faster with fewer tokens.",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Beschreibung: AI-Begriffe „agent“, „ai“",
+        "README: 70-mal AI-Begriffe („agent“, „claude“, „mcp“, „codex“ …)"
+      ]
+    }
+  ]
+}
