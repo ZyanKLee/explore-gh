@@ -27,7 +27,7 @@
   <li class="entry">
     <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
     <div class="body">
-      <h2><a href="{{ entry.url }}"><span class="owner">{{ owner }}/</span>{{ name }}</a></h2>
+      <h2><a href="{{ entry.url }}" target="_blank" rel="noopener noreferrer"><span class="owner">{{ owner }}/</span>{{ name }}</a></h2>
       {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
       <ul class="facts" role="list">
         {% if entry.language %}<li class="language">{{ entry.language }}</li>{% endif %}
@@ -36,7 +36,7 @@
         <li>{{ entry.active_authors }} {{ "aktiver Autor" if entry.active_authors == 1 else "aktive Autoren" }}</li>
         <li>{{ entry.age }}</li>
         {% if entry.license %}<li>Lizenz {{ entry.license }}</li>{% endif %}
-        {% if entry.homepage %}<li class="homepage"><a href="{{ entry.homepage }}" rel="noopener noreferrer">{{ entry.homepage|replace("https://", "")|replace("http://", "")|trim("/") }}</a></li>{% endif %}
+        {% if entry.homepage %}<li class="homepage"><a href="{{ entry.homepage }}" target="_blank" rel="noopener noreferrer">{{ entry.homepage|replace("https://", "")|replace("http://", "")|trim("/") }}</a></li>{% endif %}
       </ul>
     </div>
     <figure class="climb">
@@ -80,15 +80,15 @@
   <li class="entry">
     <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
     <div class="body">
-      <h2><a href="{{ entry.repository_url }}">{{ entry.title }}</a></h2>
+      <h2><a href="{{ entry.repository_url }}" target="_blank" rel="noopener noreferrer">{{ entry.title }}</a></h2>
       {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
       <ul class="facts" role="list">
         {% if entry.language %}<li>{{ entry.language }}</li>{% endif %}
         {% if entry.license_id %}<li>Lizenz {{ entry.license_id }}</li>{% endif %}
         <li>{{ entry.points }} {{ entry.points_label }}</li>
         <li>{{ entry.comments }} Kommentare</li>
-        {% if entry.project_url %}<li><a href="{{ entry.project_url }}">Projektseite</a></li>{% endif %}
-        <li><a href="{{ entry.discussion_url }}">{{ entry.discussion_label }}</a></li>
+        {% if entry.project_url %}<li><a href="{{ entry.project_url }}" target="_blank" rel="noopener noreferrer">Projektseite</a></li>{% endif %}
+        <li><a href="{{ entry.discussion_url }}" target="_blank" rel="noopener noreferrer">{{ entry.discussion_label }}</a></li>
       </ul>
     </div>
     {% if entry.reasons %}

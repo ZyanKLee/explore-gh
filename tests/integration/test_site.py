@@ -109,6 +109,25 @@ def test_the_site_needs_no_script_and_loads_nothing_from_other_servers(site):
     assert "Ohne Tracking, ohne Skripte." in start
 
 
+def links(html):
+    return re.findall(r"<a\s[^>]*>", html)
+
+
+def test_links_to_other_sites_open_a_new_tab_and_links_within_the_site_do_not(site):
+    write_edition(site.data, edition_json(main=[entry_json(homepage="https://tiny.example")]))
+    write_community_edition(site.data, "hn", community_edition_json())
+    page = site()
+
+    for path in ("index.html", "hn/index.html"):
+        found = links(page(path))
+        external = [link for link in found if 'href="http' in link]
+        assert len(external) >= 2, path
+        for link in external:
+            assert 'target="_blank"' in link and 'rel="noopener noreferrer"' in link, link
+        for link in set(found) - set(external):
+            assert "target=" not in link, link
+
+
 def test_a_counted_site_loads_plausible_on_every_page_but_never_in_a_feed(site):
     write_edition(site.data, edition_json())
     page = site(plausible_script="https://stats.example.org/js/x.js")
