@@ -1,0 +1,264 @@
+{
+  "format_version": 1,
+  "day": "2026-11-18",
+  "projects": [
+    {
+      "story": {
+        "id": "50537156",
+        "title": "jQuery 4.1.0",
+        "url": "https://github.com/jquery/jquery/releases/tag/4.1.0",
+        "points": 329,
+        "comments": 167,
+        "created_at": "2026-11-17T19:50:40+00:00"
+      },
+      "repository_url": "https://github.com/jquery/jquery",
+      "project_url": "https://github.com/jquery/jquery/releases/tag/4.1.0",
+      "description": "jQuery JavaScript Library",
+      "language": "JavaScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "jquery"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt."
+      ]
+    },
+    {
+      "story": {
+        "id": "50532385",
+        "title": "Show HN: Alloy CSS, dialogs, menus and tabs that work with JavaScript off",
+        "url": "https://alloyhtml.com/example.html",
+        "points": 198,
+        "comments": 33,
+        "created_at": "2026-11-17T15:07:09+00:00"
+      },
+      "repository_url": "https://github.com/alloyhtml/css",
+      "project_url": "https://alloyhtml.com/example.html",
+      "description": "One stylesheet for HTML your server renders. Dialogs, menus, tabs and toasts that work with JavaScript off. No build step.",
+      "language": "SCSS",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "accessibility",
+        "css",
+        "css-framework",
+        "dark-mode",
+        "dialog",
+        "html",
+        "htmx",
+        "no-dependencies",
+        "no-javascript",
+        "pico-css-alternative",
+        "popover",
+        "responsive",
+        "sass",
+        "server-side-rendering",
+        "utility-classes"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf alloyhtml.com. Repo und Story teilen „alloyhtml“, „css“.",
+        "README: 15-mal AI-Begriffe („ai“, „agent“, „llm“, „claude“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50518690",
+        "title": "Psychic: Like fzf but learns from your actions",
+        "url": "https://klauria.tech/psychic/",
+        "points": 56,
+        "comments": 16,
+        "created_at": "2026-11-16T15:33:34+00:00"
+      },
+      "repository_url": "https://github.com/kshitijl/psychic",
+      "project_url": "https://klauria.tech/psychic/",
+      "description": "Smarter file explorer and cd replacement. Learns from your actions and ranks files intelligently. Inspired by fzf and zoxide. Trains an ML model on your machine, with your data, to serve you.",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf klauria.tech. Repo und Story teilen „psychic“.",
+        "README: 5-mal AI-Begriffe („llm“)"
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50540178",
+        "title": "Google's AI answers reducing search traffic by 40%",
+        "url": "https://revscope.co/blog/search-seo-geo-2026/",
+        "points": 425,
+        "comments": 311,
+        "created_at": "2026-11-18T00:17:58+00:00"
+      },
+      "repository_url": "https://github.com/eloff/revscope",
+      "project_url": "https://revscope.co/blog/search-seo-geo-2026/",
+      "description": "RevScope - open source web revenue analytics that's agent friendly",
+      "language": "Rust",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "analytics"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf revscope.co. Repo und Story teilen „revscope“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "Beschreibung: AI-Begriffe „agent“",
+        "README: 17-mal AI-Begriffe („agent“, „mcp“, „ai“, „openai“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50535740",
+        "title": "Not Everything Needs an LLM",
+        "url": "https://newsletter.posthog.com/p/decision-models",
+        "points": 160,
+        "comments": 69,
+        "created_at": "2026-11-17T18:16:18+00:00"
+      },
+      "repository_url": "https://github.com/PostHog/posthog",
+      "project_url": "https://newsletter.posthog.com/p/decision-models",
+      "description": ":hedgehog: PostHog is the leading platform for building self-driving products. Our developer tools – AI observability, analytics, session replay, flags, experiments, error tracking, logs, and more – capture all the context agents need to diagnose problems, uncover opportunities, and ship fixes. Steer it all from Slack, web, desktop, or the MCP.",
+      "language": "Python",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ab-testing",
+        "ai-analytics",
+        "analytics",
+        "cdp",
+        "data-warehouse",
+        "experiments",
+        "feature-flags",
+        "javascript",
+        "product-analytics",
+        "python",
+        "react",
+        "session-replay",
+        "surveys",
+        "typescript",
+        "web-analytics"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf newsletter.posthog.com. Repo und Story teilen „posthog“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "Topics: AI-Begriffe „ai“",
+        "Beschreibung: AI-Begriffe „ai“, „agent“, „mcp“",
+        "README: 34-mal AI-Begriffe („agent“, „ai“, „llm“, „mcp“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50541619",
+        "title": "Claude was trained on protein sequences at scale",
+        "url": "http://xinmingtu.cn/blog/2026/claude-opus-5-5-protein-sequences/",
+        "points": 66,
+        "comments": 26,
+        "created_at": "2026-11-18T03:47:43+00:00"
+      },
+      "repository_url": "https://github.com/XinmingTu/LLM-bioseq-probe",
+      "project_url": "http://xinmingtu.cn/blog/2026/claude-opus-5-5-protein-sequences/",
+      "description": "",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf xinmingtu.cn. Repo und Story teilen „xinmingtu“.",
+        "Name: AI-Begriffe „llm“",
+        "README: 28-mal AI-Begriffe („llm“, „language model“, „claude“, „openrouter“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50532773",
+        "title": "Antfly learned to stop worrying and love Apache 2.0",
+        "url": "https://antfly.io/thoughts/how-antfly-learned-to-stop-worrying-and-love-apache-2",
+        "points": 54,
+        "comments": 11,
+        "created_at": "2026-11-17T15:33:15+00:00"
+      },
+      "repository_url": "https://github.com/antflydb/antfly",
+      "project_url": "https://antfly.io/thoughts/how-antfly-learned-to-stop-worrying-and-love-apache-2",
+      "description": "",
+      "language": "Zig",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ai-agents",
+        "autoscaling",
+        "elasticsearch",
+        "information-retrieval",
+        "ml",
+        "multimodal",
+        "rag",
+        "semantic-search"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf antfly.io. Repo und Story teilen „antfly“.",
+        "Topics: AI-Begriffe „ai agent“, „rag“",
+        "README: 24-mal AI-Begriffe („rag“, „agent“, „tool calling“, „ollama“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50533270",
+        "title": "Show HN: TrnRT – An open-source LLM inference engine for AWS Trainium",
+        "url": "https://github.com/RunanywhereAI/trnrt",
+        "points": 50,
+        "comments": 7,
+        "created_at": "2026-11-17T16:01:04+00:00"
+      },
+      "repository_url": "https://github.com/RunanywhereAI/trnrt",
+      "project_url": "https://github.com/RunanywhereAI/trnrt",
+      "description": "The open LLM inference engine for AWS Trainium: NKI megakernels, 1M-token context, OpenAI-compatible API. By RunAnywhere.",
+      "language": "Python",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "aws",
+        "glm",
+        "inference",
+        "llm",
+        "llm-serving",
+        "megakernels",
+        "neuron",
+        "nki",
+        "openai-api",
+        "trainium"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Topics: AI-Begriffe „llm“, „openai“",
+        "Beschreibung: AI-Begriffe „llm“, „openai“",
+        "README: 19-mal AI-Begriffe („llm“, „ai“, „large language model“, „openai“ …)"
+      ]
+    }
+  ]
+}

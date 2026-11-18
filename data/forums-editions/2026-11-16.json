@@ -1,0 +1,955 @@
+{
+  "format_version": 1,
+  "day": "2026-11-16",
+  "projects": [
+    {
+      "story": {
+        "id": "81hnjw",
+        "title": "Announcing Rust 1.100.0",
+        "url": "https://blog.rust-lang.org/2026/11/12/Rust-1.100.0/",
+        "discussion_url": "https://lobste.rs/s/81hnjw",
+        "points": 162,
+        "comments": 14,
+        "created_at": "2026-11-12T12:43:41.418000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/rust-lang/rust",
+      "project_url": "https://blog.rust-lang.org/2026/11/12/Rust-1.100.0/",
+      "description": "Empowering everyone to build reliable and efficient software.",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "compiler",
+        "language",
+        "rust"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.rust-lang.org. Repo und Story teilen „lang“, „rust“, „rustlang“.",
+        "162 Punkte auf Lobsters, das 16,2-Fache der Schwelle von 10.",
+        "Auch auf Lemmy c/programming, 19 Punkte.",
+        "Auch auf Lemmy c/rust, 52 Punkte.",
+        "Auch auf Mastodon #rust, 0 Reaktionen.",
+        "Auch auf Mastodon #rust, 0 Reaktionen.",
+        "Auch auf Mastodon #rust, 1 Reaktionen.",
+        "Auch auf Mastodon #rust, 1 Reaktionen."
+      ]
+    },
+    {
+      "story": {
+        "id": "dxxvek",
+        "title": "A datetime library for Rust",
+        "url": "https://burntsushi.net/jiff/",
+        "discussion_url": "https://lobste.rs/s/dxxvek",
+        "points": 152,
+        "comments": 51,
+        "created_at": "2026-11-15T16:39:34.065000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/BurntSushi/jiff",
+      "project_url": "https://burntsushi.net/jiff/",
+      "description": "A datetime library for Rust that encourages you to jump into the pit of success.",
+      "language": "Rust",
+      "license_id": "Unlicense",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "calendar",
+        "civil",
+        "date",
+        "date-time",
+        "datetime",
+        "duration",
+        "iana",
+        "iso8601",
+        "jiff",
+        "local",
+        "rfc2822",
+        "rust",
+        "strftime",
+        "strptime",
+        "temporal",
+        "time",
+        "timezone",
+        "tzdb",
+        "utc",
+        "zone"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf burntsushi.net. Repo und Story teilen „burntsushi“, „jiff“.",
+        "152 Punkte auf Lobsters, das 15,2-Fache der Schwelle von 10.",
+        "Auch auf Lemmy c/rust, 26 Punkte."
+      ]
+    },
+    {
+      "story": {
+        "id": "59445433",
+        "title": "Nextcloud Releases Free Desktop Office Suite Built on Euro-Office",
+        "url": "https://linuxiac.com/nextcloud-releases-free-desktop-office-suite-built-on-euro-office/",
+        "discussion_url": "https://lemmy.ml/post/55347653",
+        "points": 219,
+        "comments": 15,
+        "created_at": "2026-11-15T17:54:37.334584+00:00",
+        "origin": {
+          "name": "Lemmy c/opensource@lemmy.ml",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/Euro-Office/DesktopEditors",
+      "project_url": "https://linuxiac.com/nextcloud-releases-free-desktop-office-suite-built-on-euro-office/",
+      "description": "",
+      "language": "PowerShell",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf linuxiac.com. Repo und Story teilen „euro“, „office“.",
+        "219 Punkte auf Lemmy c/opensource@lemmy.ml, das 14,6-Fache der Schwelle von 15.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "59257511",
+        "title": "The AI-Assisted Linux Driver for DisplayLink Gets Legal Notice",
+        "url": "https://itsfoss.com/news/synaptics-vino-fiasco/",
+        "discussion_url": "https://lemmy.ml/post/55185885",
+        "points": 188,
+        "comments": 51,
+        "created_at": "2026-11-11T14:24:07.116168+00:00",
+        "origin": {
+          "name": "Lemmy c/linux@lemmy.ml",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/DisplayLink/evdi",
+      "project_url": "https://itsfoss.com/news/synaptics-vino-fiasco/",
+      "description": "Extensible Virtual Display Interface",
+      "language": "C",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "display",
+        "displaylink",
+        "drm",
+        "linux-kernel",
+        "screen",
+        "video",
+        "virtual"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf itsfoss.com. Repo und Story teilen „displaylink“.",
+        "188 Punkte auf Lemmy c/linux@lemmy.ml, das 12,5-Fache der Schwelle von 15.",
+        "Auch auf Lobsters, 64 Punkte."
+      ]
+    },
+    {
+      "story": {
+        "id": "ooshl8",
+        "title": "The entirety of \"Let Over Lambda\" is now freely available online",
+        "url": "https://letoverlambda.com/",
+        "discussion_url": "https://lobste.rs/s/ooshl8",
+        "points": 79,
+        "comments": 26,
+        "created_at": "2026-11-12T06:44:34.403000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/thephoeron/let-over-lambda",
+      "project_url": "https://letoverlambda.com/",
+      "description": "Doug Hoyte's \"Production\" version of macros from Let Over Lambda, ready for ASDF and Quicklisp.",
+      "language": "Common Lisp",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "common-lisp",
+        "macros"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf letoverlambda.com. Repo und Story teilen „lambda“, „let“, „letoverlambda“, „over“.",
+        "79 Punkte auf Lobsters, das 7,9-Fache der Schwelle von 10.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "sdtcvv",
+        "title": "I deleted all my SSH keys",
+        "url": "https://blog.infected.systems/posts/2026-11-03-i-deleted-all-my-ssh-keys/",
+        "discussion_url": "https://lobste.rs/s/sdtcvv",
+        "points": 65,
+        "comments": 24,
+        "created_at": "2026-11-10T14:49:23.641000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/Foxboron/ssh-tpm-agent",
+      "project_url": "https://blog.infected.systems/posts/2026-11-03-i-deleted-all-my-ssh-keys/",
+      "description": ":computer: :key: ssh-agent for TPMs",
+      "language": "Go",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "go-tpm",
+        "golang",
+        "security",
+        "ssh",
+        "ssh-agent",
+        "tpm",
+        "tpm2"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.infected.systems. Repo und Story teilen „ssh“.",
+        "65 Punkte auf Lobsters, das 6,5-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "zy4p7f",
+        "title": "Using voltage glitching to unleash the A100 in my mining card",
+        "url": "https://blog.kate.land/posts/using-voltage-glitching-to-unlock-the-a100/",
+        "discussion_url": "https://lobste.rs/s/zy4p7f",
+        "points": 55,
+        "comments": 10,
+        "created_at": "2026-11-11T06:36:57.129000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/kate-land/ga100vfi",
+      "project_url": "https://blog.kate.land/posts/using-voltage-glitching-to-unlock-the-a100/",
+      "description": "GA100 voltage glitch resources",
+      "language": "C",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.kate.land. Repo und Story teilen „kate“, „land“.",
+        "55 Punkte auf Lobsters, das 5,5-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "2drgwh",
+        "title": "Hijacking Samsung TV Smart Hub Ads",
+        "url": "https://dvratil.cz/2026/11/hijacking-samsung-tv-smart-hub-ads/",
+        "discussion_url": "https://lobste.rs/s/2drgwh",
+        "points": 54,
+        "comments": 3,
+        "created_at": "2026-11-12T05:08:45.506000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/danvratil/samsung-tv-adspoofer",
+      "project_url": "https://dvratil.cz/2026/11/hijacking-samsung-tv-smart-hub-ads/",
+      "description": "Samsung TV Ad Spoofer",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf dvratil.cz. Repo und Story teilen „samsung“.",
+        "54 Punkte auf Lobsters, das 5,4-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "gj5obq",
+        "title": "Open Graph images with Astro and Typst",
+        "url": "https://eaj.no/posts/open-graph-images-with-typst/",
+        "discussion_url": "https://lobste.rs/s/gj5obq",
+        "points": 53,
+        "comments": 16,
+        "created_at": "2026-11-10T05:42:48.435000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/typst/typst",
+      "project_url": "https://eaj.no/posts/open-graph-images-with-typst/",
+      "description": "A markup-based typesetting system that is powerful and easy to learn.",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "compiler",
+        "markup",
+        "typesetting",
+        "typst"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf eaj.no. Repo und Story teilen „typst“.",
+        "53 Punkte auf Lobsters, das 5,3-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "iihw5u",
+        "title": "Squircles",
+        "url": "https://linebender.org/wiki/curves/squircle/",
+        "discussion_url": "https://lobste.rs/s/iihw5u",
+        "points": 52,
+        "comments": 7,
+        "created_at": "2026-11-16T07:56:54.181000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/phamfoo/figma-squircle",
+      "project_url": "https://linebender.org/wiki/curves/squircle/",
+      "description": "Figma-flavored squircles for everyone",
+      "language": "TypeScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "figma",
+        "react",
+        "squircle"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf linebender.org. Repo und Story teilen „squircle“.",
+        "52 Punkte auf Lobsters, das 5,2-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "idktfu",
+        "title": "Go Turns 17",
+        "url": "https://go.dev/blog/17years",
+        "discussion_url": "https://lobste.rs/s/idktfu",
+        "points": 46,
+        "comments": 9,
+        "created_at": "2026-11-10T16:47:26.672000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/golang/go",
+      "project_url": "https://go.dev/blog/17years",
+      "description": "The Go programming language",
+      "language": "Go",
+      "license_id": "BSD-3-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "go",
+        "golang",
+        "language",
+        "programming-language"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf go.dev. Repo und Story teilen „go“.",
+        "46 Punkte auf Lobsters, das 4,6-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "ydzo2o",
+        "title": "Announcing Hegel-clj",
+        "url": "https://aphyr.com/posts/428-announcing-hegel-clj",
+        "discussion_url": "https://lobste.rs/s/ydzo2o",
+        "points": 44,
+        "comments": 2,
+        "created_at": "2026-11-15T22:12:25.212000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/aphyr/hegel-clj",
+      "project_url": "https://aphyr.com/posts/428-announcing-hegel-clj",
+      "description": "Clojure bindings for Hegel, a property-based testing system.",
+      "language": "Clojure",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf aphyr.com. Repo und Story teilen „aphyr“, „clj“, „hegel“.",
+        "44 Punkte auf Lobsters, das 4,4-Fache der Schwelle von 10.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "zingk1",
+        "title": "Announcing .NET 11",
+        "url": "https://devblogs.microsoft.com/dotnet/announcing-dotnet-11/",
+        "discussion_url": "https://lobste.rs/s/zingk1",
+        "points": 35,
+        "comments": 6,
+        "created_at": "2026-11-10T10:03:21.955000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/dotnet/core",
+      "project_url": "https://devblogs.microsoft.com/dotnet/announcing-dotnet-11/",
+      "description": ".NET news, announcements, release notes, and more!",
+      "language": "PowerShell",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "dotnet",
+        "dotnet-core"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf devblogs.microsoft.com. Repo und Story teilen „dotnet“.",
+        "35 Punkte auf Lobsters, das 3,5-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "v3uidx",
+        "title": "Lock your GitHub Actions",
+        "url": "https://hugovk.dev/blog/2026/lock-github-actions/",
+        "discussion_url": "https://lobste.rs/s/v3uidx",
+        "points": 31,
+        "comments": 11,
+        "created_at": "2026-11-11T12:16:01.014000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/github/gh-actions-lock",
+      "project_url": "https://hugovk.dev/blog/2026/lock-github-actions/",
+      "description": "A gh CLI extension that generates and verifies the GitHub Actions dependency lockfile, pinning every action your workflows use to an exact commit.",
+      "language": "Go",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "cli",
+        "dependency-pinning",
+        "gh-extension",
+        "github-actions",
+        "go",
+        "lockfile",
+        "security",
+        "supply-chain-security"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf hugovk.dev. Repo und Story teilen „actions“, „lock“.",
+        "31 Punkte auf Lobsters, das 3,1-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "wfr0b4",
+        "title": "About the downtime and security incident",
+        "url": "https://danbooru.donmai.us/forum_topics/38685.html",
+        "discussion_url": "https://lobste.rs/s/wfr0b4",
+        "points": 26,
+        "comments": 9,
+        "created_at": "2026-11-11T10:58:45.890000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/danbooru/danbooru",
+      "project_url": "https://danbooru.donmai.us/forum_topics/38685.html",
+      "description": "A taggable image board written in Rails.",
+      "language": "Ruby",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "anime",
+        "booru",
+        "danbooru",
+        "imageboard",
+        "rails",
+        "ruby"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf danbooru.donmai.us. Repo und Story teilen „danbooru“.",
+        "26 Punkte auf Lobsters, das 2,6-Fache der Schwelle von 10.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "md0vco",
+        "title": "beer.drv.drv.drv",
+        "url": "https://fzakaria.com/2026/11/14/beer-drv-drv-drv",
+        "discussion_url": "https://lobste.rs/s/md0vco",
+        "points": 26,
+        "comments": 7,
+        "created_at": "2026-11-15T18:47:28.450000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/fzakaria/fzakaria.com",
+      "project_url": "https://fzakaria.com/2026/11/14/beer-drv-drv-drv",
+      "description": "My personal blog & website",
+      "language": "HTML",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "blog",
+        "jekyll"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf fzakaria.com. Repo und Story teilen „fzakaria“.",
+        "26 Punkte auf Lobsters, das 2,6-Fache der Schwelle von 10.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "6t3oi4",
+        "title": "On Leaving Swift for Rust",
+        "url": "https://www.prux.org/posts/goodbye-swift-hello-rust/",
+        "discussion_url": "https://lobste.rs/s/6t3oi4",
+        "points": 25,
+        "comments": 12,
+        "created_at": "2026-11-16T11:56:45.490000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/swiftlang/swift-org-website",
+      "project_url": "https://www.prux.org/posts/goodbye-swift-hello-rust/",
+      "description": "Swift.org website",
+      "language": "SCSS",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf prux.org. Repo und Story teilen „swift“.",
+        "25 Punkte auf Lobsters, das 2,5-Fache der Schwelle von 10.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "9haygb",
+        "title": "clice v1.0 Released: Welcome to Modern C++",
+        "url": "https://www.ykiko.me/en/articles/2105384023094834022/",
+        "discussion_url": "https://lobste.rs/s/9haygb",
+        "points": 23,
+        "comments": 11,
+        "created_at": "2026-11-15T15:19:35.897000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/clice-io/clice",
+      "project_url": "https://www.ykiko.me/en/articles/2105384023094834022/",
+      "description": "A C/C++, Objective-C and CUDA language server built on Clang: crash-isolated worker processes, C++20 modules and compilation contexts out of the box, plus a CLI to index, query and refactor whole projects.",
+      "language": "C++",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "c",
+        "clang",
+        "cpp",
+        "cpp-modules",
+        "cpp20",
+        "cuda",
+        "language-server",
+        "llvm",
+        "lsp",
+        "neovim",
+        "objective-c",
+        "vscode-extension",
+        "zed"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf ykiko.me. Repo und Story teilen „clice“.",
+        "23 Punkte auf Lobsters, das 2,3-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "alijyg",
+        "title": "A faster Easter date function",
+        "url": "https://www.benjoffe.com/fast-easter",
+        "discussion_url": "https://lobste.rs/s/alijyg",
+        "points": 23,
+        "comments": 5,
+        "created_at": "2026-11-10T08:36:45.331000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/benjoffe/fast-world-calendars",
+      "project_url": "https://www.benjoffe.com/fast-easter",
+      "description": "Fast calendar arithmetic",
+      "language": "C++",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf benjoffe.com. Repo und Story teilen „benjoffe“, „fast“.",
+        "23 Punkte auf Lobsters, das 2,3-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "dtjgmc",
+        "title": "A NES emulator written in Odin",
+        "url": "https://lucypero.com/lucynes.html",
+        "discussion_url": "https://lobste.rs/s/dtjgmc",
+        "points": 18,
+        "comments": 1,
+        "created_at": "2026-11-15T06:37:33.463000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/lucypero/lucynes",
+      "project_url": "https://lucypero.com/lucynes.html",
+      "description": "Accurate NES emulator written in Odin",
+      "language": "Odin",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf lucypero.com. Repo und Story teilen „lucynes“, „lucypero“.",
+        "18 Punkte auf Lobsters, das 1,8-Fache der Schwelle von 10."
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "59446767",
+        "title": "Developer's $300 Embroidery Machine Required a Subscription, So She Built This Open Source Tool",
+        "url": "https://itsfoss.com/news/zigzag-embroidery-software/",
+        "discussion_url": "https://lemmy.ml/post/55349039",
+        "points": 119,
+        "comments": 7,
+        "created_at": "2026-11-15T18:55:24.897864+00:00",
+        "origin": {
+          "name": "Lemmy c/opensource@lemmy.ml",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/simpsoka/zigzag",
+      "project_url": "https://itsfoss.com/news/zigzag-embroidery-software/",
+      "description": "Free, open-source embroidery software for Mac and Windows. Turn SVG artwork into machine embroidery, edit stitches visually, and create designs with AI agents via MCP.",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "brother-skitch",
+        "embroidery",
+        "embroidery-digitizing",
+        "embroidery-software",
+        "machine-embroidery",
+        "macos",
+        "mcp",
+        "model-context-protocol",
+        "rust",
+        "svg",
+        "vector-editor",
+        "windows"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf itsfoss.com. Repo und Story teilen „zigzag“.",
+        "119 Punkte auf Lemmy c/opensource@lemmy.ml, das 7,9-Fache der Schwelle von 15.",
+        "Topics: AI-Begriffe „mcp“",
+        "Beschreibung: AI-Begriffe „ai agent“, „mcp“",
+        "README: 57-mal AI-Begriffe („mcp“, „ai agent“, „agent“, „claude“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "59242476",
+        "title": "Lean proof of the entire US tax code to find loopholes",
+        "url": "https://lexifina.com/blog/formalizing-the-us-tax-code",
+        "discussion_url": "https://literature.cafe/post/37170158",
+        "points": 89,
+        "comments": 15,
+        "created_at": "2026-11-11T06:53:09.290940+00:00",
+        "origin": {
+          "name": "Lemmy c/programming",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/lexifina/global-law",
+      "project_url": "https://lexifina.com/blog/formalizing-the-us-tax-code",
+      "description": "The world's law in git: any provision, any country, any date, and the law that wrote each word.",
+      "language": "HTML",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "git",
+        "law",
+        "legal-tech",
+        "legislation",
+        "mcp",
+        "open-data"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf lexifina.com. Repo und Story teilen „lexifina“.",
+        "89 Punkte auf Lemmy c/programming, das 5,9-Fache der Schwelle von 15.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "Topics: AI-Begriffe „mcp“",
+        "README: 18-mal AI-Begriffe („mcp“, „claude“, „chatgpt“, „codex“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "https://beoriginal.social/@FRYTG/117620772927614680",
+        "title": "most unhinged skill from google https:// github.com/google/skills/blob/ main/skills/developers/migrate-to-rust/SKILL.md ",
+        "url": "",
+        "discussion_url": "https://beoriginal.social/@FRYTG/117620772927614680",
+        "points": 1,
+        "comments": 1,
+        "created_at": "2026-11-15T13:49:23+00:00",
+        "origin": {
+          "name": "Mastodon #rust",
+          "reference_points": 5,
+          "min_points": 0,
+          "points_label": "Reaktionen"
+        }
+      },
+      "repository_url": "https://github.com/google/skills",
+      "project_url": "https://github.com/google/skills",
+      "description": "Agent Skills for Google products and technologies",
+      "language": "Python",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "google",
+        "googlecloud",
+        "skills"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden im ersten Beitrag. Repo und Story teilen „google“, „skills“.",
+        "1 Reaktionen auf Mastodon #rust, das 0,2-Fache der Bezugsgröße von 5. Testweise ohne Schwelle.",
+        "Beschreibung: AI-Begriffe „agent skill“",
+        "README: 108-mal AI-Begriffe („agent skill“, „agent“, „multi agent“, „agentic“ …)"
+      ],
+      "found_in_post": true
+    },
+    {
+      "story": {
+        "id": "https://mastodon.social/@Ilangr/117619788133797742",
+        "title": "EupaDev v0.1.0 is out: a self-hosted tool factory, Apache 2.0. You describe an internal tool. AI agents (Claude Code) sc",
+        "url": "",
+        "discussion_url": "https://mastodon.social/@Ilangr/117619788133797742",
+        "points": 1,
+        "comments": 0,
+        "created_at": "2026-11-15T09:38:56+00:00",
+        "origin": {
+          "name": "Mastodon #foss",
+          "reference_points": 5,
+          "min_points": 0,
+          "points_label": "Reaktionen"
+        }
+      },
+      "repository_url": "https://github.com/EupaDev-hq/eupadev",
+      "project_url": "https://github.com/EupaDev-hq/eupadev",
+      "description": "Your experts describe the tool they need, AI agents build it, your IT department approves every release. Self-hosted, Apache 2.0.",
+      "language": "TypeScript",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ai-agents",
+        "ansible",
+        "claude-code",
+        "devops",
+        "internal-tools",
+        "platform-engineering",
+        "self-hosted",
+        "sovereignty"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden im ersten Beitrag. Repo und Story teilen „eupadev“.",
+        "1 Reaktionen auf Mastodon #foss, das 0,2-Fache der Bezugsgröße von 5. Testweise ohne Schwelle.",
+        "Topics: AI-Begriffe „ai agent“, „claude“",
+        "Beschreibung: AI-Begriffe „ai agent“",
+        "README: 43-mal AI-Begriffe („ai agent“, „ai“, „agent“, „claude“ …)"
+      ],
+      "found_in_post": true
+    },
+    {
+      "story": {
+        "id": "https://mastodon.social/@camilleroux/117631433814905084",
+        "title": "Exact : un runtime d'Expo pour écrire votre app une fois et la faire tourner nativement sur le web, macOS, iOS et Linux,",
+        "url": "",
+        "discussion_url": "https://mastodon.social/@camilleroux/117631433814905084",
+        "points": 0,
+        "comments": 0,
+        "created_at": "2026-11-17T11:00:35+00:00",
+        "origin": {
+          "name": "Mastodon #rust",
+          "reference_points": 5,
+          "min_points": 0,
+          "points_label": "Reaktionen"
+        }
+      },
+      "repository_url": "https://github.com/expo/exact",
+      "project_url": "https://github.com/expo/exact",
+      "description": "Write an app once. It runs natively on the web, macOS, iOS, and Linux, and an AI agent can build it, run it, see it, and test it on every one of them.",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ai-agents",
+        "appkit",
+        "coding-agents",
+        "cross-platform",
+        "css",
+        "ios",
+        "linux",
+        "macos",
+        "native-apps",
+        "rust",
+        "swift",
+        "uikit",
+        "web"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden im ersten Beitrag. Repo und Story teilen „exact“, „expo“.",
+        "0 Reaktionen auf Mastodon #rust, das 0,0-Fache der Bezugsgröße von 5. Testweise ohne Schwelle.",
+        "Topics: AI-Begriffe „ai agent“, „coding agent“",
+        "Beschreibung: AI-Begriffe „ai agent“",
+        "README: 52-mal AI-Begriffe („coding agent“, „agent“, „claude“, „ai“ …)"
+      ],
+      "found_in_post": true
+    }
+  ]
+}
