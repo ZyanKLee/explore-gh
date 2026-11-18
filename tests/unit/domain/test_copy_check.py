@@ -2,8 +2,8 @@ from datetime import timedelta
 
 from builders import NOW, make_assessment, make_snapshot
 
-from github_anti_ai.domain.copies import CopyCheck
-from github_anti_ai.domain.model import Exclusion, RepoId
+from explore_gh.domain.copies import CopyCheck
+from explore_gh.domain.model import Exclusion, RepoId
 
 check = CopyCheck()
 LONG_README = "# IPTV Player\n\n" + "Watch your playlists on any screen. " * 20

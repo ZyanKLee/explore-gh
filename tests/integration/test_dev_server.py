@@ -5,7 +5,7 @@ import urllib.request
 
 import pytest
 
-from github_anti_ai.publication.dev_server import (
+from explore_gh.publication.dev_server import (
     RELOAD_PATH,
     Preview,
     Watcher,

@@ -5,10 +5,10 @@ from datetime import UTC, datetime
 import pytest
 from builders import make_snapshot
 
-from github_anti_ai.adapters.copilot_reviewer import CopilotReviewer, prompt
-from github_anti_ai.application.ports import SourceUnavailable
-from github_anti_ai.domain.model import RepoId
-from github_anti_ai.domain.review import Review
+from explore_gh.adapters.copilot_reviewer import CopilotReviewer, prompt
+from explore_gh.application.ports import SourceUnavailable
+from explore_gh.domain.model import RepoId
+from explore_gh.domain.review import Review
 
 
 class FakeCopilot:

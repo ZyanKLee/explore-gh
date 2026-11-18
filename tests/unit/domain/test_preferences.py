@@ -1,7 +1,7 @@
 import pytest
 from builders import make_snapshot
 
-from github_anti_ai.domain.preferences import (
+from explore_gh.domain.preferences import (
     ConsoleEmulatorCheck,
     DislikedTopics,
     PlatformPreference,

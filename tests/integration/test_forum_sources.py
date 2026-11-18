@@ -7,7 +7,7 @@ import pytest
 from builders import NOW, make_story
 from http_fakes import FakeWeb, Sleeps
 
-from github_anti_ai.adapters.forum_sources import (
+from explore_gh.adapters.forum_sources import (
     LEMMY_URL,
     LOBSTERS_URL,
     MASTODON_URL,
@@ -16,8 +16,8 @@ from github_anti_ai.adapters.forum_sources import (
     LobstersNewest,
     MastodonTags,
 )
-from github_anti_ai.application.ports import SourceUnavailable
-from github_anti_ai.domain.community import (
+from explore_gh.application.ports import SourceUnavailable
+from explore_gh.domain.community import (
     FORUMS,
     LOBSTERS_ORIGIN,
     lemmy_origin,

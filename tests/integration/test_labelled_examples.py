@@ -11,9 +11,9 @@ from statistics import median
 
 import pytest
 
-from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
-from github_anti_ai.domain.assessor import Assessor
-from github_anti_ai.domain.model import RepoId, Section
+from explore_gh.adapters.json_snapshot_store import JsonSnapshotStore
+from explore_gh.domain.assessor import Assessor
+from explore_gh.domain.model import RepoId, Section
 
 FIXTURES = Path(__file__).parent / "fixtures" / "labelled"
 # Of 102. It was 88. The owner accepted two losses on 2026-11-13:

@@ -68,7 +68,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
         run: |
           # Ein zweiter Versuch holt nach, was beim ersten gescheitert ist.
-          uv run github-anti-ai collect || uv run github-anti-ai collect
+          uv run explore-gh collect || uv run explore-gh collect
 
       # Auch nach einem gescheiterten Lauf: Was gesammelt ist, muss nicht noch einmal
       # geholt werden.
@@ -101,7 +101,7 @@ jobs:
           if [ -f "data/editions/${{ steps.day.outputs.day }}.json" ]; then
             echo "Die Ausgabe vom ${{ steps.day.outputs.day }} gibt es schon."
           else
-            uv run github-anti-ai publish --day "${{ steps.day.outputs.day }}" --review --allow-incomplete
+            uv run explore-gh publish --day "${{ steps.day.outputs.day }}" --review --allow-incomplete
           fi
 
       # --- HN ---
@@ -110,7 +110,7 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
-        run: uv run github-anti-ai collect-hn
+        run: uv run explore-gh collect-hn
 
       # --- Foren (Lobsters, Lemmy, Mastodon) ---
       # Eine Ausgabe je Woche, sie gehört zum Montag. An den übrigen Tagen gibt es sie
@@ -120,7 +120,7 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
-        run: uv run github-anti-ai collect-forums
+        run: uv run explore-gh collect-forums
 
       # --- Gemeinsam ins Repo ---
 

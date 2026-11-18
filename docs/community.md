@@ -206,8 +206,8 @@ class CommunityEditionStore(Protocol):   # je Plattform einer
 ## Kommandozeile
 
 ```
-github-anti-ai collect-hn [--limit N] [--data-dir data]
-github-anti-ai collect-forums [--limit N] [--data-dir data]
+explore-gh collect-hn [--limit N] [--data-dir data]
+explore-gh collect-forums [--limit N] [--data-dir data]
 ```
 
 Beide brauchen den GitHub-Token für die GitHub-API. `collect-forums` läuft täglich mit und

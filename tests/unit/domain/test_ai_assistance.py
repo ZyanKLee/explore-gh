@@ -1,7 +1,7 @@
 import pytest
 from builders import make_commit, make_snapshot
 
-from github_anti_ai.domain.ai_assistance import AiAssistanceDetector, is_ai_assisted, is_ai_tool
+from explore_gh.domain.ai_assistance import AiAssistanceDetector, is_ai_assisted, is_ai_tool
 
 detector = AiAssistanceDetector()
 

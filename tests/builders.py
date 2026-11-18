@@ -3,9 +3,9 @@
 import zlib
 from datetime import UTC, date, datetime, timedelta
 
-from github_anti_ai.domain.community import HN, CommunityProject, Platform, Story
-from github_anti_ai.domain.edition import Edition, Entry
-from github_anti_ai.domain.model import (
+from explore_gh.domain.community import HN, CommunityProject, Platform, Story
+from explore_gh.domain.edition import Edition, Entry
+from explore_gh.domain.model import (
     Assessment,
     Commit,
     Exclusion,

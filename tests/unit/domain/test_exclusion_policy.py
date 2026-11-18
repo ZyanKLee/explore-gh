@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 from builders import NOW, make_snapshot, star_history
 
-from github_anti_ai.domain.exclusion import ExclusionPolicy
+from explore_gh.domain.exclusion import ExclusionPolicy
 
 policy = ExclusionPolicy()
 

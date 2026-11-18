@@ -1,8 +1,8 @@
 import pytest
 from builders import make_snapshot
 
-from github_anti_ai.domain.assessor import Assessor
-from github_anti_ai.domain.model import Section
+from explore_gh.domain.assessor import Assessor
+from explore_gh.domain.model import Section
 
 assessor = Assessor()
 
