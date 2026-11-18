@@ -85,6 +85,10 @@ Beschreibungen, Namen, Topics und Adressen stammen von Fremden.
 
 - Alles wird beim Rendern maskiert (Autoescape).
 - Eine Adresse wird nur verlinkt, wenn sie mit `http://` oder `https://` beginnt.
+- Links zu fremden Seiten öffnen einen neuen Tab (`target="_blank"`), die Seite bleibt
+  offen. Sie tragen `rel="noopener noreferrer"`: Die fremde Seite kann den Tab der Liste
+  nicht steuern und erfährt nicht, woher der Besuch kommt. Links innerhalb der Seite und
+  in den Feeds bleiben ohne `target`.
 - Die Seite lädt nichts von fremden Servern: keine Schriften, keine Skripte, kein
   Tracking. Stile und Schrift liegen neben der Seite. JavaScript braucht sie nicht.
   Einzige Ausnahme ist die Besuchszählung, wenn sie eingeschaltet ist.

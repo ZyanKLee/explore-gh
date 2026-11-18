@@ -145,7 +145,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Herkunft | `Origin` | Woher eine Story der Foren-Liste stammt (Lobsters, eine Lemmy-Community, ein Mastodon-Hashtag), mit Schwelle (`min_points`) und Bezugsgröße (`reference_points`) |
 | Vielfaches der Schwelle | `Story.relative_points` | Punkte geteilt durch die Bezugsgröße der Herkunft, bestimmt die Rangfolge der Foren |
 | Erster Beitrag | `Story.links`, `found_in_post` | Nur er zählt, nie Antworten. Links in seinem Text brauchen einen Bezug zur Story. |
-| Community-Projekt | `CommunityProject` | öffentliches, von einer Story verlinktes Softwareprojekt samt Forge-Fakten |
+| Community-Projekt | `CommunityProject` | öffentliches, von einer Story verlinktes Softwareprojekt samt Forge-Fakten; verlinken es mehrere Storys, gewinnt die mit dem höchsten Rang, die übrigen stehen in `other_stories` |
 | Community-Ausgabe | `CommunityEdition`, `edition_day` | Auswahl eines Tages (bei den Foren: einer Woche, sie gehört zum Montag) auf einer Plattform, je Sektion bis zu 20 Projekte |
 | Community-Kurator | `CommunityCurator` | Auswahlregeln der HN- und Foren-Ausgaben, die Rangfolge geben die Punkte der Plattform vor |
 | Bezug zur Story | `relates_to_story`, `shared_words` | ein auf einer Website gefundenes Repo teilt Wörter mit Titel, Hostname oder Pfad der Story; das Repo mit den meisten gewinnt |
