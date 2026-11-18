@@ -2,7 +2,7 @@
 
 Eine persönliche Explore-Seite für Open-Source-Software. Die Hauptliste zeigt
 aufstrebende, aktive GitHub-Repos, die überwiegend von Menschen geschrieben wurden.
-Separate Plattformlisten (beginnend mit HN) zeigen trendende OSS-Projekte von
+Separate Plattformlisten (HN täglich, Foren wöchentlich) zeigen trendende OSS-Projekte von
 GitHub, GitLab und öffentlichen Gitea-/Forgejo-Instanzen. Reine AI- und LLM-Tools
 sollen die Hauptliste nicht verwässern.
 
@@ -87,8 +87,10 @@ Awesome-Listen bewusst **nicht** verwenden.
 - **Ausgabe**: statische Website plus RSS-Feed, täglich 20 Repos in der Hauptliste und
   20 in der separaten AI-Sektion. Archiv frühere Tage, zum Durchblättern.
 - **Community-Ausgaben**: eigene Such-, Erhebungs-, OSS-Filter- und Publikationsläufe
-  für HN und Lobsters. Die jeweiligen Plattform-Punkte bestimmen die Rangfolge;
-  Projekte gelangen nicht in die GitHub-Bewertung. Projekt-Websites werden zu
+  für HN (täglich) und die Foren (wöchentlich: Lobsters, Lemmy, Mastodon). Die
+  Plattform-Punkte bestimmen die Rangfolge, in den Foren ihr Vielfaches der Schwelle
+  der jeweiligen Herkunft. Es zählen nur Projekte aus dem ersten Beitrag, nie aus
+  Antworten. Projekte gelangen nicht in die GitHub-Bewertung. Projekt-Websites werden zu
   öffentlichen Repos auf GitHub, GitLab und Gitea-/Forgejo-kompatiblen Instanzen
   verfolgt.
 - **Hosting**: GitHub Pages mit GitHub Actions, täglicher Lauf per Cron. Das Repo ist
@@ -123,9 +125,9 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 
 - **Acquisition**: Kandidaten finden, APIs abfragen, Ergebnisse in `Snapshot`s übersetzen.
   API-Formate gelangen nie in die Domäne.
-- **Community Trending**: Storys einer Plattform (HN, Lobsters) finden, ihre Links zu
-  öffentlichen Forge-Repos auflösen und eigene Ausgaben je Plattform kuratieren. Beide
-  Plattformen folgen denselben Regeln und unterscheiden sich nur in ihrer `Platform`.
+- **Community Trending**: Storys einer Plattform (HN, Foren) finden, ihre Links zu
+  öffentlichen Forge-Repos auflösen und eigene Ausgaben je Plattform kuratieren. Alle
+  Plattformen folgen denselben Regeln und unterscheiden sich in ihrer `Platform`.
   Getrennt von den GitHub-`Snapshot`s.
 - **Assessment** (Core): Signale, Ausschlüsse, Sektion, Punktzahl
 - **Curation** (Core): tägliche `Edition` mit Sperre, Vielfaltsregel, Gegenlesen und Top 20.
@@ -138,11 +140,14 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Begriff | Code | Bedeutung |
 |---|---|---|
 | Repo | `Repo`, `RepoId` | GitHub-Repository als Kandidat, Identität `owner/name` |
-| Plattform (Community) | `Platform`, `HN`, `LOBSTERS` | Eine Community-Seite mit eigener Liste: Kürzel für Adressen und Ordner, Name, Adresse der Diskussion |
-| Story | `Story` | Beitrag auf einer Plattform: Titel, Link, Punkte, Kommentare, Diskussion |
+| Plattform (Community) | `Platform`, `HN`, `FORUMS`, `LOBSTERS` | Eine Liste mit eigenen Ausgaben: Kürzel für Adressen und Ordner, Name, Adresse der Diskussion, täglich oder wöchentlich. `LOBSTERS` nur noch fürs Archiv. |
+| Story | `Story` | Beitrag auf einer Plattform: Titel, Link, Punkte, Kommentare, Diskussion; in den Foren dazu Herkunft und Links im ersten Beitrag (`links`) |
+| Herkunft | `Origin` | Woher eine Story der Foren-Liste stammt (Lobsters, eine Lemmy-Community, ein Mastodon-Hashtag), mit Schwelle (`min_points`) und Bezugsgröße (`reference_points`) |
+| Vielfaches der Schwelle | `Story.relative_points` | Punkte geteilt durch die Bezugsgröße der Herkunft, bestimmt die Rangfolge der Foren |
+| Erster Beitrag | `Story.links`, `found_in_post` | Nur er zählt, nie Antworten. Links in seinem Text brauchen einen Bezug zur Story. |
 | Community-Projekt | `CommunityProject` | öffentliches, von einer Story verlinktes Softwareprojekt samt Forge-Fakten |
-| Community-Ausgabe | `CommunityEdition` | Auswahl eines Tages auf einer Plattform, je Sektion bis zu 20 Projekte |
-| Community-Kurator | `CommunityCurator` | Auswahlregeln der HN- und Lobsters-Ausgaben, die Rangfolge geben die Punkte der Plattform vor |
+| Community-Ausgabe | `CommunityEdition`, `edition_day` | Auswahl eines Tages (bei den Foren: einer Woche, sie gehört zum Montag) auf einer Plattform, je Sektion bis zu 20 Projekte |
+| Community-Kurator | `CommunityCurator` | Auswahlregeln der HN- und Foren-Ausgaben, die Rangfolge geben die Punkte der Plattform vor |
 | Bezug zur Story | `relates_to_story`, `shared_words` | ein auf einer Website gefundenes Repo teilt Wörter mit Titel, Hostname oder Pfad der Story; das Repo mit den meisten gewinnt |
 | Kandidat | `Candidate` | Repo, das eine Quelle heute gefunden hat, samt Sternzahl, falls die Quelle sie kennt |
 | Momentaufnahme | `Snapshot` | Alles, was zu einem Zeitpunkt über ein Repo gesammelt wurde. `facts_at` sagt, wann die Fakten zuletzt von GitHub kamen. |
@@ -163,8 +168,8 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Tageswert | `DailyRecord` | Was von einer Bewertung dauerhaft bleibt: Zahlen, Urteil, Rang. Ohne Texte, Commits und Personen. |
 | Sektion | `Section` | `MAIN` oder `AI` |
 | Ausgabe | `Edition` | Auswahl eines Tages, je Sektion bis zu 20 `Entry`s. Unveränderlich nach Veröffentlichung. |
-| Sperre | `in_cooldown`, `COOLDOWN_DAYS` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert. HN und Lobsters sperren je aus ihren eigenen Ausgaben. |
-| Vielfaltsregel | `varied`, `MAX_PER_LANGUAGE`, `MAX_PER_OWNER` | Pro Sektion höchstens 4 Einträge je Programmiersprache und 2 je Besitzer, ebenso in den HN- und Lobsters-Ausgaben |
+| Sperre | `in_cooldown`, `COOLDOWN_DAYS` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert. HN und Foren sperren je aus ihren eigenen Ausgaben. |
+| Vielfaltsregel | `varied`, `MAX_PER_LANGUAGE`, `MAX_PER_OWNER` | Pro Sektion höchstens 4 Einträge je Programmiersprache und 2 je Besitzer, ebenso in den HN- und Foren-Ausgaben |
 
 Persistenz-Abstraktionen heißen `…Store`, nicht „Repository“, weil „Repo“ schon das
 GitHub-Repository bezeichnet.
@@ -193,7 +198,8 @@ docs/                  # Konzepte mit Stand und Geplantem: datensammlung.md (Acq
                        # community.md (Community Trending), veroeffentlichung.md
                        # (Publication), langzeitdaten.md
 data/                  # editions/ (versioniert), snapshots/ (Arbeitsdaten, 14 Tage),
-                       # history/ (versioniert), hn-editions/ und lobsters-editions/ (versioniert)
+                       # history/ (versioniert), hn-editions/, forums-editions/ und
+                       # lobsters-editions/ (Archiv), alle versioniert
 tests/unit/            # Domäne, Use Cases, Seitenmodell, Kommandozeile
 tests/integration/     # Adapter gegen nachgestellte Antworten (fixtures/), Dateiformate,
                        # Website, dazu die Regeln gegen die Beispielsammlung (fixtures/labelled/)

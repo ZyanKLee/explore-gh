@@ -1,8 +1,9 @@
-"""Editions of a community platform, one immutable JSON file per day:
-hn-editions/YYYY-MM-DD.json and lobsters-editions/YYYY-MM-DD.json
+"""Editions of a community platform, one immutable JSON file per day (per week for the
+forums list, named after its Monday): hn-editions/, lobsters-editions/, forums-editions/
 
-Both platforms share the format. The only difference: HN calls the points of a story
-"points" and stores no discussion_url, Lobsters calls them "score". See docs/community.md.
+All share the format. HN calls the points of a story "points" and stores no
+discussion_url, Lobsters calls them "score". The forums list stores the origin of each
+story. See docs/community.md.
 """
 
 from datetime import date, datetime
@@ -10,10 +11,17 @@ from pathlib import Path
 
 from github_anti_ai.adapters.files import day_files, read_json, write_new_json
 from github_anti_ai.application.ports import AlreadyPublished
-from github_anti_ai.domain.community import HN, CommunityEdition, CommunityProject, Platform, Story
+from github_anti_ai.domain.community import (
+    HN,
+    CommunityEdition,
+    CommunityProject,
+    Origin,
+    Platform,
+    Story,
+)
 
 FORMAT_VERSION = 1
-POINTS_KEYS = {"hn": "points", "lobsters": "score"}
+POINTS_KEYS = {"hn": "points", "lobsters": "score", "forums": "points"}
 
 
 def directory_name(platform: Platform) -> str:
@@ -64,7 +72,14 @@ def _project_to_json(platform: Platform, project: CommunityProject) -> dict:
         story_json["discussion_url"] = story.discussion_url
     story_json[POINTS_KEYS[platform.slug]] = story.points
     story_json |= {"comments": story.comments, "created_at": story.created_at.isoformat()}
-    return {
+    if story.origin:
+        story_json["origin"] = {
+            "name": story.origin.name,
+            "reference_points": story.origin.reference_points,
+            "min_points": story.origin.min_points,
+            "points_label": story.origin.points_label,
+        }
+    stored = {
         "story": story_json,
         "repository_url": project.repository_url,
         "project_url": project.project_url,
@@ -78,6 +93,9 @@ def _project_to_json(platform: Platform, project: CommunityProject) -> dict:
         "linked_directly": project.linked_directly,
         "reasons": list(project.reasons),
     }
+    if project.found_in_post:
+        stored["found_in_post"] = True
+    return stored
 
 
 def from_json(platform: Platform, data: dict) -> CommunityEdition:
@@ -103,6 +121,7 @@ def _project_from_json(platform: Platform, data: dict) -> CommunityProject:
             points=story[POINTS_KEYS[platform.slug]],
             comments=story["comments"],
             created_at=datetime.fromisoformat(story["created_at"]),
+            origin=Origin(**story["origin"]) if "origin" in story else None,
         ),
         repository_url=data["repository_url"],
         project_url=data["project_url"],
@@ -114,5 +133,6 @@ def _project_from_json(platform: Platform, data: dict) -> CommunityProject:
         has_code=data["has_code"],
         topics=tuple(data.get("topics", [])),
         linked_directly=data.get("linked_directly", False),
+        found_in_post=data.get("found_in_post", False),
         reasons=tuple(data.get("reasons", [])),
     )

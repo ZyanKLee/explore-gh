@@ -5,7 +5,7 @@ from builders import TODAY, FixedClock, make_project, make_story
 from fakes import FakeResolver, FakeStorySource, InMemoryEditionStore
 
 from github_anti_ai.application.collect_community_edition import CollectCommunityEdition
-from github_anti_ai.domain.community import HN, LOBSTERS, CommunityEdition
+from github_anti_ai.domain.community import FORUMS, HN, LOBSTERS, CommunityEdition
 
 
 def collect(stories, resolver, store=None, platform=HN, limit=None):
@@ -62,3 +62,26 @@ def test_repos_of_own_editions_of_the_last_30_days_are_blocked():
     )
 
     assert edition.main == ()
+
+
+def test_the_weekly_forums_edition_belongs_to_the_monday_of_the_week():
+    monday = TODAY - timedelta(days=TODAY.weekday())
+    story = make_story("1", FORUMS)
+
+    edition, store = collect(
+        FakeStorySource(story), FakeResolver({"1": project_for(story, "a/x")}), platform=FORUMS
+    )
+
+    assert edition.day == monday
+    assert store.load(monday) == edition
+
+
+def test_a_weekly_edition_of_this_week_is_kept_on_the_following_days():
+    monday = TODAY - timedelta(days=TODAY.weekday())
+    existing = CommunityEdition(FORUMS, monday)
+    stories = FakeStorySource(make_story("1", FORUMS))
+
+    edition, _ = collect(stories, FakeResolver(), InMemoryEditionStore([existing]), FORUMS)
+
+    assert edition is existing
+    assert stories.asked == 0

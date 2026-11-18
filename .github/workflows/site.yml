@@ -20,6 +20,7 @@ on:
       - "data/editions/**"
       - "data/hn-editions/**"
       - "data/lobsters-editions/**"
+      - "data/forums-editions/**"
       - ".github/workflows/site.yml"
   workflow_dispatch:
 

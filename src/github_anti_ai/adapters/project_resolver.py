@@ -33,6 +33,13 @@ LICENSE_ALIASES = {
     "other": UNRECOGNIZED_LICENSE,  # GitLab: a license file, but not identified
 }
 _REDIRECTS = {301, 302, 303, 307, 308}
+# Links in the text of a post are followed only to hosts that look like a forge
+FORGE_HOST_WORDS = ("git", "forge", "codeberg")
+
+
+def _looks_like_forge(url: str) -> bool:
+    host = (urlsplit(url).hostname or "").lower()
+    return host in KNOWN_FORGE_HOSTS or any(word in host for word in FORGE_HOST_WORDS)
 
 
 @dataclass(frozen=True)
@@ -72,19 +79,29 @@ class ProjectResolver:
         self._is_public_host = is_public_host or _resolves_to_public_addresses
 
     def resolve(self, story: Story) -> CommunityProject | None:
-        repo = self._forge_repo(story.url)
+        """The story's link to a repo, else a related repo on the linked website, else a
+        related repo among the links in the text of the first post."""
+        repo = self._forge_repo(story.url) if story.url else None
         linked_directly = repo is not None
-        if repo is None:
+        if repo is None and story.url:
             html = self._html(story.url)
-            if html is None:
-                return None
-            repo = self._closest_repo(story.title, story.url, html)
+            if html is not None:
+                repo = self._closest_repo(story.title, story.url, repository_links(html, story.url))
+        found_in_post = False
+        if repo is None:
+            forge_links = list(
+                dict.fromkeys(
+                    repository_root(link) for link in story.links if _looks_like_forge(link)
+                )
+            )
+            repo = self._closest_repo(story.title, story.url, forge_links)
+            found_in_post = repo is not None
         if repo is None:
             return None
         return CommunityProject(
             story=story,
             repository_url=repo.url,
-            project_url=story.url,
+            project_url=story.url or repo.url,
             description=repo.description,
             language=repo.language,
             license_id=repo.license_id,
@@ -93,13 +110,14 @@ class ProjectResolver:
             has_code=repo.has_code,
             topics=repo.topics,
             linked_directly=linked_directly,
+            found_in_post=found_in_post,
             readme=self._readme(repo.readme),
         )
 
-    def _closest_repo(self, title: str, page_url: str, html: str) -> _ForgeRepo | None:
+    def _closest_repo(self, title: str, page_url: str, links) -> _ForgeRepo | None:
         """The linked repo sharing the most words with the story; on a tie the first one."""
         best, best_words = None, 0
-        for link in repository_links(html, page_url):
+        for link in links:
             if not relates_to_story(title, page_url, link):
                 continue  # spares a request for the blog theme in the footer
             repo = self._forge_repo(link)

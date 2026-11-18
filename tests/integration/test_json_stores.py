@@ -14,7 +14,7 @@ from github_anti_ai.adapters.json_daily_record_store import JsonDailyRecordStore
 from github_anti_ai.adapters.json_edition_store import JsonEditionStore
 from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
 from github_anti_ai.application.ports import AlreadyPublished, CollectionStatus
-from github_anti_ai.domain.community import HN, LOBSTERS, CommunityEdition
+from github_anti_ai.domain.community import FORUMS, HN, LOBSTERS, CommunityEdition, Origin
 from github_anti_ai.domain.history import DailyRecord
 from github_anti_ai.domain.model import RepoId, Section, Signal
 
@@ -86,6 +86,23 @@ class TestEditions:
         store.save(edition)
 
         assert store.load(TODAY) == edition
+
+    def test_a_forums_edition_keeps_origin_and_where_the_repo_was_found(self, tmp_path):
+        origin = Origin("Mastodon #rust", 5, 0, "Reaktionen")
+        story = make_story("https://fosstodon.org/@a/1", FORUMS, origin=origin, url="")
+        project = make_project(story=story, linked_directly=False, found_in_post=True)
+        edition = CommunityEdition(FORUMS, TODAY, main=(project,))
+        store = JsonCommunityEditionStore(FORUMS, tmp_path)
+
+        store.save(edition)
+
+        assert store.load(TODAY) == edition
+        stored = json.loads((tmp_path / "forums-editions/2026-11-12.json").read_text())
+        assert stored["projects"][0]["story"]["origin"] == {
+            "name": "Mastodon #rust", "reference_points": 5, "min_points": 0,
+            "points_label": "Reaktionen",
+        }  # fmt: skip
+        assert stored["projects"][0]["found_in_post"] is True
 
     def test_an_edition_is_never_replaced(self, tmp_path):
         store = JsonEditionStore(tmp_path)

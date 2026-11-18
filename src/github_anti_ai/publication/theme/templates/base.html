@@ -26,7 +26,7 @@
       <ul>
         <li><a href="{{ SITEURL }}/"{% if current == "github" %} aria-current="page"{% endif %}>Trending auf GitHub</a></li>
         <li><a href="{{ SITEURL }}/hn/"{% if current == "hn" %} aria-current="page"{% endif %}>Trending auf HN</a></li>
-        <li><a href="{{ SITEURL }}/lobsters/"{% if current == "lobsters" %} aria-current="page"{% endif %}>Trending auf Lobsters</a></li>
+        <li><a href="{{ SITEURL }}/forums/"{% if current in ("forums", "lobsters") %} aria-current="page"{% endif %}>Trending in den Foren</a></li>
       </ul>
     </nav>
   </header>
@@ -35,7 +35,7 @@
   </main>
   <footer class="site">
     <p>Aufstrebende Open-Source-Projekte: eine nach festen Regeln kuratierte GitHub-Liste und eigene Community-Trendlisten. {% if PLAUSIBLE_SCRIPT %}Besuche zählt Plausible, ohne Cookies und ohne Angaben zur Person.{% else %}Ohne Tracking, ohne Skripte.{% endif %}</p>
-    <p>Als Feed abonnieren: <a href="{{ SITEURL }}/feed.xml">Trending auf GitHub</a>, <a href="{{ SITEURL }}/hn/feed.xml">Trending auf HN</a>, <a href="{{ SITEURL }}/lobsters/feed.xml">Trending auf Lobsters</a>, <a href="{{ SITEURL }}/ai/feed.xml">AI-Projekte auf GitHub</a>, <a href="{{ SITEURL }}/hn/ai/feed.xml">AI-Projekte auf HN</a>, <a href="{{ SITEURL }}/lobsters/ai/feed.xml">AI-Projekte auf Lobsters</a></p>
+    <p>Als Feed abonnieren: <a href="{{ SITEURL }}/feed.xml">Trending auf GitHub</a>, <a href="{{ SITEURL }}/hn/feed.xml">Trending auf HN</a>, <a href="{{ SITEURL }}/forums/feed.xml">Trending in den Foren</a>, <a href="{{ SITEURL }}/ai/feed.xml">AI-Projekte auf GitHub</a>, <a href="{{ SITEURL }}/hn/ai/feed.xml">AI-Projekte auf HN</a>, <a href="{{ SITEURL }}/forums/ai/feed.xml">AI-Projekte in den Foren</a></p>
   </footer>
 </body>
 </html>

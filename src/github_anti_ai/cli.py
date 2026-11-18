@@ -9,6 +9,7 @@ import os
 import sys
 import time
 from collections.abc import Mapping, Sequence
+from contextlib import ExitStack
 from datetime import date
 from pathlib import Path
 
@@ -16,6 +17,15 @@ import httpx
 
 from github_anti_ai.adapters.clock import SystemClock
 from github_anti_ai.adapters.copilot_reviewer import CopilotReviewer
+from github_anti_ai.adapters.forum_sources import (
+    LEMMY_URL,
+    LOBSTERS_URL,
+    MASTODON_URL,
+    ForumStories,
+    LemmyCommunities,
+    LobstersNewest,
+    MastodonTags,
+)
 from github_anti_ai.adapters.github_http import make_github_client
 from github_anti_ai.adapters.github_repo_source import GitHubRepoSource
 from github_anti_ai.adapters.github_search import GitHubSearchCandidates
@@ -25,12 +35,7 @@ from github_anti_ai.adapters.json_daily_record_store import JsonDailyRecordStore
 from github_anti_ai.adapters.json_edition_store import JsonEditionStore
 from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
 from github_anti_ai.adapters.project_resolver import ProjectResolver
-from github_anti_ai.adapters.story_sources import (
-    HN_API_URL,
-    LOBSTERS_URL,
-    HackerNewsSearch,
-    LobstersSearch,
-)
+from github_anti_ai.adapters.story_sources import HN_API_URL, HackerNewsSearch
 from github_anti_ai.application.collect_community_edition import CollectCommunityEdition
 from github_anti_ai.application.collect_snapshots import CollectionReport, CollectSnapshots
 from github_anti_ai.application.explain_assessment import ExplainAssessment, UnknownRepo
@@ -42,7 +47,13 @@ from github_anti_ai.application.ports import (
 )
 from github_anti_ai.application.publish_edition import PublishEdition, reviewed_entries
 from github_anti_ai.domain.assessor import Assessor
-from github_anti_ai.domain.community import HN, LOBSTERS, Platform
+from github_anti_ai.domain.community import (
+    FORUMS,
+    HN,
+    LEMMY_COMMUNITIES,
+    MASTODON_TAGS,
+    Platform,
+)
 from github_anti_ai.domain.model import RepoId
 
 USER_AGENT = "github-anti-ai"
@@ -101,7 +112,7 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
     limit(daily)
     publishing(daily)
     limit(command("collect-hn", "HN-Ausgabe erzeugen"))
-    limit(command("collect-lobsters", "Lobsters-Ausgabe erzeugen"))
+    limit(command("collect-forums", "Wochenausgabe der Foren erzeugen (Lobsters, Lemmy, Mastodon)"))
     explain = command("explain", "Bewertung eines Repos erklären")
     explain.add_argument("repo", help="besitzer/name")
     day(explain)
@@ -178,11 +189,20 @@ def run_daily(args) -> int:
 
 
 def run_collect_hn(args) -> int:
-    return collect_community(args, HN, HackerNewsSearch, HN_API_URL)
+    return collect_community(args, HN, lambda client: HackerNewsSearch(client(base_url=HN_API_URL)))
 
 
-def run_collect_lobsters(args) -> int:
-    return collect_community(args, LOBSTERS, LobstersSearch, LOBSTERS_URL)
+def run_collect_forums(args) -> int:
+    def stories(client) -> ForumStories:
+        return ForumStories(
+            [
+                LobstersNewest(client(base_url=LOBSTERS_URL), sleep=time.sleep),
+                LemmyCommunities(client(base_url=LEMMY_URL), LEMMY_COMMUNITIES),
+                MastodonTags(client(base_url=MASTODON_URL), MASTODON_TAGS),
+            ]
+        )
+
+    return collect_community(args, FORUMS, stories)
 
 
 def run_explain(args) -> int:
@@ -205,7 +225,7 @@ def run_serve(args) -> int:
     from github_anti_ai.publication.site import THEME, build_site
 
     logging.getLogger().setLevel(logging.WARNING)  # Pelican is chatty on every rebuild
-    watched = ["editions", "hn-editions", "lobsters-editions"]
+    watched = ["editions", "hn-editions", "lobsters-editions", "forums-editions"]
     serve(
         build=lambda: build_site(args.data_dir, args.output),
         watch=[args.data_dir / name for name in watched] + [THEME],
@@ -220,7 +240,7 @@ COMMANDS = {
     "publish": run_publish,
     "daily": run_daily,
     "collect-hn": run_collect_hn,
-    "collect-lobsters": run_collect_lobsters,
+    "collect-forums": run_collect_forums,
     "explain": run_explain,
     "site": run_site,
     "serve": run_serve,
@@ -277,21 +297,22 @@ def publish(args, day: date) -> None:
         print(f"Gegengelesen: {read} von {shown} Einträgen")
 
 
-def collect_community(args, platform: Platform, search, base_url: str) -> int:
-    def client(**options) -> httpx.Client:
-        return httpx.Client(
-            headers={"User-Agent": USER_AGENT}, timeout=10, trust_env=False, **options
-        )
+def collect_community(args, platform: Platform, stories) -> int:
+    """`stories` makes the story source from a function that opens HTTP clients."""
+    with ExitStack() as stack:
 
-    with (
-        client(base_url=base_url) as story_client,
-        client() as web_client,
-        make_github_client(_token()) as github_client,
-    ):
+        def client(**options) -> httpx.Client:
+            return stack.enter_context(
+                httpx.Client(
+                    headers={"User-Agent": USER_AGENT}, timeout=10, trust_env=False, **options
+                )
+            )
+
+        github_client = stack.enter_context(make_github_client(_token()))
         edition = CollectCommunityEdition(
             platform=platform,
-            story_source=search(story_client),
-            resolver=ProjectResolver(web_client, github_client=github_client),
+            story_source=stories(client),
+            resolver=ProjectResolver(client(), github_client=github_client),
             edition_store=JsonCommunityEditionStore(platform, args.data_dir),
             clock=SystemClock(),
             limit=args.limit,

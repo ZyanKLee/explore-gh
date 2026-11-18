@@ -16,7 +16,7 @@ def build_site(
     site_url: str | None = None,
     plausible_script: str | None = None,
 ) -> None:
-    """Reads data_dir/editions, data_dir/hn-editions and data_dir/lobsters-editions.
+    """Reads data_dir/editions and the community editions: hn-, lobsters-, forums-editions.
 
     site_url is the public address of the site: the feeds need it for full links. The
     pages keep relative links either way, so they also work from the local disk.
@@ -38,6 +38,7 @@ def build_site(
                 "EDITIONS_PATH": str(data_dir / "editions"),
                 "HN_EDITIONS_PATH": str(data_dir / "hn-editions"),
                 "LOBSTERS_EDITIONS_PATH": str(data_dir / "lobsters-editions"),
+                "FORUMS_EDITIONS_PATH": str(data_dir / "forums-editions"),
                 "SITENAME": SITE_NAME,
                 "PLAUSIBLE_SCRIPT": plausible_script,
                 "SITEURL": (site_url or "").rstrip("/"),

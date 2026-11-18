@@ -230,3 +230,54 @@ def test_does_not_follow_a_redirect_to_a_private_address():
 )
 def test_links_into_a_repo_name_the_repo(url, root):
     assert repository_root(url) == root
+
+
+# --- Links in the first post (forums list) ---
+
+
+def test_a_related_repo_in_the_text_of_the_first_post_gives_its_project():
+    web = FakeWeb(github_routes())
+    story = make_story(
+        title="Tiny Editor 2.0 is out",
+        url="",
+        links=("https://github.com/alice/tiny-editor/releases",),
+    )
+
+    project = resolve(web, story)
+
+    assert project.repository_url == "https://github.com/alice/tiny-editor"
+    assert project.found_in_post
+    assert not project.linked_directly
+    assert project.project_url == "https://github.com/alice/tiny-editor"
+
+
+def test_a_repo_in_the_text_without_relation_to_the_story_is_never_asked():
+    web = FakeWeb(github_routes("tokio-rs/tokio"))
+    story = make_story(
+        title="My week in review", url="", links=("https://github.com/tokio-rs/tokio",)
+    )
+
+    assert resolve(web, story) is None
+    assert web.paths == []
+
+
+def test_the_text_counts_when_the_linked_website_names_no_repo():
+    web = FakeWeb({"example.org/post": html(), **github_routes()})
+    story = make_story(
+        title="Tiny Editor released",
+        url="https://example.org/post",
+        links=("https://github.com/alice/tiny-editor",),
+    )
+
+    project = resolve(web, story)
+
+    assert project.found_in_post
+    assert project.project_url == "https://example.org/post"
+
+
+def test_links_in_the_text_to_hosts_that_are_no_forge_are_not_followed():
+    web = FakeWeb()
+    story = make_story(title="Tiny editor", url="", links=("https://tiny-editor.example.org/x/y",))
+
+    assert resolve(web, story) is None
+    assert web.paths == []
