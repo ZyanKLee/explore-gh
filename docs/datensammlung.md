@@ -41,6 +41,18 @@ CollectSnapshots.run()
   Seite à 100 Treffer. Die Aufteilung nach Tagen umgeht die Grenze von 1000 Treffern.
 - Zwischen zwei Suchanfragen 2 Sekunden Pause (30 Suchanfragen pro Minute).
 - Jeder Treffer bringt seine Sternzahl mit. Das macht das Weiterverwenden möglich.
+- **Abgeschnittene Treffer werden gemeldet** (seit 18.11.2026): Findet GitHub mehr als
+  die 100 Treffer einer Seite (`total_count`), warnt das Protokoll, etwa
+  `created:2026-11-12: 100 von 347 Treffern, 247 abgeschnitten`. Bricht GitHub die Suche
+  ab (`incomplete_results`), warnt es ebenso.
+
+**Offene Frage: weitere Seiten holen?** In den Ausgaben vom 13., 15. und 17.11.2026 war
+die Seite an 27 bis 29 von 30 Erstellungstagen voll. Gezeigte Repos standen bis auf
+Platz 99 ihres Erstellungstags, je Ausgabe 2 bis 4 auf Platz 81 bis 100. Hinter Platz 100
+liegen also vermutlich weitere Kandidaten mit wenigen Sternen und starkem relativem
+Wachstum. Zählen würden nur Erstellungstage, die mindestens 14 Tage zurückliegen, jüngere
+Repos sind ohnehin ausgeschlossen. Ob sich Seite 2 lohnt, entscheiden die gemeldeten
+Zahlen.
 
 **Diese Quelle allein verfehlt einen Teil des Ziels.** Sie findet nur neue Repos, die
 schnell Sterne sammeln. Von Hand gebaute Projekte sind oft älter, bevor sie entdeckt werden.

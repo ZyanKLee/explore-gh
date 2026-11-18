@@ -63,3 +63,35 @@ def test_searches_are_paced_for_the_limit_of_30_per_minute():
     search(web, sleeps)
 
     assert sleeps == [2.0, 2.0]
+
+
+def search_result(shown, total, incomplete=False):
+    items = [{"full_name": f"owner{i}/repo{i}", "stargazers_count": 500 - i} for i in range(shown)]
+    return {"total_count": total, "incomplete_results": incomplete, "items": items}
+
+
+def test_a_full_page_reports_how_many_results_were_cut_off(caplog):
+    web = FakeWeb({SEARCH: httpx.Response(200, json=search_result(100, 347))})
+
+    with caplog.at_level("WARNING"):
+        search(web, window_days=1)
+
+    assert "created:2026-11-12: 100 von 347 Treffern, 247 abgeschnitten" in caplog.text
+
+
+def test_a_complete_page_reports_nothing(caplog):
+    web = FakeWeb({SEARCH: httpx.Response(200, json=search_result(44, 44))})
+
+    with caplog.at_level("WARNING"):
+        search(web, window_days=1)
+
+    assert caplog.text == ""
+
+
+def test_an_incomplete_search_is_reported(caplog):
+    web = FakeWeb({SEARCH: httpx.Response(200, json=search_result(30, 30, incomplete=True))})
+
+    with caplog.at_level("WARNING"):
+        search(web, window_days=1)
+
+    assert "created:2026-11-12: unvollständig, GitHub brach die Suche ab" in caplog.text
