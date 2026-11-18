@@ -82,6 +82,7 @@ AI-Sektion verschieben, nie umgekehrt.
 | `scam` | Betrug, Spam, reine Werbung. | raus |
 | `no_software` | Linksammlung, Kursmaterial, Konfiguration, Prompt-Sammlung, Kopie eines fremden Projekts. | raus |
 | `placeholder` | Ankündigung ohne Code, automatisch erzeugter Inhalt ohne eigene Arbeit. | raus |
+| `game_port` | Bringt ein fremdes Spiel auf eine andere Plattform oder baut es nach: Decompilation, Recompilation, Source-Port, PC-Port, Fan-Port, Nachbau der Engine eines bestimmten Spiels, Werkzeuge nur dafür. Nicht eigene Spiele, allgemeine Engines, Mods, Emulatoren ganzer Konsolen. | raus |
 
 Die genauen Texte stehen in `domain/review.py` (`REVIEW_CATEGORIES`, `REVIEW_GUIDE`).
 
@@ -114,6 +115,9 @@ Die genauen Texte stehen in `domain/review.py` (`REVIEW_CATEGORIES`, `REVIEW_GUI
 - **Geschmack zählt nicht.** Thema, Programmiersprache, Qualität des Codes und der
   Einsatz von AI sind als Ausschlussgrund ausdrücklich untersagt. Sonst entstünde die
   Interessensblase, die das Projekt vermeiden will.
+  Einzige Ausnahme ist `game_port` (seit dem 18.11.2026): Die Regel gegen
+  Konsolen-Emulatoren (`bewertung.md`) erkennt Portierungen nur, wenn sie eine Konsole
+  nennen. Das Modell kennt auch die Spiele.
 - **Was es sieht:** je Repo Name, Beschreibung, Topics, Sprache, Sterne, Forks, Alter von
   Repo und Besitzerkonto und die ersten 1500 Zeichen des README. 10 Repos je Aufruf.
 - **Fremde Texte im Prompt:** Ein README kann versuchen, das Modell zu überreden. Der
