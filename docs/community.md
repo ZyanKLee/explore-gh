@@ -194,6 +194,138 @@ github-anti-ai collect-lobsters [--limit N] [--data-dir data]
 
 Beide brauchen den GitHub-Token für die GitHub-API.
 
-## Zurückgestellt
+## Geplant: Wochenliste „Foren“
 
-Reddit, wegen OAuth-, Lösch- und Aufbewahrungsregeln.
+Stand: Konzept vom 18.11.2026, noch nicht umgesetzt.
+
+### Warum
+
+Lobsters liefert zu wenig für eine tägliche Liste: 10 Projekte in der ersten Ausgabe,
+danach 1, 2, 5 und 1 (14. bis 17.11.2026). Andere kleine Plattformen sind allein ebenso
+dünn. Deshalb fasst eine **gemeinsame Liste** mehrere Plattformen zusammen und erscheint
+**wöchentlich**. Die HN-Liste bleibt, wie sie ist: Sie trägt sich allein.
+
+### Plattformen
+
+Stichprobe vom 18.11.2026, je Woche, nur erste Beiträge mit Repo-Link:
+
+| Herkunft | Schnittstelle | Funde je Woche | Punkte der Funde | Schwelle |
+|---|---|---|---|---|
+| **Lobsters** | `/newest/page/N.json`, Seite 1 bis 8 (etwa 25 Storys je Tag) | etwa 7 bis 30 (Ausgaben 13. bis 17.11.) | 2 bis 76 | 10 |
+| **Lemmy**, über programming.dev: `programming`, `rust`, `opensource@lemmy.ml`, `linux@lemmy.ml`, `selfhosted@lemmy.world` | `/api/v3/post/list?community_name=…&sort=TopWeek` | 20 | −40 bis 81 | 15 |
+| **Mastodon**, über fosstodon.org: `#opensource`, `#foss`, `#rust`, `#linux` | `/api/v1/timelines/tag/{tag}` | etwa 10 | 0 bis 3 (Favoriten + Boosts) | offen |
+
+- **Lobsters** wechselt von „hottest“ auf „newest“: Die Liste erscheint einmal die Woche
+  und sieht so jede Story der Woche mit ihrer heutigen Punktzahl. Der Einwand, „newest“
+  sei noch unbewertet, fällt weg, weil nur Storys zählen, die mindestens einen Tag alt
+  sind.
+- **Lemmy** sieht über programming.dev auch Communities anderer Instanzen. Beiträge aus
+  PieFed und Mbin kommen über die Föderation mit.
+- **Mastodon** kommt nur unter Vorbehalt in die Liste: Die Funde haben fast keine
+  Reaktionen. Eine Schwelle würde alles ausschließen oder nichts. Entschieden wird nach
+  einer Probephase, in der die Mastodon-Funde nur protokolliert werden.
+- Die Schwellen sind Startwerte. Sie werden an den ersten Wochen geprüft, die Zahlen
+  kommen in diesen Abschnitt.
+
+**Geprüft und verworfen:** Reddit (neue Anwendungen brauchen seit November 2025 eine
+Genehmigung, die Abfrage ohne Anmeldung antwortet mit 403), Mastodon-Trends (nur
+Nachrichtenseiten), Echo JS (nur JavaScript, 1 bis 2 Stimmen), gitlab.com (keine
+Plattform mit Beiträgen; ohne Anmeldung keine Suche nach neuen Projekten mit Sternen),
+Tildes (keine Schnittstelle).
+
+**Noch nicht geprüft:** Bluesky (Suche nach verlinkter Domain, nach Likes sortiert, braucht
+ein Konto mit App-Passwort), Discourse-Foren von Sprach-Communities mit Kategorien wie
+„Showcase“ oder „Announcements“ (`/c/{kategorie}/l/top.json?period=weekly`, Likes des
+ersten Beitrags).
+
+### Nur der erste Beitrag
+
+Gesammelt werden nur Projekte, die der **erste Beitrag** nennt. Antworten und Kommentare
+zählen nie, auch wenn dort Repos verlinkt sind.
+
+| Herkunft | Erster Beitrag |
+|---|---|
+| Lobsters | Link der Story und Text der Story (`description`) |
+| Lemmy | `url` und Text (`body`) des Beitrags |
+| Mastodon | Text eines Toots, der keine Antwort (`in_reply_to_id` leer) und kein Boost ist |
+
+- **Link der Story auf ein Repo:** wie bisher `linked_directly`.
+- **Links im Text:** Sie werden wie die Links einer Website behandelt. Es zählt nur ein Repo
+  mit **Bezug zur Story** (`shared_words`), das mit den meisten gemeinsamen Wörtern
+  gewinnt. So fällt „gebaut mit `tokio-rs/tokio`“ unter einem Beitrag über ein anderes
+  Projekt heraus.
+- **HN** bleibt unverändert: Dort zählt schon heute nur der Link der Story.
+
+### Rangfolge über Plattformen hinweg
+
+Punkte verschiedener Plattformen sind nicht vergleichbar. Jede Herkunft hat deshalb ihre
+eigene Schwelle, und die Rangfolge bestimmt das **Vielfache der Schwelle**
+(`points / min_points`):
+
+- 34 Punkte auf Lobsters (Schwelle 10) ergeben 3,4.
+- 45 Punkte auf Lemmy (Schwelle 15) ergeben 3,0.
+- Bei Gleichstand entscheiden die Kommentare, dann die neuere Story.
+
+Storys unter der Schwelle ihrer Herkunft fallen heraus. Die Begründung sagt es in einem
+Satz: „34 Punkte auf Lobsters, das 3,4-Fache der Schwelle von 10.“
+
+**Ein Repo auf mehreren Plattformen** erscheint einmal, die Story mit dem höheren Vielfachen
+gewinnt. Die anderen Fundstellen nennt die Begründung („Auch auf Lemmy, 22 Punkte.“). Es
+gibt dafür keinen Bonus, damit die Regel einfach bleibt.
+
+### Erscheinen
+
+- **Einmal die Woche, montags.** Gesammelt werden Storys, die am Montag 1 bis 8 Tage alt
+  sind. Sie haben ihre Punkte gesammelt und fallen nicht zwischen zwei Läufe.
+- **Ausgabe:** `data/forums-editions/JJJJ-Www.json`, z. B. `2026-W48.json`, versioniert und
+  unveränderlich. Das Format ist das der Community-Ausgaben, dazu je Story die Herkunft
+  (`origin`, z. B. `"lemmy:programming.dev/c/rust"`) und ihre Schwelle.
+- **Sperre:** 30 Tage wie bisher, abgeleitet aus den eigenen Wochenausgaben. Die
+  Foren-Liste sperrt sich nicht gegen HN oder GitHub.
+- Alle übrigen Auswahlregeln gelten unverändert: Open Source mit Code, Ausschlüsse,
+  AI-Sektion, Vielfaltsregel, höchstens 20 je Sektion.
+- **Die tägliche Lobsters-Liste endet.** Ihre Ausgaben bleiben im Archiv lesbar.
+
+### Änderungen an der Domäne
+
+| Begriff | Code | Bedeutung |
+|---|---|---|
+| Herkunft | `Origin` | Woher eine Story stammt: Name („Lobsters“, „Lemmy c/rust“) und Schwelle (`min_points`) |
+| Vielfaches der Schwelle | `Story.relative_points` | Punkte geteilt durch die Schwelle der Herkunft, bestimmt die Rangfolge |
+| Erster Beitrag | `Story.text` | Text des ersten Beitrags; Links darin brauchen einen Bezug zur Story |
+
+- `Story` bekommt `origin` und `text`. HN-Storys bekommen eine Herkunft mit der heutigen
+  Schwelle `HN_MIN_STORY_POINTS`, ihre Rangfolge ändert sich dadurch nicht.
+- Eine Plattform `FORUMS` („Foren“) mit eigenem Ordner und eigenem Feed.
+- Eine `StorySource`, die mehrere Quellen bündelt. Fällt eine aus, gelten die anderen, und
+  die Ausgabe nennt den Ausfall.
+- `ProjectResolver` liest neben dem Link der Story auch die Links in `Story.text`.
+
+### Tests (je Regel beide Richtungen)
+
+- Ein Repo, das nur in einer Antwort steht, wird nicht gesammelt. Eines im ersten Beitrag
+  schon.
+- Ein Link im Text ohne Bezug zur Story zählt nicht, einer mit Bezug zählt.
+- Ein Toot, der eine Antwort oder ein Boost ist, zählt nicht.
+- Eine Story unter der Schwelle ihrer Herkunft fällt heraus, eine auf der Schwelle bleibt.
+- 34 Punkte auf Lobsters stehen vor 45 Punkten auf Lemmy. Die Begründung nennt beides.
+- Dasselbe Repo auf Lobsters und Lemmy erscheint einmal, unter der Story mit dem höheren
+  Vielfachen.
+- Fällt Lemmy aus, erscheint die Liste mit Lobsters und nennt den Ausfall.
+- Eine Story, die jünger als 1 oder älter als 8 Tage ist, zählt nicht.
+
+### Schritte
+
+1. Lobsters als Wochenliste über „newest“, mit Schwelle und Herkunft. Die tägliche Liste
+   endet.
+2. Lemmy dazu, mit der Rangfolge nach Vielfachem der Schwelle.
+3. Links im ersten Beitrag (`Story.text`) für Lobsters und Lemmy.
+4. Mastodon zunächst nur protokolliert, nach vier Wochen Entscheidung über Aufnahme und
+  Schwelle.
+
+### Offene Fragen
+
+- Name und Adresse der Liste: „Foren“ unter `/forums/` ist ein Vorschlag.
+- Welche Lemmy-Communities genau? Die fünf oben sind ein Start.
+- Mastodon über fosstodon.org allein oder mehrere Instanzen? Jede Instanz sieht nur, was
+  ihre Mitglieder abonniert haben.
