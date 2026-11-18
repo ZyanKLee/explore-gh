@@ -159,6 +159,32 @@ class TestCommunityView:
         assert entry.discussion_label == "Diskussion auf Mastodon #rust"
         assert entry.discussion_url == "https://fosstodon.org/@a/1"
         assert week.main.empty_text == "Diese Woche nichts gefunden"
+        assert entry.other_discussions == []
+
+    def test_the_forums_list_links_the_discussion_on_every_other_origin(self, tmp_path):
+        forums_project = project_json()
+        lemmy = {"name": "Lemmy c/linux@lemmy.ml", "reference_points": 15, "min_points": 15,
+                 "points_label": "Punkte"}  # fmt: skip
+        lobsters = {"name": "Lobsters", "reference_points": 10, "min_points": 10,
+                    "points_label": "Punkte"}  # fmt: skip
+        forums_project["story"] |= {"discussion_url": "https://lemmy.ml/post/1", "origin": lemmy}
+        forums_project["other_stories"] = [
+            {**forums_project["story"], "discussion_url": "https://lobste.rs/s/2",
+             "points": 64, "origin": lobsters},
+            {**forums_project["story"], "discussion_url": "javascript:alert(1)",
+             "origin": lobsters},
+        ]  # fmt: skip
+        write_json(
+            tmp_path / "2026-11-16.json",
+            community_edition_json("2026-11-16", projects=[forums_project]),
+        )
+
+        (week,) = load_community_editions(tmp_path, FORUMS)
+
+        assert week.main.entries[0].other_discussions == [
+            ("Diskussion auf Lobsters", "https://lobste.rs/s/2")
+        ]
+        assert "https://lobste.rs/s/2" in community_feed_html(week.main)
 
     def test_hn_entries_carry_the_labels_of_their_platform(self, tmp_path):
         write_json(tmp_path / "2026-11-12.json", community_edition_json())

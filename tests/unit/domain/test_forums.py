@@ -85,6 +85,37 @@ def test_a_repo_on_one_origin_names_no_other():
     (chosen,) = curate(project("a/x", LOBSTERS_ORIGIN, points=34)).main
 
     assert not any(reason.startswith("Auch auf") for reason in chosen.reasons)
+    assert chosen.other_stories == ()
+
+
+def test_a_repo_on_several_origins_keeps_the_other_stories_for_their_links():
+    def found(story_id, origin, points):
+        story = make_story(
+            story_id, platform=FORUMS, origin=origin, points=points, discussion_url=story_id
+        )
+        return make_project("https://github.com/a/x", story=story)
+
+    lemmy = found("https://lemmy.ml/post/1", LEMMY_RUST, points=22)
+    mastodon = found("https://fosstodon.org/@a/2", MASTODON_RUST, points=4)
+    lobsters = found("https://lobste.rs/s/3", LOBSTERS_ORIGIN, points=34)
+
+    (chosen,) = curate(mastodon, lemmy, lobsters).main
+
+    assert chosen.story == lobsters.story
+    assert [story.discussion_url for story in chosen.other_stories] == [
+        "https://lemmy.ml/post/1",
+        "https://fosstodon.org/@a/2",
+    ]
+
+
+def test_the_same_discussion_found_twice_is_linked_once():
+    story = make_story("https://lobste.rs/s/3", platform=FORUMS, origin=LOBSTERS_ORIGIN, points=34)
+    by_url = make_project("https://github.com/a/x", story=story)
+    in_post = make_project("https://github.com/a/x", story=story, found_in_post=True)
+
+    (chosen,) = curate(by_url, in_post).main
+
+    assert chosen.other_stories == ()
 
 
 def test_a_project_named_in_the_first_post_says_so():

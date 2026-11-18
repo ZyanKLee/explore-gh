@@ -64,6 +64,8 @@ class CommunityEntryView:
     discussion_label: str  # "Diskussion auf HN"
     comments: str
     reasons: list[str]  # "Warum Platz …?", empty for editions before 2026-11-13
+    # (label, address) of the other discussions of the repo, empty before 2026-11-23
+    other_discussions: list[tuple[str, str]]
 
 
 @dataclass(frozen=True)
@@ -122,7 +124,12 @@ def community_feed_html(view: CommunityEditionView) -> str:
     items = "".join(
         f'<li><a href="{escape(entry.repository_url)}">{escape(entry.title)}</a>'
         f" ({entry.points} {escape(entry.points_label)}, {entry.comments} Kommentare)"
-        f' · <a href="{escape(entry.discussion_url)}">{escape(entry.discussion_label)}</a></li>'
+        f' · <a href="{escape(entry.discussion_url)}">{escape(entry.discussion_label)}</a>'
+        + "".join(
+            f' · <a href="{escape(url)}">{escape(label)}</a>'
+            for label, url in entry.other_discussions
+        )
+        + "</li>"
         for entry in view.entries
     )
     return f"<ol>{items}</ol>"
@@ -153,10 +160,13 @@ def _entry_view(platform: Platform, project: dict, rank: int) -> CommunityEntryV
     origin = story.get("origin")
     if origin:
         points_label = f"{origin['points_label']} auf {origin['name']}"
-        discussion_label = f"Diskussion auf {origin['name']}"
     else:
         points_label = f"{platform.name}-Punkte"
-        discussion_label = f"Diskussion auf {platform.name}"
+    other_discussions = []
+    for other in project.get("other_stories", []):
+        url = _web_url(platform.discussion_url(other))  # a forums story names its own
+        if url:
+            other_discussions.append((_discussion_label(platform, other), url))
     return CommunityEntryView(
         rank=rank,
         title=story["title"],
@@ -168,10 +178,16 @@ def _entry_view(platform: Platform, project: dict, rank: int) -> CommunityEntryV
         license_id=shown_license(project["license_id"]),
         points=number(story[platform.points_key]),
         points_label=points_label,
-        discussion_label=discussion_label,
+        discussion_label=_discussion_label(platform, story),
         comments=number(story["comments"]),
         reasons=list(project.get("reasons", [])),
+        other_discussions=other_discussions,
     )
+
+
+def _discussion_label(platform: Platform, story: dict) -> str:
+    origin = story.get("origin")
+    return f"Diskussion auf {origin['name'] if origin else platform.name}"
 
 
 def _web_url(value) -> str | None:

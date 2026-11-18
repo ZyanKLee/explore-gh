@@ -89,6 +89,7 @@
         <li>{{ entry.comments }} Kommentare</li>
         {% if entry.project_url %}<li><a href="{{ entry.project_url }}">Projektseite</a></li>{% endif %}
         <li><a href="{{ entry.discussion_url }}">{{ entry.discussion_label }}</a></li>
+        {% for label, url in entry.other_discussions %}<li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}
       </ul>
     </div>
     {% if entry.reasons %}

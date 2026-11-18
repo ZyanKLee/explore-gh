@@ -162,6 +162,9 @@ class CommunityProject:
     found_in_post: bool = False  # the text of the first post links the repo
     # "Warum Platz …?", written by the CommunityCurator: an explanation, not an identity
     reasons: tuple[str, ...] = field(default=(), compare=False)
+    # The other stories that link the repo, in ranking order. Their discussions are
+    # linked on the page. Written by the CommunityCurator.
+    other_stories: tuple[Story, ...] = field(default=(), compare=False)
     # Read for the AI section and the exclusions, never stored, like a Snapshot's README.
     # None: it could not be read. "": the repo has none.
     readme: str | None = field(default=None, compare=False, repr=False)
@@ -169,6 +172,7 @@ class CommunityProject:
     def __post_init__(self):
         object.__setattr__(self, "topics", tuple(self.topics))
         object.__setattr__(self, "reasons", tuple(self.reasons))
+        object.__setattr__(self, "other_stories", tuple(self.other_stories))
 
     @property
     def key(self) -> str:
@@ -245,8 +249,9 @@ class CommunityCurator:
         for candidate in candidates:
             if _eligible(candidate) and candidate.key not in blocked:
                 found.setdefault(candidate.key, []).append(candidate)
-        best = {key: min(stories, key=_rank) for key, stories in found.items()}
-        ranked = sorted(best.values(), key=_rank)
+        for stories in found.values():
+            stories.sort(key=_rank)
+        ranked = sorted((stories[0] for stories in found.values()), key=_rank)
         focus = {project.key: _ai_focus(project) for project in ranked}
 
         def section(wanted: Section) -> tuple[CommunityProject, ...]:
@@ -327,4 +332,17 @@ def _explained(
     if project.license_id == UNRECOGNIZED_LICENSE:
         reasons.append(UNRECOGNIZED_LICENSE_REASON)
     reasons += [signal.reason for signal in focus.signals]
-    return replace(project, reasons=tuple(reasons))
+    return replace(
+        project, reasons=tuple(reasons), other_stories=_other_stories(project, all_stories)
+    )
+
+
+def _other_stories(project: CommunityProject, all_stories: Iterable[CommunityProject]):
+    """Every other discussion of the repo, once. `all_stories` come in ranking order."""
+    seen = {project.story.discussion_url}
+    others = []
+    for other in all_stories:
+        if other.story.discussion_url not in seen:
+            seen.add(other.story.discussion_url)
+            others.append(other.story)
+    return tuple(others)
