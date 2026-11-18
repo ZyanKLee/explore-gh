@@ -109,11 +109,11 @@ Awesome-Listen bewusst **nicht** verwenden.
   Gegenlesen eingreifen.
 - **Gegenlesen**: Seit dem 15.11.2026 liest die Copilot-CLI die Repos gegen, die in der
   Ausgabe landen würden (rund 40 am Tag, nie die ganze Sammlung). Sie kann ein Repo
-  herausnehmen: bei Verdacht auf Schadsoftware, Umgehen von Kopierschutz, Betrug, oder
-  wenn es kein eigenes Softwareprojekt ist. Und sie kann ein Repo mit AI als Thema aus
-  der Hauptliste in die AI-Sektion verschieben, nie umgekehrt. Den Rang bestimmt sie
-  nicht. Im Zweifel bleibt alles, wie die Regeln es sagen. Fällt Copilot aus,
-  erscheint die Ausgabe ohne Gegenlesen. GitHub Models ist seit dem 30.07.2026
+  herausnehmen: bei Verdacht auf Schadsoftware, Umgehen von Kopierschutz, Betrug, bei
+  Portierungen und Recompiles fremder Spiele, oder wenn es kein eigenes Softwareprojekt
+  ist. Und sie kann ein Repo mit AI als Thema aus der Hauptliste in die AI-Sektion
+  verschieben, nie umgekehrt. Den Rang bestimmt sie nicht. Im Zweifel bleibt alles, wie
+  die Regeln es sagen. Fällt Copilot aus, erscheint die Ausgabe ohne Gegenlesen. GitHub Models ist seit dem 30.07.2026
   eingestellt und keine Alternative.
 - **Kein Feedback- oder Personalisierungsmechanismus**, um Interessensblasen zu vermeiden.
 

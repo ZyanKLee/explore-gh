@@ -286,6 +286,7 @@ Führt zur Abwertung, nie zum Ausschluss.
   `switch2`, `switch 2`, `switch game`, `nintendo`, `n64`, `gamecube`, `wii`, `wii u`,
   `3ds`, `xbox`, `dreamcast`. Ein Terminal-Emulator oder eine App für den Xbox-Controller
   bekommt keinen Abzug. Portierungen, die nur den Namen des Spiels nennen, fallen durch.
+  Sie fängt das Gegenlesen ab (`game_port`, siehe `ausgabe.md`) und nimmt sie ganz heraus.
 - Ein neues unerwünschtes Thema ist eine Zeile in `DISLIKED_TOPICS`.
 - **Schwäche:** Die Programmiersprache (Swift, PowerShell) zählt nicht als Hinweis auf
   die Plattform.

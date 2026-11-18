@@ -23,6 +23,7 @@ REVIEW_CATEGORIES: dict[str, str | None] = {
     "scam": "Betrug oder Spam",
     "no_software": "kein eigenes Softwareprojekt",
     "placeholder": "Hülle ohne erkennbare Arbeit",
+    "game_port": "Portierung oder Nachbau eines fremden Spiels",
 }
 
 # What the reviewer is told about each category.
@@ -55,6 +56,13 @@ REVIEW_GUIDE: dict[str, str] = {
     "placeholder": (
         "Leere Hülle: Ankündigung ohne Code, Platzhalter, automatisch erzeugter Inhalt "
         "ohne erkennbare eigene Arbeit."
+    ),
+    "game_port": (
+        "Bringt ein bestehendes, fremdes Spiel auf eine andere Plattform oder baut es "
+        "nach: Decompilation, statische Recompilation (Recomp), Source-Port, PC-Port "
+        "eines Konsolenspiels, Fan-Port, Nachbau der Engine eines bestimmten Spiels. "
+        "Auch Werkzeuge, die nur für ein solches Projekt gebaut sind. Nicht gemeint: "
+        "eigene Spiele, allgemeine Spiele-Engines, Mods, Emulatoren ganzer Konsolen."
     ),
 }
 

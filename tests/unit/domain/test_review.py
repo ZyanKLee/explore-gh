@@ -37,6 +37,7 @@ def test_ai_focus_counts_as_ok_in_the_ai_section():
         ("scam", "Betrug oder Spam"),
         ("no_software", "kein eigenes Softwareprojekt"),
         ("placeholder", "Hülle ohne erkennbare Arbeit"),
+        ("game_port", "Portierung oder Nachbau eines fremden Spiels"),
     ],
 )
 def test_the_other_categories_take_the_repo_out(category, label):
