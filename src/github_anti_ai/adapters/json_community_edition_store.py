@@ -66,21 +66,8 @@ def to_json(edition: CommunityEdition) -> dict:
 
 def _project_to_json(platform: Platform, project: CommunityProject) -> dict:
     """The README is not stored, as in the GitHub editions."""
-    story = project.story
-    story_json = {"id": story.id, "title": story.title, "url": story.url}
-    if platform != HN:  # HN's discussion page follows from the id
-        story_json["discussion_url"] = story.discussion_url
-    story_json[POINTS_KEYS[platform.slug]] = story.points
-    story_json |= {"comments": story.comments, "created_at": story.created_at.isoformat()}
-    if story.origin:
-        story_json["origin"] = {
-            "name": story.origin.name,
-            "reference_points": story.origin.reference_points,
-            "min_points": story.origin.min_points,
-            "points_label": story.origin.points_label,
-        }
     stored = {
-        "story": story_json,
+        "story": _story_to_json(platform, project.story),
         "repository_url": project.repository_url,
         "project_url": project.project_url,
         "description": project.description,
@@ -95,6 +82,24 @@ def _project_to_json(platform: Platform, project: CommunityProject) -> dict:
     }
     if project.found_in_post:
         stored["found_in_post"] = True
+    if project.other_stories:
+        stored["other_stories"] = [_story_to_json(platform, s) for s in project.other_stories]
+    return stored
+
+
+def _story_to_json(platform: Platform, story: Story) -> dict:
+    stored = {"id": story.id, "title": story.title, "url": story.url}
+    if platform != HN:  # HN's discussion page follows from the id
+        stored["discussion_url"] = story.discussion_url
+    stored[POINTS_KEYS[platform.slug]] = story.points
+    stored |= {"comments": story.comments, "created_at": story.created_at.isoformat()}
+    if story.origin:
+        stored["origin"] = {
+            "name": story.origin.name,
+            "reference_points": story.origin.reference_points,
+            "min_points": story.origin.min_points,
+            "points_label": story.origin.points_label,
+        }
     return stored
 
 
@@ -111,18 +116,9 @@ def from_json(platform: Platform, data: dict) -> CommunityEdition:
 
 
 def _project_from_json(platform: Platform, data: dict) -> CommunityProject:
-    story = data["story"]
+    """Editions before 2026-11-23 name the other stories only in their reasons."""
     return CommunityProject(
-        story=Story(
-            id=story["id"],
-            title=story["title"],
-            url=story["url"],
-            discussion_url=story.get("discussion_url") or platform.discussion_url(story["id"]),
-            points=story[POINTS_KEYS[platform.slug]],
-            comments=story["comments"],
-            created_at=datetime.fromisoformat(story["created_at"]),
-            origin=Origin(**story["origin"]) if "origin" in story else None,
-        ),
+        story=_story_from_json(platform, data["story"]),
         repository_url=data["repository_url"],
         project_url=data["project_url"],
         description=data["description"],
@@ -135,4 +131,18 @@ def _project_from_json(platform: Platform, data: dict) -> CommunityProject:
         linked_directly=data.get("linked_directly", False),
         found_in_post=data.get("found_in_post", False),
         reasons=tuple(data.get("reasons", [])),
+        other_stories=tuple(_story_from_json(platform, s) for s in data.get("other_stories", [])),
+    )
+
+
+def _story_from_json(platform: Platform, story: dict) -> Story:
+    return Story(
+        id=story["id"],
+        title=story["title"],
+        url=story["url"],
+        discussion_url=story.get("discussion_url") or platform.discussion_url(story["id"]),
+        points=story[POINTS_KEYS[platform.slug]],
+        comments=story["comments"],
+        created_at=datetime.fromisoformat(story["created_at"]),
+        origin=Origin(**story["origin"]) if "origin" in story else None,
     )
