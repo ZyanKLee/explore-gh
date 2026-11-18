@@ -193,11 +193,31 @@ class TestCommunityLists:
         assert page(f"{slug}/feed.xml").count("<entry>") == 1
         assert "a/llm" in page(f"{slug}/ai/feed.xml")
 
+    def test_the_weekly_forums_list_has_its_pages_and_feeds(self, site):
+        data = project_json()
+        data["story"] |= {
+            "discussion_url": "https://lobste.rs/s/x",
+            "origin": {"name": "Lobsters", "reference_points": 10, "min_points": 10,
+                       "points_label": "Punkte"},
+        }  # fmt: skip
+        write_community_edition(
+            site.data, "forums", community_edition_json("2026-11-09", projects=[data])
+        )
+        page = site()
+
+        latest = page("forums/index.html")
+        assert "Trending in den Foren, Woche vom 9. November 2026" in latest
+        assert "321 Punkte auf Lobsters" in latest
+        assert "Diskussion auf Lobsters" in latest
+        assert "Diese Woche nichts gefunden" in page("forums/ai/index.html")
+        assert page("forums/feed.xml").count("<entry>") == 1
+
     def test_the_main_navigation_names_the_three_platforms_and_marks_the_current(self, site):
         write_community_edition(site.data, "hn", community_edition_json())
         page = site()
 
         hn = page("hn/2026/11/12/index.html")
         assert re.search(r'href="[./]*/hn/" aria-current="page">Trending auf HN', hn)
-        assert "Trending auf GitHub</a>" in hn and "Trending auf Lobsters</a>" in hn
+        assert "Trending auf GitHub</a>" in hn and "Trending in den Foren</a>" in hn
+        assert "Trending auf Lobsters</a>" not in hn  # its archive stays, without a link
         assert re.search(r'aria-current="page">Trending auf GitHub', page("archiv/index.html"))

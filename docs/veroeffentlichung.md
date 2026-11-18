@@ -10,7 +10,8 @@ fragt keine API ab, bewertet nichts und wählt nichts aus.
 ```
 data/editions/*.json            GitHub-Ausgaben
 data/hn-editions/*.json         HN-Ausgaben
-data/lobsters-editions/*.json   Lobsters-Ausgaben
+data/forums-editions/*.json     Foren-Ausgaben, eine je Woche (Datum des Montags)
+data/lobsters-editions/*.json   Lobsters-Ausgaben bis 17.11.2026 (Archiv)
    │  lesen, Format prüfen, nach Datum sortieren
    ▼
 Seitenmodell                    je Tag und Sektion fertige Texte und Zahlen
@@ -23,8 +24,9 @@ Theme → output/
 ```
 
 - **Seitenmodell:** reine Funktionen ohne Pelican. Hier steht alles, was Text und Zahlen
-  betrifft. HN und Lobsters unterscheiden sich nur in einer `Platform` (Name, Adresse,
-  Bezeichnung der Punkte, Diskussion).
+  betrifft. HN, Foren und Lobsters unterscheiden sich nur in einer `Platform` (Name, Adresse,
+  Bezeichnung der Punkte, Diskussion, täglich oder wöchentlich). In den Foren nennt jeder
+  Eintrag seine Herkunft: „34 Punkte auf Lobsters“, „Diskussion auf Lemmy c/rust“.
 - **Pelican-Anbindung** (`pelican_plugin.py`, `site.py`, `theme/`): so dünn wie möglich.
   Das Plugin beschreibt die drei Listen in einer Tabelle (`PageList`) und erzeugt für jede
   dieselben Seiten. Das Theme setzt nur zusammen und denkt sich keine Texte aus. Plugin
@@ -42,15 +44,16 @@ Theme → output/
 | `/feed.xml`, `/ai/feed.xml` | Atom-Feeds, ein Eintrag je Tag |
 | `/hn/`, `/hn/ai/`, `/hn/2026/11/13/`, `/hn/ai/2026/11/13/`, `/hn/archiv/` | dasselbe für HN |
 | `/hn/feed.xml`, `/hn/ai/feed.xml` | Feeds der HN-Liste |
-| `/lobsters/…` | dasselbe für Lobsters |
+| `/forums/…` | dasselbe für die Foren, eine Seite je Woche („Woche vom 23. November 2026“) |
+| `/lobsters/…` | das Archiv der täglichen Lobsters-Liste, ohne Link in der Navigation |
 
 - Die Hauptliste zeigt nie ein Repo der AI-Sektion und umgekehrt, auch in den Feeds.
-- Die Hauptnavigation nennt die drei Plattformen. Alle Seiten einer Plattform markieren
+- Die Hauptnavigation nennt GitHub, HN und die Foren. Alle Seiten einer Plattform markieren
   sie als aktuelle Seite.
 - Jede Tagesseite verlinkt den Tag davor und danach, die andere Sektion desselben Tages
   und das Archiv ihrer Plattform.
 - Die Adressen der GitHub-Seiten und -Feeds bleiben, wie sie sind, damit Abos weiterlaufen.
-- Leere Sektion: „Heute nichts gefunden“. Noch keine Ausgabe: „Noch keine Ausgabe“.
+- Leere Sektion: „Heute nichts gefunden“, in den Foren „Diese Woche nichts gefunden“. Noch keine Ausgabe: „Noch keine Ausgabe“.
 
 ## Ein Eintrag
 
@@ -60,7 +63,7 @@ Alter, Lizenz, Homepage; Verlaufskurve der letzten 35 Tage als eingebettetes SVG
 „Warum Platz 3? 89,2 Punkte“ mit jedem Signal, Gewicht und Summe. Über der Liste die
 Statistik des Tages („1.834 Repos geprüft, 420 ausgeschlossen, 212 als AI-Thema eingestuft“).
 
-**HN, Lobsters:** Rang, Titel der Story als Link zum Repo, Beschreibung; Sprache, Lizenz,
+**HN, Foren:** Rang, Titel der Story als Link zum Repo, Beschreibung; Sprache, Lizenz,
 Punkte, Kommentare, Projektseite, Diskussion; aufklappbar die Begründung (siehe
 `community.md`).
 
@@ -135,7 +138,7 @@ ohne. Scheitert ein Bau, zeigt die Vorschau weiter die letzte funktionierende Se
 
 | Workflow | Wann | Was |
 |---|---|---|
-| `daily.yml` | täglich 02:43 UTC, oder von Hand | GitHub-, HN- und Lobsters-Ausgabe erzeugen und gemeinsam ins Repo schreiben |
+| `daily.yml` | täglich 02:43 UTC, oder von Hand | GitHub- und HN-Ausgabe erzeugen, montags die Foren-Ausgabe, und alles gemeinsam ins Repo schreiben |
 | `site.yml` | nach jedem nicht abgebrochenen täglichen Lauf, bei Änderungen an Theme oder Ausgaben, oder von Hand | Seite bauen und auf GitHub Pages veröffentlichen |
 | `tests.yml` | bei jedem Push und Pull Request | die Tests und der Stil (ruff, Version fest im Workflow) |
 
@@ -154,9 +157,10 @@ Seite. Der Lauf endet dann rot, damit der Fehler auffällt.
 5. **GitHub-Ausgabe** mit `publish --review --allow-incomplete`, außer es gibt sie schon.
    Der Schritt bekommt den eingebauten Token des Laufs, weil die Copilot-CLI keine
    klassischen Tokens annimmt.
-6. **HN- und Lobsters-Ausgabe** (`collect-hn`, `collect-lobsters`).
+6. **HN- und Foren-Ausgabe** (`collect-hn`, `collect-forums`). Die Foren-Ausgabe gehört
+   zum Montag; an den übrigen Tagen gibt es sie schon, oder der Lauf holt sie nach.
 7. **Ins Repo schreiben** (`data/editions/`, `data/history/`, `data/hn-editions/`,
-   `data/lobsters-editions/`) in einem Commit von `github-actions[bot]`.
+   `data/forums-editions/`) in einem Commit von `github-actions[bot]`.
 8. **„Website“ startet** danach von selbst (`workflow_run`), auch nach einem teilweise
    gescheiterten Lauf. Nur dieser eine Workflow veröffentlicht.
 

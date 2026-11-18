@@ -1,4 +1,4 @@
-# Der tägliche Lauf: die drei Ausgaben (GitHub, HN, Lobsters) nacheinander erzeugen
+# Der tägliche Lauf: die Ausgaben (GitHub, HN, Foren) nacheinander erzeugen
 # und gemeinsam ins Repo schreiben. Ist er fertig, startet der Workflow "Website" und
 # veröffentlicht die Seite.
 #
@@ -112,13 +112,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
         run: uv run github-anti-ai collect-hn
 
-      # --- Lobsters ---
+      # --- Foren (Lobsters, Lemmy, Mastodon) ---
+      # Eine Ausgabe je Woche, sie gehört zum Montag. An den übrigen Tagen gibt es sie
+      # schon, der Schritt tut dann nichts. Scheitert er am Montag, holt der Dienstag ihn nach.
 
-      - name: Lobsters-Projekte suchen, sammeln und filtern
+      - name: Foren-Projekte der Woche suchen, sammeln und filtern
         if: ${{ !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ secrets.COLLECT_TOKEN }}
-        run: uv run github-anti-ai collect-lobsters
+        run: uv run github-anti-ai collect-forums
 
       # --- Gemeinsam ins Repo ---
 
@@ -127,8 +129,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          mkdir -p data/history
-          git add data/editions data/history data/hn-editions data/lobsters-editions
+          mkdir -p data/history data/forums-editions
+          git add data/editions data/history data/hn-editions data/lobsters-editions data/forums-editions
           if git diff --cached --quiet; then
             echo "Nichts Neues."
           else

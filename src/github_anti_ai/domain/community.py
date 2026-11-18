@@ -1,6 +1,7 @@
-"""The community lists: trending open source projects on HN and Lobsters.
+"""The community lists: trending open source projects on HN and in small forums.
 
-Both platforms follow the same rules. They differ only in their Platform.
+All lists follow the same rules. They differ in their Platform, and the forums list ranks
+stories of several origins by the multiple of their origin's threshold.
 See docs/community.md.
 """
 
@@ -21,8 +22,19 @@ from github_anti_ai.domain.text import quoted
 # Which stories the searches ask for
 HN_STORY_WINDOW = timedelta(hours=48)
 HN_MIN_STORY_POINTS = 50
-LOBSTERS_HOTTEST_PAGES = 2
-LOBSTERS_SHOW_WINDOW = timedelta(days=7)
+# The weekly forums list takes the stories that are 1 to 8 days old on its day
+FORUMS_MIN_STORY_AGE = timedelta(days=1)
+FORUMS_MAX_STORY_AGE = timedelta(days=8)
+LOBSTERS_MIN_POINTS = 10
+LEMMY_MIN_POINTS = 15
+LEMMY_COMMUNITIES = (
+    "programming", "rust", "devops", "opensource@lemmy.ml", "linux@lemmy.ml",
+    "selfhosted@lemmy.world",
+)  # fmt: skip
+MASTODON_TAGS = ("opensource", "foss", "rust", "linux")
+# Mastodon has no threshold for now: favourites and boosts are rare. Its stories are ranked
+# as if 5 reactions were the threshold.
+MASTODON_REFERENCE_POINTS = 5
 
 OPEN_SOURCE_LICENSES = frozenset(
     {
@@ -51,28 +63,85 @@ def is_open_source_license(license_id: str | None) -> bool:
 
 @dataclass(frozen=True)
 class Platform:
-    slug: str  # first part of every address and name of the data directory: hn, lobsters
+    slug: str  # first part of every address and name of the data directory: hn, forums
     name: str
     discussion_url_pattern: str  # with {id}
+    weekly: bool = False  # one edition a week, on Monday
 
     def discussion_url(self, story_id: str) -> str:
         return self.discussion_url_pattern.format(id=quote(story_id))
 
 
 HN = Platform("hn", "HN", "https://news.ycombinator.com/item?id={id}")
+# Daily until 2026-11-17, its editions stay in the archive. Since then part of FORUMS.
 LOBSTERS = Platform("lobsters", "Lobsters", "https://lobste.rs/s/{id}")
-PLATFORMS = (HN, LOBSTERS)
+FORUMS = Platform("forums", "Foren", "{id}", weekly=True)  # stories name their discussion
+PLATFORMS = (HN, LOBSTERS, FORUMS)
+
+
+def edition_day(platform: Platform, today: date) -> date:
+    """The day an edition belongs to: today, or the Monday of this week for a weekly list."""
+    return today - timedelta(days=today.weekday()) if platform.weekly else today
+
+
+@dataclass(frozen=True)
+class Origin:
+    """Where a story of the forums list comes from, with the threshold of that place."""
+
+    name: str  # "Lobsters", "Lemmy c/rust", "Mastodon #rust"
+    reference_points: int  # the rank is points divided by this
+    min_points: int  # fewer points: the story is left out
+    points_label: str = "Punkte"
+
+    def reason(self, points: int) -> str:
+        multiple = f"{points / self.reference_points:.1f}".replace(".", ",")
+        if self.min_points == self.reference_points:
+            return (
+                f"{points} {self.points_label} auf {self.name}, das {multiple}-Fache der "
+                f"Schwelle von {self.reference_points}."
+            )
+        return (
+            f"{points} {self.points_label} auf {self.name}, das {multiple}-Fache der "
+            f"Bezugsgröße von {self.reference_points}. Testweise ohne Schwelle."
+        )
+
+
+LOBSTERS_ORIGIN = Origin("Lobsters", LOBSTERS_MIN_POINTS, LOBSTERS_MIN_POINTS)
+
+
+def lemmy_origin(community: str) -> Origin:
+    """`rust` and `linux@lemmy.ml` give "Lemmy c/rust" and "Lemmy c/linux@lemmy.ml"."""
+    return Origin(f"Lemmy c/{community}", LEMMY_MIN_POINTS, LEMMY_MIN_POINTS)
+
+
+def mastodon_origin(tag: str) -> Origin:
+    return Origin(f"Mastodon #{tag}", MASTODON_REFERENCE_POINTS, 0, "Reaktionen")
 
 
 @dataclass(frozen=True)
 class Story:
     id: str
     title: str
-    url: str  # what the story links: a repo or a website
+    url: str  # what the story links: a repo or a website; "" for a post with text only
     discussion_url: str
-    points: int  # HN points, Lobsters score
+    points: int  # HN points, Lobsters score, Lemmy score, Mastodon favourites and boosts
     comments: int
     created_at: datetime
+    origin: Origin | None = None  # only in the forums list
+    # Links in the text of the first post, never in replies. Read, never stored.
+    links: tuple[str, ...] = field(default=(), compare=False, repr=False)
+
+    def __post_init__(self):
+        object.__setattr__(self, "links", tuple(self.links))
+
+    @property
+    def relative_points(self) -> float:
+        """The multiple of the origin's reference points; plain points without an origin."""
+        return self.points / self.origin.reference_points if self.origin else self.points
+
+    @property
+    def reaches_threshold(self) -> bool:
+        return self.origin is None or self.points >= self.origin.min_points
 
 
 @dataclass(frozen=True)
@@ -90,6 +159,7 @@ class CommunityProject:
     has_code: bool
     topics: tuple[str, ...] = ()
     linked_directly: bool = False  # the story links the repo itself, not a website
+    found_in_post: bool = False  # the text of the first post links the repo
     # "Warum Platz …?", written by the CommunityCurator: an explanation, not an identity
     reasons: tuple[str, ...] = field(default=(), compare=False)
     # Read for the AI section and the exclusions, never stored, like a Snapshot's README.
@@ -129,7 +199,10 @@ def repository_key(url: str) -> str:
 
 @dataclass(frozen=True)
 class CommunityEdition:
-    """The selection of one day on one platform. Projects are in ranking order."""
+    """The selection of one day (one week, for a weekly list) on one platform.
+
+    Projects are in ranking order. A weekly edition belongs to the Monday of its week.
+    """
 
     platform: Platform
     day: date
@@ -168,12 +241,11 @@ class CommunityCurator:
             if in_cooldown(edition.day, day)
             for project in edition.main + edition.ai
         }
-        best: dict[str, CommunityProject] = {}  # one story per repo: the best ranked one
+        found: dict[str, list[CommunityProject]] = {}  # all stories of a repo
         for candidate in candidates:
-            if not _eligible(candidate) or candidate.key in blocked:
-                continue
-            if candidate.key not in best or _rank(candidate) < _rank(best[candidate.key]):
-                best[candidate.key] = candidate
+            if _eligible(candidate) and candidate.key not in blocked:
+                found.setdefault(candidate.key, []).append(candidate)
+        best = {key: min(stories, key=_rank) for key, stories in found.items()}
         ranked = sorted(best.values(), key=_rank)
         focus = {project.key: _ai_focus(project) for project in ranked}
 
@@ -183,15 +255,18 @@ class CommunityCurator:
                 language_of=lambda project: project.language,
                 owner_of=lambda project: project.owner_key,
             )
-            return tuple(_explained(project, focus[project.key]) for project in chosen)
+            return tuple(
+                _explained(project, focus[project.key], found[project.key]) for project in chosen
+            )
 
         return CommunityEdition(platform, day, main=section(Section.MAIN), ai=section(Section.AI))
 
 
-def _rank(project: CommunityProject) -> tuple[int, int, float]:
-    """The platform decides: points, then comments, then the newer story."""
+def _rank(project: CommunityProject) -> tuple[float, int, float]:
+    """The platform decides: points (their multiple of the threshold in the forums list),
+    then comments, then the newer story."""
     story = project.story
-    return -story.points, -story.comments, -story.created_at.timestamp()
+    return -story.relative_points, -story.comments, -story.created_at.timestamp()
 
 
 def _eligible(project: CommunityProject) -> bool:
@@ -203,7 +278,8 @@ def _eligible(project: CommunityProject) -> bool:
         readme=project.readme,
     )
     return (
-        project.is_open_source
+        project.story.reaches_threshold
+        and project.is_open_source
         and project.has_code
         and not project.is_fork
         and not project.is_archived
@@ -220,10 +296,18 @@ def _ai_focus(project: CommunityProject) -> AiFocus:
     )
 
 
-def _explained(project: CommunityProject, focus: AiFocus) -> CommunityProject:
-    """The project with its "Warum Platz …?" lines: how it was found, license, AI terms."""
+def _explained(
+    project: CommunityProject, focus: AiFocus, all_stories: Iterable[CommunityProject] = ()
+) -> CommunityProject:
+    """The project with its "Warum Platz …?" lines: how it was found, its points and other
+    origins (forums list), license, AI terms."""
     if project.linked_directly:
         found = "Die Story verlinkt das Repo direkt."
+    elif project.found_in_post:
+        words = shared_words(project.story.title, project.story.url, project.repository_url)
+        found = "Gefunden im ersten Beitrag."
+        if words:
+            found += f" Repo und Story teilen {quoted(sorted(words))}."
     else:
         host = (urlsplit(project.project_url).hostname or "").removeprefix("www.")
         words = shared_words(project.story.title, project.project_url, project.repository_url)
@@ -231,6 +315,15 @@ def _explained(project: CommunityProject, focus: AiFocus) -> CommunityProject:
         if words:
             found += f" Repo und Story teilen {quoted(sorted(words))}."
     reasons = [found]
+    story = project.story
+    if story.origin:
+        reasons.append(story.origin.reason(story.points))
+        for other in all_stories:
+            origin = other.story.origin
+            if other is not project and origin and origin != story.origin:
+                reasons.append(
+                    f"Auch auf {origin.name}, {other.story.points} {origin.points_label}."
+                )
     if project.license_id == UNRECOGNIZED_LICENSE:
         reasons.append(UNRECOGNIZED_LICENSE_REASON)
     reasons += [signal.reason for signal in focus.signals]

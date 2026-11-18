@@ -10,6 +10,7 @@ from publication_samples import (
 )
 
 from github_anti_ai.publication.community_view import (
+    FORUMS,
     HN,
     LOBSTERS,
     community_feed_html,
@@ -134,6 +135,39 @@ class TestCommunityView:
         assert (hn.main.entries[0].points, hn.main.points_label) == ("321", "HN-Punkte")
         assert lobsters.main.entries[0].discussion_url == "https://lobste.rs/s/x"
         assert lobsters.main.discussion_label == "Diskussion auf Lobsters"
+
+    def test_the_forums_list_names_points_and_discussion_of_each_origin(self, tmp_path):
+        forums_project = project_json()
+        forums_project["story"] |= {
+            "url": "",
+            "points": 3,
+            "discussion_url": "https://fosstodon.org/@a/1",
+            "origin": {"name": "Mastodon #rust", "reference_points": 5, "min_points": 0,
+                       "points_label": "Reaktionen"},
+        }  # fmt: skip
+        write_json(
+            tmp_path / "2026-11-16.json",
+            community_edition_json("2026-11-16", projects=[forums_project]),
+        )
+
+        (week,) = load_community_editions(tmp_path, FORUMS)
+
+        assert week.main.title == "Trending in den Foren, Woche vom 16. November 2026"
+        assert week.main.url == "forums/2026/11/16/"
+        entry = week.main.entries[0]
+        assert (entry.points, entry.points_label) == ("3", "Reaktionen auf Mastodon #rust")
+        assert entry.discussion_label == "Diskussion auf Mastodon #rust"
+        assert entry.discussion_url == "https://fosstodon.org/@a/1"
+        assert week.main.empty_text == "Diese Woche nichts gefunden"
+
+    def test_hn_entries_carry_the_labels_of_their_platform(self, tmp_path):
+        write_json(tmp_path / "2026-11-12.json", community_edition_json())
+
+        (day,) = load_community_editions(tmp_path, HN)
+
+        entry = day.main.entries[0]
+        assert (entry.points_label, entry.discussion_label) == ("HN-Punkte", "Diskussion auf HN")
+        assert day.main.empty_text == "Heute nichts gefunden"
 
     def test_the_stats_count_projects(self, tmp_path):
         write_json(tmp_path / "2026-11-12.json", community_edition_json())

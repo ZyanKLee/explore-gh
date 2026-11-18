@@ -1,6 +1,7 @@
-"""Page models of the community lists (HN, Lobsters), each with an AI section.
+"""Page models of the community lists (HN, Lobsters, forums), each with an AI section.
 
-Both platforms store the same format; they differ only in the names below.
+All store the same format; they differ in the names below. In the weekly forums list each
+story names its origin, and so its points and discussion.
 """
 
 from dataclasses import dataclass
@@ -19,10 +20,16 @@ from github_anti_ai.publication.german import (
 
 @dataclass(frozen=True)
 class Platform:
-    slug: str  # first part of every address: hn/, lobsters/
+    slug: str  # first part of every address: hn/, lobsters/, forums/
     name: str
     points_key: str  # what the stored story calls its points
     discussion_pattern: str  # if the story does not name its discussion page
+    place: str = ""  # "auf HN"; empty: "auf" and the name
+    weekly: bool = False
+
+    @property
+    def where(self) -> str:
+        return self.place or f"auf {self.name}"
 
     def discussion_url(self, story: dict) -> str:
         return _web_url(story.get("discussion_url")) or self.discussion_pattern.format(
@@ -32,12 +39,13 @@ class Platform:
 
 HN = Platform("hn", "HN", "points", "https://news.ycombinator.com/item?id={id}")
 LOBSTERS = Platform("lobsters", "Lobsters", "score", "https://lobste.rs/s/{id}")
-PLATFORMS = (HN, LOBSTERS)
+FORUMS = Platform("forums", "Foren", "points", "{id}", place="in den Foren", weekly=True)
+PLATFORMS = (HN, LOBSTERS, FORUMS)
 
 # section: (key in the stored edition, start of the heading, what the stats count: one, more)
 SECTIONS = {
-    "main": ("projects", "Trending auf", ("Open-Source-Projekt", "Open-Source-Projekte")),
-    "ai": ("ai_projects", "AI-Projekte auf", ("AI-Projekt", "AI-Projekte")),
+    "main": ("projects", "Trending", ("Open-Source-Projekt", "Open-Source-Projekte")),
+    "ai": ("ai_projects", "AI-Projekte", ("AI-Projekt", "AI-Projekte")),
 }
 
 
@@ -52,6 +60,8 @@ class CommunityEntryView:
     language: str | None
     license_id: str | None
     points: str
+    points_label: str  # "HN-Punkte", "Punkte auf Lobsters"
+    discussion_label: str  # "Diskussion auf HN"
     comments: str
     reasons: list[str]  # "Warum Platz …?", empty for editions before 2026-11-13
 
@@ -68,6 +78,7 @@ class CommunityEditionView:
     stats: str
     points_label: str
     discussion_label: str
+    empty_text: str
     entries: list[CommunityEntryView]
 
 
@@ -87,7 +98,7 @@ def section_url(platform: Platform, section: str) -> str:
 
 
 def section_heading(platform: Platform, section: str) -> str:
-    return f"{SECTIONS[section][1]} {platform.name}"
+    return f"{SECTIONS[section][1]} {platform.where}"
 
 
 def load_community_editions(directory: Path, platform: Platform) -> list[CommunityDay]:
@@ -107,11 +118,11 @@ def load_community_editions(directory: Path, platform: Platform) -> list[Communi
 
 def community_feed_html(view: CommunityEditionView) -> str:
     if not view.entries:
-        return "<p>Heute nichts gefunden.</p>"
+        return f"<p>{view.empty_text}.</p>"
     items = "".join(
         f'<li><a href="{escape(entry.repository_url)}">{escape(entry.title)}</a>'
-        f" ({entry.points} {view.points_label}, {entry.comments} Kommentare)"
-        f' · <a href="{escape(entry.discussion_url)}">{view.discussion_label}</a></li>'
+        f" ({entry.points} {escape(entry.points_label)}, {entry.comments} Kommentare)"
+        f' · <a href="{escape(entry.discussion_url)}">{escape(entry.discussion_label)}</a></li>'
         for entry in view.entries
     )
     return f"<ol>{items}</ol>"
@@ -125,17 +136,27 @@ def _edition_view(platform: Platform, section: str, day: date, data: dict) -> Co
         day=day,
         section=section,
         heading=heading,
-        title=f"{heading} vom {long_date(day)}",
+        title=f"{heading}, Woche vom {long_date(day)}"
+        if platform.weekly
+        else f"{heading} vom {long_date(day)}",
         url=f"{section_url(platform, section)}{day:%Y/%m/%d}/",
         stats=f"{len(projects)} {one if len(projects) == 1 else more}",
         points_label=f"{platform.name}-Punkte",
         discussion_label=f"Diskussion auf {platform.name}",
+        empty_text="Diese Woche nichts gefunden" if platform.weekly else "Heute nichts gefunden",
         entries=[_entry_view(platform, project, rank) for rank, project in enumerate(projects, 1)],
     )
 
 
 def _entry_view(platform: Platform, project: dict, rank: int) -> CommunityEntryView:
     story = project["story"]
+    origin = story.get("origin")
+    if origin:
+        points_label = f"{origin['points_label']} auf {origin['name']}"
+        discussion_label = f"Diskussion auf {origin['name']}"
+    else:
+        points_label = f"{platform.name}-Punkte"
+        discussion_label = f"Diskussion auf {platform.name}"
     return CommunityEntryView(
         rank=rank,
         title=story["title"],
@@ -146,6 +167,8 @@ def _entry_view(platform: Platform, project: dict, rank: int) -> CommunityEntryV
         language=project["language"],
         license_id=shown_license(project["license_id"]),
         points=number(story[platform.points_key]),
+        points_label=points_label,
+        discussion_label=discussion_label,
         comments=number(story["comments"]),
         reasons=list(project.get("reasons", [])),
     )

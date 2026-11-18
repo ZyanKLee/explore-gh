@@ -69,11 +69,11 @@
 {% endif %}
 {% endmacro %}
 
-{# One section of one day of a community list (HN, Lobsters) #}
+{# One section of one day (one week) of a community list (HN, Lobsters, forums) #}
 {% macro community_section(view, nav, archive_url) %}
 {{ edition_header(view, nav, archive_url) }}
 {% if not view.entries %}
-<p class="empty">Heute nichts gefunden</p>
+<p class="empty">{{ view.empty_text }}</p>
 {% else %}
 <ol class="entries" role="list">
   {% for entry in view.entries %}
@@ -85,15 +85,15 @@
       <ul class="facts" role="list">
         {% if entry.language %}<li>{{ entry.language }}</li>{% endif %}
         {% if entry.license_id %}<li>Lizenz {{ entry.license_id }}</li>{% endif %}
-        <li>{{ entry.points }} {{ view.points_label }}</li>
+        <li>{{ entry.points }} {{ entry.points_label }}</li>
         <li>{{ entry.comments }} Kommentare</li>
         {% if entry.project_url %}<li><a href="{{ entry.project_url }}">Projektseite</a></li>{% endif %}
-        <li><a href="{{ entry.discussion_url }}">{{ view.discussion_label }}</a></li>
+        <li><a href="{{ entry.discussion_url }}">{{ entry.discussion_label }}</a></li>
       </ul>
     </div>
     {% if entry.reasons %}
     <details class="why">
-      <summary>Warum Platz {{ entry.rank }}? <span class="score">{{ entry.points }} {{ view.points_label }}</span></summary>
+      <summary>Warum Platz {{ entry.rank }}? <span class="score">{{ entry.points }} {{ entry.points_label }}</span></summary>
       <table>
         <caption>Wie das Projekt in die Liste kam</caption>
         <tbody>

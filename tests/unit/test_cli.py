@@ -47,7 +47,7 @@ def test_the_preview_runs_on_port_8000_unless_chosen():
     assert parse_args(["serve", "--port", "8080"]).port == 8080
 
 
-@pytest.mark.parametrize("command", ["collect-hn", "collect-lobsters"])
+@pytest.mark.parametrize("command", ["collect-hn", "collect-forums"])
 def test_the_community_lists_have_their_own_commands(command):
     assert parse_args([command, "--limit", "5"]).limit == 5
 

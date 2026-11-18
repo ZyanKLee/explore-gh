@@ -5,12 +5,7 @@ import pytest
 from builders import NOW
 from http_fakes import FakeWeb
 
-from github_anti_ai.adapters.story_sources import (
-    HN_API_URL,
-    LOBSTERS_URL,
-    HackerNewsSearch,
-    LobstersSearch,
-)
+from github_anti_ai.adapters.story_sources import HN_API_URL, HackerNewsSearch
 from github_anti_ai.application.ports import SourceUnavailable
 
 
@@ -54,59 +49,3 @@ class TestHackerNews:
     def test_a_failing_api_makes_the_source_unavailable(self):
         with pytest.raises(SourceUnavailable):
             hn(FakeWeb({"hn.algolia.com/api/v1/search_by_date": httpx.Response(500)}))
-
-
-def record(id, created_at=NOW - timedelta(hours=3), url="https://example.org/tool"):
-    return {
-        "short_id": id, "short_id_url": f"https://lobste.rs/s/{id}", "title": f"Story {id}",
-        "url": url, "score": 20, "comment_count": 4, "created_at": created_at.isoformat(),
-    }  # fmt: skip
-
-
-def lobsters(web, limit=None):
-    with web.client(base_url=LOBSTERS_URL) as client:
-        return LobstersSearch(client).discover(NOW, limit)
-
-
-class TestLobsters:
-    def routes(self, hottest=(), page2=(), show=()):
-        return {
-            "lobste.rs/hottest.json": httpx.Response(200, json=list(hottest)),
-            "lobste.rs/page/2.json": httpx.Response(200, json=list(page2)),
-            "lobste.rs/t/show.json": httpx.Response(200, json=list(show)),
-        }
-
-    def test_reads_two_hottest_pages_and_the_show_tag(self):
-        web = FakeWeb(self.routes([record("a")], [record("b")], [record("c")]))
-
-        stories = lobsters(web)
-
-        assert [s.id for s in stories] == ["a", "b", "c"]
-        assert web.paths == [
-            "lobste.rs/hottest.json",
-            "lobste.rs/page/2.json",
-            "lobste.rs/t/show.json",
-        ]
-        assert stories[0].discussion_url == "https://lobste.rs/s/a"
-        assert (stories[0].points, stories[0].comments) == (20, 4)
-
-    def test_a_story_on_several_pages_counts_once(self):
-        assert [
-            s.id
-            for s in lobsters(FakeWeb(self.routes([record("a")], [record("a")], [record("a")])))
-        ] == ["a"]
-
-    def test_show_stories_count_for_7_days(self):
-        web = FakeWeb(
-            self.routes(
-                show=[
-                    record("new", NOW - timedelta(days=6)),
-                    record("old", NOW - timedelta(days=8)),
-                ]
-            )
-        )
-
-        assert [s.id for s in lobsters(web)] == ["new"]
-
-    def test_stories_without_link_are_left_out(self):
-        assert lobsters(FakeWeb(self.routes([record("a", url="")]))) == []

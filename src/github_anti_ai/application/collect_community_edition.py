@@ -1,6 +1,6 @@
 """Finds the stories of a platform, resolves their projects and stores the edition.
 
-The same use case for HN and Lobsters. See docs/community.md.
+The same use case for the daily HN list and the weekly forums list. See docs/community.md.
 """
 
 import logging
@@ -14,7 +14,12 @@ from github_anti_ai.application.ports import (
     SourceUnavailable,
     StorySource,
 )
-from github_anti_ai.domain.community import CommunityCurator, CommunityEdition, Platform
+from github_anti_ai.domain.community import (
+    CommunityCurator,
+    CommunityEdition,
+    Platform,
+    edition_day,
+)
 from github_anti_ai.domain.curation import COOLDOWN_DAYS
 
 log = logging.getLogger(__name__)
@@ -38,9 +43,13 @@ class CollectCommunityEdition:
         self._limit = limit
 
     def run(self) -> CommunityEdition:
-        """The edition of today. If there is one already, nothing is fetched."""
+        """The edition of today, or of this week's Monday for a weekly list.
+
+        If there is one already, nothing is fetched. A weekly run that failed on Monday is
+        made up for on the following days.
+        """
         now = self._clock.now()
-        today = now.date()
+        today = edition_day(self._platform, now.date())
         name = self._platform.name
         if existing := self._editions.load(today):
             log.info("%s-Ausgabe vom %s gibt es schon, nichts zu tun", name, today)
