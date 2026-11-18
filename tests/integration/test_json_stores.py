@@ -104,26 +104,6 @@ class TestEditions:
         }  # fmt: skip
         assert stored["projects"][0]["found_in_post"] is True
 
-    def test_a_forums_edition_keeps_the_other_stories_of_a_repo(self, tmp_path):
-        lobsters = Origin("Lobsters", 10, 10)
-        lemmy = Origin("Lemmy c/rust", 15, 15)
-        other = make_story("https://lemmy.ml/post/1", FORUMS, origin=lemmy, points=22)
-        story = make_story("https://lobste.rs/s/3", FORUMS, origin=lobsters, points=34)
-        project = make_project(story=story, other_stories=(other,))
-        store = JsonCommunityEditionStore(FORUMS, tmp_path)
-
-        store.save(CommunityEdition(FORUMS, TODAY, main=(project,)))
-
-        assert store.load(TODAY).main[0].other_stories == (other,)
-
-    def test_a_project_without_other_stories_stores_none(self, tmp_path):
-        store = JsonCommunityEditionStore(HN, tmp_path)
-
-        store.save(CommunityEdition(HN, TODAY, main=(make_project(),)))
-
-        stored = json.loads((tmp_path / "hn-editions/2026-11-12.json").read_text())
-        assert "other_stories" not in stored["projects"][0]
-
     def test_an_edition_is_never_replaced(self, tmp_path):
         store = JsonEditionStore(tmp_path)
         store.save(make_edition())

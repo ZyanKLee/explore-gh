@@ -182,9 +182,6 @@ unveränderlich.
   die Herkunft: `"origin": {"name": "Lemmy c/rust", "reference_points": 15,
   "min_points": 15, "points_label": "Punkte"}`, dazu `"found_in_post": true`, wenn das
   Repo im Text des ersten Beitrags stand. Im Code heißen alle Punkte `Story.points`.
-- **Weitere Storys** (`other_stories`): andere Storys, die dasselbe Repo verlinken, im
-  selben Format wie `story`. Fehlt, wenn es keine gibt. Ausgaben von vor dem 23.11.2026
-  nennen sie nur in der Begründung, ohne Link.
 - Ausgaben von vor dem 13.11.2026 haben weder `ai_projects` noch `topics`, `reasons` und
   `linked_directly`. Sie werden mit leerer AI-Sektion und ohne Begründung gelesen.
 
@@ -295,9 +292,7 @@ Schwelle.“
 
 **Ein Repo auf mehreren Plattformen** erscheint einmal, die Story mit dem höheren Vielfachen
 gewinnt. Die anderen Fundstellen nennt die Begründung („Auch auf Lemmy c/rust, 22
-Punkte.“). Es gibt dafür keinen Bonus, damit die Regel einfach bleibt. Der Eintrag
-verlinkt jede Diskussion: zuerst die der gewinnenden Story, dann die der übrigen in
-ihrer Rangfolge (`other_stories`). Dieselbe Diskussion steht nur einmal da.
+Punkte.“). Es gibt dafür keinen Bonus, damit die Regel einfach bleibt.
 
 ### Erscheinen
 
