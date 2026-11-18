@@ -12,6 +12,7 @@ from github_anti_ai.domain.model import Candidate, RepoId
 WINDOW_DAYS = 30
 MIN_STARS = 50
 PAUSE_SECONDS = 2.0  # the search allows 30 requests per minute
+PAGE_SIZE = 100  # the most one search page returns
 
 log = logging.getLogger(__name__)
 
@@ -59,10 +60,22 @@ class GitHubSearchCandidates:
                 "/search/repositories",
                 sleep=self._sleep,
                 clock=self._clock,
-                params={"q": query, "sort": "stars", "order": "desc", "per_page": 100},
+                params={"q": query, "sort": "stars", "order": "desc", "per_page": PAGE_SIZE},
             )
-            for item in response.json()["items"]:
+            result = response.json()
+            report_losses(query, result)
+            for item in result["items"]:
                 repo = RepoId.parse(item["full_name"])
                 found.setdefault(repo, Candidate(repo, stars=item.get("stargazers_count")))
             log.info("Suche %d/%d: %d Kandidaten bisher", index + 1, len(queries), len(found))
         return list(found.values())[:limit]
+
+
+def report_losses(query: str, result: dict) -> None:
+    """Warn when a search returned less than GitHub found: a full page is cut off."""
+    day = query.split()[0]
+    shown, total = len(result["items"]), result.get("total_count", 0)
+    if total > shown:
+        log.warning("%s: %d von %d Treffern, %d abgeschnitten", day, shown, total, total - shown)
+    if result.get("incomplete_results"):
+        log.warning("%s: unvollständig, GitHub brach die Suche ab", day)
