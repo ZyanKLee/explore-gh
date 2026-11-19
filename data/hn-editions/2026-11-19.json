@@ -1,0 +1,224 @@
+{
+  "format_version": 1,
+  "day": "2026-11-19",
+  "projects": [
+    {
+      "story": {
+        "id": "50547374",
+        "title": "Unauthenticated remote code execution in Nginx",
+        "url": "https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities",
+        "points": 1394,
+        "comments": 600,
+        "created_at": "2026-11-18T15:19:55+00:00"
+      },
+      "repository_url": "https://github.com/nginx/nginx",
+      "project_url": "https://www.wiz.io/blog/nginx-http2-rce-vulnerabilities",
+      "description": "The official NGINX Open Source repository.",
+      "language": "C",
+      "license_id": "BSD-2-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "content-cache",
+        "http",
+        "http2",
+        "http3",
+        "https",
+        "load-balancer",
+        "mail-proxy-server",
+        "nginx",
+        "quic",
+        "reverse-proxy",
+        "security",
+        "tcp-proxy-server",
+        "tls",
+        "udp-proxy-server",
+        "web-server"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf wiz.io. Repo und Story teilen „nginx“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50554038",
+        "title": "Multiple vulnerabilities in Regexp and String case conversion",
+        "url": "https://www.ruby-lang.org/en/news/2026/11/18/multiple-vulnerabilities-in-regexp-and-string/",
+        "points": 276,
+        "comments": 92,
+        "created_at": "2026-11-18T23:52:50+00:00"
+      },
+      "repository_url": "https://github.com/ruby/ruby",
+      "project_url": "https://www.ruby-lang.org/en/news/2026/11/18/multiple-vulnerabilities-in-regexp-and-string/",
+      "description": "The Ruby Programming Language",
+      "language": "Ruby",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "c",
+        "jit",
+        "language",
+        "object-oriented",
+        "programming-language",
+        "ruby",
+        "ruby-language",
+        "rust"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf ruby-lang.org. Repo und Story teilen „ruby“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50554935",
+        "title": "Unreal Tournament 2004 in the Browser",
+        "url": "https://ut2004.dev/",
+        "points": 167,
+        "comments": 80,
+        "created_at": "2026-11-19T01:29:29+00:00"
+      },
+      "repository_url": "https://github.com/K-Adam/UT2004",
+      "project_url": "https://ut2004.dev/",
+      "description": "Unreal Tournament 2004 Modernized",
+      "language": "UnrealScript",
+      "license_id": "MPL-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "game",
+        "unreal",
+        "unreal-engine",
+        "unreal-tournament",
+        "unreal-tournament-2004",
+        "ut2004"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf ut2004.dev. Repo und Story teilen „ut2004“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50556533",
+        "title": "15M web servers on one VM – smoltcp, DPDK, AF_XDP",
+        "url": "https://kapteko.com/15-million-webservers/",
+        "points": 164,
+        "comments": 20,
+        "created_at": "2026-11-19T05:56:36+00:00"
+      },
+      "repository_url": "https://github.com/smoltcp-rs/smoltcp",
+      "project_url": "https://kapteko.com/15-million-webservers/",
+      "description": "a smol tcp/ip stack",
+      "language": "Rust",
+      "license_id": "0BSD",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "embedded",
+        "networking-stack"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf kapteko.com. Repo und Story teilen „smoltcp“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50548991",
+        "title": "CrossPoint Reader",
+        "url": "https://crosspointreader.com",
+        "points": 122,
+        "comments": 58,
+        "created_at": "2026-11-18T17:14:31+00:00"
+      },
+      "repository_url": "https://github.com/crosspoint-reader/crosspoint-reader",
+      "project_url": "https://crosspointreader.com",
+      "description": "Open-source e-reader firmware",
+      "language": "C++",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "e-reader",
+        "eink",
+        "epub",
+        "epub-reader",
+        "ereader",
+        "esp32",
+        "firmware"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf crosspointreader.com. Repo und Story teilen „crosspoint“, „crosspointreader“, „reader“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50543343",
+        "title": "Talos Linux",
+        "url": "https://www.siderolabs.com/talos-linux",
+        "points": 102,
+        "comments": 60,
+        "created_at": "2026-11-18T08:17:44+00:00"
+      },
+      "repository_url": "https://github.com/siderolabs/talos",
+      "project_url": "https://www.siderolabs.com/talos-linux",
+      "description": "Talos Linux is a modern Linux distribution built for Kubernetes.",
+      "language": "Go",
+      "license_id": "MPL-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "cloud-native",
+        "containerd",
+        "go",
+        "grpc",
+        "kubernetes",
+        "kubernetes-distribution",
+        "linux",
+        "linux-distribution",
+        "musl"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf siderolabs.com. Repo und Story teilen „siderolabs“, „talos“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50551398",
+        "title": "Search Browser – Minimalist WebKit browser with Chrome extension support",
+        "url": "https://searchbrowser.app/",
+        "points": 61,
+        "comments": 36,
+        "created_at": "2026-11-18T20:04:31+00:00"
+      },
+      "repository_url": "https://github.com/driceroland/Search",
+      "project_url": "https://searchbrowser.app/",
+      "description": "A small, fast WebKit browser for macOS, by Office Commun.",
+      "language": "Swift",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf searchbrowser.app. Repo und Story teilen „search“.",
+        "README: 17-mal AI-Begriffe („claude“, „coding agent“, „mcp“, „codex“ …)"
+      ]
+    }
+  ],
+  "ai_projects": []
+}
