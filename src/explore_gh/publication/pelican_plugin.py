@@ -21,6 +21,7 @@ from explore_gh.publication.community_view import (
     section_url,
 )
 from explore_gh.publication.view import SECTION_TITLES, feed_html, load_github_days
+from explore_gh.publication.withdrawals import load_withdrawn
 
 SECTIONS = ("main", "ai")
 
@@ -44,11 +45,12 @@ class PageList:
 
 
 def _lists(settings) -> list[PageList]:
+    withdrawn = load_withdrawn(settings.get("WITHDRAWN_PATH"))
     lists = [
         PageList(
             slug="github",
             name="GitHub",
-            days=list(reversed(load_github_days(settings["EDITIONS_PATH"]))),
+            days=list(reversed(load_github_days(settings["EDITIONS_PATH"], withdrawn))),
             article_template="article",
             feed_html=feed_html,
             headings=SECTION_TITLES,
@@ -62,7 +64,9 @@ def _lists(settings) -> list[PageList]:
             PageList(
                 slug=platform.slug,
                 name=platform.name,
-                days=list(reversed(load_community_editions(path, platform))) if path else [],
+                days=list(reversed(load_community_editions(path, platform, withdrawn)))
+                if path
+                else [],
                 article_template="community-article",
                 feed_html=community_feed_html,
                 headings={s: section_heading(platform, s) for s in SECTIONS},

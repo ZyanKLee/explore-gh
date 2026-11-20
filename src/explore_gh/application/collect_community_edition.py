@@ -4,6 +4,7 @@ The same use case for the daily HN list and the weekly forums list. See docs/com
 """
 
 import logging
+from collections.abc import Sequence
 from datetime import timedelta
 
 from explore_gh.application.ports import (
@@ -21,6 +22,7 @@ from explore_gh.domain.community import (
     edition_day,
 )
 from explore_gh.domain.curation import COOLDOWN_DAYS
+from explore_gh.domain.withdrawal import Withdrawal
 
 log = logging.getLogger(__name__)
 
@@ -34,6 +36,7 @@ class CollectCommunityEdition:
         edition_store: CommunityEditionStore,
         clock: Clock,
         limit: int | None = None,
+        withdrawals: Sequence[Withdrawal] = (),
     ):
         self._platform = platform
         self._stories = story_source
@@ -41,6 +44,7 @@ class CollectCommunityEdition:
         self._editions = edition_store
         self._clock = clock
         self._limit = limit
+        self._withdrawals = withdrawals
 
     def run(self) -> CommunityEdition:
         """The edition of today, or of this week's Monday for a weekly list.
@@ -67,7 +71,9 @@ class CollectCommunityEdition:
                 candidates.append(project)
 
         past = self._editions.since(today - timedelta(days=COOLDOWN_DAYS))
-        edition = CommunityCurator().curate(self._platform, today, candidates, past)
+        edition = CommunityCurator().curate(
+            self._platform, today, candidates, past, self._withdrawals
+        )
         try:
             self._editions.save(edition)
         except AlreadyPublished:

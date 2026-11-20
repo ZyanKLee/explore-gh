@@ -8,6 +8,7 @@ from collections.abc import Sequence
 
 from explore_gh.domain.language import foreign_language
 from explore_gh.domain.model import GROWTH_WINDOW_DAYS, Exclusion, Snapshot
+from explore_gh.domain.preferences import CONSOLE_TERMS
 from explore_gh.domain.text import TermList, labels, number
 
 MIN_STARS_GAINED = 60
@@ -56,6 +57,25 @@ LURE_BUTTON = re.compile(
     r"|<a\s[^>]*href=[\"']https?://[^\"'/]*\.github\.io/[^>]*>\s*<img\s[^>]*button",
     re.IGNORECASE,
 )
+# Signs of piracy and of getting around copy protection, in the labels or the README.
+# The review by the language model catches more; these need no judgement.
+PIRACY_TERMS = TermList(
+    [
+        "pro unlocked",
+        "premium unlocked",
+        "premium features unlocked",
+        "unlocked premium",
+        "unlock premium",
+        "goldhen",
+        "cloudstream extension",
+        "stremio add on",
+        "stremio addon",
+        "fake psn",
+    ]
+)
+# A jailbreak counts only together with a game console, and only in the labels: jailbreaks
+# of phones are no piracy, and a README may just mention the scene.
+JAILBREAK_TERMS = TermList(["jailbreak", "jailbroken"])
 CRYPTO_TERMS = TermList(
     [
         "crypto",
@@ -131,6 +151,10 @@ class ExclusionPolicy:
                 "PowerShell-Befehl)",
                 "lure",
             )
+        if found := PIRACY_TERMS.distinct(text + " . " + (readme or "")):
+            return _piracy(found[0])
+        if (found := JAILBREAK_TERMS.distinct(text)) and (consoles := CONSOLE_TERMS.distinct(text)):
+            return _piracy(f"{consoles[0]} {found[0]}")
         if readme is not None and not readme.strip():
             return Exclusion("Kein README", "no_readme")
         if reason := foreign_language(description, readme or ""):
@@ -138,3 +162,7 @@ class ExclusionPolicy:
         if found := CRYPTO_TERMS.distinct(text):
             return Exclusion(f"Kryptowährungen („{found[0]}“)", "crypto")
         return None
+
+
+def _piracy(term: str) -> Exclusion:
+    return Exclusion(f"Anzeichen für Raubkopie oder Umgehung von Kopierschutz („{term}“)", "piracy")

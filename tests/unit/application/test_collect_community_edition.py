@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 import pytest
 from builders import TODAY, FixedClock, make_project, make_story
@@ -6,6 +6,7 @@ from fakes import FakeResolver, FakeStorySource, InMemoryEditionStore
 
 from explore_gh.application.collect_community_edition import CollectCommunityEdition
 from explore_gh.domain.community import FORUMS, HN, LOBSTERS, CommunityEdition
+from explore_gh.domain.withdrawal import Withdrawal
 
 
 def collect(stories, resolver, store=None, platform=HN, limit=None):
@@ -85,3 +86,19 @@ def test_a_weekly_edition_of_this_week_is_kept_on_the_following_days():
 
     assert edition is existing
     assert stories.asked == 0
+
+
+def test_a_withdrawn_project_is_left_out():
+    story = make_story("1")
+    withdrawal = Withdrawal("https://github.com/a/x", date(2026, 11, 1), "Raubkopie")
+
+    edition = CollectCommunityEdition(
+        HN,
+        FakeStorySource(story),
+        FakeResolver({"1": project_for(story, "a/x")}),
+        InMemoryEditionStore(),
+        FixedClock(),
+        withdrawals=[withdrawal],
+    ).run()
+
+    assert edition.main == ()

@@ -4,6 +4,7 @@ All store the same format; they differ in the names below. In the weekly forums 
 story names its origin, and so its points and discussion.
 """
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import date
 from html import escape
@@ -16,6 +17,7 @@ from explore_gh.publication.german import (
     number,
     shown_license,
 )
+from explore_gh.publication.withdrawals import url_key
 
 
 @dataclass(frozen=True)
@@ -53,7 +55,7 @@ SECTIONS = {
 class CommunityEntryView:
     rank: int
     title: str
-    repository_url: str
+    repository_url: str | None  # None: withdrawn, shown without a link
     project_url: str | None
     discussion_url: str
     description: str
@@ -66,6 +68,7 @@ class CommunityEntryView:
     reasons: list[str]  # "Warum Platz …?", empty for editions before 2026-11-13
     # (label, address) of the other discussions of the repo, empty before 2026-11-23
     other_discussions: list[tuple[str, str]]
+    withdrawn: str | None = None  # the note of a withdrawn repo
 
 
 @dataclass(frozen=True)
@@ -103,16 +106,18 @@ def section_heading(platform: Platform, section: str) -> str:
     return f"{SECTIONS[section][1]} {platform.where}"
 
 
-def load_community_editions(directory: Path, platform: Platform) -> list[CommunityDay]:
-    """All days of a platform, oldest first."""
+def load_community_editions(
+    directory: Path, platform: Platform, withdrawn: Mapping[str, str] = {}
+) -> list[CommunityDay]:
+    """All days of a platform, oldest first. `withdrawn` maps addresses to notes."""
     days = []
     for data in load_edition_files(directory, f"{platform.name}-Ausgabe"):
         day = date.fromisoformat(data["day"])
         days.append(
             CommunityDay(
                 day=day,
-                main=_edition_view(platform, "main", day, data),
-                ai=_edition_view(platform, "ai", day, data),
+                main=_edition_view(platform, "main", day, data, withdrawn),
+                ai=_edition_view(platform, "ai", day, data, withdrawn),
             )
         )
     return days
@@ -122,7 +127,9 @@ def community_feed_html(view: CommunityEditionView) -> str:
     if not view.entries:
         return f"<p>{view.empty_text}.</p>"
     items = "".join(
-        f'<li><a href="{escape(entry.repository_url)}">{escape(entry.title)}</a>'
+        f"<li>{escape(entry.title)} ({escape(entry.withdrawn)})</li>"
+        if entry.withdrawn
+        else f'<li><a href="{escape(entry.repository_url)}">{escape(entry.title)}</a>'
         f" ({entry.points} {escape(entry.points_label)}, {entry.comments} Kommentare)"
         f' · <a href="{escape(entry.discussion_url)}">{escape(entry.discussion_label)}</a>'
         + "".join(
@@ -135,7 +142,9 @@ def community_feed_html(view: CommunityEditionView) -> str:
     return f"<ol>{items}</ol>"
 
 
-def _edition_view(platform: Platform, section: str, day: date, data: dict) -> CommunityEditionView:
+def _edition_view(
+    platform: Platform, section: str, day: date, data: dict, withdrawn: Mapping[str, str]
+) -> CommunityEditionView:
     key, _, (one, more) = SECTIONS[section]
     projects = data.get(key, [])  # editions before 2026-11-13 have no AI section
     heading = section_heading(platform, section)
@@ -151,11 +160,16 @@ def _edition_view(platform: Platform, section: str, day: date, data: dict) -> Co
         points_label=f"{platform.name}-Punkte",
         discussion_label=f"Diskussion auf {platform.name}",
         empty_text="Diese Woche nichts gefunden" if platform.weekly else "Heute nichts gefunden",
-        entries=[_entry_view(platform, project, rank) for rank, project in enumerate(projects, 1)],
+        entries=[
+            _entry_view(platform, project, rank, withdrawn.get(url_key(project["repository_url"])))
+            for rank, project in enumerate(projects, 1)
+        ],
     )
 
 
-def _entry_view(platform: Platform, project: dict, rank: int) -> CommunityEntryView:
+def _entry_view(
+    platform: Platform, project: dict, rank: int, withdrawn: str | None
+) -> CommunityEntryView:
     story = project["story"]
     origin = story.get("origin")
     if origin:
@@ -170,8 +184,8 @@ def _entry_view(platform: Platform, project: dict, rank: int) -> CommunityEntryV
     return CommunityEntryView(
         rank=rank,
         title=story["title"],
-        repository_url=_web_url(project["repository_url"]),
-        project_url=_web_url(project["project_url"]),
+        repository_url=None if withdrawn else _web_url(project["repository_url"]),
+        project_url=None if withdrawn else _web_url(project["project_url"]),
         discussion_url=platform.discussion_url(story),
         description=project["description"],
         language=project["language"],
@@ -182,6 +196,7 @@ def _entry_view(platform: Platform, project: dict, rank: int) -> CommunityEntryV
         comments=number(story["comments"]),
         reasons=list(project.get("reasons", [])),
         other_discussions=other_discussions,
+        withdrawn=withdrawn,
     )
 
 

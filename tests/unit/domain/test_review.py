@@ -39,6 +39,7 @@ def test_ai_focus_counts_as_ok_in_the_ai_section():
         ("placeholder", "Hülle ohne erkennbare Arbeit"),
         ("game_port", "Portierung oder Nachbau eines fremden Spiels"),
         ("downloader", "lädt Medien von Video- oder Musikplattformen herunter"),
+        ("evasion", "umgeht Schutzmaßnahmen oder Grenzen eines Dienstes"),
     ],
 )
 def test_the_other_categories_take_the_repo_out(category, label):
@@ -69,3 +70,18 @@ def test_piracy_names_the_signs_of_breaking_drm():
 
     for sign in ("DRM", "Widevine", "PlayReady", "FairPlay", "CDM", "entschlüssel"):
         assert sign in guide
+
+
+def test_piracy_names_unlocks_jailbreaks_stream_addons_and_shipped_content():
+    guide = REVIEW_GUIDE["piracy"]
+
+    for sign in ("Premium", "Jailbreak", "CloudStream", "Stremio", "Spieldaten"):
+        assert sign in guide
+
+
+def test_evasion_names_bot_protection_limits_and_fake_activity():
+    guide = REVIEW_GUIDE["evasion"]
+
+    for sign in ("Captcha", "Turnstile", "Gratis", "Geräte-ID", "Spielzeit"):
+        assert sign in guide
+    assert "Werbeblocker" in guide  # what it is not

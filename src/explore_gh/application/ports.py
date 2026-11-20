@@ -10,6 +10,7 @@ from explore_gh.domain.edition import Edition
 from explore_gh.domain.history import DailyRecord
 from explore_gh.domain.model import Assessment, Candidate, RepoId, Snapshot
 from explore_gh.domain.review import Review
+from explore_gh.domain.withdrawal import Withdrawal
 
 
 class SourceUnavailable(Exception):
@@ -141,3 +142,9 @@ class CommunityEditionStore(Protocol):
     def load(self, day: date) -> CommunityEdition | None: ...
 
     def since(self, day: date) -> list[CommunityEdition]: ...
+
+
+class WithdrawalStore(Protocol):
+    def load(self) -> list[Withdrawal]:
+        """The repos the owner withdrew, written by hand. Empty if there are none."""
+        ...

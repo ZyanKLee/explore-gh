@@ -10,6 +10,7 @@ from publication_samples import (
     project_json,
     write_community_edition,
     write_edition,
+    write_json,
 )
 
 from explore_gh.publication.site import build_site
@@ -251,3 +252,37 @@ class TestCommunityLists:
         assert "Trending auf GitHub</a>" in hn and "Trending in den Foren</a>" in hn
         assert "Trending auf Lobsters</a>" not in hn  # its archive stays, without a link
         assert re.search(r'aria-current="page">Trending auf GitHub', page("archiv/index.html"))
+
+
+def test_a_withdrawn_repo_keeps_its_place_but_loses_its_links(site):
+    write_edition(
+        site.data,
+        edition_json(main=[entry_json("alice/tiny-editor", homepage="https://x.example")]),
+    )
+    write_community_edition(site.data, "hn", community_edition_json())
+    write_json(
+        site.data / "withdrawn.json",
+        {
+            "format_version": 1,
+            "withdrawals": [
+                {
+                    "repository_url": "https://github.com/Alice/tiny-editor",
+                    "day": "2026-11-21",
+                    "reason": "Verteilt fremde Spieldaten",
+                }
+            ],
+        },
+    )
+    page = site()
+
+    for path, name in [
+        ("index.html", "tiny-editor"),
+        ("feed.xml", "tiny-editor"),
+        ("hn/index.html", "Tiny Editor"),
+        ("hn/feed.xml", "Tiny Editor"),
+    ]:
+        html = page(path)
+        assert name in html, path
+        assert 'href="https://github.com/alice/tiny-editor' not in html, path
+        assert "Zurückgezogen am 21.11.2026: Verteilt fremde Spieldaten" in html, path
+    assert "x.example" not in page("index.html")

@@ -3,6 +3,7 @@
 Publication only knows the JSON format of the editions. See docs/veroeffentlichung.md.
 """
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import date, datetime
 from html import escape
@@ -18,6 +19,7 @@ from explore_gh.publication.german import (
     web_url,
     weight,
 )
+from explore_gh.publication.withdrawals import url_key
 
 # Editions until 2026-11-15 do not say over how many days they counted the gain.
 FORMER_GROWTH_WINDOW_DAYS = 7
@@ -37,7 +39,7 @@ class SignalLine:
 class EntryView:
     rank: int
     repo: str
-    url: str
+    url: str | None  # None: withdrawn, shown without a link
     description: str
     homepage: str | None
     language: str | None
@@ -52,6 +54,7 @@ class EntryView:
     score: str
     signals: tuple[SignalLine, ...]
     sparkline: str
+    withdrawn: str | None = None  # the note of a withdrawn repo
 
 
 @dataclass(frozen=True)
@@ -78,13 +81,13 @@ class GitHubDay:
         return long_date(self.day)
 
 
-def load_github_days(directory: Path) -> list[GitHubDay]:
-    """All days of the GitHub list, oldest first."""
+def load_github_days(directory: Path, withdrawn: Mapping[str, str] = {}) -> list[GitHubDay]:
+    """All days of the GitHub list, oldest first. `withdrawn` maps addresses to notes."""
     return [
         GitHubDay(
             day=date.fromisoformat(edition["day"]),
-            main=section_view(edition, "main"),
-            ai=section_view(edition, "ai"),
+            main=section_view(edition, "main", withdrawn),
+            ai=section_view(edition, "ai", withdrawn),
         )
         for edition in load_edition_files(directory, "GitHub-Ausgabe")
     ]
@@ -94,7 +97,7 @@ def section_url(day: date, section: str) -> str:
     return f"{SECTION_PREFIXES[section]}{day:%Y/%m/%d}/"
 
 
-def section_view(edition: dict, section: str) -> SectionView:
+def section_view(edition: dict, section: str, withdrawn: Mapping[str, str] = {}) -> SectionView:
     day = date.fromisoformat(edition["day"])
     stats = edition["stats"]
     gained_days = edition.get("growth_window_days", FORMER_GROWTH_WINDOW_DAYS)
@@ -108,7 +111,10 @@ def section_view(edition: dict, section: str) -> SectionView:
             f"{number(stats['excluded'])} ausgeschlossen, "
             f"{number(stats['ai_focused'])} als AI-Thema eingestuft"
         ),
-        entries=[_entry_view(entry, day, gained_days) for entry in edition["sections"][section]],
+        entries=[
+            _entry_view(entry, day, gained_days, withdrawn.get(url_key(entry["url"])))
+            for entry in edition["sections"][section]
+        ],
     )
 
 
@@ -128,22 +134,26 @@ def feed_html(view: SectionView) -> str:
     if not view.entries:
         return "<p>Heute nichts gefunden.</p>"
     items = "".join(
-        f'<li><a href="{escape(entry.url)}">{escape(entry.repo)}</a>'
-        f"{': ' + escape(entry.description) if entry.description else ''}"
-        f" ({escape(entry.language or 'ohne Sprache')}, {entry.stars} Sterne,"
-        f" {entry.gained} in {entry.gained_days} Tagen)</li>"
+        (
+            f"<li>{escape(entry.repo)} ({escape(entry.withdrawn)})</li>"
+            if entry.withdrawn
+            else f'<li><a href="{escape(entry.url)}">{escape(entry.repo)}</a>'
+            f"{': ' + escape(entry.description) if entry.description else ''}"
+            f" ({escape(entry.language or 'ohne Sprache')}, {entry.stars} Sterne,"
+            f" {entry.gained} in {entry.gained_days} Tagen)</li>"
+        )
         for entry in view.entries
     )
     return f"<ol>{items}</ol>"
 
 
-def _entry_view(entry: dict, day: date, gained_days: int) -> EntryView:
+def _entry_view(entry: dict, day: date, gained_days: int, withdrawn: str | None) -> EntryView:
     return EntryView(
         rank=entry["rank"],
         repo=entry["repo"],
-        url=entry["url"],
+        url=None if withdrawn else entry["url"],
         description=entry["description"],
-        homepage=web_url(entry["homepage"]),
+        homepage=None if withdrawn else web_url(entry["homepage"]),
         language=entry["language"],
         license=shown_license(entry["license"]),
         topics=tuple(entry["topics"]),
@@ -159,6 +169,7 @@ def _entry_view(entry: dict, day: date, gained_days: int) -> EntryView:
             for signal in entry["signals"]
         ),
         sparkline=sparkline_points(entry["star_history"], SPARKLINE_WIDTH, SPARKLINE_HEIGHT),
+        withdrawn=withdrawn,
     )
 
 

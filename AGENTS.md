@@ -75,7 +75,9 @@ Awesome-Listen bewusst **nicht** verwenden.
 - **Unerwünschte Themen**: Roblox −50 Punkte.
 - **Ausschlüsse**: Forks, archivierte Repos, Spiegel, Repos ohne eigentlichen Code
   (Linksammlungen, Tutorials, Material zur Vorbereitung auf Bewerbungsgespräche,
-  Dotfiles, Prompt-Sammlungen), Köder für Schadsoftware und Kryptowährungen. Dazu
+  Dotfiles, Prompt-Sammlungen), Köder für Schadsoftware, Anzeichen für Raubkopie
+  (freigeschaltete Premium-Funktionen, Konsolen-Jailbreaks, Stream-Add-ons) und
+  Kryptowährungen. Dazu
   Kopien: dasselbe Projekt unter mehreren Besitzern (gleicher Name, gleiche
   Beschreibung, gleiche Beschreibung und Topics oder gleiches README). Sind sie fast
   gleichzeitig angelegt, fliegen alle raus. Ist eines
@@ -111,10 +113,16 @@ Awesome-Listen bewusst **nicht** verwenden.
   Ausgabe landen würden (rund 40 am Tag, nie die ganze Sammlung). Sie kann ein Repo
   herausnehmen: bei Verdacht auf Schadsoftware, Umgehen von Kopierschutz oder DRM,
   Betrug, bei Portierungen und Recompiles fremder Spiele, bei Downloadern für Video-,
-  Musik- und Social-Media-Plattformen, oder wenn es kein eigenes Softwareprojekt ist. Und sie kann ein Repo mit AI als Thema aus der Hauptliste in die AI-Sektion
-  verschieben, nie umgekehrt. Den Rang bestimmt sie nicht. Im Zweifel bleibt alles, wie
-  die Regeln es sagen. Fällt Copilot aus, erscheint die Ausgabe ohne Gegenlesen. GitHub Models ist seit dem 30.07.2026
-  eingestellt und keine Alternative.
+  Musik- und Social-Media-Plattformen, beim Umgehen von Schutzmaßnahmen oder Grenzen
+  eines Dienstes, oder wenn es kein eigenes Softwareprojekt ist. Beteuerungen im README
+  („nur ein Player“, „bring your own dump“) zählen nicht, der Zweck entscheidet. Und sie
+  kann ein Repo mit AI als Thema aus der Hauptliste in die AI-Sektion verschieben, nie
+  umgekehrt. Den Rang bestimmt sie nicht. Im Zweifel bleibt alles, wie die Regeln es
+  sagen. Fällt Copilot aus, erscheint die Ausgabe ohne Gegenlesen. GitHub Models ist seit
+  dem 30.07.2026 eingestellt und keine Alternative.
+- **Zurückziehen**: Ausgaben bleiben unveränderlich. Ein Repo, das nicht hätte
+  erscheinen dürfen, trägt der Inhaber in `data/withdrawn.json` ein. Die Seite zeigt es
+  dann ohne Link und mit Begründung, neue Ausgaben nie wieder.
 - **Kein Feedback- oder Personalisierungsmechanismus**, um Interessensblasen zu vermeiden.
 
 ## Domain-Driven Design
@@ -159,6 +167,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | AI-Thema | `AiFocus` | Repo existiert für den Einsatz von AI und kommt in die AI-Sektion |
 | AI-Mithilfe | `AiAssistance` | Hinweise auf AI-geschriebenen Code, führt nur zur Abwertung |
 | Ausschluss | `Exclusion` | Grund, ein Repo ganz zu entfernen |
+| Rückzug | `Withdrawal`, `withdrawn` | Vom Inhaber nach der Veröffentlichung zurückgenommenes Repo: auf der Seite ohne Link, in neuen Ausgaben ausgeschlossen |
 | Kopie | `CopyCheck` | Dasselbe Projekt unter mehreren Besitzern, erkannt an Name, Beschreibung, Topics oder README. Braucht alle Repos eines Tages, nicht nur eine Momentaufnahme. |
 | Substanz | `SubstanceCheck` | Hinweise auf echte Arbeit und echtes Interesse: Team, Kontinuität, Issues. Dazu die Gegenprobe zu gekauften Sternen. |
 | Vorgeschichte des Besitzers | `OwnerHistory` | Alter des Besitzerkontos und Mitwirkung an anderen Projekten. Wertet auf, fehlt bei Wegwerfkonten. |
@@ -181,7 +190,7 @@ GitHub-Repository bezeichnet.
   Statistik des Tages (`EditionStats`).
 - Ports: `CandidateSource`, `RepoSource`, `SnapshotStore`, `CollectionStatusStore`,
   `DailyRecordStore`, `EditionStore`, `Reviewer`, `Clock`, dazu für die Community-Listen
-  `StorySource`, `ProjectResolver`, `CommunityEditionStore`.
+  `StorySource`, `ProjectResolver`, `CommunityEditionStore`, dazu `WithdrawalStore`.
   Adapter melden Ausfälle als `SourceUnavailable`.
 - `domain/` ist frei von Ein- und Ausgabe. Die aktuelle Zeit kommt nur über `Clock`.
 - Schwellenwerte, Gewichte und Keyword-Listen stehen als benannte Konstanten in der

@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 import pytest
 from builders import NOW, TODAY, make_project, make_story
@@ -11,12 +11,13 @@ from explore_gh.domain.community import (
     is_open_source_license,
     repository_key,
 )
+from explore_gh.domain.withdrawal import Withdrawal
 
 curator = CommunityCurator()
 
 
-def curate(*candidates, past=()):
-    return curator.curate(HN, TODAY, candidates, past)
+def curate(*candidates, past=(), withdrawals=()):
+    return curator.curate(HN, TODAY, candidates, past, withdrawals)
 
 
 def urls(projects):
@@ -167,3 +168,11 @@ def test_open_source_licenses(license_id, expected):
 def test_platforms_know_their_discussion_pages():
     assert HN.discussion_url("123") == "https://news.ycombinator.com/item?id=123"
     assert LOBSTERS.discussion_url("abc") == "https://lobste.rs/s/abc"
+
+
+def test_a_withdrawn_project_is_never_chosen_again():
+    withdrawal = Withdrawal("https://github.com/b/high", date(2026, 11, 21), "Raubkopie")
+
+    edition = curate(project("a/low", points=60), project("b/high"), withdrawals=[withdrawal])
+
+    assert urls(edition.main) == ["https://github.com/a/low"]
