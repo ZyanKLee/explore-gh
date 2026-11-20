@@ -1,0 +1,265 @@
+{
+  "format_version": 1,
+  "day": "2026-11-20",
+  "projects": [
+    {
+      "story": {
+        "id": "50568130",
+        "title": "Gemini 4 Neon is the new #1 on the Models Engineering Index",
+        "url": "https://git-aarvin.github.io/mei/",
+        "points": 350,
+        "comments": 222,
+        "created_at": "2026-11-19T23:35:35+00:00"
+      },
+      "repository_url": "https://github.com/git-aarvin/mei",
+      "project_url": "https://git-aarvin.github.io/mei/",
+      "description": "Is intelligence, artificial?",
+      "language": "JavaScript",
+      "license_id": "0BSD",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf git-aarvin.github.io. Repo und Story teilen „aarvin“, „git“, „gitaarvin“, „mei“.",
+        "README: 5-mal AI-Begriffe („language model“, „ai“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50569998",
+        "title": "FFmpeg 9.1 'Gauss'",
+        "url": "https://ffmpeg.org/download.html#release_9.1",
+        "points": 151,
+        "comments": 24,
+        "created_at": "2026-11-20T04:02:39+00:00"
+      },
+      "repository_url": "https://github.com/FFmpeg-Builds/FFmpeg-Builds",
+      "project_url": "https://ffmpeg.org/download.html#release_9.1",
+      "description": "",
+      "language": "Shell",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf ffmpeg.org. Repo und Story teilen „ffmpeg“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50570628",
+        "title": "Jujutsu Primer",
+        "url": "https://ethanlowman.com/posts/jj-primer/",
+        "points": 125,
+        "comments": 84,
+        "created_at": "2026-11-20T05:46:01+00:00"
+      },
+      "repository_url": "https://github.com/jj-vcs/jj",
+      "project_url": "https://ethanlowman.com/posts/jj-primer/",
+      "description": "A Git-compatible VCS that is both simple and powerful",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf ethanlowman.com. Repo und Story teilen „jj“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50560461",
+        "title": "OpenAI still has a WebRTC Problem",
+        "url": "https://moq.dev/blog/webrtc-is-still-the-problem/",
+        "points": 97,
+        "comments": 28,
+        "created_at": "2026-11-19T14:20:08+00:00"
+      },
+      "repository_url": "https://github.com/moq-dev/moq",
+      "project_url": "https://moq.dev/blog/webrtc-is-still-the-problem/",
+      "description": "Media over QUIC: Real-time latency at massive scale",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "live",
+        "media",
+        "moq",
+        "quic",
+        "real-time"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf moq.dev. Repo und Story teilen „moq“.",
+        "README: 7-mal AI-Begriffe („coding agent“, „agent“, „ai“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50546495",
+        "title": "Exponential Behavior in Magic: The Gathering",
+        "url": "https://levineuwirth.org/essays/exponential-magic/",
+        "points": 71,
+        "comments": 55,
+        "created_at": "2026-11-18T14:07:09+00:00"
+      },
+      "repository_url": "https://github.com/levineuwirth/arcana",
+      "project_url": "https://levineuwirth.org/essays/exponential-magic/",
+      "description": "A high-performance Magic: The Gathering rules engine in Rust, designed as a substrate for reinforcement-learning research.",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "game-engine",
+        "reinforcement-learning",
+        "rust",
+        "simulation"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf levineuwirth.org. Repo und Story teilen „levineuwirth“.",
+        "README: 7-mal AI-Begriffe („agentic“, „ai“, „subagent“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50554076",
+        "title": "Pushing WireGuard on macOS to 5 Gbit/s",
+        "url": "https://www.firezone.dev/blog/apple-client-performance",
+        "points": 66,
+        "comments": 7,
+        "created_at": "2026-11-18T23:57:01+00:00"
+      },
+      "repository_url": "https://github.com/apple-oss-distributions/xnu",
+      "project_url": "https://www.firezone.dev/blog/apple-client-performance",
+      "description": "",
+      "language": "C",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf firezone.dev. Repo und Story teilen „apple“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50560334",
+        "title": "PHP 8.5.13",
+        "url": "https://www.php.net/ChangeLog-8.php",
+        "points": 63,
+        "comments": 26,
+        "created_at": "2026-11-19T14:09:50+00:00"
+      },
+      "repository_url": "https://github.com/php/php-src",
+      "project_url": "https://www.php.net/ChangeLog-8.php",
+      "description": "The PHP Interpreter",
+      "language": "C",
+      "license_id": "BSD-3-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf php.net. Repo und Story teilen „php“."
+      ],
+      "other_stories": [
+        {
+          "id": "50550111",
+          "title": "Upcoming Critical PHP Security Release",
+          "url": "https://www.php.net/archive/2026.php",
+          "points": 57,
+          "comments": 14,
+          "created_at": "2026-11-18T18:30:08+00:00"
+        }
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50560822",
+        "title": "Everything you need to survive and rebuild society",
+        "url": "https://lastbook.org/",
+        "points": 402,
+        "comments": 204,
+        "created_at": "2026-11-19T14:47:18+00:00"
+      },
+      "repository_url": "https://github.com/Immortal-Protocols/lastbook",
+      "project_url": "https://lastbook.org/",
+      "description": "Offline knowledge AI, maps and videos for survival and rebuilding",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf lastbook.org. Repo und Story teilen „lastbook“.",
+        "Beschreibung: AI-Begriffe „ai“",
+        "README: 39-mal AI-Begriffe („ai“, „hugging face“, „llm“, „llama“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50562320",
+        "title": "Launch HN: Onlook (YC W25) – An open-source developer tool for designers",
+        "url": "https://github.com/onlook-dev/onlook/",
+        "points": 119,
+        "comments": 83,
+        "created_at": "2026-11-19T16:34:04+00:00"
+      },
+      "repository_url": "https://github.com/onlook-dev/onlook",
+      "project_url": "https://github.com/onlook-dev/onlook/",
+      "description": "The Developer Tool for Designers • An Open-Source AI-First Design tool • Visually build, style, and edit your code with AI • World's best, top-most agent recommended #1 Developer tool for Designers and Visual Engineers to design with Real Code.",
+      "language": "TypeScript",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ai",
+        "astryx",
+        "claude-code",
+        "codex",
+        "cursor",
+        "design",
+        "design-system",
+        "design-to-code",
+        "design-tool",
+        "figma",
+        "frontend",
+        "ide",
+        "react",
+        "styled-components",
+        "typescript",
+        "ui",
+        "vibe-coding",
+        "vibecoding",
+        "visual-engineering"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Topics: AI-Begriffe „ai“, „claude“, „codex“, „vibe coding“",
+        "Beschreibung: AI-Begriffe „ai“, „agent“",
+        "README: 23-mal AI-Begriffe („ai“, „agent“, „claude“, „chatgpt“ …)"
+      ]
+    }
+  ]
+}
