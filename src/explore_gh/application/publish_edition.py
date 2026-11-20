@@ -22,6 +22,7 @@ from explore_gh.domain.edition import Edition, EditionCurator
 from explore_gh.domain.history import DailyRecord
 from explore_gh.domain.model import Assessment, RepoId, Section
 from explore_gh.domain.review import REVIEWER_NAME, Review, reviewed
+from explore_gh.domain.withdrawal import Withdrawal, withdrawn
 
 # Each round reads what moved up for the repos the round before took out.
 MAX_REVIEW_ROUNDS = 5
@@ -40,6 +41,7 @@ class PublishEdition:
         reviewer: Reviewer | None = None,
         ignore_cooldown: bool = False,
         allow_incomplete: bool = False,
+        withdrawals: Sequence[Withdrawal] = (),
     ):
         self._snapshots = snapshot_store
         self._status = status_store
@@ -49,6 +51,7 @@ class PublishEdition:
         self._reviewer = reviewer
         self._ignore_cooldown = ignore_cooldown
         self._allow_incomplete = allow_incomplete
+        self._withdrawals = withdrawals
         self._curator = EditionCurator()
 
     def run(self, day: date) -> Edition:
@@ -61,7 +64,10 @@ class PublishEdition:
         if not self._allow_incomplete:
             self._refuse_incomplete_collection(day)
 
-        assessments = CopyCheck().apply([self._assess(snapshot) for snapshot in snapshots])
+        assessments = [
+            withdrawn(assessment, self._withdrawals)
+            for assessment in CopyCheck().apply([self._assess(s) for s in snapshots])
+        ]
         past = (
             []
             if self._ignore_cooldown

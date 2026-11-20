@@ -1,7 +1,7 @@
 # Baut die Seite und veröffentlicht sie auf GitHub Pages. Läuft
 #   - nach jedem täglichen Lauf, auch einem teilweise gescheiterten: Was er an
 #     Ausgaben geschafft hat, soll auf die Seite,
-#   - wenn sich das Aussehen oder eine Ausgabe ändert,
+#   - wenn sich das Aussehen, eine Ausgabe oder die Liste zurückgezogener Repos ändert,
 #   - von Hand.
 #
 # Braucht im Repo: Settings → Pages → Source: "GitHub Actions"
@@ -21,6 +21,7 @@ on:
       - "data/hn-editions/**"
       - "data/lobsters-editions/**"
       - "data/forums-editions/**"
+      - "data/withdrawn.json"
       - ".github/workflows/site.yml"
   workflow_dispatch:
 

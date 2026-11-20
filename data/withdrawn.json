@@ -1,0 +1,25 @@
+{
+  "format_version": 1,
+  "withdrawals": [
+    {
+      "repository_url": "https://github.com/Elvlin/exvius-offline",
+      "day": "2026-11-20",
+      "reason": "Verteilt die Spieldaten von Final Fantasy Brave Exvius ohne Erlaubnis der Rechteinhaber."
+    },
+    {
+      "repository_url": "https://github.com/sherazi5110/stream-goat",
+      "day": "2026-11-20",
+      "reason": "Player für Film-, Serien- und TV-Streams über CloudStream-Erweiterungen und Stremio-Add-ons."
+    },
+    {
+      "repository_url": "https://github.com/jamesst20/ps5-y2jb-installer",
+      "day": "2026-11-20",
+      "reason": "Werkzeug zum Jailbreak der PS5, umgeht technische Schutzmaßnahmen."
+    },
+    {
+      "repository_url": "https://github.com/lokesh-sparrow/loki-patches",
+      "day": "2026-11-20",
+      "reason": "Schaltet kostenpflichtige Funktionen fremder Apps frei."
+    }
+  ]
+}

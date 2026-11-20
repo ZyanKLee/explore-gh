@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 import pytest
-from builders import NOW, make_snapshot, star_history
+from builders import ENGLISH_README, NOW, make_snapshot, star_history
 
 from explore_gh.domain.exclusion import ExclusionPolicy
 
@@ -119,6 +119,41 @@ def test_cryptocurrencies_are_excluded(overrides):
 )
 def test_cryptography_tokens_and_wallets_are_no_cryptocurrency(description):
     assert exclusion_of(description=description) is None
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"description": "MX Player Pro unlocked, every codec built in"},
+        {"readme": ENGLISH_README + "\n\nTruecaller: premium features unlocked."},
+        {"topics": ("goldhen", "homebrew")},
+        {"description": "Movies and TV. Runs CloudStream extensions and Stremio add-ons."},
+        {"description": "Prepares a PS5 for the jailbreak"},
+        {"topics": ("ps4-jailbreak",)},
+        {"description": "Handles fake PSN sign-in"},
+    ],
+)
+def test_signs_of_piracy_are_excluded(overrides):
+    assert exclusion_of(**overrides).kind == "piracy"
+
+
+def test_the_reason_of_piracy_names_the_term():
+    reason = exclusion_of(description="MX Player Pro unlocked").reason
+
+    assert reason == "Anzeichen für Raubkopie oder Umgehung von Kopierschutz („pro unlocked“)"
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"description": "A jailbreak tweak for iOS 18"},
+        {"description": "Unlock your bootloader"},
+        {"description": "Premium support and a Pro version are available"},
+        {"description": "A media player", "readme": ENGLISH_README + "\nThe PS5 jailbreak scene."},
+    ],
+)
+def test_jailbreaks_without_a_console_and_paid_plans_are_no_piracy(overrides):
+    assert exclusion_of(**overrides) is None
 
 
 def test_less_than_14_days_of_development_exclude():

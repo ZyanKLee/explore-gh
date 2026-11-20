@@ -25,6 +25,7 @@ REVIEW_CATEGORIES: dict[str, str | None] = {
     "placeholder": "Hülle ohne erkennbare Arbeit",
     "game_port": "Portierung oder Nachbau eines fremden Spiels",
     "downloader": "lädt Medien von Video- oder Musikplattformen herunter",
+    "evasion": "umgeht Schutzmaßnahmen oder Grenzen eines Dienstes",
 }
 
 # What the reviewer is told about each category.
@@ -49,7 +50,12 @@ REVIEW_GUIDE: dict[str, str] = {
         "Widevine, PlayReady oder FairPlay aushebeln, Schlüssel aus einem CDM ziehen "
         "oder eigene CDMs nachbauen, verschlüsselte Streams oder E-Books "
         "entschlüsseln, auch wenn das README es Backup, Archiv oder Forschung nennt. "
-        "Ein Abspielprogramm oder Emulator allein gehört nicht dazu."
+        "Ebenso: Patches, die Premium- oder Pro-Funktionen fremder Apps freischalten; "
+        "Jailbreak- und Exploit-Werkzeuge für Spielkonsolen und Lader für Spiele-Dumps; "
+        "Player, die über Erweiterungen auf Film-, Serien- oder TV-Streams zugreifen "
+        "(CloudStream-Erweiterungen, Stremio-Add-ons, Kodi-Builds); Repos, die "
+        "Spieldaten, ROMs, Filme, Musik oder Bücher anderer selbst verteilen, auch über "
+        "Releases. Ein Abspielprogramm oder Emulator allein gehört nicht dazu."
     ),
     "scam": "Betrug, Spam, reine Werbung oder Suchmaschinen-Köder ohne eigenes Projekt.",
     "no_software": (
@@ -75,6 +81,15 @@ REVIEW_GUIDE: dict[str, str] = {
         'Download-Manager, die damit werben. Bricht es dazu DRM, nimm "piracy". '
         "Nicht gemeint: allgemeine Download-Manager und BitTorrent-Clients ohne diese "
         "Werbung, Mediaplayer, Werkzeuge für die eigenen Daten eines Kontos."
+    ),
+    "evasion": (
+        "Umgeht Schutzmaßnahmen oder Grenzen eines fremden Dienstes: löst Captchas oder "
+        "Bot-Schutz (Cloudflare Turnstile, Akamai, DataDome), hebelt Gratis- oder "
+        "Nutzungsgrenzen aus (Geräte-ID oder Netzausgang wechseln, Konten rotieren), "
+        "fälscht Aktivität eines Kontos (Spielzeit, Abzeichen, Aufrufe, Follower, "
+        "Selbst-Bots), entfernt die Schutzvorkehrungen eines fremden Programms. "
+        "Nicht gemeint: Werbeblocker, Umgehen von Zensur (VPN, Proxy), Sicherheits- und "
+        "Testwerkzeuge für eigene oder beauftragte Systeme, Scraper ohne solche Umgehung."
     ),
 }
 

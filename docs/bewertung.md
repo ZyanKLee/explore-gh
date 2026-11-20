@@ -53,6 +53,7 @@ In dieser Reihenfolge. Der erste Treffer bestimmt den Grund.
 | `no_code` | GitHub erkennt keine Programmiersprache. |
 | `collection` | Sammlung oder Lernmaterial: `awesome`, `curated list`, `interview`, `tutorial`, `roadmap`, `cheatsheet`, `cheat sheet`, `dotfiles`, `leetcode`, `system prompts`, `prompt collection`, `prompt library` |
 | `lure` | Köder für Schadsoftware, am Wortlaut oder an der README-Vorlage (siehe unten) |
+| `piracy` | Anzeichen für Raubkopie oder Umgehung von Kopierschutz, in Name, Beschreibung, Topics oder README: `pro unlocked`, `premium unlocked`, `premium features unlocked`, `unlocked premium`, `unlock premium`, `goldhen`, `cloudstream extension`, `stremio add-on`, `stremio addon`, `fake psn`. Dazu `jailbreak` oder `jailbroken` zusammen mit einer Spielkonsole, nur in Name, Beschreibung und Topics (siehe unten). |
 | `no_readme` | Es gibt kein README. |
 | `language` | Weder deutsch noch englisch (siehe unten) |
 | `crypto` | Kryptowährungen: `crypto`, `cryptocurrency`, `cryptocurrencies`, `bitcoin`, `ethereum`, `solana`, `web3`, `defi`, `nft`, `blockchain`, `memecoin`, `altcoin`, `stablecoin`, `airdrop`, `trading bot`, `smart contract`, `binance`, `hyperliquid`. Nicht `cryptography`, `token` oder `wallet`. |
@@ -60,6 +61,24 @@ In dieser Reihenfolge. Der erste Treffer bestimmt den Grund.
 | `low_momentum` | Weniger als 60 neue Sterne in 14 Tagen |
 | `copy` | Kopie eines Repos eines anderen Besitzers (siehe unten) |
 | `review` | Vom Gegenlesen herausgenommen (siehe `ausgabe.md`) |
+| `withdrawn` | Vom Inhaber zurückgezogen, steht in `data/withdrawn.json` (siehe `ausgabe.md`) |
+
+### Raubkopie (`piracy`, seit 20.11.2026)
+
+Anlass war die Durchsicht der Einträge vom 13. bis 20.11.2026 (siehe `ausgabe.md`,
+„Zurückziehen“). Copilot hatte eindeutige Fälle durchgewunken. Diese Regel braucht kein
+Sprachmodell und greift auch, wenn es ausfällt.
+
+- **Jailbreak** nur mit Konsole: Jailbreaks von Telefonen sind keine Raubkopie. Und nur in
+  Name, Beschreibung und Topics: Ein README darf die Szene erwähnen.
+- **Nicht** `keygen`: Es traf in der Beispielsammlung zweimal `ssh-keygen` und das
+  Erzeugen von Update-Schlüsseln.
+- **Wirkung:** In der Beispielsammlung (102 Repos) schließt die Regel nichts aus. Von den
+  310 GitHub-Einträgen vom 13. bis 20.11.2026 träfe sie `blue0x1/EmuFive` („goldhen“),
+  `sherazi5110/stream-goat` („cloudstream extension“) und `ChiricoG/OneFamily`
+  („goldhen“); über das README dazu `jamesst20/ps5-y2jb-installer` („fake psn“) und
+  `lokesh-sparrow/loki-patches` („pro unlocked“). Die Momentaufnahmen jener Tage sind
+  gelöscht, deshalb ist das README nur für die Verdachtsfälle geprüft.
 
 Die Regeln von `collection` bis `crypto` brauchen nur Texte (`check_text`). Sie gelten
 auch für die HN- und Lobsters-Listen (siehe `community.md`). Ein README, das sich nicht

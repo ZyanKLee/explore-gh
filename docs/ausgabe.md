@@ -86,12 +86,13 @@ AI-Sektion verschieben, nie umgekehrt.
 | `ok` | Ein echtes Softwareprojekt. Gilt auch im Zweifel. | bleibt |
 | `ai_focus` | Für den Einsatz von AI gebaut: Sprachmodelle und ihre Technik, Agenten, Chatbots, Generatoren, samt Modellen, Benchmarks und Forschungs-Code. Nicht klassisches maschinelles Lernen, nicht AI als Nebenfunktion. | in die AI-Sektion |
 | `malware` | Köder: gibt sich als bekannte Software, Crack oder Gratis-Version aus und führt zu einem Download statt zu Quellcode. | raus |
-| `piracy` | Umgeht Kopierschutz oder Lizenzprüfungen oder verteilt geschützte Inhalte. Dazu alles, was DRM bricht: Widevine, PlayReady, FairPlay aushebeln, Schlüssel aus einem CDM ziehen, verschlüsselte Streams oder E-Books entschlüsseln, auch als „Backup“ getarnt. Ein Abspielprogramm oder Emulator allein nicht. | raus |
+| `piracy` | Umgeht Kopierschutz oder Lizenzprüfungen oder verteilt geschützte Inhalte. Dazu alles, was DRM bricht: Widevine, PlayReady, FairPlay aushebeln, Schlüssel aus einem CDM ziehen, verschlüsselte Streams oder E-Books entschlüsseln, auch als „Backup“ getarnt. Ebenso: Premium- oder Pro-Funktionen fremder Apps freischalten, Jailbreak- und Exploit-Werkzeuge für Konsolen und Lader für Spiele-Dumps, Player mit Erweiterungen für Film-, Serien- und TV-Streams (CloudStream, Stremio, Kodi-Builds), fremde Spieldaten, ROMs, Filme, Musik oder Bücher selbst verteilen. Ein Abspielprogramm oder Emulator allein nicht. | raus |
 | `scam` | Betrug, Spam, reine Werbung. | raus |
 | `no_software` | Linksammlung, Kursmaterial, Konfiguration, Prompt-Sammlung, Kopie eines fremden Projekts. | raus |
 | `placeholder` | Ankündigung ohne Code, automatisch erzeugter Inhalt ohne eigene Arbeit. | raus |
 | `game_port` | Bringt ein fremdes Spiel auf eine andere Plattform oder baut es nach: Decompilation, Recompilation, Source-Port, PC-Port, Fan-Port, Nachbau der Engine eines bestimmten Spiels, Werkzeuge nur dafür. Nicht eigene Spiele, allgemeine Engines, Mods, Emulatoren ganzer Konsolen. | raus |
 | `downloader` | Lädt Videos, Musik, Bilder oder ganze Profile von Video-, Musik- oder Social-Media-Plattformen herunter: Downloader, Ripper, Oberflächen für yt-dlp, Download-Manager, die damit werben. Nicht allgemeine Download-Manager und BitTorrent-Clients ohne diese Werbung, Mediaplayer, Werkzeuge für die eigenen Daten eines Kontos. | raus |
+| `evasion` | Umgeht Schutzmaßnahmen oder Grenzen eines fremden Dienstes: Captcha- und Bot-Schutz-Löser (Cloudflare Turnstile, Akamai, DataDome), Aushebeln von Gratis- und Nutzungsgrenzen (Geräte-ID oder Netzausgang wechseln, Konten rotieren), gefälschte Kontoaktivität (Spielzeit, Abzeichen, Aufrufe, Follower, Selbst-Bots), Entfernen der Schutzvorkehrungen eines fremden Programms. Nicht Werbeblocker, Umgehen von Zensur, Sicherheitswerkzeuge für eigene oder beauftragte Systeme, Scraper ohne solche Umgehung. | raus |
 
 Die genauen Texte stehen in `domain/review.py` (`REVIEW_CATEGORIES`, `REVIEW_GUIDE`).
 
@@ -124,13 +125,21 @@ Die genauen Texte stehen in `domain/review.py` (`REVIEW_CATEGORIES`, `REVIEW_GUI
 - **Geschmack zählt nicht.** Thema, Programmiersprache, Qualität des Codes und der
   Einsatz von AI sind als Ausschlussgrund ausdrücklich untersagt. Sonst entstünde die
   Interessensblase, die das Projekt vermeiden will.
-  Ausnahmen sind `game_port` (seit dem 18.11.2026) und `downloader` (seit dem
-  20.11.2026). Die Regel gegen Konsolen-Emulatoren (`bewertung.md`) erkennt
+  Ausnahmen sind `game_port` (seit dem 18.11.2026), `downloader` und `evasion` (seit
+  dem 20.11.2026). Die Regel gegen Konsolen-Emulatoren (`bewertung.md`) erkennt
   Portierungen nur, wenn sie eine Konsole nennen. Das Modell kennt auch die Spiele.
   Downloader für Plattformen will der Inhaber nicht sehen, auch wenn sie kein DRM
   brechen; Anlass war `nexonic-download-manager` am 18. und 20.11.2026.
+  `evasion` folgt aus der Durchsicht vom 20.11.2026 (siehe „Zurückziehen“): Löser für
+  Bot-Schutz, Umgehung von Gratis-Grenzen und gefälschte Kontoaktivität standen mehrfach
+  in der Liste.
+- **Beteuerungen zählen nicht, der Zweck entscheidet** (seit dem 20.11.2026). Sätze wie
+  „nur ein Player“, „enthält keine Inhalte“, „kein Exploit enthalten“, „bring your own
+  dump“ oder „nur zu Forschungszwecken“ ändern die Kategorie nicht. Bis dahin hatte
+  Copilot genau solche Repos als unauffällig durchgewunken.
 - **Was es sieht:** je Repo Name, Beschreibung, Topics, Sprache, Sterne, Forks, Alter von
-  Repo und Besitzerkonto und die ersten 1500 Zeichen des README. 10 Repos je Aufruf.
+  Repo und Besitzerkonto und die ersten 3000 Zeichen des README (bis 20.11.2026: 1500;
+  „Pro unlocked“ stand bei `loki-patches` erst dahinter). 10 Repos je Aufruf.
 - **Fremde Texte im Prompt:** Ein README kann versuchen, das Modell zu überreden. Der
   Prompt warnt davor. Gelingt es trotzdem, bleibt das Repo, wie die Regeln es sagen. Der
   Text des Modells erscheint nie auf der Seite, nur die festen Sätze oben.
@@ -140,6 +149,37 @@ Die genauen Texte stehen in `domain/review.py` (`REVIEW_CATEGORIES`, `REVIEW_GUI
   `COPILOT_MODEL` lässt es sich festlegen. Eine Gruppe, die scheitert, wird übersprungen;
   scheitern alle, fällt der Reviewer aus.
 - GitHub Models ist seit dem 30.07.2026 eingestellt und keine Alternative.
+
+## Zurückziehen (`Withdrawal`, `data/withdrawn.json`)
+
+Ausgaben sind unveränderlich. Stand trotzdem ein Repo in einer Ausgabe, das dort nicht
+hingehört, etwa weil es fremde Inhalte verteilt, zieht der Inhaber es zurück. Dazu trägt
+er es von Hand in `data/withdrawn.json` ein:
+
+```json
+{
+  "format_version": 1,
+  "withdrawals": [
+    {"repository_url": "https://github.com/besitzer/name", "day": "2026-11-20",
+     "reason": "Ein Satz, warum."}
+  ]
+}
+```
+
+- **Auf der Seite** behält das Repo seinen Platz in den alten Ausgaben, aber ohne Link
+  zum Repo und zur Homepage oder Projektseite. Statt dessen steht dort „Zurückgezogen am
+  20.11.2026: …“. Ebenso in den Feeds. Das gilt für alle Listen, auch HN und Foren.
+- **Neue Ausgaben** zeigen das Repo nie wieder (Ausschluss `withdrawn`), auch nicht nach
+  Ablauf der Sperre und auch nicht in den HN- und Foren-Listen.
+- Groß- und Kleinschreibung und ein Schrägstrich am Ende der Adresse zählen nicht.
+- Eine Änderung der Datei baut die Website neu (`site.yml`).
+- **Anlass:** Die Durchsicht aller 408 Einträge vom 13. bis 20.11.2026 nach deutschem
+  Recht. Zurückgezogen wurden die vier eindeutigen Fälle: `Elvlin/exvius-offline`
+  (verteilt Spieldaten, §§ 16, 19a, 106 UrhG), `sherazi5110/stream-goat` (Player für
+  Streams über Add-ons, EuGH *Filmspeler*), `jamesst20/ps5-y2jb-installer`
+  (Konsolen-Jailbreak, § 95a UrhG) und `lokesh-sparrow/loki-patches` (schaltet
+  bezahlte Funktionen frei, §§ 69c, 106 UrhG). Wer wissentlich auf rechtsverletzende
+  Inhalte verlinkt, kann haften (EuGH *GS Media*), spätestens nach einem Hinweis.
 
 ## Unvollständige Sammlung
 

@@ -127,6 +127,10 @@ h1 {
 .entry h2 a:hover { color: var(--pine); text-decoration-color: currentColor; }
 .entry h2 .owner { font-weight: 400; color: var(--mist); }
 .description { margin-top: 0.5rem; max-width: var(--measure); }
+.withdrawn {
+  margin-top: 0.5rem; max-width: var(--measure); padding-left: 0.75rem;
+  border-left: 3px solid var(--minus); color: var(--minus); font-weight: 600;
+}
 
 .facts {
   display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.25rem;

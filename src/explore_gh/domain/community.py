@@ -18,6 +18,7 @@ from explore_gh.domain.exclusion import ExclusionPolicy
 from explore_gh.domain.model import Section
 from explore_gh.domain.story_relation import shared_words
 from explore_gh.domain.text import quoted
+from explore_gh.domain.withdrawal import Withdrawal
 
 # Which stories the searches ask for
 HN_STORY_WINDOW = timedelta(hours=48)
@@ -237,8 +238,11 @@ class CommunityCurator:
         day: date,
         candidates: Iterable[CommunityProject],
         past_editions: Iterable[CommunityEdition] = (),
+        withdrawals: Iterable[Withdrawal] = (),
     ) -> CommunityEdition:
-        """`past_editions` are the platform's own editions; their repos are under cooldown."""
+        """`past_editions` are the platform's own editions; their repos are under cooldown.
+        Withdrawn repos never come back."""
+        withdrawals = list(withdrawals)
         blocked = {
             project.key
             for edition in past_editions
@@ -247,7 +251,11 @@ class CommunityCurator:
         }
         found: dict[str, list[CommunityProject]] = {}  # all stories of a repo
         for candidate in candidates:
-            if _eligible(candidate) and candidate.key not in blocked:
+            if (
+                _eligible(candidate)
+                and candidate.key not in blocked
+                and not any(w.names(candidate.repository_url) for w in withdrawals)
+            ):
                 found.setdefault(candidate.key, []).append(candidate)
         for stories in found.values():
             stories.sort(key=_rank)

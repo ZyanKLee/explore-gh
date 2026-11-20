@@ -67,6 +67,10 @@ Statistik des Tages („1.834 Repos geprüft, 420 ausgeschlossen, 212 als AI-The
 Punkte, Kommentare, Projektseite, Diskussion; aufklappbar die Begründung (siehe
 `community.md`).
 
+**Zurückgezogen** (`data/withdrawn.json`, siehe `ausgabe.md`): Name oder Titel ohne Link,
+darunter rot „Zurückgezogen am 20.11.2026: …“; kein Link zu Homepage oder Projektseite.
+Im Feed nur Name und Vermerk.
+
 ## Texte und Zahlen
 
 | Was | Form |
@@ -94,6 +98,14 @@ Beschreibungen, Namen, Topics und Adressen stammen von Fremden.
   Einzige Ausnahme ist die Besuchszählung, wenn sie eingeschaltet ist.
 - Eine Datei mit unbekanntem `format_version` bricht den Bau ab. Eine halb verstandene
   Ausgabe soll nie erscheinen. Gelesen werden nur Dateien namens `JJJJ-MM-TT.json`.
+
+## Zwischenspeicher (Cache)
+
+Die neue Ausgabe soll sofort zu sehen sein. GitHub Pages liefert jede Datei mit
+`Cache-Control: max-age=600` und einem `ETag` aus (geprüft am 20.11.2026): Browser und
+GitHubs Zwischenspeicher halten eine Seite höchstens 10 Minuten, danach fragen sie nach,
+ob sie sich geändert hat. Einstellen lässt sich das auf GitHub Pages nicht, nötig ist es
+auch nicht. Ein `<meta http-equiv>` im HTML ändert nichts, Browser beachten ihn nicht.
 
 ## Adresse und Besuchszählung
 

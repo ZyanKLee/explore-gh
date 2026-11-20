@@ -13,10 +13,12 @@ from explore_gh.adapters.json_community_edition_store import JsonCommunityEditio
 from explore_gh.adapters.json_daily_record_store import JsonDailyRecordStore
 from explore_gh.adapters.json_edition_store import JsonEditionStore
 from explore_gh.adapters.json_snapshot_store import JsonSnapshotStore
+from explore_gh.adapters.json_withdrawal_store import JsonWithdrawalStore
 from explore_gh.application.ports import AlreadyPublished, CollectionStatus
 from explore_gh.domain.community import FORUMS, HN, LOBSTERS, CommunityEdition, Origin
 from explore_gh.domain.history import DailyRecord
 from explore_gh.domain.model import RepoId, Section, Signal
+from explore_gh.domain.withdrawal import Withdrawal
 
 ARCHIVE = Path(__file__).parents[2] / "data"
 
@@ -291,3 +293,36 @@ def test_signals_keep_their_reason_in_the_edition(tmp_path):
     store.save(make_edition(main=[entry]))
 
     assert store.load(TODAY).main[0].signals == (Signal("momentum", 1.0, "1.0 Punkte"),)
+
+
+class TestWithdrawals:
+    def test_the_list_is_read_as_written_by_hand(self, tmp_path):
+        path = tmp_path / "withdrawn.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "format_version": 1,
+                    "withdrawals": [
+                        {
+                            "repository_url": "https://github.com/a/x",
+                            "day": "2026-11-21",
+                            "reason": "Verteilt fremde Spieldaten",
+                        }
+                    ],
+                }
+            )
+        )
+
+        assert JsonWithdrawalStore(path).load() == [
+            Withdrawal("https://github.com/a/x", date(2026, 11, 21), "Verteilt fremde Spieldaten")
+        ]
+
+    def test_without_a_file_nothing_is_withdrawn(self, tmp_path):
+        assert JsonWithdrawalStore(tmp_path / "withdrawn.json").load() == []
+
+    def test_an_unknown_format_is_refused(self, tmp_path):
+        path = tmp_path / "withdrawn.json"
+        path.write_text(json.dumps({"format_version": 2, "withdrawals": []}))
+
+        with pytest.raises(ValueError):
+            JsonWithdrawalStore(path).load()

@@ -39,6 +39,7 @@ def build_site(
                 "HN_EDITIONS_PATH": str(data_dir / "hn-editions"),
                 "LOBSTERS_EDITIONS_PATH": str(data_dir / "lobsters-editions"),
                 "FORUMS_EDITIONS_PATH": str(data_dir / "forums-editions"),
+                "WITHDRAWN_PATH": str(data_dir / "withdrawn.json"),
                 "SITENAME": SITE_NAME,
                 "PLAUSIBLE_SCRIPT": plausible_script,
                 "SITEURL": (site_url or "").rstrip("/"),

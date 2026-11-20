@@ -34,6 +34,7 @@ from explore_gh.adapters.json_community_edition_store import JsonCommunityEditio
 from explore_gh.adapters.json_daily_record_store import JsonDailyRecordStore
 from explore_gh.adapters.json_edition_store import JsonEditionStore
 from explore_gh.adapters.json_snapshot_store import JsonSnapshotStore
+from explore_gh.adapters.json_withdrawal_store import JsonWithdrawalStore
 from explore_gh.adapters.project_resolver import ProjectResolver
 from explore_gh.adapters.story_sources import HN_API_URL, HackerNewsSearch
 from explore_gh.application.collect_community_edition import CollectCommunityEdition
@@ -55,8 +56,10 @@ from explore_gh.domain.community import (
     Platform,
 )
 from explore_gh.domain.model import RepoId
+from explore_gh.domain.withdrawal import Withdrawal
 
 USER_AGENT = "explore-gh"
+WITHDRAWN_FILE = "withdrawn.json"  # in the data directory, see docs/ausgabe.md
 
 
 class MissingToken(Exception):
@@ -285,6 +288,7 @@ def publish(args, day: date) -> None:
         reviewer=CopilotReviewer() if args.review else None,
         ignore_cooldown=args.ignore_cooldown,
         allow_incomplete=args.allow_incomplete,
+        withdrawals=_withdrawals(data_dir),
     ).run(day)
     stats = edition.stats
     print(
@@ -316,12 +320,17 @@ def collect_community(args, platform: Platform, stories) -> int:
             edition_store=JsonCommunityEditionStore(platform, args.data_dir),
             clock=SystemClock(),
             limit=args.limit,
+            withdrawals=_withdrawals(args.data_dir),
         ).run()
     print(
         f"{platform.name}-Ausgabe {edition.day}: {len(edition.main)} Projekte, "
         f"{len(edition.ai)} AI-Projekte"
     )
     return 0
+
+
+def _withdrawals(data_dir: Path) -> list[Withdrawal]:
+    return JsonWithdrawalStore(data_dir / WITHDRAWN_FILE).load()
 
 
 def _names(repos: Sequence, shown: int = 5) -> str:

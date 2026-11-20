@@ -27,7 +27,12 @@
   <li class="entry">
     <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
     <div class="body">
+      {% if entry.withdrawn %}
+      <h2><span class="owner">{{ owner }}/</span>{{ name }}</h2>
+      <p class="withdrawn">{{ entry.withdrawn }}</p>
+      {% else %}
       <h2><a href="{{ entry.url }}" target="_blank" rel="noopener noreferrer"><span class="owner">{{ owner }}/</span>{{ name }}</a></h2>
+      {% endif %}
       {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
       <ul class="facts" role="list">
         {% if entry.language %}<li class="language">{{ entry.language }}</li>{% endif %}
@@ -80,7 +85,12 @@
   <li class="entry">
     <span class="rank" aria-hidden="true">{{ entry.rank }}</span>
     <div class="body">
+      {% if entry.withdrawn %}
+      <h2>{{ entry.title }}</h2>
+      <p class="withdrawn">{{ entry.withdrawn }}</p>
+      {% else %}
       <h2><a href="{{ entry.repository_url }}" target="_blank" rel="noopener noreferrer">{{ entry.title }}</a></h2>
+      {% endif %}
       {% if entry.description %}<p class="description">{{ entry.description }}</p>{% endif %}
       <ul class="facts" role="list">
         {% if entry.language %}<li>{{ entry.language }}</li>{% endif %}

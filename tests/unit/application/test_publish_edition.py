@@ -1,5 +1,5 @@
 import logging
-from datetime import timedelta
+from datetime import date, timedelta
 
 import pytest
 from builders import TODAY, make_edition, make_snapshot, star_history
@@ -20,6 +20,7 @@ from explore_gh.application.ports import (
 from explore_gh.application.publish_edition import PublishEdition, reviewed_entries
 from explore_gh.domain.assessor import Assessor
 from explore_gh.domain.model import Section
+from explore_gh.domain.withdrawal import Withdrawal
 
 COMPLETE = CollectionStatus(TODAY, discovered=3, collected=3, failed=0)
 
@@ -169,3 +170,12 @@ class TestReview:
 
         assert names(edition.main) == ["a/x"]
         assert world.records.load(TODAY)[0].review is None
+
+
+def test_a_withdrawn_repo_is_left_out_for_good():
+    world = World(repo("a/editor"), repo("b/editor", primary_language="Go"))
+    withdrawal = Withdrawal("https://github.com/a/editor", date(2026, 11, 1), "Raubkopie")
+
+    edition = world.publish(withdrawals=[withdrawal])
+
+    assert names(edition.main) == ["b/editor"]
