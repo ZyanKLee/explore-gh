@@ -79,15 +79,16 @@ def test_the_prompt_carries_the_facts_and_the_start_of_the_readme_and_warns():
         "no_software",
         "placeholder",
         "game_port",
+        "downloader",
     )
     for category in categories:
         assert f'"{category}"' in text
 
 
-def test_the_prompt_makes_game_ports_the_one_exception_to_taste():
+def test_the_prompt_makes_game_ports_and_downloaders_the_exceptions_to_taste():
     text = prompt([make_snapshot()])
 
-    assert 'Ausnahme: "game_port"' in text
+    assert 'Ausnahmen: "game_port" und "downloader"' in text
 
 
 def test_repos_are_reviewed_in_batches_of_ten():

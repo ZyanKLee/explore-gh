@@ -78,11 +78,12 @@ AI-Sektion verschieben, nie umgekehrt.
 | `ok` | Ein echtes Softwareprojekt. Gilt auch im Zweifel. | bleibt |
 | `ai_focus` | Für den Einsatz von AI gebaut: Sprachmodelle und ihre Technik, Agenten, Chatbots, Generatoren, samt Modellen, Benchmarks und Forschungs-Code. Nicht klassisches maschinelles Lernen, nicht AI als Nebenfunktion. | in die AI-Sektion |
 | `malware` | Köder: gibt sich als bekannte Software, Crack oder Gratis-Version aus und führt zu einem Download statt zu Quellcode. | raus |
-| `piracy` | Umgeht Kopierschutz oder Lizenzprüfungen oder verteilt geschützte Inhalte. Ein Abspielprogramm oder Emulator allein nicht. | raus |
+| `piracy` | Umgeht Kopierschutz oder Lizenzprüfungen oder verteilt geschützte Inhalte. Dazu alles, was DRM bricht: Widevine, PlayReady, FairPlay aushebeln, Schlüssel aus einem CDM ziehen, verschlüsselte Streams oder E-Books entschlüsseln, auch als „Backup“ getarnt. Ein Abspielprogramm oder Emulator allein nicht. | raus |
 | `scam` | Betrug, Spam, reine Werbung. | raus |
 | `no_software` | Linksammlung, Kursmaterial, Konfiguration, Prompt-Sammlung, Kopie eines fremden Projekts. | raus |
 | `placeholder` | Ankündigung ohne Code, automatisch erzeugter Inhalt ohne eigene Arbeit. | raus |
 | `game_port` | Bringt ein fremdes Spiel auf eine andere Plattform oder baut es nach: Decompilation, Recompilation, Source-Port, PC-Port, Fan-Port, Nachbau der Engine eines bestimmten Spiels, Werkzeuge nur dafür. Nicht eigene Spiele, allgemeine Engines, Mods, Emulatoren ganzer Konsolen. | raus |
+| `downloader` | Lädt Videos, Musik, Bilder oder ganze Profile von Video-, Musik- oder Social-Media-Plattformen herunter: Downloader, Ripper, Oberflächen für yt-dlp, Download-Manager, die damit werben. Nicht allgemeine Download-Manager und BitTorrent-Clients ohne diese Werbung, Mediaplayer, Werkzeuge für die eigenen Daten eines Kontos. | raus |
 
 Die genauen Texte stehen in `domain/review.py` (`REVIEW_CATEGORIES`, `REVIEW_GUIDE`).
 
@@ -115,9 +116,11 @@ Die genauen Texte stehen in `domain/review.py` (`REVIEW_CATEGORIES`, `REVIEW_GUI
 - **Geschmack zählt nicht.** Thema, Programmiersprache, Qualität des Codes und der
   Einsatz von AI sind als Ausschlussgrund ausdrücklich untersagt. Sonst entstünde die
   Interessensblase, die das Projekt vermeiden will.
-  Einzige Ausnahme ist `game_port` (seit dem 18.11.2026): Die Regel gegen
-  Konsolen-Emulatoren (`bewertung.md`) erkennt Portierungen nur, wenn sie eine Konsole
-  nennen. Das Modell kennt auch die Spiele.
+  Ausnahmen sind `game_port` (seit dem 18.11.2026) und `downloader` (seit dem
+  20.11.2026). Die Regel gegen Konsolen-Emulatoren (`bewertung.md`) erkennt
+  Portierungen nur, wenn sie eine Konsole nennen. Das Modell kennt auch die Spiele.
+  Downloader für Plattformen will der Inhaber nicht sehen, auch wenn sie kein DRM
+  brechen; Anlass war `nexonic-download-manager` am 18. und 20.11.2026.
 - **Was es sieht:** je Repo Name, Beschreibung, Topics, Sprache, Sterne, Forks, Alter von
   Repo und Besitzerkonto und die ersten 1500 Zeichen des README. 10 Repos je Aufruf.
 - **Fremde Texte im Prompt:** Ein README kann versuchen, das Modell zu überreden. Der

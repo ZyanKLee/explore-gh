@@ -38,6 +38,7 @@ def test_ai_focus_counts_as_ok_in_the_ai_section():
         ("no_software", "kein eigenes Softwareprojekt"),
         ("placeholder", "Hülle ohne erkennbare Arbeit"),
         ("game_port", "Portierung oder Nachbau eines fremden Spiels"),
+        ("downloader", "lädt Medien von Video- oder Musikplattformen herunter"),
     ],
 )
 def test_the_other_categories_take_the_repo_out(category, label):
@@ -61,3 +62,10 @@ def test_an_unknown_category_is_refused():
 
 def test_every_category_is_explained_to_the_reviewer():
     assert set(REVIEW_GUIDE) == set(REVIEW_CATEGORIES)
+
+
+def test_piracy_names_the_signs_of_breaking_drm():
+    guide = REVIEW_GUIDE["piracy"]
+
+    for sign in ("DRM", "Widevine", "PlayReady", "FairPlay", "CDM", "entschlüssel"):
+        assert sign in guide
