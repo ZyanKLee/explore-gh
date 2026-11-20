@@ -4,8 +4,8 @@ import pytest
 from builders import TODAY, FixedClock, make_project, make_story
 from fakes import FakeResolver, FakeStorySource, InMemoryEditionStore
 
-from github_anti_ai.application.collect_community_edition import CollectCommunityEdition
-from github_anti_ai.domain.community import FORUMS, HN, LOBSTERS, CommunityEdition
+from explore_gh.application.collect_community_edition import CollectCommunityEdition
+from explore_gh.domain.community import FORUMS, HN, LOBSTERS, CommunityEdition
 
 
 def collect(stories, resolver, store=None, platform=HN, limit=None):

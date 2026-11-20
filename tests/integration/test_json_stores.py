@@ -8,15 +8,15 @@ from pathlib import Path
 import pytest
 from builders import NOW, TODAY, make_edition, make_entry, make_project, make_snapshot, make_story
 
-from github_anti_ai.adapters.json_collection_status_store import JsonCollectionStatusStore
-from github_anti_ai.adapters.json_community_edition_store import JsonCommunityEditionStore
-from github_anti_ai.adapters.json_daily_record_store import JsonDailyRecordStore
-from github_anti_ai.adapters.json_edition_store import JsonEditionStore
-from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
-from github_anti_ai.application.ports import AlreadyPublished, CollectionStatus
-from github_anti_ai.domain.community import FORUMS, HN, LOBSTERS, CommunityEdition, Origin
-from github_anti_ai.domain.history import DailyRecord
-from github_anti_ai.domain.model import RepoId, Section, Signal
+from explore_gh.adapters.json_collection_status_store import JsonCollectionStatusStore
+from explore_gh.adapters.json_community_edition_store import JsonCommunityEditionStore
+from explore_gh.adapters.json_daily_record_store import JsonDailyRecordStore
+from explore_gh.adapters.json_edition_store import JsonEditionStore
+from explore_gh.adapters.json_snapshot_store import JsonSnapshotStore
+from explore_gh.application.ports import AlreadyPublished, CollectionStatus
+from explore_gh.domain.community import FORUMS, HN, LOBSTERS, CommunityEdition, Origin
+from explore_gh.domain.history import DailyRecord
+from explore_gh.domain.model import RepoId, Section, Signal
 
 ARCHIVE = Path(__file__).parents[2] / "data"
 

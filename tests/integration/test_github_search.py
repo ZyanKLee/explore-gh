@@ -4,8 +4,8 @@ import httpx
 from builders import TODAY, FixedClock
 from http_fakes import FakeWeb, Sleeps, fixture
 
-from github_anti_ai.adapters.github_search import GitHubSearchCandidates, discovery_queries
-from github_anti_ai.domain.model import Candidate, RepoId
+from explore_gh.adapters.github_search import GitHubSearchCandidates, discovery_queries
+from explore_gh.domain.model import Candidate, RepoId
 
 SEARCH = "api.github.com/search/repositories"
 

@@ -4,7 +4,7 @@ Die Bewertung macht aus einer Momentaufnahme ein `Assessment`: Sektion, Signale,
 Punktzahl und gegebenenfalls einen Ausschluss. Sie ist reine Logik ohne Ein- und Ausgabe
 und kommt ohne Sprachmodell aus. Das Modell liest erst danach gegen (siehe `ausgabe.md`).
 
-Alle Zahlen und Begriffslisten stehen als benannte Konstanten in `src/github_anti_ai/domain/`.
+Alle Zahlen und Begriffslisten stehen als benannte Konstanten in `src/explore_gh/domain/`.
 Geeicht sind sie an 102 von Hand beurteilten Repos (siehe „Beispielsammlung“).
 
 ## Ablauf
@@ -294,7 +294,7 @@ Führt zur Abwertung, nie zum Ausschluss.
 ## Befehl `explain`
 
 ```
-github-anti-ai explain owner/name [--day JJJJ-MM-TT] [--data-dir data]
+explore-gh explain owner/name [--day JJJJ-MM-TT] [--data-dir data]
 ```
 
 Zeigt für ein Repo aus der Sammlung eines Tages (Standard: heute) Sektion, Punktzahl,

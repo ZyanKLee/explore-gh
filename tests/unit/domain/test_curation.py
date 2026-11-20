@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 import pytest
 
-from github_anti_ai.domain.curation import check_section, check_unique, in_cooldown, varied
+from explore_gh.domain.curation import check_section, check_unique, in_cooldown, varied
 
 DAY = date(2026, 11, 12)
 

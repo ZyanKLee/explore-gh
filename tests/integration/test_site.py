@@ -12,7 +12,7 @@ from publication_samples import (
     write_edition,
 )
 
-from github_anti_ai.publication.site import build_site
+from explore_gh.publication.site import build_site
 
 
 @pytest.fixture

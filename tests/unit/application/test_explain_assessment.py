@@ -2,9 +2,9 @@ import pytest
 from builders import TODAY, make_snapshot
 from fakes import InMemorySnapshotStore
 
-from github_anti_ai.application.explain_assessment import ExplainAssessment, UnknownRepo
-from github_anti_ai.domain.assessor import Assessor
-from github_anti_ai.domain.model import RepoId
+from explore_gh.application.explain_assessment import ExplainAssessment, UnknownRepo
+from explore_gh.domain.assessor import Assessor
+from explore_gh.domain.model import RepoId
 
 
 def explain(name, *snapshots):

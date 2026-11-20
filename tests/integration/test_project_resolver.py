@@ -3,8 +3,8 @@ import pytest
 from builders import make_story
 from http_fakes import FakeWeb
 
-from github_anti_ai.adapters.project_resolver import ProjectResolver, repository_root
-from github_anti_ai.application.ports import SourceUnavailable
+from explore_gh.adapters.project_resolver import ProjectResolver, repository_root
+from explore_gh.application.ports import SourceUnavailable
 
 GITHUB_REPO = {
     "full_name": "alice/tiny-editor", "description": "A tiny editor", "language": "Rust",

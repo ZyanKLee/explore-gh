@@ -1,6 +1,6 @@
 import pytest
 
-from github_anti_ai.domain.story_relation import relates_to_story, shared_words
+from explore_gh.domain.story_relation import relates_to_story, shared_words
 
 
 def test_repo_and_story_share_words_of_the_title():
