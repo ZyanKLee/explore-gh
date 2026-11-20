@@ -24,6 +24,7 @@ REVIEW_CATEGORIES: dict[str, str | None] = {
     "no_software": "kein eigenes Softwareprojekt",
     "placeholder": "Hülle ohne erkennbare Arbeit",
     "game_port": "Portierung oder Nachbau eines fremden Spiels",
+    "downloader": "lädt Medien von Video- oder Musikplattformen herunter",
 }
 
 # What the reviewer is told about each category.
@@ -44,8 +45,11 @@ REVIEW_GUIDE: dict[str, str] = {
     "piracy": (
         "Dient erkennbar dazu, Kopierschutz oder Lizenzprüfungen zu umgehen oder "
         "urheberrechtlich geschützte Inhalte zu verteilen: Cracks, Keygens, "
-        "Lizenzschlüssel, Listen illegaler Streams. Ein Abspielprogramm oder Emulator "
-        "allein gehört nicht dazu."
+        "Lizenzschlüssel, Listen illegaler Streams. Dazu alles, was DRM bricht: "
+        "Widevine, PlayReady oder FairPlay aushebeln, Schlüssel aus einem CDM ziehen "
+        "oder eigene CDMs nachbauen, verschlüsselte Streams oder E-Books "
+        "entschlüsseln, auch wenn das README es Backup, Archiv oder Forschung nennt. "
+        "Ein Abspielprogramm oder Emulator allein gehört nicht dazu."
     ),
     "scam": "Betrug, Spam, reine Werbung oder Suchmaschinen-Köder ohne eigenes Projekt.",
     "no_software": (
@@ -63,6 +67,14 @@ REVIEW_GUIDE: dict[str, str] = {
         "eines Konsolenspiels, Fan-Port, Nachbau der Engine eines bestimmten Spiels. "
         "Auch Werkzeuge, die nur für ein solches Projekt gebaut sind. Nicht gemeint: "
         "eigene Spiele, allgemeine Spiele-Engines, Mods, Emulatoren ganzer Konsolen."
+    ),
+    "downloader": (
+        "Lädt Videos, Musik, Bilder oder ganze Profile von Video-, Musik- oder "
+        "Social-Media-Plattformen herunter (YouTube, Instagram, TikTok, Facebook, X, "
+        "Twitch, SoundCloud, Spotify …): Downloader, Ripper, Oberflächen für yt-dlp, "
+        'Download-Manager, die damit werben. Bricht es dazu DRM, nimm "piracy". '
+        "Nicht gemeint: allgemeine Download-Manager und BitTorrent-Clients ohne diese "
+        "Werbung, Mediaplayer, Werkzeuge für die eigenen Daten eines Kontos."
     ),
 }
 
