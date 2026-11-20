@@ -9,15 +9,15 @@ from publication_samples import (
     write_json,
 )
 
-from github_anti_ai.publication.community_view import (
+from explore_gh.publication.community_view import (
     FORUMS,
     HN,
     LOBSTERS,
     community_feed_html,
     load_community_editions,
 )
-from github_anti_ai.publication.german import age, decimal, long_date, number, weight
-from github_anti_ai.publication.view import (
+from explore_gh.publication.german import age, decimal, long_date, number, weight
+from explore_gh.publication.view import (
     feed_html,
     load_github_days,
     section_view,

@@ -1,4 +1,4 @@
-# github-anti-ai
+# explore-gh
 
 Eine persönliche Explore-Seite für Open-Source-Software. Die Hauptliste zeigt
 aufstrebende, aktive GitHub-Repos, die überwiegend von Menschen geschrieben wurden.
@@ -191,7 +191,7 @@ GitHub-Repository bezeichnet.
 ### Struktur
 
 ```plaintext
-src/github_anti_ai/{domain,application,adapters,publication}/
+src/explore_gh/{domain,application,adapters,publication}/
                        # publication/ enthält auch Pelican-Plugin und theme/
 docs/                  # Konzepte mit Stand und Geplantem: datensammlung.md (Acquisition),
                        # bewertung.md (Assessment), ausgabe.md (Curation),

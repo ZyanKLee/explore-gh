@@ -8,9 +8,9 @@ import pytest
 from builders import NOW, FixedClock
 from http_fakes import FakeWeb, Sleeps, fixture
 
-from github_anti_ai.adapters.github_repo_source import GitHubRepoSource
-from github_anti_ai.application.ports import SourceUnavailable
-from github_anti_ai.domain.model import README_MAX_CHARS, RepoId
+from explore_gh.adapters.github_repo_source import GitHubRepoSource
+from explore_gh.application.ports import SourceUnavailable
+from explore_gh.domain.model import README_MAX_CHARS, RepoId
 
 GRAPHQL = "POST api.github.com/graphql"
 FULL = fixture("graphql_repo_full.json")

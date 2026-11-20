@@ -11,15 +11,15 @@ from fakes import (
     InMemoryStatusStore,
 )
 
-from github_anti_ai.application.ports import (
+from explore_gh.application.ports import (
     AlreadyPublished,
     CollectionStatus,
     IncompleteCollection,
     NothingToPublish,
 )
-from github_anti_ai.application.publish_edition import PublishEdition, reviewed_entries
-from github_anti_ai.domain.assessor import Assessor
-from github_anti_ai.domain.model import Section
+from explore_gh.application.publish_edition import PublishEdition, reviewed_entries
+from explore_gh.domain.assessor import Assessor
+from explore_gh.domain.model import Section
 
 COMPLETE = CollectionStatus(TODAY, discovered=3, collected=3, failed=0)
 

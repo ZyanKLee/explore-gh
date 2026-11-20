@@ -4,10 +4,10 @@ import pytest
 from builders import NOW, TODAY, FixedClock, make_snapshot, star_history
 from fakes import FakeCandidateSource, FakeRepoSource, InMemorySnapshotStore, InMemoryStatusStore
 
-from github_anti_ai.application.collect_snapshots import CollectSnapshots
-from github_anti_ai.application.ports import CollectionStatus
-from github_anti_ai.domain.assessor import Assessor
-from github_anti_ai.domain.model import StarHistory
+from explore_gh.application.collect_snapshots import CollectSnapshots
+from explore_gh.application.ports import CollectionStatus
+from explore_gh.domain.assessor import Assessor
+from explore_gh.domain.model import StarHistory
 
 YESTERDAY = TODAY - timedelta(days=1)
 

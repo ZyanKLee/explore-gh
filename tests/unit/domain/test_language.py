@@ -1,4 +1,4 @@
-from github_anti_ai.domain.language import foreign_language, prose
+from explore_gh.domain.language import foreign_language, prose
 
 ENGLISH = (
     "This is a small tool for the terminal. It reads your files and shows them in a list. "

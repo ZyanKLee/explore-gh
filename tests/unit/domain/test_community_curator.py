@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 from builders import NOW, TODAY, make_project, make_story
 
-from github_anti_ai.domain.community import (
+from explore_gh.domain.community import (
     HN,
     LOBSTERS,
     CommunityCurator,

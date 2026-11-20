@@ -2,9 +2,9 @@
 
 import dataclasses
 
-from github_anti_ai.application.ports import AlreadyPublished, SourceUnavailable
-from github_anti_ai.domain.model import Candidate, RepoId, StarHistory
-from github_anti_ai.domain.review import Review
+from explore_gh.application.ports import AlreadyPublished, SourceUnavailable
+from explore_gh.domain.model import Candidate, RepoId, StarHistory
+from explore_gh.domain.review import Review
 
 
 class InMemorySnapshotStore:

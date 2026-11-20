@@ -5,8 +5,8 @@ import pytest
 from builders import NOW
 from http_fakes import FakeWeb
 
-from github_anti_ai.adapters.story_sources import HN_API_URL, HackerNewsSearch
-from github_anti_ai.application.ports import SourceUnavailable
+from explore_gh.adapters.story_sources import HN_API_URL, HackerNewsSearch
+from explore_gh.application.ports import SourceUnavailable
 
 
 def hit(id, url="https://example.org/tool", points=120, comments=30):

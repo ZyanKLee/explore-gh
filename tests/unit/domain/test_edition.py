@@ -3,8 +3,8 @@ from datetime import timedelta
 import pytest
 from builders import TODAY, make_assessment, make_edition, make_entry
 
-from github_anti_ai.domain.edition import Edition, EditionCurator, EditionStats, Entry
-from github_anti_ai.domain.model import Exclusion, RepoId, Section
+from explore_gh.domain.edition import Edition, EditionCurator, EditionStats, Entry
+from explore_gh.domain.model import Exclusion, RepoId, Section
 
 curator = EditionCurator()
 TODAY_CREATED = make_entry().created_at  # when the builders' repos were created

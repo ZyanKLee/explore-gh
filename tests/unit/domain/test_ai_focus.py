@@ -1,8 +1,8 @@
 import pytest
 from builders import make_snapshot
 
-from github_anti_ai.domain.ai_focus import AiFocusClassifier
-from github_anti_ai.domain.model import Section
+from explore_gh.domain.ai_focus import AiFocusClassifier
+from explore_gh.domain.model import Section
 
 classifier = AiFocusClassifier()
 

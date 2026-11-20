@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 from builders import NOW, make_snapshot
 
-from github_anti_ai.domain.owner import OwnerHistory
+from explore_gh.domain.owner import OwnerHistory
 
 history = OwnerHistory()
 

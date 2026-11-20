@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 from builders import NOW, make_commit, make_snapshot, star_history
 
-from github_anti_ai.domain.model import RepoId, StarHistory
+from explore_gh.domain.model import RepoId, StarHistory
 
 
 class TestRepoId:

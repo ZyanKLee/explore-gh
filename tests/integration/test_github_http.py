@@ -3,13 +3,13 @@ import pytest
 from builders import NOW, FixedClock
 from http_fakes import FakeWeb, Sleeps
 
-from github_anti_ai.adapters.github_http import (
+from explore_gh.adapters.github_http import (
     GatewayTimeout,
     RequestBudgetExceeded,
     make_github_client,
     send,
 )
-from github_anti_ai.application.ports import SourceUnavailable
+from explore_gh.application.ports import SourceUnavailable
 
 OK = httpx.Response(200, json={"ok": True})
 
@@ -33,7 +33,7 @@ def test_the_client_talks_to_the_github_api_and_identifies_itself():
 
     request = web.requests[0]
     assert request.headers["Authorization"] == "Bearer test-token"
-    assert request.headers["User-Agent"].startswith("github-anti-ai")
+    assert request.headers["User-Agent"].startswith("explore-gh")
     assert request.headers["X-GitHub-Api-Version"] == "2022-11-28"
 
 

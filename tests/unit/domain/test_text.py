@@ -1,6 +1,6 @@
 import pytest
 
-from github_anti_ai.domain.text import TermList, labels, number, quoted
+from explore_gh.domain.text import TermList, labels, number, quoted
 
 
 class TestTermList:

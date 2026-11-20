@@ -130,7 +130,7 @@ Entwurf vom 13.11.2026 in Claude Design: <https://claude.ai/artifact/7vnxersetXq
 ## Vorschau (`serve`)
 
 ```
-github-anti-ai serve [--data-dir data] [--output output] [--port 8000]
+explore-gh serve [--data-dir data] [--output output] [--port 8000]
 ```
 
 Baut die Seite, liefert sie auf `127.0.0.1` aus und baut neu, sobald sich eine Ausgabe

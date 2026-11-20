@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from github_anti_ai.cli import MissingToken, load_token, main, parse_args
+from explore_gh.cli import MissingToken, load_token, main, parse_args
 
 
 def test_the_data_directory_is_data_unless_chosen():

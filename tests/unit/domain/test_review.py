@@ -1,8 +1,8 @@
 import pytest
 from builders import make_assessment
 
-from github_anti_ai.domain.model import Exclusion, Section
-from github_anti_ai.domain.review import REVIEW_CATEGORIES, REVIEW_GUIDE, Review, reviewed
+from explore_gh.domain.model import Exclusion, Section
+from explore_gh.domain.review import REVIEW_CATEGORIES, REVIEW_GUIDE, Review, reviewed
 
 
 def test_ok_keeps_the_repo_and_marks_it_as_read():

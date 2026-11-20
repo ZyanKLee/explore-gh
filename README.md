@@ -1,4 +1,4 @@
-# github-anti-ai
+# explore-gh
 
 Eine persönliche Explore-Seite für Open-Source-Software. Die GitHub-Liste zeigt jeden
 Tag 20 aufstrebende Repos, die überwiegend von Menschen geschrieben wurden. Getrennte
@@ -38,9 +38,9 @@ Alle Befehle unten laufen im Projektverzeichnis.
 Drei Schritte, in dieser Reihenfolge:
 
 ```
-uv run github-anti-ai collect    # 1. Momentaufnahmen von GitHub holen
-uv run github-anti-ai publish    # 2. Ausgabe des Tages erzeugen
-uv run github-anti-ai site       # 3. Website bauen
+uv run explore-gh collect    # 1. Momentaufnahmen von GitHub holen
+uv run explore-gh publish    # 2. Ausgabe des Tages erzeugen
+uv run explore-gh site       # 3. Website bauen
 ```
 
 Danach `output/index.html` im Browser öffnen.
@@ -55,7 +55,7 @@ Danach `output/index.html` im Browser öffnen.
 - Steht am Ende „… fehlgeschlagen, ein erneuter Lauf holt sie nach“, den Befehl
   ebenfalls noch einmal starten. Vorher weigert sich `publish`, eine Ausgabe zu
   erzeugen.
-- Für einen schnellen Probelauf: `uv run github-anti-ai collect --limit 60`
+- Für einen schnellen Probelauf: `uv run explore-gh collect --limit 60`
 
 ### 2. Ausgabe erzeugen (`publish`)
 
@@ -68,7 +68,7 @@ Danach `output/index.html` im Browser öffnen.
   die Datei dieses Tages.
 - Ein gezeigtes Repo ist danach 30 Tage gesperrt.
 - Hat das Sammeln über Mitternacht gedauert, gehören die Daten zum Tag, an dem es
-  begonnen hat: `uv run github-anti-ai publish --day 2026-11-13`
+  begonnen hat: `uv run explore-gh publish --day 2026-11-13`
 
 ### HN-Liste aktualisieren (`collect-hn`)
 
@@ -79,7 +79,7 @@ Danach `output/index.html` im Browser öffnen.
 - Schreibt eine unveränderliche Datei nach `data/hn-editions/`.
 
 ```
-uv run github-anti-ai collect-hn
+uv run explore-gh collect-hn
 ```
 
 ### Lobsters-Liste aktualisieren (`collect-lobsters`)
@@ -90,7 +90,7 @@ uv run github-anti-ai collect-hn
   `data/lobsters-editions/`.
 
 ```
-uv run github-anti-ai collect-lobsters
+uv run explore-gh collect-lobsters
 ```
 
 ### 3. Website bauen (`site`)
@@ -99,21 +99,21 @@ uv run github-anti-ai collect-lobsters
   Seite nach `output/`.
 - Der Schritt fragt GitHub nicht ab und lässt sich beliebig oft wiederholen.
 - Soll die Seite ins Netz, braucht der Befehl ihre Adresse, damit die Feeds
-  vollständige Links bekommen: `uv run github-anti-ai site --site-url https://…`
+  vollständige Links bekommen: `uv run explore-gh site --site-url https://…`
 - Mit `--plausible https://…/js/….js` zählt die Seite ihre Besuche über Plausible.
   Auf GitHub ist das eingeschaltet, lokal nicht.
 
 ### Schritt 1 und 2 in einem
 
 ```
-uv run github-anti-ai daily      # sammeln und Ausgabe erzeugen
-uv run github-anti-ai site
+uv run explore-gh daily      # sammeln und Ausgabe erzeugen
+uv run explore-gh site
 ```
 
 ## Vorschau im Browser
 
 ```
-uv run github-anti-ai serve
+uv run explore-gh serve
 ```
 
 Baut die Seite und zeigt sie unter <http://127.0.0.1:8000>. Ändert sich eine Ausgabe
@@ -126,7 +126,7 @@ Die Vorschau ist nur vom eigenen Rechner aus erreichbar.
 ## Nachsehen, warum ein Repo so bewertet wurde
 
 ```
-uv run github-anti-ai explain owner/name
+uv run explore-gh explain owner/name
 ```
 
 Zeigt Sektion, Punktzahl, Ausschlussgrund und jedes Signal mit Gewicht. Das geht auch
@@ -139,9 +139,9 @@ Alle Befehle kennen `--data-dir`. Ein eigenes Verzeichnis hält Versuche vom ech
 Archiv fern:
 
 ```
-uv run github-anti-ai collect --data-dir data-test --limit 60
-uv run github-anti-ai publish --data-dir data-test --ignore-cooldown --allow-incomplete
-uv run github-anti-ai site    --data-dir data-test --output data-test/site
+uv run explore-gh collect --data-dir data-test --limit 60
+uv run explore-gh publish --data-dir data-test --ignore-cooldown --allow-incomplete
+uv run explore-gh site    --data-dir data-test --output data-test/site
 ```
 
 `--ignore-cooldown` schaltet die 30-Tage-Sperre ab. Verzeichnisse, die mit `data-`
@@ -166,7 +166,7 @@ HN- und Lobsters-Listen in `docs/community.md`.
 ## Regeln ändern
 
 Punktwerte und Begriffslisten stehen als benannte Konstanten in
-`src/github_anti_ai/domain/`. Nach einer Änderung prüfen die Tests, ob alles noch
+`src/explore_gh/domain/`. Nach einer Änderung prüfen die Tests, ob alles noch
 zusammenpasst:
 
 ```

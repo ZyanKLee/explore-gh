@@ -1,7 +1,7 @@
 import pytest
 from builders import make_snapshot, star_history
 
-from github_anti_ai.domain.momentum import MomentumCalculator
+from explore_gh.domain.momentum import MomentumCalculator
 
 calculator = MomentumCalculator()
 

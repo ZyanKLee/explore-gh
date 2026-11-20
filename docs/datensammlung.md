@@ -192,7 +192,7 @@ Gemeinsam für alle GitHub-Anfragen (`github_http.send`):
 - **Ablage:** Umgebungsvariable `GITHUB_TOKEN`, sonst eine Zeile `GITHUB_TOKEN=…` in
   `.env` (steht in `.gitignore`). Die Variable hat Vorrang.
 - **Client** (`make_github_client`): setzt `Authorization`, `User-Agent`
-  (`github-anti-ai`), `Accept` und `X-GitHub-Api-Version`. Er zählt die Anfragen eines
+  (`explore-gh`), `Accept` und `X-GitHub-Api-Version`. Er zählt die Anfragen eines
   Laufs und verweigert ab 4000 jede weitere (`RequestBudgetExceeded`), als Notbremse.
 - Der eingebaute Token in GitHub Actions erlaubt nur 1000 Anfragen pro Stunde, deshalb
   braucht der Betrieb ein eigenes Secret (siehe `veroeffentlichung.md`).

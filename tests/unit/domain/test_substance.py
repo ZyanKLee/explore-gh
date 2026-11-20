@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 from builders import NOW, make_commit, make_snapshot
 
-from github_anti_ai.domain.substance import SubstanceCheck
+from explore_gh.domain.substance import SubstanceCheck
 
 check = SubstanceCheck()
 

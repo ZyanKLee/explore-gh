@@ -6,7 +6,7 @@ from pathlib import Path
 
 import httpx
 
-from github_anti_ai.adapters.github_http import make_github_client
+from explore_gh.adapters.github_http import make_github_client
 
 FIXTURES = Path(__file__).parent / "integration" / "fixtures"
 

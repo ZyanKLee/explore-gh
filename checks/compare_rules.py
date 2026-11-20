@@ -32,10 +32,10 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, sys.argv[1])
-from github_anti_ai.adapters.json_snapshot_store import JsonSnapshotStore
-from github_anti_ai.domain.assessor import Assessor
-from github_anti_ai.domain.copies import CopyCheck
-from github_anti_ai.domain.edition import EditionCurator
+from explore_gh.adapters.json_snapshot_store import JsonSnapshotStore
+from explore_gh.domain.assessor import Assessor
+from explore_gh.domain.copies import CopyCheck
+from explore_gh.domain.edition import EditionCurator
 
 store = JsonSnapshotStore(Path(sys.argv[2]))
 assessor = Assessor()

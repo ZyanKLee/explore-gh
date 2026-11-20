@@ -16,7 +16,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/github_anti_ai/publication/**"
+      - "src/explore_gh/publication/**"
       - "data/editions/**"
       - "data/hn-editions/**"
       - "data/lobsters-editions/**"
@@ -54,7 +54,7 @@ jobs:
         id: pages
       - name: Website bauen
         run: >
-          uv run github-anti-ai site --output _site
+          uv run explore-gh site --output _site
           --site-url "${{ steps.pages.outputs.base_url }}/"
           --plausible "$PLAUSIBLE_SCRIPT"
       - uses: actions/upload-pages-artifact@v5

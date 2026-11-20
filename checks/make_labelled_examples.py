@@ -17,9 +17,9 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from github_anti_ai.adapters.json_snapshot_store import SUFFIX, JsonSnapshotStore
-from github_anti_ai.domain.ai_assistance import is_ai_assisted, is_ai_tool
-from github_anti_ai.domain.model import RepoId, Snapshot
+from explore_gh.adapters.json_snapshot_store import SUFFIX, JsonSnapshotStore
+from explore_gh.domain.ai_assistance import is_ai_assisted, is_ai_tool
+from explore_gh.domain.model import RepoId, Snapshot
 
 TARGET = Path(__file__).parent.parent / "tests/integration/fixtures/labelled"
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+(\.[\w-]+)+")

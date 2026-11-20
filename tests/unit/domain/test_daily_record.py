@@ -2,8 +2,8 @@ import dataclasses
 
 from builders import TODAY, make_assessment
 
-from github_anti_ai.domain.history import DailyRecord
-from github_anti_ai.domain.model import Exclusion, Section, Signal
+from explore_gh.domain.history import DailyRecord
+from explore_gh.domain.model import Exclusion, Section, Signal
 
 
 def test_a_daily_record_keeps_numbers_and_verdict():

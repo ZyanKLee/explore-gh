@@ -216,10 +216,10 @@ Assess = Callable[[Snapshot], Assessment]   # die Kommandozeile übergibt Assess
 ## Kommandozeile
 
 ```
-github-anti-ai collect [--limit N]
-github-anti-ai publish [--day T] [--review] [--allow-incomplete] [--ignore-cooldown]
-github-anti-ai daily   [--limit N] [--review] [--allow-incomplete] [--ignore-cooldown]
-github-anti-ai explain owner/name [--day T]
+explore-gh collect [--limit N]
+explore-gh publish [--day T] [--review] [--allow-incomplete] [--ignore-cooldown]
+explore-gh daily   [--limit N] [--review] [--allow-incomplete] [--ignore-cooldown]
+explore-gh explain owner/name [--day T]
 ```
 
 `daily` sammelt und veröffentlicht für den Tag, an dem die Sammlung begann. Alle Befehle
