@@ -7,6 +7,7 @@ from explore_gh.domain.edition import Edition, EditionCurator, EditionStats, Ent
 from explore_gh.domain.model import Exclusion, RepoId, Section
 
 curator = EditionCurator()
+TODAY_CREATED = make_entry().created_at  # when the builders' repos were created
 
 
 def names(entries):
@@ -105,6 +106,43 @@ class TestEditionCurator:
         )
 
         assert names(edition.main) == ["b/old"]
+
+    @pytest.mark.parametrize(
+        "shown, today",
+        [
+            ("alice/downloader", "acme/downloader"),  # moved to another owner
+            ("alice/downloader", "alice/fetcher"),  # renamed
+        ],
+    )
+    def test_a_moved_or_renamed_repo_stays_in_cooldown(self, shown, today):
+        created = TODAY_CREATED
+        past = [
+            make_edition(TODAY - timedelta(days=2), main=[make_entry(shown, created_at=created)])
+        ]
+
+        edition = curator.curate(TODAY, [make_assessment(today, created_at=created)], past)
+
+        assert edition.main == ()
+
+    def test_another_repo_created_at_the_same_moment_is_not_blocked(self):
+        created = TODAY_CREATED
+        past = [
+            make_edition(
+                TODAY - timedelta(days=2), main=[make_entry("alice/downloader", created_at=created)]
+            )
+        ]
+
+        edition = curator.curate(TODAY, [make_assessment("bob/editor", created_at=created)], past)
+
+        assert names(edition.main) == ["bob/editor"]
+
+    def test_the_same_owner_with_a_repo_of_another_moment_is_not_blocked(self):
+        past = [make_edition(TODAY - timedelta(days=2), main=[make_entry("alice/downloader")])]
+        later = TODAY_CREATED + timedelta(seconds=1)
+
+        edition = curator.curate(TODAY, [make_assessment("alice/editor", created_at=later)], past)
+
+        assert names(edition.main) == ["alice/editor"]
 
     def test_keeps_the_variety_rule(self):
         assessments = [make_assessment(f"o{i}/r", score=10 - i) for i in range(6)]

@@ -40,6 +40,14 @@ Je Sektion, unabhängig voneinander:
 2. **Sperre:** Ein Repo, das an Tag D in einer Ausgabe stand, egal in welcher Sektion, ist
    bis einschließlich D + 29 gesperrt und ab D + 30 wieder zulässig. Wird ein Tag neu
    erzeugt, nachdem es schon spätere Ausgaben gibt, sperren auch deren Repos.
+   **Umzug und Umbenennung** (seit 20.11.2026): Ein Repo, das den Besitzer wechselt oder
+   umbenannt wird, behält den Zeitpunkt seines Anlegens. Gesperrt ist deshalb auch ein Repo
+   mit demselben Anlegezeitpunkt (auf die Sekunde) und demselben Besitzer oder Namen.
+   Anlass: `Shahrukhalid/nexonic-download-manager` am 18.11. zog zu
+   `nexonic-technologies/` um und stand am 20.11. erneut in der Liste. In allen
+   Ausgaben bis dahin teilte nur dieses Paar seinen Anlegezeitpunkt. Wechseln Besitzer
+   und Name zugleich, greift die Regel nicht. Die HN- und Foren-Listen kennen sie noch
+   nicht.
 3. **Rangfolge:** Punktzahl absteigend. Bei Gleichstand gewinnt der höhere Sterngewinn,
    danach der alphabetisch frühere Name. Gleiche Eingaben geben immer dieselbe Auswahl.
 4. **Vielfalt:** der Reihe nach übernehmen, aber höchstens 4 Repos je Programmiersprache
