@@ -168,7 +168,7 @@ Code und Bezeichner sind auf Englisch, das Glossar verbindet sie mit den deutsch
 | Tageswert | `DailyRecord` | Was von einer Bewertung dauerhaft bleibt: Zahlen, Urteil, Rang. Ohne Texte, Commits und Personen. |
 | Sektion | `Section` | `MAIN` oder `AI` |
 | Ausgabe | `Edition` | Auswahl eines Tages, je Sektion bis zu 20 `Entry`s. Unveränderlich nach Veröffentlichung. |
-| Sperre | `in_cooldown`, `COOLDOWN_DAYS` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert. HN und Foren sperren je aus ihren eigenen Ausgaben. |
+| Sperre | `in_cooldown`, `COOLDOWN_DAYS` | 30 Tage, wird aus vergangenen Ausgaben abgeleitet, nicht separat gespeichert. Gilt auch nach Umzug oder Umbenennung (gleicher Anlegezeitpunkt). HN und Foren sperren je aus ihren eigenen Ausgaben. |
 | Vielfaltsregel | `varied`, `MAX_PER_LANGUAGE`, `MAX_PER_OWNER` | Pro Sektion höchstens 4 Einträge je Programmiersprache und 2 je Besitzer, ebenso in den HN- und Foren-Ausgaben |
 
 Persistenz-Abstraktionen heißen `…Store`, nicht „Repository“, weil „Repo“ schon das

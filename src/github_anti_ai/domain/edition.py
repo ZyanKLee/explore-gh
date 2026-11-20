@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 
 from github_anti_ai.domain.curation import check_section, check_unique, in_cooldown, varied
-from github_anti_ai.domain.model import Assessment, RepoId, Section, Signal, StarHistory
+from github_anti_ai.domain.model import Assessment, RepoId, Section, Signal, Snapshot, StarHistory
 
 
 @dataclass(frozen=True)
@@ -99,13 +99,18 @@ class EditionCurator:
     def curate(
         self, day: date, assessments: Sequence[Assessment], past_editions: Iterable[Edition]
     ) -> Edition:
-        blocked = {
-            repo
+        shown = [
+            entry
             for edition in past_editions
             if in_cooldown(edition.day, day)
-            for repo in edition.ranks()
-        }
-        eligible = [a for a in assessments if a.exclusion is None and a.repo not in blocked]
+            for section in Section
+            for entry in edition.entries(section)
+        ]
+        eligible = [
+            a
+            for a in assessments
+            if a.exclusion is None and not any(_same_repo(entry, a.snapshot) for entry in shown)
+        ]
         return Edition(
             day=day,
             main=_select(a for a in eligible if a.section is Section.MAIN),
@@ -118,6 +123,17 @@ class EditionCurator:
                 ),
             ),
         )
+
+
+def _same_repo(entry: Entry, snapshot: Snapshot) -> bool:
+    """The same repo, also after a move to another owner or a new name: both keep the
+    moment the repo was created. Another repo of that moment shares neither."""
+    if entry.repo == snapshot.repo:
+        return True
+    return entry.created_at == snapshot.created_at and (
+        entry.repo.owner.lower() == snapshot.repo.owner.lower()
+        or entry.repo.name.lower() == snapshot.repo.name.lower()
+    )
 
 
 def _select(assessments: Iterable[Assessment]) -> tuple[Entry, ...]:
