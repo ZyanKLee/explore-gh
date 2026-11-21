@@ -1,0 +1,79 @@
+{
+  "format_version": 1,
+  "day": "2026-11-21",
+  "projects": [
+    {
+      "story": {
+        "id": "50560595",
+        "title": "Floppy3.5: A portable 3.5-inch floppy WiFi NAS",
+        "url": "https://github.com/bigcrimping/floppy3.5",
+        "points": 136,
+        "comments": 55,
+        "created_at": "2026-11-19T14:29:49+00:00"
+      },
+      "repository_url": "https://github.com/bigcrimping/floppy3.5",
+      "project_url": "https://github.com/bigcrimping/floppy3.5",
+      "description": "A Portable 3.5\" Disk WiFi NAS",
+      "language": "C",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50580536",
+        "title": "Winedroid – run Android apps without Android (WASM demo)",
+        "url": "https://winedroid.soham.sh/demo/",
+        "points": 83,
+        "comments": 25,
+        "created_at": "2026-11-20T19:30:16+00:00"
+      },
+      "repository_url": "https://github.com/sohzm/winedroid",
+      "project_url": "https://winedroid.soham.sh/demo/",
+      "description": "Run Android apps on Web, Linux, macOS and Windows",
+      "language": "Rust",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf winedroid.soham.sh. Repo und Story teilen „winedroid“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50581403",
+        "title": "Show HN: OpenComputer – an open source alternative to Devin",
+        "url": "https://github.com/diggerhq/opencomputer",
+        "points": 50,
+        "comments": 14,
+        "created_at": "2026-11-20T20:19:56+00:00"
+      },
+      "repository_url": "https://github.com/diggerhq/opencomputer",
+      "project_url": "https://github.com/diggerhq/opencomputer",
+      "description": "An open-source, faster Devin alternative",
+      "language": "TypeScript",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "README: 14-mal AI-Begriffe („coding agent“, „agent“, „claude“, „codex“ …)"
+      ]
+    }
+  ],
+  "ai_projects": []
+}
