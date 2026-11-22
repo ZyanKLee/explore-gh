@@ -1,0 +1,228 @@
+{
+  "format_version": 1,
+  "day": "2026-11-22",
+  "projects": [
+    {
+      "story": {
+        "id": "50591853",
+        "title": "Inkling-2-Mini in 5.4 GB Memory",
+        "url": "https://github.com/ShinMegamiBoson/lookatmyquant",
+        "points": 466,
+        "comments": 117,
+        "created_at": "2026-11-21T18:02:19+00:00"
+      },
+      "repository_url": "https://github.com/ShinMegamiBoson/lookatmyquant",
+      "project_url": "https://github.com/ShinMegamiBoson/lookatmyquant",
+      "description": "A quantization compiler that delivers 12× lower KL than Q4_K_M at the same file size",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "README: 42-mal AI-Begriffe („gemma“, „gguf“, „huggingface“, „openai“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50588916",
+        "title": "Astra 6.2 and Sol 6.2 flop at Simple Bench",
+        "url": "https://simple-bench.com/",
+        "points": 174,
+        "comments": 162,
+        "created_at": "2026-11-21T13:16:12+00:00"
+      },
+      "repository_url": "https://github.com/simple-bench/SimpleBench",
+      "project_url": "https://simple-bench.com/",
+      "description": "",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf simple-bench.com. Repo und Story teilen „bench“, „simple“, „simplebench“.",
+        "README: 5-mal AI-Begriffe („gpt“, „llm“, „openai“, „anthropic“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50577991",
+        "title": "I'm quite pleased by the tech architecture of my art website",
+        "url": "https://klauria.tech/klauria-art/",
+        "points": 172,
+        "comments": 34,
+        "created_at": "2026-11-20T17:03:39+00:00"
+      },
+      "repository_url": "https://github.com/kshitijl/sketchbook-website",
+      "project_url": "https://klauria.tech/klauria-art/",
+      "description": "A website for my paintings and sketchbook pages.",
+      "language": "TypeScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf klauria.tech. Repo und Story teilen „website“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50593737",
+        "title": "Advice for the next 100 Rust GUIs",
+        "url": "https://linebender.org/blog/next-100-guis/",
+        "points": 166,
+        "comments": 67,
+        "created_at": "2026-11-21T21:17:53+00:00"
+      },
+      "repository_url": "https://github.com/rust-mobile/android-view",
+      "project_url": "https://linebender.org/blog/next-100-guis/",
+      "description": "Implement an Android view in Rust",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf linebender.org. Repo und Story teilen „rust“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50590279",
+        "title": "Show HN: Zero C# – C# without a runtime or GC",
+        "url": "https://onurgumus.github.io/zero-csharp/index.html",
+        "points": 162,
+        "comments": 110,
+        "created_at": "2026-11-21T15:39:09+00:00"
+      },
+      "repository_url": "https://github.com/OnurGumus/zero-csharp",
+      "project_url": "https://onurgumus.github.io/zero-csharp/index.html",
+      "description": "",
+      "language": "C#",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf onurgumus.github.io. Repo und Story teilen „csharp“, „onurgumus“, „zero“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50591260",
+        "title": "PostgreSQL Extensions in Go",
+        "url": "https://jespino.github.io/gopgext/",
+        "points": 150,
+        "comments": 25,
+        "created_at": "2026-11-21T17:08:04+00:00"
+      },
+      "repository_url": "https://github.com/jespino/gopgext",
+      "project_url": "https://jespino.github.io/gopgext/",
+      "description": "Build PostgreSQL extensions from Go code with TinyGo",
+      "language": "Go",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "golang",
+        "postgresql"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf jespino.github.io. Repo und Story teilen „gopgext“, „jespino“."
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50594132",
+        "title": "PcapAnalyzer – self-hosted pcap analyzer with 27 problem detectors",
+        "url": "https://github.com/sebaandrada-cell/PcapAnalyzer",
+        "points": 118,
+        "comments": 16,
+        "created_at": "2026-11-21T22:09:58+00:00"
+      },
+      "repository_url": "https://github.com/sebaandrada-cell/PcapAnalyzer",
+      "project_url": "https://github.com/sebaandrada-cell/PcapAnalyzer",
+      "description": "Free, self-hosted pcap analyzer with 27 problem detectors and AI investigation",
+      "language": "Python",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "fastapi",
+        "network-troubleshooting",
+        "packet-analysis",
+        "pcap",
+        "tshark",
+        "wireshark"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Beschreibung: AI-Begriffe „ai“",
+        "README: 7-mal AI-Begriffe („ai“, „anthropic“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50593481",
+        "title": "Pandex – Official European Law for AI Agents, over MCP",
+        "url": "https://www.pandex.io",
+        "points": 94,
+        "comments": 21,
+        "created_at": "2026-11-21T20:47:41+00:00"
+      },
+      "repository_url": "https://github.com/pandex-io/pandex-mcp",
+      "project_url": "https://www.pandex.io",
+      "description": "Official European legislation and court decisions for AI agents: MCP server and API. EU, FR, DE, NL, UK, AT, CH, LU, ECHR.",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ai-agents",
+        "case-law",
+        "claude",
+        "eu-law",
+        "eur-lex",
+        "europe",
+        "law",
+        "legal",
+        "legal-ai",
+        "legal-research",
+        "legal-tech",
+        "legislation",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "rag"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf pandex.io. Repo und Story teilen „mcp“, „pandex“.",
+        "Topics: AI-Begriffe „ai agent“, „claude“, „ai“, „mcp“ …",
+        "Name: AI-Begriffe „mcp“",
+        "Beschreibung: AI-Begriffe „ai agent“, „mcp“",
+        "README: 17-mal AI-Begriffe („mcp“, „ai agent“, „claude“, „ai“)"
+      ]
+    }
+  ]
+}
