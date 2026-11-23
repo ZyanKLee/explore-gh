@@ -1,0 +1,953 @@
+{
+  "format_version": 1,
+  "day": "2026-11-23",
+  "projects": [
+    {
+      "story": {
+        "id": "59583984",
+        "title": "PHP: Upcoming Critical PHP Security Release",
+        "url": "https://www.php.net/archive/2026.php",
+        "discussion_url": "https://lemmy.horwood.cloud/post/1474331",
+        "points": 265,
+        "comments": 52,
+        "created_at": "2026-11-18T19:27:46.649707+00:00",
+        "origin": {
+          "name": "Lemmy c/selfhosted@lemmy.world",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/php/php-src",
+      "project_url": "https://www.php.net/archive/2026.php",
+      "description": "The PHP Interpreter",
+      "language": "C",
+      "license_id": "BSD-3-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf php.net. Repo und Story teilen „php“.",
+        "265 Punkte auf Lemmy c/selfhosted@lemmy.world, das 17,7-Fache der Schwelle von 15.",
+        "Auch auf Lobsters, 31 Punkte."
+      ],
+      "other_stories": [
+        {
+          "id": "zr0hkw",
+          "title": "Upcoming Critical PHP Security Release (18 Nov 2026)",
+          "url": "https://www.php.net/index.php#2026-11-18-1",
+          "discussion_url": "https://lobste.rs/s/zr0hkw",
+          "points": 31,
+          "comments": 14,
+          "created_at": "2026-11-18T13:44:06.571000-06:00",
+          "origin": {
+            "name": "Lobsters",
+            "reference_points": 10,
+            "min_points": 10,
+            "points_label": "Punkte"
+          }
+        }
+      ]
+    },
+    {
+      "story": {
+        "id": "tj1j4b",
+        "title": "Announcing jj-musubi: live sync for Jujutsu",
+        "url": "https://www.serpentine.com/posts/2026/announcing-jj-musubi/",
+        "discussion_url": "https://lobste.rs/s/tj1j4b",
+        "points": 74,
+        "comments": 35,
+        "created_at": "2026-11-20T03:39:11.806000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/bos/jj-musubi",
+      "project_url": "https://www.serpentine.com/posts/2026/announcing-jj-musubi/",
+      "description": "Keep jj repos in sync across your machines, live",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "cli",
+        "jj",
+        "jujutsu"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf serpentine.com. Repo und Story teilen „musubi“.",
+        "74 Punkte auf Lobsters, das 7,4-Fache der Schwelle von 10.",
+        "README: 5-mal AI-Begriffe („coding agent“, „agent“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "elmy67",
+        "title": "15 million web servers on one VM - smoltcp, DPDK, AF_XDP",
+        "url": "https://kapteko.com/15-million-webservers/",
+        "discussion_url": "https://lobste.rs/s/elmy67",
+        "points": 66,
+        "comments": 1,
+        "created_at": "2026-11-19T07:38:19.736000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/smoltcp-rs/smoltcp",
+      "project_url": "https://kapteko.com/15-million-webservers/",
+      "description": "a smol tcp/ip stack",
+      "language": "Rust",
+      "license_id": "0BSD",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "embedded",
+        "networking-stack"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf kapteko.com. Repo und Story teilen „smoltcp“.",
+        "66 Punkte auf Lobsters, das 6,6-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "59583982",
+        "title": "Release release-1.30.7 · nginx/nginx (fixing 8 CVEs)",
+        "url": "https://github.com/nginx/nginx/releases/tag/release-1.30.7",
+        "discussion_url": "https://lemmy.horwood.cloud/post/1474330",
+        "points": 75,
+        "comments": 5,
+        "created_at": "2026-11-18T19:26:59.052476+00:00",
+        "origin": {
+          "name": "Lemmy c/selfhosted@lemmy.world",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/nginx/nginx",
+      "project_url": "https://github.com/nginx/nginx/releases/tag/release-1.30.7",
+      "description": "The official NGINX Open Source repository.",
+      "language": "C",
+      "license_id": "BSD-2-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "content-cache",
+        "http",
+        "http2",
+        "http3",
+        "https",
+        "load-balancer",
+        "mail-proxy-server",
+        "nginx",
+        "quic",
+        "reverse-proxy",
+        "security",
+        "tcp-proxy-server",
+        "tls",
+        "udp-proxy-server",
+        "web-server"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "75 Punkte auf Lemmy c/selfhosted@lemmy.world, das 5,0-Fache der Schwelle von 15.",
+        "Auch auf Lemmy c/opensource@lemmy.ml, 39 Punkte."
+      ],
+      "other_stories": [
+        {
+          "id": "59706849",
+          "title": "Now Nginx Has Critical Vulnerabilities",
+          "url": "https://itsfoss.com/news/nginx-code-execution-flaws/",
+          "discussion_url": "https://lemmy.ml/post/55568995",
+          "points": 39,
+          "comments": 0,
+          "created_at": "2026-11-21T13:16:39.048396+00:00",
+          "origin": {
+            "name": "Lemmy c/opensource@lemmy.ml",
+            "reference_points": 15,
+            "min_points": 15,
+            "points_label": "Punkte"
+          }
+        }
+      ]
+    },
+    {
+      "story": {
+        "id": "i6dn7g",
+        "title": "Jujutsu Primer",
+        "url": "https://ethanlowman.com/posts/jj-primer/",
+        "discussion_url": "https://lobste.rs/s/i6dn7g",
+        "points": 44,
+        "comments": 4,
+        "created_at": "2026-11-19T21:34:36.153000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/jj-vcs/jj",
+      "project_url": "https://ethanlowman.com/posts/jj-primer/",
+      "description": "A Git-compatible VCS that is both simple and powerful",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf ethanlowman.com. Repo und Story teilen „jj“.",
+        "44 Punkte auf Lobsters, das 4,4-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "59668764",
+        "title": "Rust Coreutils 0.13 Reaches 96% GNU Compatibility",
+        "url": "https://linuxiac.com/rust-coreutils-0-13-reaches-96-percent-gnu-compatibility/",
+        "discussion_url": "https://lemmy.ml/post/55537740",
+        "points": 57,
+        "comments": 18,
+        "created_at": "2026-11-20T15:59:17.902874+00:00",
+        "origin": {
+          "name": "Lemmy c/linux@lemmy.ml",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/uutils/coreutils",
+      "project_url": "https://linuxiac.com/rust-coreutils-0-13-reaches-96-percent-gnu-compatibility/",
+      "description": "Cross-platform Rust rewrite of the GNU coreutils",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "busybox",
+        "command-line-tool",
+        "coreutils",
+        "cross-platform",
+        "gnu-coreutils",
+        "rust"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf linuxiac.com. Repo und Story teilen „coreutils“.",
+        "57 Punkte auf Lemmy c/linux@lemmy.ml, das 3,8-Fache der Schwelle von 15."
+      ]
+    },
+    {
+      "story": {
+        "id": "6jloca",
+        "title": "NixOS bring-up on an Alibaba RISC-V board",
+        "url": "https://feyor.sh/blog/nixos-bringup-on-an-alibaba-riscv-board/",
+        "discussion_url": "https://lobste.rs/s/6jloca",
+        "points": 34,
+        "comments": 13,
+        "created_at": "2026-11-21T18:30:07.226000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/NixOS/nixpkgs",
+      "project_url": "https://feyor.sh/blog/nixos-bringup-on-an-alibaba-riscv-board/",
+      "description": "Nix Packages collection & NixOS",
+      "language": "Nix",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "hacktoberfest",
+        "linux",
+        "nix",
+        "nixos",
+        "nixpkgs"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf feyor.sh. Repo und Story teilen „nixos“.",
+        "34 Punkte auf Lobsters, das 3,4-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "59528793",
+        "title": "Gate By Gate (recreating a 6502 in an FPGA)",
+        "url": "https://youtu.be/czPMjs0Y0zc",
+        "discussion_url": "https://lemmy.world/post/54519499",
+        "points": 48,
+        "comments": 8,
+        "created_at": "2026-11-17T15:04:07.259059+00:00",
+        "origin": {
+          "name": "Lemmy c/programming",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/yvesrob/6502-gate-by-gate",
+      "project_url": "https://youtu.be/czPMjs0Y0zc",
+      "description": "A 6502 computer written from scratch in Verilog for the Tang Nano 20K FPGA board.",
+      "language": "Verilog",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "6502",
+        "fpga",
+        "retrocomputing",
+        "tang-nano-20k",
+        "verilog"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden im ersten Beitrag. Repo und Story teilen „gate“.",
+        "48 Punkte auf Lemmy c/programming, das 3,2-Fache der Schwelle von 15."
+      ],
+      "found_in_post": true
+    },
+    {
+      "story": {
+        "id": "18c0lq",
+        "title": "Alice v0.6.0",
+        "url": "https://www.alicecaml.org/blog/alice-v0-6-0/",
+        "discussion_url": "https://lobste.rs/s/18c0lq",
+        "points": 29,
+        "comments": 4,
+        "created_at": "2026-11-20T10:44:09.585000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/alicecaml/alice",
+      "project_url": "https://www.alicecaml.org/blog/alice-v0-6-0/",
+      "description": "A radical OCaml build system",
+      "language": "OCaml",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf alicecaml.org. Repo und Story teilen „alice“, „alicecaml“.",
+        "29 Punkte auf Lobsters, das 2,9-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "59656692",
+        "title": "[AIP] Portabase has been accepted into the CNCF Landscape! (open-source data backup and restore tool)",
+        "url": "https://github.com/Portabase/portabase",
+        "discussion_url": "https://lemmy.world/post/54633668",
+        "points": 36,
+        "comments": 15,
+        "created_at": "2026-11-20T09:40:47.375995+00:00",
+        "origin": {
+          "name": "Lemmy c/selfhosted@lemmy.world",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/Portabase/portabase",
+      "project_url": "https://github.com/Portabase/portabase",
+      "description": "Portabase - Database backup & restore tool for PostgreSQL, MySQL, MsSQL, MariaDB, Firebird SQL, SQLite, MongoDB, Redis, Files and Docker Volume",
+      "language": "TypeScript",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "backup",
+        "backup-tool",
+        "database",
+        "devops",
+        "docker",
+        "docker-backup",
+        "docker-volumes",
+        "firebirdsql",
+        "mariadb",
+        "mongodb",
+        "mssql-database",
+        "mysql",
+        "nextjs",
+        "postgresql",
+        "rclone",
+        "redis",
+        "restic",
+        "selfhosted",
+        "sqlite-database",
+        "valkey"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "36 Punkte auf Lemmy c/selfhosted@lemmy.world, das 2,4-Fache der Schwelle von 15.",
+        "README: 7-mal AI-Begriffe („agent“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "hsmtyg",
+        "title": "Security advisories: multiple vulnerabilities in Regexp and String case conversion",
+        "url": "https://www.ruby-lang.org/en/news/2026/11/18/multiple-vulnerabilities-in-regexp-and-string/",
+        "discussion_url": "https://lobste.rs/s/hsmtyg",
+        "points": 24,
+        "comments": 0,
+        "created_at": "2026-11-18T19:26:37.275000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/ruby/ruby",
+      "project_url": "https://www.ruby-lang.org/en/news/2026/11/18/multiple-vulnerabilities-in-regexp-and-string/",
+      "description": "The Ruby Programming Language",
+      "language": "Ruby",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "c",
+        "jit",
+        "language",
+        "object-oriented",
+        "programming-language",
+        "ruby",
+        "ruby-language",
+        "rust"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf ruby-lang.org. Repo und Story teilen „ruby“.",
+        "24 Punkte auf Lobsters, das 2,4-Fache der Schwelle von 10.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "z8f3vz",
+        "title": "Type inference and narrowing with reverse arrows",
+        "url": "https://elixir-lang.org/blog/2026/11/10/inference-narrowing-reverse-arrows/",
+        "discussion_url": "https://lobste.rs/s/z8f3vz",
+        "points": 18,
+        "comments": 0,
+        "created_at": "2026-11-19T07:34:58.887000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/elixir-lang/elixir",
+      "project_url": "https://elixir-lang.org/blog/2026/11/10/inference-narrowing-reverse-arrows/",
+      "description": "Simple from zero to scale",
+      "language": "Elixir",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf elixir-lang.org. Repo und Story teilen „elixir“, „elixirlang“, „lang“.",
+        "18 Punkte auf Lobsters, das 1,8-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "l70xc9",
+        "title": "sysdeck: Raycast for Linux & BSD",
+        "url": "https://xn--gckvb8fzb.com/sysdeck-raycast-for-linux-bsd/",
+        "discussion_url": "https://lobste.rs/s/l70xc9",
+        "points": 17,
+        "comments": 1,
+        "created_at": "2026-11-18T17:26:59.595000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/mrusme/sysdeck",
+      "project_url": "https://xn--gckvb8fzb.com/sysdeck-raycast-for-linux-bsd/",
+      "description": "A command center for Linux/BSD desktops. (https://tty.fail/mrus/sysdeck)",
+      "language": "Zig",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "alfred",
+        "application-launcher",
+        "dmenu",
+        "launcher",
+        "launcher-application",
+        "raycast",
+        "rofi",
+        "sway",
+        "wayland",
+        "wofi"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf xn--gckvb8fzb.com. Repo und Story teilen „sysdeck“.",
+        "17 Punkte auf Lobsters, das 1,7-Fache der Schwelle von 10.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "README: 8-mal AI-Begriffe („llm“, „openai“, „anthropic“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "59646004",
+        "title": "Artificial Life Simulator ALIEN 5.0 Beta Released",
+        "url": "https://github.com/chrxh/alien",
+        "discussion_url": "https://lemmy.ml/post/55520355",
+        "points": 21,
+        "comments": 0,
+        "created_at": "2026-11-20T04:01:43.345476+00:00",
+        "origin": {
+          "name": "Lemmy c/opensource@lemmy.ml",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/chrxh/alien",
+      "project_url": "https://github.com/chrxh/alien",
+      "description": "ALIEN is a CUDA-powered artificial life simulation program.",
+      "language": "C++",
+      "license_id": "BSD-3-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "agent-based-simulation",
+        "artificial-life",
+        "cuda",
+        "open-ended-evolution",
+        "physics-engine"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "21 Punkte auf Lemmy c/opensource@lemmy.ml, das 1,4-Fache der Schwelle von 15.",
+        "README: 17-mal AI-Begriffe („ai“, „ai agent“, „mcp“, „agent“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "59691315",
+        "title": "Valkey: From Skiplists to B+ Trees: Making Valkey Sorted Sets More Memory Efficient",
+        "url": "https://valkey.io/blog/from-skiplist-to-b+tree/",
+        "discussion_url": "https://europe.pub/post/17720918",
+        "points": 20,
+        "comments": 4,
+        "created_at": "2026-11-21T04:34:12.911183+00:00",
+        "origin": {
+          "name": "Lemmy c/programming",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/valkey-io/valkey",
+      "project_url": "https://valkey.io/blog/from-skiplist-to-b+tree/",
+      "description": "A flexible distributed key-value database that is optimized for caching and other realtime workloads.",
+      "language": "C",
+      "license_id": "BSD-3-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "cache",
+        "database",
+        "key-value",
+        "key-value-store",
+        "nosql",
+        "redis",
+        "valkey",
+        "valkey-client"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf valkey.io. Repo und Story teilen „valkey“.",
+        "20 Punkte auf Lemmy c/programming, das 1,3-Fache der Schwelle von 15."
+      ]
+    },
+    {
+      "story": {
+        "id": "4qcr3k",
+        "title": "Verifying formal models of Raft implementations",
+        "url": "https://antithesis.com/blog/2026/verifying-formal-models/",
+        "discussion_url": "https://lobste.rs/s/4qcr3k",
+        "points": 13,
+        "comments": 0,
+        "created_at": "2026-11-20T15:54:45.756000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/etcd-io/raft",
+      "project_url": "https://antithesis.com/blog/2026/verifying-formal-models/",
+      "description": "Raft library for maintaining a replicated state machine",
+      "language": "Go",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "consensus",
+        "distributed-systems",
+        "raft"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf antithesis.com. Repo und Story teilen „raft“.",
+        "13 Punkte auf Lobsters, das 1,3-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "59497851",
+        "title": "Conventional Commit rules everything around me",
+        "url": "https://daverupert.com/2026/11/conventional-commit-rules-everything-around-me/",
+        "discussion_url": "https://programming.dev/post/59497851",
+        "points": 18,
+        "comments": 41,
+        "created_at": "2026-11-16T23:05:29.264193+00:00",
+        "origin": {
+          "name": "Lemmy c/programming",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/conventional-changelog/commitlint",
+      "project_url": "https://daverupert.com/2026/11/conventional-commit-rules-everything-around-me/",
+      "description": "📓 Lint commit messages",
+      "language": "TypeScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "commit",
+        "conventions",
+        "git",
+        "lint"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf daverupert.com. Repo und Story teilen „conventional“.",
+        "18 Punkte auf Lemmy c/programming, das 1,2-Fache der Schwelle von 15."
+      ]
+    },
+    {
+      "story": {
+        "id": "59721930",
+        "title": "D.eSystem 7 alpha development",
+        "url": "https://lemmy.world/pictrs/image/6d0dae58-6254-457b-8c81-5733284fc24a.png",
+        "discussion_url": "https://lemmy.world/post/54689193",
+        "points": 18,
+        "comments": 4,
+        "created_at": "2026-11-21T19:27:38.069619+00:00",
+        "origin": {
+          "name": "Lemmy c/programming",
+          "reference_points": 15,
+          "min_points": 15,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/D-electronics-scratch/D.eSystem_6",
+      "project_url": "https://lemmy.world/pictrs/image/6d0dae58-6254-457b-8c81-5733284fc24a.png",
+      "description": "The current repo from D.eSystem 6",
+      "language": "C",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden im ersten Beitrag. Repo und Story teilen „esystem“.",
+        "18 Punkte auf Lemmy c/programming, das 1,2-Fache der Schwelle von 15.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ],
+      "found_in_post": true
+    },
+    {
+      "story": {
+        "id": "qmofba",
+        "title": "Critical Red Hat Quay Flaw Lets Attackers Read and Overwrite All Private Container Images in a Registry",
+        "url": "https://thehackernews.com/2026/11/critical-red-hat-quay-flaw-lets.html",
+        "discussion_url": "https://lobste.rs/s/qmofba",
+        "points": 12,
+        "comments": 1,
+        "created_at": "2026-11-17T08:38:24.970000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/quay/quay",
+      "project_url": "https://thehackernews.com/2026/11/critical-red-hat-quay-flaw-lets.html",
+      "description": "Build, Store, and Distribute your Applications and Containers",
+      "language": "Python",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "containers",
+        "docker",
+        "oci-distribution",
+        "quay"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf thehackernews.com. Repo und Story teilen „quay“.",
+        "12 Punkte auf Lobsters, das 1,2-Fache der Schwelle von 10."
+      ]
+    },
+    {
+      "story": {
+        "id": "kfpoos",
+        "title": "Stricter checks for uploaded distributions on PyPI",
+        "url": "https://blog.pypi.org/posts/2026-11-18-stricter-checks-for-uploaded-sdists/",
+        "discussion_url": "https://lobste.rs/s/kfpoos",
+        "points": 11,
+        "comments": 0,
+        "created_at": "2026-11-18T14:00:42.222000-06:00",
+        "origin": {
+          "name": "Lobsters",
+          "reference_points": 10,
+          "min_points": 10,
+          "points_label": "Punkte"
+        }
+      },
+      "repository_url": "https://github.com/pypi/warehouse",
+      "project_url": "https://blog.pypi.org/posts/2026-11-18-stricter-checks-for-uploaded-sdists/",
+      "description": "The Python Package Index",
+      "language": "Python",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "package-registry",
+        "package-repository",
+        "pypi",
+        "pypi-source",
+        "python"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf blog.pypi.org. Repo und Story teilen „pypi“.",
+        "11 Punkte auf Lobsters, das 1,1-Fache der Schwelle von 10."
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "https://mastodon.social/@ronb1964/117645529004258497",
+        "title": "TuxTalk 0.24 is out. Click into the middle of a sentence and dictate, and it fits in: no capital, no period stuck in fro",
+        "url": "",
+        "discussion_url": "https://mastodon.social/@ronb1964/117645529004258497",
+        "points": 2,
+        "comments": 0,
+        "created_at": "2026-11-19T22:45:11+00:00",
+        "origin": {
+          "name": "Mastodon #foss",
+          "reference_points": 5,
+          "min_points": 0,
+          "points_label": "Reaktionen"
+        }
+      },
+      "repository_url": "https://github.com/ronb1964/TuxTalk",
+      "project_url": "https://github.com/ronb1964/TuxTalk",
+      "description": "Free push-to-talk voice dictation for Linux. Hold a key, talk, let go. Works on Wayland and X11, runs offline with Parakeet or Whisper, and fixes \"no wait\" slips with an optional local AI.",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "accessibility",
+        "appimage",
+        "dictation",
+        "gnome",
+        "gtk",
+        "hotkey",
+        "kde",
+        "linux",
+        "open-source",
+        "parakeet",
+        "privacy",
+        "productivity",
+        "push-to-talk",
+        "python",
+        "speech-recognition",
+        "speech-to-text",
+        "voice-dictation",
+        "voice-typing",
+        "wayland",
+        "whisper"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden im ersten Beitrag. Repo und Story teilen „tuxtalk“.",
+        "2 Reaktionen auf Mastodon #foss, das 0,4-Fache der Bezugsgröße von 5. Testweise ohne Schwelle.",
+        "Beschreibung: AI-Begriffe „ai“",
+        "README: 30-mal AI-Begriffe („claude“, „anthropic“, „ai“, „huggingface“ …)"
+      ],
+      "found_in_post": true
+    },
+    {
+      "story": {
+        "id": "https://mastodon.social/@CuratedHackerNews/117623677600845420",
+        "title": "Dffy: A fast terminal-native Git diff viewer, written in Rust https:// github.com/amalucelli/dffy # github # rust",
+        "url": "",
+        "discussion_url": "https://mastodon.social/@CuratedHackerNews/117623677600845420",
+        "points": 1,
+        "comments": 0,
+        "created_at": "2026-11-16T02:08:05+00:00",
+        "origin": {
+          "name": "Mastodon #rust",
+          "reference_points": 5,
+          "min_points": 0,
+          "points_label": "Reaktionen"
+        }
+      },
+      "repository_url": "https://github.com/amalucelli/dffy",
+      "project_url": "https://github.com/amalucelli/dffy",
+      "description": "A fast terminal diff viewer and code review tool for git, with the coding agent you already use",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ai-agents",
+        "claude-code",
+        "cli",
+        "code-review",
+        "codex",
+        "diff",
+        "diff-viewer",
+        "difftool",
+        "git",
+        "github",
+        "mcp",
+        "pager",
+        "rust",
+        "terminal",
+        "tui"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden im ersten Beitrag. Repo und Story teilen „amalucelli“, „dffy“.",
+        "1 Reaktionen auf Mastodon #rust, das 0,2-Fache der Bezugsgröße von 5. Testweise ohne Schwelle.",
+        "Topics: AI-Begriffe „ai agent“, „claude“, „codex“, „mcp“",
+        "Beschreibung: AI-Begriffe „coding agent“",
+        "README: 61-mal AI-Begriffe („agent“, „mcp“, „coding agent“, „claude“ …)"
+      ],
+      "found_in_post": true
+    },
+    {
+      "story": {
+        "id": "https://mastodon.social/@CuratedHackerNews/117659126032426675",
+        "title": "Fast-Anything: Don't rewrite it in Rust. Rewrite the 5% that's slow https:// github.com/EL4CTEO/fast-anythi ng # github ",
+        "url": "",
+        "discussion_url": "https://mastodon.social/@CuratedHackerNews/117659126032426675",
+        "points": 0,
+        "comments": 0,
+        "created_at": "2026-11-22T08:23:05+00:00",
+        "origin": {
+          "name": "Mastodon #rust",
+          "reference_points": 5,
+          "min_points": 0,
+          "points_label": "Reaktionen"
+        }
+      },
+      "repository_url": "https://github.com/EL4CTEO/fast-anything",
+      "project_url": "https://github.com/EL4CTEO/fast-anything",
+      "description": "Don't rewrite it in Rust. Rewrite the 5% that's slow: profile Python, Node or Ruby apps, port the hot functions with your coding agent, prove they behave the same.",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude-code",
+        "claude-code-plugin",
+        "codex",
+        "developer-tools",
+        "ffi",
+        "mcp",
+        "mcp-server",
+        "napi-rs",
+        "nodejs",
+        "optimization",
+        "performance",
+        "profiler",
+        "pyo3",
+        "python",
+        "rewrite-it-in-rust",
+        "ruby",
+        "rust",
+        "typescript"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden im ersten Beitrag. Repo und Story teilen „anything“, „el4cteo“, „fast“.",
+        "0 Reaktionen auf Mastodon #rust, das 0,0-Fache der Bezugsgröße von 5. Testweise ohne Schwelle.",
+        "Topics: AI-Begriffe „agent skill“, „ai agent“, „claude“, „codex“ …",
+        "Beschreibung: AI-Begriffe „coding agent“",
+        "README: 22-mal AI-Begriffe („claude“, „mcp“, „coding agent“, „agent“ …)"
+      ],
+      "found_in_post": true
+    }
+  ]
+}

@@ -1,0 +1,230 @@
+{
+  "format_version": 1,
+  "day": "2026-11-23",
+  "projects": [
+    {
+      "story": {
+        "id": "50607261",
+        "title": "XNU Linux: Full OS X GUI Userspace on Linux",
+        "url": "https://github.com/AFK-surf/xnulinux",
+        "points": 374,
+        "comments": 171,
+        "created_at": "2026-11-23T03:49:24+00:00"
+      },
+      "repository_url": "https://github.com/AFK-surf/xnulinux",
+      "project_url": "https://github.com/AFK-surf/xnulinux",
+      "description": "XNU as a loadable kernel module inside Linux (macOS personality for arm64 Linux)",
+      "language": "Objective-C++",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50598441",
+        "title": "Masullo on the Riemann Hypothesis",
+        "url": "https://johncarlosbaez.wordpress.com/2026/11/22/masullo-on-the-riemann-hypothesis/",
+        "points": 242,
+        "comments": 215,
+        "created_at": "2026-11-22T10:59:56+00:00"
+      },
+      "repository_url": "https://github.com/mccorvie/riemann-masullo",
+      "project_url": "https://johncarlosbaez.wordpress.com/2026/11/22/masullo-on-the-riemann-hypothesis/",
+      "description": "Lean 4 formalization of A. M. Masullo, The Music of the Primes",
+      "language": "Lean",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf johncarlosbaez.wordpress.com. Repo und Story teilen „masullo“, „riemann“.",
+        "README: 16-mal AI-Begriffe („coding agent“, „claude“, „ai“, „codex“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50603143",
+        "title": "Assume People Are Not Interested in Your Blog Post",
+        "url": "https://danielsada.tech/blog/assume-people-are-not-interested-in-your-blog-post/",
+        "points": 220,
+        "comments": 112,
+        "created_at": "2026-11-22T19:41:30+00:00"
+      },
+      "repository_url": "https://github.com/danielsada/go-ado-pipelines-lint",
+      "project_url": "https://danielsada.tech/blog/assume-people-are-not-interested-in-your-blog-post/",
+      "description": "A Cobra-based CLI that parses and lints Azure DevOps pipeline YAML.",
+      "language": "Go",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf danielsada.tech. Repo und Story teilen „danielsada“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50596664",
+        "title": "Show HN: The Riemann Proof Handbook",
+        "url": "https://github.com/tamnd/riemann-handbook",
+        "points": 88,
+        "comments": 60,
+        "created_at": "2026-11-22T05:46:30+00:00"
+      },
+      "repository_url": "https://github.com/tamnd/riemann-handbook",
+      "project_url": "https://github.com/tamnd/riemann-handbook",
+      "description": "The Riemann Handbook: the proof of the Riemann Hypothesis in tamnd/riemann-lean, written as mathematics, as PDF and EPUB",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt."
+      ]
+    },
+    {
+      "story": {
+        "id": "50597959",
+        "title": "Muru – AI-assisted Rust server for Python apps by mod_WSGI's creator",
+        "url": "https://simonwillison.net/2026/Nov/21/muru/",
+        "points": 77,
+        "comments": 11,
+        "created_at": "2026-11-22T09:57:01+00:00"
+      },
+      "repository_url": "https://github.com/muruhq/muru",
+      "project_url": "https://simonwillison.net/2026/Nov/21/muru/",
+      "description": "Routing edge, control plane and Python runtime for WSGI and ASGI applications, with zero-downtime releases, traffic management and Python-aware process management.",
+      "language": "Rust",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "asgi",
+        "deployment",
+        "python",
+        "rust",
+        "web-server",
+        "wsgi"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf simonwillison.net. Repo und Story teilen „muru“.",
+        "README: 6-mal AI-Begriffe („ai“, „coding agent“, „mcp“, „agent“)"
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50599762",
+        "title": "Show HN: I built a game where you are an LLM's subagent",
+        "url": "https://github.com/gulivan/worker755",
+        "points": 328,
+        "comments": 79,
+        "created_at": "2026-11-22T13:56:58+00:00"
+      },
+      "repository_url": "https://github.com/gulivan/worker755",
+      "project_url": "https://github.com/gulivan/worker755",
+      "description": "A browser game where an AI manager thinks you are its subagent. Play at worker755.com",
+      "language": "TypeScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Beschreibung: AI-Begriffe „ai“, „subagent“",
+        "README: 73-mal AI-Begriffe („ai agent“, „subagent“, „llm“, „claude“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50596155",
+        "title": "Fast-Anything: Don't rewrite it in Rust. Rewrite the 5% that's slow",
+        "url": "https://github.com/EL4CTEO/fast-anything",
+        "points": 200,
+        "comments": 163,
+        "created_at": "2026-11-22T04:10:09+00:00"
+      },
+      "repository_url": "https://github.com/EL4CTEO/fast-anything",
+      "project_url": "https://github.com/EL4CTEO/fast-anything",
+      "description": "Don't rewrite it in Rust. Rewrite the 5% that's slow: profile Python, Node or Ruby apps, port the hot functions with your coding agent, prove they behave the same.",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "claude-code",
+        "claude-code-plugin",
+        "codex",
+        "developer-tools",
+        "ffi",
+        "mcp",
+        "mcp-server",
+        "napi-rs",
+        "nodejs",
+        "optimization",
+        "performance",
+        "profiler",
+        "pyo3",
+        "python",
+        "rewrite-it-in-rust",
+        "ruby",
+        "rust",
+        "typescript"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Topics: AI-Begriffe „agent skill“, „ai agent“, „claude“, „codex“ …",
+        "Beschreibung: AI-Begriffe „coding agent“",
+        "README: 22-mal AI-Begriffe („claude“, „mcp“, „coding agent“, „agent“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50604540",
+        "title": "Localcode, open source agentic coding on your Mac with one command",
+        "url": "https://github.com/mjwsolo/localcode",
+        "points": 64,
+        "comments": 17,
+        "created_at": "2026-11-22T22:18:48+00:00"
+      },
+      "repository_url": "https://github.com/mjwsolo/localcode",
+      "project_url": "https://github.com/mjwsolo/localcode",
+      "description": "Agentic coding. Local models. On your Mac.",
+      "language": "C++",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Beschreibung: AI-Begriffe „agentic“",
+        "README: 45-mal AI-Begriffe („agentic“, „openai“, „hugging face“, „gemma“ …)"
+      ]
+    }
+  ]
+}
