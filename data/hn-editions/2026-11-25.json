@@ -1,0 +1,231 @@
+{
+  "format_version": 1,
+  "day": "2026-11-25",
+  "projects": [
+    {
+      "story": {
+        "id": "50637220",
+        "title": "Matrix Multiplication is Θ(n^2.25) [pdf]",
+        "url": "https://github.com/openai/math/blob/main/preprints/The-matrix-multiplication-exponent-is-nine-fourths-November-24-2026/paper.pdf",
+        "points": 708,
+        "comments": 391,
+        "created_at": "2026-11-25T01:19:26+00:00"
+      },
+      "repository_url": "https://github.com/openai/math",
+      "project_url": "https://github.com/openai/math/blob/main/preprints/The-matrix-multiplication-exponent-is-nine-fourths-November-24-2026/paper.pdf",
+      "description": "",
+      "language": "Lean",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt."
+      ],
+      "other_stories": [
+        {
+          "id": "50632756",
+          "title": "OpenAI reveals they solved VP ≠ VNP before Anthropic",
+          "url": "https://github.com/openai/math/tree/main/preprints/VP-and-VNP-are-different-November-23-2026",
+          "points": 94,
+          "comments": 92,
+          "created_at": "2026-11-24T18:55:12+00:00"
+        }
+      ]
+    },
+    {
+      "story": {
+        "id": "50637056",
+        "title": "PenGPT: A Generative Transformer for Handwriting and Sketches",
+        "url": "https://greydanus.github.io/2026/11/12/pengpt/",
+        "points": 279,
+        "comments": 49,
+        "created_at": "2026-11-25T00:54:49+00:00"
+      },
+      "repository_url": "https://github.com/greydanus/pengpt",
+      "project_url": "https://greydanus.github.io/2026/11/12/pengpt/",
+      "description": "A small transformer that holds a pen: it writes by hand and it draws",
+      "language": "Python",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf greydanus.github.io. Repo und Story teilen „greydanus“, „pengpt“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50638478",
+        "title": "Taking over US Treasury subdomains for $3 each",
+        "url": "https://www.intruder.io/research/taking-over-us-treasury-subdomains-for-3-each",
+        "points": 110,
+        "comments": 21,
+        "created_at": "2026-11-25T04:27:55+00:00"
+      },
+      "repository_url": "https://github.com/intruder-io/autoswagger",
+      "project_url": "https://www.intruder.io/research/taking-over-us-treasury-subdomains-for-3-each",
+      "description": "Autoswagger by Intruder - detect API auth weaknesses",
+      "language": "Python",
+      "license_id": "BSD-3-Clause",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf intruder.io. Repo und Story teilen „intruder“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50633424",
+        "title": "From CUDA and Jax to TorchTPU: Lessons from a Cayley Graph Solver",
+        "url": "https://andlukyane.com/blog/cayley-graphs-and-torchtpu",
+        "points": 86,
+        "comments": 2,
+        "created_at": "2026-11-24T19:40:43+00:00"
+      },
+      "repository_url": "https://github.com/google-pytorch/torch_tpu",
+      "project_url": "https://andlukyane.com/blog/cayley-graphs-and-torchtpu",
+      "description": "",
+      "language": "Python",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf andlukyane.com. Repo und Story teilen „torchtpu“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50633922",
+        "title": "Ternary Bonsai 2.5 27B",
+        "url": "https://prismml.com/news/bonsai-2-5-27b",
+        "points": 472,
+        "comments": 148,
+        "created_at": "2026-11-24T20:08:03+00:00"
+      },
+      "repository_url": "https://github.com/PrismML-Eng/Bonsai-demo",
+      "project_url": "https://prismml.com/news/bonsai-2-5-27b",
+      "description": "Bonsai Demo",
+      "language": "Shell",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "bonsai",
+        "llamacpp",
+        "llm",
+        "mlx",
+        "prism-ml",
+        "small-models"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf prismml.com. Repo und Story teilen „bonsai“, „prismml“.",
+        "Topics: AI-Begriffe „llm“",
+        "README: 171-mal AI-Begriffe („huggingface“, „gguf“, „agentic“, „tool calling“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50629231",
+        "title": "A training engine for your local model, using your idle compute",
+        "url": "https://github.com/sous-labs/songe",
+        "points": 218,
+        "comments": 68,
+        "created_at": "2026-11-24T15:03:40+00:00"
+      },
+      "repository_url": "https://github.com/sous-labs/songe",
+      "project_url": "https://github.com/sous-labs/songe",
+      "description": "A training engine for your local model, using your idle compute",
+      "language": "Python",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "coding-agents",
+        "distillation",
+        "fine-tuning",
+        "llm",
+        "local-llm",
+        "lora",
+        "mlx"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Topics: AI-Begriffe „coding agent“, „llm“",
+        "README: 26-mal AI-Begriffe („ai“, „openai“, „agent“, „lm studio“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50638647",
+        "title": "Treasury CIO is too busy vibecoding instead of doing his job #147",
+        "url": "https://github.com/samcorcos/legatum/issues/147",
+        "points": 129,
+        "comments": 34,
+        "created_at": "2026-11-25T04:56:36+00:00"
+      },
+      "repository_url": "https://github.com/samcorcos/legatum",
+      "project_url": "https://github.com/samcorcos/legatum/issues/147",
+      "description": "",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "README: 50-mal AI-Begriffe („ai“, „coding agent“, „openai“, „chatgpt“ …)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50630294",
+        "title": "Show HN: Mason – A lightweight Postgres read-replica, built on columnar storage",
+        "url": "https://masondata.ai/",
+        "points": 95,
+        "comments": 19,
+        "created_at": "2026-11-24T16:11:52+00:00"
+      },
+      "repository_url": "https://github.com/embeddable-hq/mason-data",
+      "project_url": "https://masondata.ai/",
+      "description": "Open source postgres read-replica, powered by columnar storage",
+      "language": "TypeScript",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "analytics",
+        "business-intelligence",
+        "embedded-analytics",
+        "postgres",
+        "postgresql",
+        "postgresql-database"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf masondata.ai. Repo und Story teilen „mason“, „masondata“.",
+        "README: 53-mal AI-Begriffe („ai agent“, „agent“, „mcp“, „claude“ …)"
+      ]
+    }
+  ]
+}
