@@ -1,0 +1,222 @@
+{
+  "format_version": 1,
+  "day": "2026-11-26",
+  "projects": [
+    {
+      "story": {
+        "id": "50642086",
+        "title": "Google releases Cogentic papers on integer factorization, discrete logs and more",
+        "url": "https://github.com/google-research/google-research/tree/master/cogentic_research_papers",
+        "points": 494,
+        "comments": 357,
+        "created_at": "2026-11-25T13:33:07+00:00"
+      },
+      "repository_url": "https://github.com/google-research/google-research",
+      "project_url": "https://github.com/google-research/google-research/tree/master/cogentic_research_papers",
+      "description": "Google Research",
+      "language": "Jupyter Notebook",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ai",
+        "machine-learning",
+        "research"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Topics: AI-Begriffe „ai“"
+      ],
+      "other_stories": [
+        {
+          "id": "50651627",
+          "title": "Unconditional Integer Factorization in Subexponential Time",
+          "url": "https://github.com/google-research/google-research/tree/4a7bc8ab0bc770e71a259b7966c500496b99010a/cogentic_research_papers/integer_factorization",
+          "points": 60,
+          "comments": 5,
+          "created_at": "2026-11-26T04:59:56+00:00"
+        }
+      ]
+    },
+    {
+      "story": {
+        "id": "50648050",
+        "title": "Much shorter version of GRH Lean verification from Anthropic",
+        "url": "https://github.com/lsernau/grh-lean",
+        "points": 469,
+        "comments": 255,
+        "created_at": "2026-11-25T21:48:10+00:00"
+      },
+      "repository_url": "https://github.com/lsernau/grh-lean",
+      "project_url": "https://github.com/lsernau/grh-lean",
+      "description": "A short Lean 4 proof of the Generalized Riemann Hypothesis",
+      "language": "Lean",
+      "license_id": "Apache-2.0",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt."
+      ]
+    },
+    {
+      "story": {
+        "id": "50647161",
+        "title": "Nfs2root: A 12-year-old pre-auth remote root in the Linux kernel's NFS server",
+        "url": "https://opensec.in/blog/nfs2root-cve-2026-99362",
+        "points": 158,
+        "comments": 63,
+        "created_at": "2026-11-25T20:35:50+00:00"
+      },
+      "repository_url": "https://github.com/torvalds/linux",
+      "project_url": "https://opensec.in/blog/nfs2root-cve-2026-99362",
+      "description": "Linux kernel source tree",
+      "language": "C",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf opensec.in. Repo und Story teilen „linux“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source.",
+        "README: 8-mal AI-Begriffe („ai“, „llm“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50650892",
+        "title": "Minipg: PostgreSQL as a Single Executable",
+        "url": "https://progrium.github.io/minipg/",
+        "points": 156,
+        "comments": 24,
+        "created_at": "2026-11-26T03:00:48+00:00"
+      },
+      "repository_url": "https://github.com/progrium/minipg",
+      "project_url": "https://progrium.github.io/minipg/",
+      "description": "SQLite and PostgreSQL had a baby",
+      "language": "Zig",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf progrium.github.io. Repo und Story teilen „minipg“, „progrium“."
+      ]
+    },
+    {
+      "story": {
+        "id": "50644814",
+        "title": "Deriving Black-Scholes",
+        "url": "https://david.alvarezrosa.com/posts/deriving-black-scholes/",
+        "points": 81,
+        "comments": 52,
+        "created_at": "2026-11-25T17:18:15+00:00"
+      },
+      "repository_url": "https://github.com/david-alvarez-rosa/personal-website",
+      "project_url": "https://david.alvarezrosa.com/posts/deriving-black-scholes/",
+      "description": "My blog on C++, performance and maths. Hugo + Org-mode, self-hosted.",
+      "language": "CSS",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "blog",
+        "cpp",
+        "hugo",
+        "org-mode",
+        "ox-hugo",
+        "performance",
+        "self-hosted"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf david.alvarezrosa.com. Repo und Story teilen „david“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50648035",
+        "title": "Defang Security Incident",
+        "url": "https://defang.io/blog/post/security-incident-november-2026/",
+        "points": 74,
+        "comments": 20,
+        "created_at": "2026-11-25T21:47:16+00:00"
+      },
+      "repository_url": "https://github.com/DefangLabs/defang",
+      "project_url": "https://defang.io/blog/post/security-incident-november-2026/",
+      "description": "Defang Deploy CLI. Develop Once, Deploy Anywhere. Take your app from Docker Compose to a secure and scalable deployment on your favorite cloud in minutes.",
+      "language": "Go",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "aws",
+        "cloud",
+        "compose",
+        "deploy",
+        "deployment",
+        "digitalocean",
+        "docker",
+        "docker-compose",
+        "gcp",
+        "infrastructure-as-code"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf defang.io. Repo und Story teilen „defang“.",
+        "README: 26-mal AI-Begriffe („mcp“, „llm“, „claude“, „ai“)"
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50648365",
+        "title": "Bare Metal Qwen",
+        "url": "https://github.com/alesha-pro/llm.asm/tree/main/02-baremetal-os",
+        "points": 167,
+        "comments": 39,
+        "created_at": "2026-11-25T22:15:34+00:00"
+      },
+      "repository_url": "https://github.com/alesha-pro/llm.asm",
+      "project_url": "https://github.com/alesha-pro/llm.asm/tree/main/02-baremetal-os",
+      "description": "Qwen3-0.6B inference (12 KB), bare-metal bootable OS (22 KB), and from-scratch Mini-GPT trainer with live Braille TUI (32 KB) in 100% pure x86-64 NASM assembly. Zero C, zero libc, zero dependencies.",
+      "language": "Assembly",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "assembly",
+        "avx2",
+        "bare-metal",
+        "llm",
+        "machine-learning",
+        "nasm",
+        "osdev",
+        "qwen",
+        "transformer",
+        "x86-64"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Topics: AI-Begriffe „llm“, „qwen“",
+        "Name: AI-Begriffe „llm“",
+        "Beschreibung: AI-Begriffe „gpt“",
+        "README: 31-mal AI-Begriffe („llm“, „qwen“, „llama“, „gpt“ …)"
+      ]
+    }
+  ]
+}
