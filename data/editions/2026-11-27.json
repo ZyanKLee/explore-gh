@@ -1,0 +1,2764 @@
+{
+  "format_version": 1,
+  "day": "2026-11-27",
+  "growth_window_days": 14,
+  "stats": {
+    "assessed": 2814,
+    "excluded": 2550,
+    "ai_focused": 129
+  },
+  "sections": {
+    "main": [
+      {
+        "rank": 1,
+        "repo": "krezio/roomy",
+        "url": "https://github.com/krezio/roomy",
+        "description": "Your C: drive is full. Let's fix that. See what's eating your space in plain English and clean the safe stuff in one click.",
+        "homepage": "https://roomy.krezio.xyz",
+        "language": "C#",
+        "topics": [
+          "cleaner",
+          "disk-cleanup",
+          "dotnet",
+          "free-space",
+          "open-source",
+          "storage",
+          "windows",
+          "wpf"
+        ],
+        "stars": 814,
+        "stars_gained": 804,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7,
+          3,
+          64,
+          95,
+          119,
+          48,
+          97,
+          35,
+          11,
+          7,
+          13,
+          43,
+          148,
+          62,
+          37,
+          25
+        ],
+        "created_at": "2026-11-12T09:45:48Z",
+        "pushed_at": "2026-11-27T09:51:09Z",
+        "license": "MIT",
+        "forks": 38,
+        "active_authors": 7,
+        "score": 75.9261139689495,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 57.92611396894949,
+            "reason": "+804 Sterne in 14 Tagen bei 814 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "7 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 5 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 15 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 5 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 2.0,
+            "reason": "Besitzer wirkt an 2 anderen Projekten mit"
+          },
+          {
+            "kind": "windows",
+            "weight": -10.0,
+            "reason": "Für Windows („windows“, „wpf“)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 2,
+        "repo": "lukeed/tidy",
+        "url": "https://github.com/lukeed/tidy",
+        "description": "the fast & easy way to keep source files tidy",
+        "homepage": "https://tidy.lukeed.com",
+        "language": "Rust",
+        "topics": [],
+        "stars": 167,
+        "stars_gained": 165,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          36,
+          49,
+          63,
+          13
+        ],
+        "created_at": "2026-11-01T21:39:57Z",
+        "pushed_at": "2026-11-26T21:02:42Z",
+        "license": "MIT",
+        "forks": 4,
+        "active_authors": 1,
+        "score": 67.21649546072615,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 44.21649546072615,
+            "reason": "+165 Sterne in 14 Tagen bei 167 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 4 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 25 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 13 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 5.0,
+            "reason": "Besitzer wirkt an 6 anderen Projekten mit"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 3,
+        "repo": "t21dev/kitab",
+        "url": "https://github.com/t21dev/kitab",
+        "description": "A desktop reader for PDF, books and Markdown, written in Rust and drawn on the GPU with GPUI. MuPDF renders the pages. There is no browser engine inside.",
+        "homepage": "https://kitab.t21.dev",
+        "language": "Rust",
+        "topics": [
+          "epub",
+          "epub-reader",
+          "gpui",
+          "linux",
+          "macos",
+          "markdown",
+          "markdown-editor",
+          "markdown-viewer",
+          "pdf",
+          "pdf-viewer",
+          "rust",
+          "windows"
+        ],
+        "stars": 167,
+        "stars_gained": 103,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          26,
+          8,
+          30,
+          31,
+          6,
+          6,
+          11,
+          6,
+          2,
+          3,
+          2,
+          1,
+          4,
+          2,
+          3,
+          21,
+          5
+        ],
+        "created_at": "2026-11-06T16:48:27Z",
+        "pushed_at": "2026-11-27T10:51:44Z",
+        "license": "AGPL-3.0",
+        "forks": 8,
+        "active_authors": 1,
+        "score": 62.086084879809675,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 35.93608487980968,
+            "reason": "+103 Sterne in 14 Tagen bei 167 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 10 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 20 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 4.0,
+            "reason": "Besitzerkonto besteht seit 1 Jahr"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -2.85,
+            "reason": "19% der letzten Commits mit AI-Beteiligung (19 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "linux",
+            "weight": 20.0,
+            "reason": "Für Linux („linux“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 17-mal AI-Begriffe („ai“, „ai agent“, „claude“, „codex“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 4,
+        "repo": "Keee7/OBS-for-Android",
+        "url": "https://github.com/Keee7/OBS-for-Android",
+        "description": "Community Android port of OBS Studio with MediaCodec H.264/HEVC, GPU screen capture and WebView browser sources.",
+        "homepage": "https://keee7.github.io/OBS-for-Android/",
+        "language": "C",
+        "topics": [],
+        "stars": 105,
+        "stars_gained": 104,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          26,
+          22,
+          11,
+          9,
+          4,
+          3,
+          18,
+          8
+        ],
+        "created_at": "2026-11-05T14:35:40Z",
+        "pushed_at": "2026-11-27T10:47:45Z",
+        "license": "GPL-2.0",
+        "forks": 5,
+        "active_authors": 2,
+        "score": 58.244387795236214,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 40.244387795236214,
+            "reason": "+104 Sterne in 14 Tagen bei 105 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 21 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 3 Jahren"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 5,
+        "repo": "Skynizz/URTI",
+        "url": "https://github.com/Skynizz/URTI",
+        "description": "Real-time ray-traced reflections injected into DirectX 12 games (ReShade add-on, DXR 1.1), shown in Red Dead Redemption 2",
+        "homepage": null,
+        "language": "C++",
+        "topics": [
+          "directx12",
+          "dxr",
+          "graphics-programming",
+          "hlsl",
+          "ray-tracing",
+          "real-time-rendering",
+          "reflections",
+          "reshade",
+          "reshade-addon"
+        ],
+        "stars": 108,
+        "stars_gained": 108,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          12,
+          28,
+          53,
+          13,
+          2
+        ],
+        "created_at": "2026-11-10T00:29:28Z",
+        "pushed_at": "2026-11-24T13:09:42Z",
+        "license": "MIT",
+        "forks": 1,
+        "active_authors": 1,
+        "score": 55.168475109739,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 40.668475109739,
+            "reason": "+108 Sterne in 14 Tagen bei 108 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 5 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 17 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 6.5,
+            "reason": "Besitzerkonto besteht seit 2 Jahren"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 6,
+        "repo": "MyOwnDataCenter/Server",
+        "url": "https://github.com/MyOwnDataCenter/Server",
+        "description": "",
+        "homepage": null,
+        "language": "JavaScript",
+        "topics": [],
+        "stars": 241,
+        "stars_gained": 238,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          0,
+          14,
+          37,
+          72,
+          22,
+          12,
+          13,
+          11,
+          6,
+          31,
+          13,
+          0,
+          3,
+          2,
+          2
+        ],
+        "created_at": "2026-11-12T17:50:12Z",
+        "pushed_at": "2026-11-27T11:33:26Z",
+        "license": "MIT",
+        "forks": 15,
+        "active_authors": 3,
+        "score": 54.5831561947917,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 47.383156194791695,
+            "reason": "+238 Sterne in 14 Tagen bei 241 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "3 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 6 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 14 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 0.5,
+            "reason": "Besitzerkonto besteht seit 2 Monaten"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -6.3,
+            "reason": "42% der letzten Commits mit AI-Beteiligung (42 von 100)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 7,
+        "repo": "TheOrcDev/orcanva",
+        "url": "https://github.com/TheOrcDev/orcanva",
+        "description": "Orcanva is a free, open-source Canva alternative for YouTube thumbnails and social images.",
+        "homepage": "https://orcanva.app",
+        "language": "TypeScript",
+        "topics": [],
+        "stars": 144,
+        "stars_gained": 66,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          57,
+          10,
+          3,
+          3,
+          2,
+          0,
+          1,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          18,
+          5,
+          20,
+          5,
+          11,
+          7
+        ],
+        "created_at": "2026-10-30T09:11:52Z",
+        "pushed_at": "2026-11-22T14:03:15Z",
+        "license": "MIT",
+        "forks": 19,
+        "active_authors": 4,
+        "score": 50.513810031472524,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 30.513810031472524,
+            "reason": "+66 Sterne in 14 Tagen bei 144 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "4 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 28 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 12 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 5.0,
+            "reason": "Besitzer wirkt an 16 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .agents, .claude, .cursor, AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 8,
+        "repo": "kolbicz/WQFiles",
+        "url": "https://github.com/kolbicz/WQFiles",
+        "description": "File browser, app data manager and cache cleaner for iOS 26 and 27 (worse_query, no jailbreak)",
+        "homepage": null,
+        "language": "Objective-C",
+        "topics": [],
+        "stars": 1345,
+        "stars_gained": 577,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          326,
+          245,
+          96,
+          99,
+          2,
+          58,
+          62,
+          126,
+          64,
+          50,
+          33,
+          40,
+          34,
+          30,
+          29,
+          20,
+          9,
+          5,
+          17
+        ],
+        "created_at": "2026-11-09T13:43:40Z",
+        "pushed_at": "2026-11-26T11:23:07Z",
+        "license": "GPL-3.0",
+        "forks": 96,
+        "active_authors": 3,
+        "score": 46.29685439996864,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 45.696854399968636,
+            "reason": "+577 Sterne in 14 Tagen bei 1.345 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "3 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 42 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 17 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 9 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 2.0,
+            "reason": "Besitzer wirkt an 2 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -14.399999999999999,
+            "reason": "96% der letzten Commits mit AI-Beteiligung (96 von 100)"
+          },
+          {
+            "kind": "apple",
+            "weight": -10.0,
+            "reason": "Für macOS oder iOS („ios“)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 9,
+        "repo": "Zenith-3D-Team/Zenith",
+        "url": "https://github.com/Zenith-3D-Team/Zenith",
+        "description": "Zenith is a 3D visualizer for Factorio, not it's own game and runs exclusively alongside Factorio. release video: https://youtu.be/WfOE97zCZLE?si=ZiUjPkUyOOLtnf3l",
+        "homepage": "https://discord.gg/PTzuYj4cPE",
+        "language": "GDScript",
+        "topics": [],
+        "stars": 269,
+        "stars_gained": 66,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          8,
+          19,
+          23,
+          62,
+          50,
+          13,
+          9,
+          4,
+          3,
+          5,
+          1,
+          4,
+          0,
+          1,
+          0,
+          4,
+          20,
+          9,
+          4,
+          5,
+          2,
+          0,
+          0,
+          1,
+          1,
+          0,
+          5,
+          8,
+          7
+        ],
+        "created_at": "2026-10-29T17:03:12Z",
+        "pushed_at": "2026-11-25T06:28:55Z",
+        "license": "GPL-3.0",
+        "forks": 9,
+        "active_authors": 1,
+        "score": 35.20821114420907,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 27.208211144209077,
+            "reason": "+66 Sterne in 14 Tagen bei 269 insgesamt"
+          },
+          {
+            "kind": "continuity",
+            "weight": 5.0,
+            "reason": "Commits in 5 verschiedenen Wochen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 14 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 28 Tage alt"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -5.0,
+            "reason": "33% der letzten Commits mit AI-Beteiligung (3 von 9)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 10-mal AI-Begriffe („ai“, „coding agent“, „anthropic“, „claude“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 10,
+        "repo": "gadgetcue/MacDock",
+        "url": "https://github.com/gadgetcue/MacDock",
+        "description": "A macOS-style desktop shell for Windows 11 (dock, menu bar, Mission Control, Launchpad, Spotlight) in C#/WinForms. Builds with the compiler that ships with Windows.",
+        "homepage": null,
+        "language": "C#",
+        "topics": [],
+        "stars": 175,
+        "stars_gained": 67,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          15,
+          27,
+          26,
+          12,
+          12,
+          7,
+          5,
+          4,
+          5,
+          4,
+          1,
+          4,
+          2,
+          5,
+          8,
+          3,
+          3,
+          2,
+          3,
+          2,
+          1,
+          24
+        ],
+        "created_at": "2026-11-06T16:04:43Z",
+        "pushed_at": "2026-11-26T07:14:54Z",
+        "license": null,
+        "forks": 14,
+        "active_authors": 1,
+        "score": 7.082395485789823,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 29.55966821306255,
+            "reason": "+67 Sterne in 14 Tagen bei 175 insgesamt"
+          },
+          {
+            "kind": "continuity",
+            "weight": 5.0,
+            "reason": "Commits in 4 verschiedenen Wochen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 13 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 20 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 0.25,
+            "reason": "Besitzerkonto besteht seit 1 Monat"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -12.727272727272728,
+            "reason": "85% der letzten Commits mit AI-Beteiligung (28 von 33)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: CLAUDE.md"
+          },
+          {
+            "kind": "windows",
+            "weight": -10.0,
+            "reason": "Für Windows („windows“)"
+          },
+          {
+            "kind": "apple",
+            "weight": -10.0,
+            "reason": "Für macOS oder iOS („macos“)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 11,
+        "repo": "EstebanPdN/forge.store",
+        "url": "https://github.com/EstebanPdN/forge.store",
+        "description": "Native Nintendo 3DS homebrew store for Esteban’s Forge ports and community apps.",
+        "homepage": null,
+        "language": "C",
+        "topics": [],
+        "stars": 109,
+        "stars_gained": 109,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          75,
+          4,
+          8,
+          3,
+          2,
+          3,
+          4,
+          2,
+          3,
+          3,
+          2
+        ],
+        "created_at": "2026-11-12T00:15:50Z",
+        "pushed_at": "2026-11-27T04:02:59Z",
+        "license": "NOASSERTION",
+        "forks": 2,
+        "active_authors": 1,
+        "score": -2.5665385343382088,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 40.748529958812476,
+            "reason": "+109 Sterne in 14 Tagen bei 109 insgesamt"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 15 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 6 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 1.0,
+            "reason": "Besitzer wirkt an 1 anderen Projekt mit"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -4.315068493150685,
+            "reason": "29% der letzten Commits mit AI-Beteiligung (21 von 73)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
+          },
+          {
+            "kind": "console_emulator",
+            "weight": -50.0,
+            "reason": "Emulator für Spielkonsolen („port“, „nintendo“, „3ds“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 10-mal AI-Begriffe („openai“, „codex“, „claude“, „ai“)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 12,
+        "repo": "heydemoura/EglantinePS5",
+        "url": "https://github.com/heydemoura/EglantinePS5",
+        "description": "VERY experimental Nintendo Switch 2 emulator port for PS5",
+        "homepage": null,
+        "language": "C++",
+        "topics": [],
+        "stars": 456,
+        "stars_gained": 101,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          60,
+          34,
+          37,
+          26,
+          24,
+          33,
+          32,
+          19,
+          16,
+          29,
+          8,
+          23,
+          10,
+          1,
+          8,
+          13,
+          8,
+          5,
+          12,
+          7,
+          7,
+          6,
+          11,
+          5,
+          7,
+          6,
+          4,
+          2
+        ],
+        "created_at": "2026-10-30T21:11:08Z",
+        "pushed_at": "2026-11-25T11:24:08Z",
+        "license": "GPL-3.0",
+        "forks": 157,
+        "active_authors": 8,
+        "score": -7.57387772868152,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 29.47612227131848,
+            "reason": "+101 Sterne in 14 Tagen bei 456 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 8.0,
+            "reason": "8 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 27 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 13 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 5.0,
+            "reason": "Besitzer wirkt an 127 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -13.05,
+            "reason": "87% der letzten Commits mit AI-Beteiligung (87 von 100)"
+          },
+          {
+            "kind": "console_emulator",
+            "weight": -50.0,
+            "reason": "Emulator für Spielkonsolen („emulator“, „port“, „nintendo“, „switch 2“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      }
+    ],
+    "ai": [
+      {
+        "rank": 1,
+        "repo": "yyfz/Pi4",
+        "url": "https://github.com/yyfz/Pi4",
+        "description": "π^4: A Foundation Model for 4D Scene Geometry and Motion",
+        "homepage": null,
+        "language": "Python",
+        "topics": [],
+        "stars": 511,
+        "stars_gained": 511,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          78,
+          39,
+          157,
+          88,
+          29,
+          28,
+          36,
+          28,
+          17,
+          7,
+          3
+        ],
+        "created_at": "2026-11-12T11:09:33Z",
+        "pushed_at": "2026-11-27T07:30:57Z",
+        "license": "NOASSERTION",
+        "forks": 22,
+        "active_authors": 2,
+        "score": 72.16841800269425,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 54.16841800269425,
+            "reason": "+511 Sterne in 14 Tagen bei 511 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 15 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 5 Jahren"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „foundation model“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 9-mal AI-Begriffe („foundation model“, „huggingface“, „hugging face“)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 2,
+        "repo": "AgenticOrgLab/ExecOrchestra",
+        "url": "https://github.com/AgenticOrgLab/ExecOrchestra",
+        "description": "Heterogeneous Resource Routing and Orchestration",
+        "homepage": null,
+        "language": "Python",
+        "topics": [],
+        "stars": 1144,
+        "stars_gained": 1270,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          106,
+          0,
+          106,
+          106,
+          109,
+          104,
+          106,
+          107,
+          108,
+          106,
+          108,
+          103,
+          101,
+          0
+        ],
+        "created_at": "2026-11-12T12:19:20Z",
+        "pushed_at": "2026-11-27T11:22:56Z",
+        "license": null,
+        "forks": 18,
+        "active_authors": 1,
+        "score": 71.07607441911914,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 62.07607441911914,
+            "reason": "+1.270 Sterne in 14 Tagen bei 1.144 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 12 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 14 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 1.0,
+            "reason": "Besitzerkonto besteht seit 4 Monaten"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 20-mal AI-Begriffe („agent“, „huggingface“, „hugging face“, „llm“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: AI als Thema"
+          }
+        ]
+      },
+      {
+        "rank": 3,
+        "repo": "jackson-cmd/zeus-options-terminal",
+        "url": "https://github.com/jackson-cmd/zeus-options-terminal",
+        "description": "Self-hosted, all-in-one options trading terminal: live positions & Greeks, P/L and risk, exit alerts, paper trading, stock screener, bilingual news (Finviz · WSJ · MarketWatch · Benzinga), SEC filings, trade journal, MCP for AI agents. tastytrade, Alpaca, Public or a CSV. 宙斯期权终端：本地部署的美股期权交易终端",
+        "homepage": "https://jackson-cmd.github.io/zeus-options-terminal/",
+        "language": "Python",
+        "topics": [
+          "benzinga",
+          "fastapi",
+          "financial-news",
+          "finviz",
+          "greeks",
+          "implied-volatility",
+          "options",
+          "options-trading",
+          "portfolio-tracker",
+          "python",
+          "risk-management",
+          "self-hosted",
+          "stock-screener",
+          "tastytrade",
+          "trading-journal",
+          "trading-terminal",
+          "alpaca",
+          "mcp-server",
+          "paper-trading",
+          "trading"
+        ],
+        "stars": 350,
+        "stars_gained": 305,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          22,
+          22,
+          20,
+          17,
+          17,
+          10,
+          15,
+          23,
+          19,
+          27,
+          36,
+          20,
+          13,
+          25,
+          33,
+          30
+        ],
+        "created_at": "2026-11-12T07:16:02Z",
+        "pushed_at": "2026-11-26T18:37:05Z",
+        "license": "NOASSERTION",
+        "forks": 36,
+        "active_authors": 2,
+        "score": 71.03402150890403,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 48.03402150890403,
+            "reason": "+305 Sterne in 14 Tagen bei 350 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 15 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 6 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 5.0,
+            "reason": "Besitzer wirkt an 9 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „mcp“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „mcp“, „ai agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 28-mal AI-Begriffe („mcp“, „ai“, „ai agent“, „agent“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 4,
+        "repo": "paul-nameless/agweb",
+        "url": "https://github.com/paul-nameless/agweb",
+        "description": " A browser built for agents - no focus stealing, a tiny footprint, all tabs in one view.",
+        "homepage": null,
+        "language": "Swift",
+        "topics": [],
+        "stars": 299,
+        "stars_gained": 299,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          195,
+          15,
+          32,
+          14,
+          15,
+          3,
+          6,
+          4,
+          0,
+          1,
+          4,
+          1,
+          5,
+          4
+        ],
+        "created_at": "2026-11-11T17:08:07Z",
+        "pushed_at": "2026-11-27T10:53:42Z",
+        "license": "MIT",
+        "forks": 10,
+        "active_authors": 2,
+        "score": 67.51342376648859,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 49.51342376648859,
+            "reason": "+299 Sterne in 14 Tagen bei 299 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 15 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 8 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 3.0,
+            "reason": "Besitzer wirkt an 3 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: CLAUDE.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 21-mal AI-Begriffe („coding agent“, „agent“, „agent skill“, „claude“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 5,
+        "repo": "molly554/whiteboard-ai-tutor",
+        "url": "https://github.com/molly554/whiteboard-ai-tutor",
+        "description": "Open-source whiteboard AI tutor with animated lessons and interactive playback. Compare Claude, Gemini & DeepSeek across 288 generation runs and 64 blind-reviewed boards.",
+        "homepage": "https://molly554.github.io/whiteboard-ai-tutor/",
+        "language": "HTML",
+        "topics": [
+          "ai-teacher",
+          "ai-tutor",
+          "ai-tutoring",
+          "ai-whiteboard",
+          "claude",
+          "deepseek",
+          "edtech",
+          "education",
+          "gemini",
+          "llm",
+          "llm-benchmark",
+          "math-tutor",
+          "whiteboard",
+          "ai-teaching",
+          "educational-ai",
+          "intelligent-tutoring-systems",
+          "teaching-tools",
+          "visual-learning",
+          "whiteboard-animation"
+        ],
+        "stars": 575,
+        "stars_gained": 501,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          35,
+          37,
+          2,
+          44,
+          52,
+          38,
+          0,
+          17,
+          78,
+          111,
+          76,
+          56,
+          7,
+          5,
+          9,
+          1,
+          7
+        ],
+        "created_at": "2026-11-11T11:22:21Z",
+        "pushed_at": "2026-11-27T02:20:11Z",
+        "license": "MIT",
+        "forks": 24,
+        "active_authors": 1,
+        "score": 66.1996574081929,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 52.199657408192905,
+            "reason": "+501 Sterne in 14 Tagen bei 575 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 5 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 16 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 2.0,
+            "reason": "Besitzerkonto besteht seit 8 Monaten"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 4.0,
+            "reason": "Besitzer wirkt an 4 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „ai“, „claude“, „deepseek“, „llm“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Name: AI-Begriffe „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“, „claude“, „deepseek“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 59-mal AI-Begriffe („ai“, „llm“, „claude“, „deepseek“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 6,
+        "repo": "jasonsutter87/sketchcraft",
+        "url": "https://github.com/jasonsutter87/sketchcraft",
+        "description": "Draw an outline. Pull it up. Open-source push/pull 3D modeler in Rust: desktop app, CLI and MCP server.",
+        "homepage": "https://trysketchcraft.com",
+        "language": "Rust",
+        "topics": [
+          "3d-modeling",
+          "architecture",
+          "cad",
+          "mcp",
+          "rust",
+          "tauri"
+        ],
+        "stars": 204,
+        "stars_gained": 204,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          10,
+          38,
+          18,
+          7,
+          29,
+          8,
+          7,
+          17,
+          7,
+          10,
+          28,
+          23,
+          1
+        ],
+        "created_at": "2026-11-13T07:39:18Z",
+        "pushed_at": "2026-11-27T08:45:14Z",
+        "license": "MIT",
+        "forks": 21,
+        "active_authors": 1,
+        "score": 66.19260334851798,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 46.19260334851798,
+            "reason": "+204 Sterne in 14 Tagen bei 204 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 11 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 14 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 11 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 5.0,
+            "reason": "Besitzer wirkt an 6 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .claude"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „mcp“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „mcp“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 16-mal AI-Begriffe („ai“, „ai agent“, „mcp“, „agent“)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 7,
+        "repo": "electronicarts/perf-gs",
+        "url": "https://github.com/electronicarts/perf-gs",
+        "description": "Fast. Lean. Cross-Vendor. Slang-based Gaussian splatting trainer: built for efficient and extensible differentiable rendering.",
+        "homepage": null,
+        "language": "Python",
+        "topics": [],
+        "stars": 195,
+        "stars_gained": 195,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          34,
+          155,
+          6
+        ],
+        "created_at": "2026-11-11T10:00:10Z",
+        "pushed_at": "2026-11-26T18:17:18Z",
+        "license": "BSD-3-Clause",
+        "forks": 11,
+        "active_authors": 1,
+        "score": 58.80069222725036,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 45.80069222725036,
+            "reason": "+195 Sterne in 14 Tagen bei 195 insgesamt"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 16 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 14 Jahren"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: AI als Thema"
+          }
+        ]
+      },
+      {
+        "rank": 8,
+        "repo": "AIDotNet/Octopus",
+        "url": "https://github.com/AIDotNet/Octopus",
+        "description": "Cross-Platform Terminal & AI Coding Agent Workbench  Organize terminals, 60+ AI coding agents, files, Git worktrees, SSH tunnels, and remote devices by project — compiled natively with NativeAOT and protected with end-to-end encryption.",
+        "homepage": "https://octoterm.si/",
+        "language": "C#",
+        "topics": [],
+        "stars": 87,
+        "stars_gained": 78,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          8,
+          1,
+          0,
+          2,
+          0,
+          3,
+          1,
+          1,
+          1,
+          0,
+          3,
+          19,
+          8,
+          10,
+          26,
+          4
+        ],
+        "created_at": "2026-11-12T03:14:28Z",
+        "pushed_at": "2026-11-27T10:32:36Z",
+        "license": null,
+        "forks": 16,
+        "active_authors": 2,
+        "score": 52.136511559644816,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 36.83651155964482,
+            "reason": "+78 Sterne in 14 Tagen bei 87 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 12 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 15 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 8.0,
+            "reason": "Besitzerkonto besteht seit 2 Jahren"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -2.6999999999999997,
+            "reason": "18% der letzten Commits mit AI-Beteiligung (18 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .agents, .claude"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“, „coding agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 49-mal AI-Begriffe („ai“, „coding agent“, „agent“, „subagent“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 9,
+        "repo": "woodfishhhh/obituary",
+        "url": "https://github.com/woodfishhhh/obituary",
+        "description": "Obituary — the trash bin for AI agents. Files AI agents leave behind expire on their own; anything they delete stays restorable for 7 days.",
+        "homepage": "obituary.woodfish.site",
+        "language": "Go",
+        "topics": [
+          "agent",
+          "agentic",
+          "ai",
+          "cli",
+          "cli-tool",
+          "tools"
+        ],
+        "stars": 113,
+        "stars_gained": 105,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          5,
+          0,
+          2,
+          7,
+          22,
+          17,
+          5,
+          16,
+          6,
+          6,
+          5,
+          8,
+          4,
+          4,
+          1,
+          2
+        ],
+        "created_at": "2026-11-11T03:11:20Z",
+        "pushed_at": "2026-11-27T11:24:47Z",
+        "license": "MIT",
+        "forks": 10,
+        "active_authors": 1,
+        "score": 51.695188517504626,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 39.695188517504626,
+            "reason": "+105 Sterne in 14 Tagen bei 113 insgesamt"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 16 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 7.0,
+            "reason": "Besitzerkonto besteht seit 2 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 5.0,
+            "reason": "Besitzer wirkt an 9 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „agent“, „agentic“, „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 61-mal AI-Begriffe („ai“, „ai agent“, „agent“, „claude“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 10,
+        "repo": "lalalune/vibestack",
+        "url": "https://github.com/lalalune/vibestack",
+        "description": "Ship apps. Not slop.",
+        "homepage": "https://vibestack.fun",
+        "language": "TypeScript",
+        "topics": [
+          "formal-verification",
+          "fullstack-development",
+          "software-factories",
+          "software-factory",
+          "software-factory-e2e",
+          "typescript",
+          "vibecode",
+          "vibecoded-from-scratch"
+        ],
+        "stars": 87,
+        "stars_gained": 77,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          5,
+          5,
+          3,
+          1,
+          3,
+          8,
+          8,
+          2,
+          1,
+          0,
+          7,
+          13,
+          12,
+          9,
+          9,
+          1
+        ],
+        "created_at": "2026-11-12T23:28:11Z",
+        "pushed_at": "2026-11-27T04:28:19Z",
+        "license": "MIT",
+        "forks": 29,
+        "active_authors": 1,
+        "score": 51.612539074463015,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 36.612539074463015,
+            "reason": "+77 Sterne in 14 Tagen bei 87 insgesamt"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 14 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 10 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 5.0,
+            "reason": "Besitzer wirkt an 59 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .agents, AGENTS.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 20-mal AI-Begriffe („agent“, „chatgpt“, „codex“, „claude“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: AI als Thema"
+          }
+        ]
+      },
+      {
+        "rank": 11,
+        "repo": "bashovski/reflektor",
+        "url": "https://github.com/bashovski/reflektor",
+        "description": "Code review on steroids.",
+        "homepage": "https://reflektor.dev",
+        "language": "TypeScript",
+        "topics": [
+          "code-quality",
+          "code-review",
+          "pr-review",
+          "skills"
+        ],
+        "stars": 155,
+        "stars_gained": 155,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          64,
+          35,
+          13,
+          6,
+          17,
+          8,
+          3,
+          0,
+          2,
+          1,
+          3
+        ],
+        "created_at": "2026-11-06T23:18:32Z",
+        "pushed_at": "2026-11-25T15:12:04Z",
+        "license": "MIT",
+        "forks": 6,
+        "active_authors": 2,
+        "score": 51.15663396340583,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 43.80663396340583,
+            "reason": "+155 Sterne in 14 Tagen bei 155 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 20 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 7 Jahren"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -7.65,
+            "reason": "51% der letzten Commits mit AI-Beteiligung (51 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .claude"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 26-mal AI-Begriffe („coding agent“, „agent“, „claude“, „codex“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: AI als Thema"
+          }
+        ]
+      },
+      {
+        "rank": 12,
+        "repo": "cubeplexai/cubepod",
+        "url": "https://github.com/cubeplexai/cubepod",
+        "description": "CubePod — Persistent Writable RootFS MicroVM execution platform for AI Agents",
+        "homepage": "https://cubepod.dev",
+        "language": "Go",
+        "topics": [
+          "agent-sandbox",
+          "cloud-hypervisor",
+          "cloud-native",
+          "daytona-alternative",
+          "e2b",
+          "e2b-alternative",
+          "firecracker-sandbox",
+          "k8s",
+          "kubernetes",
+          "sandbox"
+        ],
+        "stars": 82,
+        "stars_gained": 78,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          2,
+          1,
+          0,
+          1,
+          3,
+          6,
+          0,
+          0,
+          0,
+          49,
+          1,
+          4,
+          8,
+          4,
+          0,
+          0,
+          2
+        ],
+        "created_at": "2026-11-11T02:38:51Z",
+        "pushed_at": "2026-11-27T05:54:00Z",
+        "license": "Apache-2.0",
+        "forks": 8,
+        "active_authors": 4,
+        "score": 49.12463608262018,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 37.37463608262018,
+            "reason": "+78 Sterne in 14 Tagen bei 82 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "4 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 3 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 16 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 1.75,
+            "reason": "Besitzerkonto besteht seit 7 Monaten"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: .agents, AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai agent“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 34-mal AI-Begriffe („llm“, „ai agent“, „agent“, „mcp“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 13,
+        "repo": "DosukaSOL/PushFPS",
+        "url": "https://github.com/DosukaSOL/PushFPS",
+        "description": "PushFPS: push 30 FPS console games to 60 or 120 FPS. Real-time AI frame generation for any capture card on Windows, with NVIDIA RTX and AMD support. Free and open source, based on Veyra.",
+        "homepage": null,
+        "language": "C++",
+        "topics": [],
+        "stars": 324,
+        "stars_gained": 323,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          3,
+          40,
+          107,
+          4,
+          1,
+          33,
+          10,
+          18,
+          14,
+          23,
+          29,
+          15,
+          13,
+          13
+        ],
+        "created_at": "2026-11-12T21:39:43Z",
+        "pushed_at": "2026-11-27T08:26:08Z",
+        "license": "GPL-3.0",
+        "forks": 37,
+        "active_authors": 2,
+        "score": 39.64529826098945,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 50.14529826098945,
+            "reason": "+323 Sterne in 14 Tagen bei 324 insgesamt"
+          },
+          {
+            "kind": "team",
+            "weight": 5.0,
+            "reason": "2 aktive Autoren in 90 Tagen"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 27 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 14 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 2.25,
+            "reason": "Besitzerkonto besteht seit 9 Monaten"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -12.75,
+            "reason": "85% der letzten Commits mit AI-Beteiligung (85 von 100)"
+          },
+          {
+            "kind": "ai_files",
+            "weight": -3.0,
+            "reason": "Anweisungsdateien für AI-Agenten: AGENTS.md, CLAUDE.md"
+          },
+          {
+            "kind": "windows",
+            "weight": -10.0,
+            "reason": "Für Windows („windows“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 9-mal AI-Begriffe („ai“)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 14,
+        "repo": "Fuwni/dynamic-island-windows",
+        "url": "https://github.com/Fuwni/dynamic-island-windows",
+        "description": "Atoll — a Dynamic Island-style island for Windows: music with lyrics, live activities, screenshots with OCR, weather, AI chat and animated characters. Free & open source.",
+        "homepage": null,
+        "language": "C#",
+        "topics": [
+          "desktop-widget",
+          "dotnet",
+          "dynamic-island",
+          "lyrics",
+          "music-player",
+          "screenshot-tool",
+          "windows",
+          "wpf",
+          "claude-code",
+          "i18n",
+          "windows-11",
+          "atoll"
+        ],
+        "stars": 131,
+        "stars_gained": 94,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          10,
+          27,
+          18,
+          6,
+          12,
+          8,
+          7,
+          7,
+          1,
+          5,
+          5,
+          1,
+          3,
+          16,
+          3,
+          2
+        ],
+        "created_at": "2026-11-11T12:07:12Z",
+        "pushed_at": "2026-11-26T10:04:00Z",
+        "license": "MIT",
+        "forks": 18,
+        "active_authors": 1,
+        "score": 20.29423537638157,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 36.44539816707925,
+            "reason": "+94 Sterne in 14 Tagen bei 131 insgesamt"
+          },
+          {
+            "kind": "engagement",
+            "weight": 5.0,
+            "reason": "Issues von 13 verschiedenen Personen"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 15 Tage alt"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 0.5,
+            "reason": "Besitzerkonto besteht seit 2 Monaten"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -14.651162790697674,
+            "reason": "98% der letzten Commits mit AI-Beteiligung (84 von 86)"
+          },
+          {
+            "kind": "windows",
+            "weight": -10.0,
+            "reason": "Für Windows („windows“, „wpf“)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „claude“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 33-mal AI-Begriffe („ai“, „claude“, „codex“, „deepseek“)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      },
+      {
+        "rank": 15,
+        "repo": "Aribk7/revana-js",
+        "url": "https://github.com/Aribk7/revana-js",
+        "description": "Official JavaScript/TypeScript SDK and CLI for Revana: one API key for Seedance, Veo, Kling, Nano Banana and 200+ AI video, image and chat models",
+        "homepage": "https://revana.si",
+        "language": "TypeScript",
+        "topics": [
+          "ai-video",
+          "image-generation",
+          "kling",
+          "nano-banana",
+          "sdk",
+          "seedance",
+          "text-to-video",
+          "typescript",
+          "veo",
+          "revana"
+        ],
+        "stars": 164,
+        "stars_gained": 98,
+        "star_history": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          17,
+          3,
+          5,
+          6,
+          3,
+          2,
+          2,
+          2,
+          3,
+          8,
+          5,
+          4,
+          3,
+          4,
+          3,
+          2,
+          5,
+          10,
+          9,
+          2,
+          3,
+          8,
+          7,
+          9,
+          13,
+          13,
+          10
+        ],
+        "created_at": "2026-10-30T11:24:30Z",
+        "pushed_at": "2026-11-25T23:42:13Z",
+        "license": "MIT",
+        "forks": 0,
+        "active_authors": 1,
+        "score": 0.44770730069459397,
+        "signals": [
+          {
+            "kind": "momentum",
+            "weight": 35.30485015783745,
+            "reason": "+98 Sterne in 14 Tagen bei 164 insgesamt"
+          },
+          {
+            "kind": "new_project",
+            "weight": 3.0,
+            "reason": "Neues Projekt, 27 Tage alt"
+          },
+          {
+            "kind": "no_echo",
+            "weight": -40.0,
+            "reason": "164 Sterne, aber kaum Echo: 0 Forks, 0 Issue-Autoren, 1 Pull Requests"
+          },
+          {
+            "kind": "owner_age",
+            "weight": 10.0,
+            "reason": "Besitzerkonto besteht seit 4 Jahren"
+          },
+          {
+            "kind": "owner_contributions",
+            "weight": 5.0,
+            "reason": "Besitzer wirkt an 9 anderen Projekten mit"
+          },
+          {
+            "kind": "ai_commits",
+            "weight": -12.857142857142856,
+            "reason": "86% der letzten Commits mit AI-Beteiligung (6 von 7)"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Topics: AI-Begriffe „ai“, „image generation“, „text to video“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "Beschreibung: AI-Begriffe „ai“"
+          },
+          {
+            "kind": "ai_focus",
+            "weight": 0,
+            "reason": "README: 12-mal AI-Begriffe („ai“, „gpt“, „openai“, „mcp“ …)"
+          },
+          {
+            "kind": "review",
+            "weight": 0,
+            "reason": "Gegengelesen von Copilot: unauffällig"
+          }
+        ]
+      }
+    ]
+  }
+}

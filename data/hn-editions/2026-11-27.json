@@ -1,0 +1,238 @@
+{
+  "format_version": 1,
+  "day": "2026-11-27",
+  "projects": [
+    {
+      "story": {
+        "id": "50654289",
+        "title": "Nextcloud Office Desktop app",
+        "url": "https://nextcloud.com/blog/euro-office-comes-to-your-desktop-with-the-nextcloud-office-desktop-app/",
+        "points": 443,
+        "comments": 228,
+        "created_at": "2026-11-26T11:50:49+00:00"
+      },
+      "repository_url": "https://github.com/Euro-Office/DesktopEditors",
+      "project_url": "https://nextcloud.com/blog/euro-office-comes-to-your-desktop-with-the-nextcloud-office-desktop-app/",
+      "description": "",
+      "language": "PowerShell",
+      "license_id": "NOASSERTION",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf nextcloud.com. Repo und Story teilen „euro“, „office“.",
+        "Lizenzdatei vorhanden, die die Forge nicht erkennt. Zählt als Open Source."
+      ]
+    },
+    {
+      "story": {
+        "id": "50657530",
+        "title": "YouTube Ad Punisher – Auto-reloads YouTube pages when an ad plays",
+        "url": "https://github.com/antonpictures/youtube-punisher",
+        "points": 428,
+        "comments": 487,
+        "created_at": "2026-11-26T17:36:47+00:00"
+      },
+      "repository_url": "https://github.com/antonpictures/youtube-punisher",
+      "project_url": "https://github.com/antonpictures/youtube-punisher",
+      "description": "YouTube Ad Blocker - Chrome / Browser Extension",
+      "language": "JavaScript",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ad-blocker",
+        "ad-blocker-extension",
+        "ad-skipper",
+        "anti-ad",
+        "chrome-extension",
+        "manifest-v3",
+        "youtube",
+        "youtube-ad-remover"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt."
+      ]
+    },
+    {
+      "story": {
+        "id": "50651430",
+        "title": "NormalScript: A perfectly normal scripting language",
+        "url": "https://psychoscript.com/",
+        "points": 114,
+        "comments": 27,
+        "created_at": "2026-11-26T04:32:26+00:00"
+      },
+      "repository_url": "https://github.com/anomalyco/psychoscript",
+      "project_url": "https://psychoscript.com/",
+      "description": "A confined JavaScript runtime for programs that call schema-described tools",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf psychoscript.com. Repo und Story teilen „psychoscript“."
+      ]
+    }
+  ],
+  "ai_projects": [
+    {
+      "story": {
+        "id": "50657265",
+        "title": "AMD-specific fork of llama.cpp",
+        "url": "https://devnull.land/amd-specific-llama-cpp",
+        "points": 377,
+        "comments": 90,
+        "created_at": "2026-11-26T17:11:29+00:00"
+      },
+      "repository_url": "https://github.com/stew675/llama-cpp-rdna-boosts",
+      "project_url": "https://devnull.land/amd-specific-llama-cpp",
+      "description": "A set of performant RDNA/HIP patches against llama.cpp focusing on high speed inferencing with numerics assurance",
+      "language": "Shell",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "assurance",
+        "hip",
+        "llama-cpp",
+        "performance",
+        "rdna3",
+        "rdna4",
+        "rocm"
+      ],
+      "linked_directly": false,
+      "reasons": [
+        "Gefunden über einen Link auf devnull.land. Repo und Story teilen „cpp“, „llama“.",
+        "Topics: AI-Begriffe „llama“",
+        "Name: AI-Begriffe „llama“",
+        "Beschreibung: AI-Begriffe „llama“",
+        "README: 53-mal AI-Begriffe („llama“, „agent“, „ai“, „gguf“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50658191",
+        "title": "Show HN: Fuck_data_brokers.py",
+        "url": "https://github.com/gary23w/f-ck_data_brokers",
+        "points": 237,
+        "comments": 52,
+        "created_at": "2026-11-26T18:37:21+00:00"
+      },
+      "repository_url": "https://github.com/gary23w/f-ck_data_brokers",
+      "project_url": "https://github.com/gary23w/f-ck_data_brokers",
+      "description": "fck_data_brokers.py is a free, open-source Python script that sends opt-out and deletion requests to data brokers on your behalf.",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ccpa",
+        "cli",
+        "data-brokers",
+        "data-deletion",
+        "gdpr",
+        "lgpd",
+        "mcp",
+        "mcp-server",
+        "opt-out",
+        "personal-data",
+        "pipeda",
+        "privacy",
+        "privacy-tools",
+        "python"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Topics: AI-Begriffe „mcp“",
+        "README: 19-mal AI-Begriffe („ai“, „gpt“, „agent“, „mcp“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50658632",
+        "title": "Rvoip: VoIP stack in Rust",
+        "url": "https://github.com/eisenzopf/rvoip",
+        "points": 138,
+        "comments": 29,
+        "created_at": "2026-11-26T19:18:09+00:00"
+      },
+      "repository_url": "https://github.com/eisenzopf/rvoip",
+      "project_url": "https://github.com/eisenzopf/rvoip",
+      "description": "Open-source Rust SIP/VoIP stack: SIP, WebRTC, SRTP and AI voice agents behind one API. RFC 7502-benchmarked.",
+      "language": "Rust",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "ai-agents",
+        "real-time-communication",
+        "rfc7502",
+        "rtp",
+        "rust",
+        "sbc",
+        "sip",
+        "srtp",
+        "telephony",
+        "voice-ai",
+        "voip",
+        "webrtc"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Topics: AI-Begriffe „ai agent“, „ai“",
+        "Beschreibung: AI-Begriffe „ai“, „agent“",
+        "README: 36-mal AI-Begriffe („ai agent“, „ai“, „agent“, „multi agent“)"
+      ]
+    },
+    {
+      "story": {
+        "id": "50642300",
+        "title": "Show HN: Turned a $5 AliExpress clock into a desk Clawd pet(+usage)",
+        "url": "https://github.com/click6067-ship-it/token-tv",
+        "points": 57,
+        "comments": 7,
+        "created_at": "2026-11-25T13:51:44+00:00"
+      },
+      "repository_url": "https://github.com/click6067-ship-it/token-tv",
+      "project_url": "https://github.com/click6067-ship-it/token-tv",
+      "description": "Turn a ~$5 AliExpress clock into pixel pets for Claude Code and Codex. They react to your agents and keep your usage limits in sight. No firmware flashing.",
+      "language": "Python",
+      "license_id": "MIT",
+      "is_fork": false,
+      "is_archived": false,
+      "has_code": true,
+      "topics": [
+        "claude-code",
+        "claude-code-plugin",
+        "codex",
+        "desk-clock",
+        "desk-pet",
+        "geekmagic",
+        "pixel-art",
+        "python",
+        "smalltv",
+        "usage-monitor"
+      ],
+      "linked_directly": true,
+      "reasons": [
+        "Die Story verlinkt das Repo direkt.",
+        "Topics: AI-Begriffe „claude“, „codex“",
+        "Beschreibung: AI-Begriffe „claude“, „codex“, „agent“",
+        "README: 18-mal AI-Begriffe („claude“, „codex“, „agent“, „ai“ …)"
+      ]
+    }
+  ]
+}
